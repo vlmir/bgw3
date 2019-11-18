@@ -1,0 +1,12 @@
+configs/ssh/known_hosts
+dots/ssh/known_hosts
+configs/my.ssh/known_hosts
+*.sw?
+*~
+*.tmp
+_*
+*.err
+*.out
+*.pyc
+*.ttl
+*.nt
