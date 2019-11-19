@@ -1,11 +1,11 @@
 package main
 
 import (
-	"aux"
-	"bgw/export"
-	"bgw/parse"
-	"bgw/semweb"
-	"bgw/util"
+	"github.com/vlmir/bgw3/pkg/utils" // pkg 'aux'
+	"github.com/vlmir/bgw3/pkg/semweb"
+	"github.com/vlmir/bgw3/pkg/ancil"
+	"github.com/vlmir/bgw3/pkg/export"
+	"github.com/vlmir/bgw3/pkg/parse"
 	"flag"
 	"fmt"
 	"log"

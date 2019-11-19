@@ -1,10 +1,10 @@
 package export
 
 import (
-	"aux"
-	"bgw/parse"
-	"bgw/semweb"
-	"bgw/util"
+	"github.com/vlmir/bgw3/pkg/utils" // pkg 'aux'
+	"github.com/vlmir/bgw3/pkg/parse"
+	"github.com/vlmir/bgw3/pkg/semweb"
+	"github.com/vlmir/bgw3/pkg/ancil"
 	"testing"
 )
 
@@ -50,7 +50,7 @@ type t4 struct {
 }
 
 func TestOrtho(t *testing.T) {
-	pth := "../tdata/"
+	pth := "../../tdata/"
 	var idmkeys = map[string]string{
 		"KO":      "kego",
 		"OrthoDB": "orthodb",
@@ -79,7 +79,7 @@ func TestOrtho(t *testing.T) {
 }
 
 func TestUpdat(t *testing.T) {
-	pth := "../tdata/"
+	pth := "../../tdata/"
 	var idmkeys = map[string]string{
 		"Gene_Name":    "gnm",
 		"Gene_Synonym": "gsnm",
@@ -123,7 +123,7 @@ func TestUpdat(t *testing.T) {
 }
 
 func TestTftg(t *testing.T) {
-	pth := "../tdata/"
+	pth := "../../tdata/"
 	arg3 := make(aux.Set3D)
 	arg3.Add("P04637", "bgwp", "9606/chr-17/TP53/UPI000002ED67")
 	arg4 := make(aux.Set3D)
@@ -147,7 +147,7 @@ func TestTftg(t *testing.T) {
 }
 
 func TestUpvar(t *testing.T) {
-	pth := "../tdata/"
+	pth := "../../tdata/"
 	arg2 := make(aux.Set3D)
 	arg2.Add("P04637", "bgwp", "9606/chr-17/TP53/UPI000002ED67")
 	arg3 := make(aux.Set3D)
@@ -174,7 +174,7 @@ func TestUpvar(t *testing.T) {
 }
 
 func TestMitab(t *testing.T) {
-	pth := "../tdata/"
+	pth := "../../tdata/"
 	arg2 := make(aux.Set3D)
 	arg2.Add("P04637", "bgwp", "9606/chr-17/TP53/UPI000002ED67")
 	arg1 := parse.Mitab(pth+"test.mit", arg2)
@@ -199,10 +199,10 @@ func TestMitab(t *testing.T) {
 }
 
 func TestGaf(t *testing.T) {
-	pth := "../tdata/"
+	pth := "../../tdata/"
 	arg2 := make(aux.Set3D)
 	arg2.Add("P04637", "bgwp", "9606/chr-17/TP53/UPI000002ED67")
-	bps, ccs, mfs := parse.Gaf(pth+"test.gaf", arg2)
+	bps, ccs, mfs := parse.Gaf(pth +"test.gaf", arg2)
 	zeno := rdf.NewZeno()
 	zeno.Unmarshal(pth + "zeno.json")
 	t4s := []t4{

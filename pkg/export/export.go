@@ -1,9 +1,9 @@
 package export
 
 import (
-	"aux"
-	"bgw/semweb"
-	"bgw/util"
+	"github.com/vlmir/bgw3/pkg/utils" // pkg 'aux'
+	"github.com/vlmir/bgw3/pkg/semweb"
+	"github.com/vlmir/bgw3/pkg/ancil"
 	"encoding/json"
 	"fmt"
 	"log"

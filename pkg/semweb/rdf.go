@@ -1,7 +1,7 @@
 package rdf
 
 import (
-	"aux"
+	"github.com/vlmir/bgw3/pkg/utils" // pkg 'aux'
 	"encoding/json"
 	"fmt"
 	"io/ioutil"

@@ -1,7 +1,7 @@
 package parse
 
 import (
-	"aux"
+	"github.com/vlmir/bgw3/pkg/utils" // pkg 'aux'
 	"testing"
 )
 
@@ -46,7 +46,7 @@ type t6 struct {
 }
 
 func TestIdmap(t *testing.T) {
-	pth := "../tdata/"
+	pth := "../../tdata/"
 	t1s := []t1{
 		{pth + "test.idm", map[string]string{"NCBI_TaxID": "test"}, 2, 1, 0, 1},
 		{pth + "test.idm", map[string]string{"NCBI_TaxID": "test"}, 0, 1, 2, 1},
@@ -65,7 +65,7 @@ func TestIdmap(t *testing.T) {
 }
 
 func TestUpidmap(t *testing.T) {
-	pth := "../tdata/"
+	pth := "../../tdata/"
 	idms := []t2{
 		{pth + "test.idm", map[string]string{"UniParc": "test"}, 1, 9, 0},
 	}
@@ -96,7 +96,7 @@ func TestUpidmap(t *testing.T) {
 }
 
 func TestUpdat(t *testing.T) {
-	pth := "../tdata/"
+	pth := "../../tdata/"
 	upt := make(aux.Set2D)
 	upts := []t3{
 		{pth + "test.upt", upt, 1, 1},
@@ -122,7 +122,7 @@ func TestUpdat(t *testing.T) {
 }
 
 func TestUpvar(t *testing.T) {
-	pth := "../tdata/"
+	pth := "../../tdata/"
 	upvar := make(aux.Set3D)
 	upvars := []t4{
 		{pth + "test.var", upvar, 1},
@@ -141,7 +141,7 @@ func TestUpvar(t *testing.T) {
 }
 
 func TestMitab(t *testing.T) {
-	pth := "../tdata/"
+	pth := "../../tdata/"
 	mit := make(aux.Set3D)
 	mits := []t4{
 		{pth + "test.mit", mit, 1},
@@ -160,7 +160,7 @@ func TestMitab(t *testing.T) {
 }
 
 func TestTftg(t *testing.T) {
-	pth := "../tdata/"
+	pth := "../../tdata/"
 	s1 := make(aux.Set3D)
 	s2 := make(aux.Set3D)
 	var f2gs = []t5{
@@ -181,7 +181,7 @@ func TestTftg(t *testing.T) {
 }
 
 func TestGaf(t *testing.T) {
-	pth := "../tdata/"
+	pth := "../../tdata/"
 	var set = make(aux.Set3D)
 	var gafs = []t6{
 		{pth + "test.gaf", set, 150, 17, 39},

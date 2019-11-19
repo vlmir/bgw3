@@ -1,8 +1,8 @@
 package main
 
 import (
-	"aux"
-	"bgw/parse"
+	"github.com/vlmir/bgw3/pkg/utils" // pkg 'aux'
+	"github.com/vlmir/bgw3/pkg/parse"
 	"flag"
 	"fmt"
 	"io"

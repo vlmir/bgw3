@@ -1,8 +1,8 @@
 package parse
 
 import (
-	"aux"
-	"bgw/util"
+	"github.com/vlmir/bgw3/pkg/utils" // pkg 'aux'
+	"github.com/vlmir/bgw3/pkg/ancil"
 	"bufio"
 	"fmt"
 	"os"
