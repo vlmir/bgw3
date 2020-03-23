@@ -1,12 +1,10 @@
 package util
 
 import (
-	"github.com/vlmir/bgw3/pkg/utils" // pkg 'aux'
+	"github.com/vlmir/bgw3/src/utils" // pkg 'aux'
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
-	"log"
-	"reflect"
 )
 
 type Meta struct {
@@ -15,7 +13,6 @@ type Meta struct {
 	Cnfs  aux.Set3D
 }
 
-/// Functions
 func NewMeta() (meta Meta) {
 	meta.Signs = make(aux.Set3D)
 	meta.Refs = make(aux.Set3D)
@@ -28,17 +25,6 @@ func (meta Meta) New() {
 	meta.Signs = make(aux.Set3D)
 	meta.Refs = make(aux.Set3D)
 	meta.Cnfs = make(aux.Set3D)
-}
-
-func (meta Meta) Fields() (fns []string) {
-	t := reflect.TypeOf(meta)
-	cnt := t.NumField()
-	for i := 0; i < cnt; i++ {
-		tf := t.Field(i)
-		n := tf.Name
-		fns = append(fns, n)
-	}
-	return fns
 }
 
 type Dat4rdf struct {
@@ -60,7 +46,6 @@ type Xmap struct {
 	Rfsq  aux.Set3D
 }
 
-/// Functions
 func NewXmap() (xmap Xmap) {
 	xmap.Upac = make(aux.Set3D)
 	xmap.Gsymb = make(aux.Set3D)
@@ -87,39 +72,3 @@ func (xmap Xmap) Unmarshal(pthj string) error {
 	return nil
 }
 
-func (xmap Xmap) Fields() {
-	t := reflect.TypeOf(xmap)
-	v := reflect.ValueOf(xmap)
-	for i := 0; i < t.NumField(); i++ {
-		tf := t.Field(i)
-		vf := v.Field(i)
-		n := tf.Name
-		fmt.Println(i, n, vf)
-	}
-}
-
-func (xmap Xmap) Counts() {
-	t := reflect.TypeOf(xmap)
-	for i := 0; i < t.NumField(); i++ {
-		tf := t.Field(i)
-		n := tf.Name
-		switch n {
-		case "Bgwg":
-			log.Println(n, len(xmap.Bgwg))
-		case "Bgwp":
-			log.Println(n, len(xmap.Bgwp))
-		case "Upac":
-			log.Println(n, len(xmap.Upac))
-		case "Gsymb":
-			log.Println(n, len(xmap.Gsymb))
-		case "Ensg":
-			log.Println(n, len(xmap.Ensg))
-		case "Ensp":
-			log.Println(n, len(xmap.Ensp))
-		case "Ncbig":
-			log.Println(n, len(xmap.Ncbig))
-		case "Rfsq":
-			log.Println(n, len(xmap.Rfsq))
-		}
-	}
-}

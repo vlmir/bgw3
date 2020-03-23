@@ -1,7 +1,7 @@
 package parse
 
 import (
-	"github.com/vlmir/bgw3/pkg/utils" // pkg 'aux'
+	"github.com/vlmir/bgw3/src/utils" // pkg 'aux'
 	"testing"
 )
 
@@ -208,6 +208,33 @@ func TestGaf(t *testing.T) {
 				"For test", i+1, ": ", t6.arg1, t6.arg2,
 				"\n\twant", t6.val3,
 				"\n\thave", len(set3),
+			)
+		}
+	}
+}
+
+func TestOrtho(t *testing.T){
+	arg1 := "../../tdata/"
+	var arg2 [5]aux.Set2D
+	var arg3 [5]aux.Set2D
+	var val1 [5]int
+	n := 1 // number of tests
+	for i := 0; i < n; i++ {
+	arg2[i] = make(aux.Set2D)
+	arg3[i] = make(aux.Set2D)
+	}
+	arg2[0].Add("9606", "1")
+	arg2[0].Add("10090", "1")
+	arg3[0].Add("9606", "ortho")
+	arg3[0].Add("10090", "ortho")
+	val1[0] = 78
+	for i := 0; i < n; i++ {
+		out := Ortho(arg1, arg2[i], arg3[i])
+		if len(out) != val1[i] {
+			t.Error(
+				"For test", i+1, ": ", arg1, arg2,
+				"\n\twant", val1[i],
+				"\n\thave", len(out),
 			)
 		}
 	}

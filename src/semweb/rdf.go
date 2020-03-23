@@ -1,7 +1,7 @@
 package rdf
 
 import (
-	"github.com/vlmir/bgw3/pkg/utils" // pkg 'aux'
+	"github.com/vlmir/bgw3/src/utils" // pkg 'aux'
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
@@ -10,16 +10,6 @@ import (
 	"strings"
 )
 
-/*
-const DQ string = `"`
-const END string = ".\n"
-const US string = "--"
-const AS string = "/" // attribute separator in URIs, not used yet
-const SS string = "!" // slash substitute in rdf:Statement URIs
-const DS string = " + " // separator for concatenating pdfns
-const KS string = "+" // key separator, only up2mim.py and zeno.py
-const NS string = "-" // not used yet
-*/
 type Zeno struct {
 	Opys aux.SliceSet
 	Apys aux.SliceSet

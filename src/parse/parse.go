@@ -1,8 +1,8 @@
 package parse
 
 import (
-	"github.com/vlmir/bgw3/pkg/utils" // pkg 'aux'
-	"github.com/vlmir/bgw3/pkg/ancil"
+	"github.com/vlmir/bgw3/src/utils" // pkg 'aux'
+	"github.com/vlmir/bgw3/src/ancil"
 	"bufio"
 	"fmt"
 	"os"
@@ -698,8 +698,43 @@ func Tftg(pth0 string, upac2bgw aux.Set3D, gsmap aux.Set3D) (aux.Set3D, util.Met
 				meta.Refs.Add(pairid, src, val)
 			}
 		}
-
 	}
 	fmt.Println("parse.Tftg():notInBgw:", notInBgw)
 	return pairs, meta
+}
+
+func Ortho(datdir string, mitmap, tx2pm aux.Set2D) aux.Set3D {
+	var idmkeys = map[string]string{
+		"KO":      "kego",
+		"OrthoDB": "orthodb",
+	}
+	out := make(aux.Set3D) // all taxa
+	pairs := make(aux.Set3D) // all taxa
+	for txid := range mitmap {
+		pomes := tx2pm[txid].Keys()
+		pome := fmt.Sprintf("%s%s%s", pomes[0], "_", txid)
+		subdir := "idmapping/"
+		ext := ".idmapping"
+		pth0 := fmt.Sprintf("%s%s%s%s", datdir, subdir, pome, ext) // read
+		dat, _ := Idmap(pth0, idmkeys, 1, 2, 0) // one taxon
+		for src, all := range dat {
+			for id, one := range all {
+				for upac, _ := range one {
+					out.Add(src, id, upac)
+				}
+			}
+		}
+	}
+	for src, all := range out {
+		for id, one := range all {
+			for upLac, _ := range one {
+				for upRac, _ := range one {
+					if upLac >= upRac { continue }
+					pairid := fmt.Sprintf("%s%s%s", upLac, "--", upRac)
+					pairs.Add(pairid, src, id)
+				}
+			}
+		}
+	}
+	return pairs
 }

@@ -1,10 +1,10 @@
 package export
 
 import (
-	"github.com/vlmir/bgw3/pkg/utils" // pkg 'aux'
-	"github.com/vlmir/bgw3/pkg/parse"
-	"github.com/vlmir/bgw3/pkg/semweb"
-	"github.com/vlmir/bgw3/pkg/ancil"
+	"github.com/vlmir/bgw3/src/utils" // pkg 'aux'
+	"github.com/vlmir/bgw3/src/parse"
+	"github.com/vlmir/bgw3/src/semweb"
+	"github.com/vlmir/bgw3/src/ancil"
 	"testing"
 )
 
@@ -47,35 +47,6 @@ type t4 struct {
 	arg3 string
 	arg4 rdf.Zeno
 	val1 int
-}
-
-func TestOrtho(t *testing.T) {
-	pth := "../../tdata/"
-	var idmkeys = map[string]string{
-		"KO":      "kego",
-		"OrthoDB": "orthodb",
-	}
-	arg1, _ := parse.Idmap(pth+"test.idm", idmkeys, 1, 2, 0)
-	arg2 := make(aux.Set3D)
-	arg2.Add("P04637", "bgwp", "9606/chr-17/TP53/UPI000002ED67")
-	zeno := rdf.NewZeno()
-	zeno.Unmarshal(pth + "zeno.json")
-	t4s := []t4{
-		{arg1, arg2, "/dev/null", zeno, 18},
-	}
-	for i, t4 := range t4s {
-		n, err := Ortho(t4.arg1, t4.arg2, t4.arg3, t4.arg4)
-		if err != nil {
-			return
-		}
-		if n != t4.val1 {
-			t.Error(
-				"For test", i+1, ": ", len(t4.arg1), t4.arg2, t4.arg3,
-				"\n\twant", t4.val1,
-				"\n\thave", n,
-			)
-		}
-	}
 }
 
 func TestUpdat(t *testing.T) {
@@ -219,6 +190,41 @@ func TestGaf(t *testing.T) {
 			t.Error(
 				"For test", i+1, ": ", len(t4.arg1), t4.arg2, t4.arg3,
 				"\n\twant", t4.val1,
+				"\n\thave", n,
+			)
+		}
+	}
+}
+
+func TestOrtho(t *testing.T) {
+	type tt struct {
+		arg1 aux.Set3D
+		arg2 aux.Set3D
+		arg3 string
+		arg4 rdf.Zeno
+		val1 int
+	}
+	pth := "../../tdata/"
+	arg1 := make(aux.Set3D)
+	arg2 := make(aux.Set3D)
+	arg1.Add("P02340--P04637", "KO", "K04451")
+	arg1.Add("P02340--P04637", "OrthoDB", "257530at2759")
+	arg2.Add("P04637", "bgwp", "9606/chr-17/TP53/UPI000002ED67")
+	arg2.Add("P02340", "bgwp", "10090/chr-11/Tp53/UPI00000002B3")
+	zeno := rdf.NewZeno()
+	zeno.Unmarshal(pth + "zeno.json")
+	tts := []tt{
+		{arg1, arg2, "/dev/null", zeno, 31},
+	}
+	for i, tt := range tts {
+		n, err := Ortho(tt.arg1, tt.arg2, tt.arg3, tt.arg4)
+		if err != nil {
+			return
+		}
+		if n != tt.val1 {
+			t.Error(
+				"For test", i+1, ": ", len(tt.arg1), tt.arg2, tt.arg3,
+				"\n\twant", tt.val1,
 				"\n\thave", n,
 			)
 		}

@@ -1,9 +1,9 @@
 package export
 
 import (
-	"github.com/vlmir/bgw3/pkg/utils" // pkg 'aux'
-	"github.com/vlmir/bgw3/pkg/semweb"
-	"github.com/vlmir/bgw3/pkg/ancil"
+	"github.com/vlmir/bgw3/src/utils" // pkg 'aux'
+	"github.com/vlmir/bgw3/src/semweb"
+	"github.com/vlmir/bgw3/src/ancil"
 	"encoding/json"
 	"fmt"
 	"log"
@@ -380,7 +380,7 @@ func GeneProt(dat4rdf util.Dat4rdf, xpthP string, xpthG string, wpthX string, ze
 	return nlg, nlp, nil
 }
 
-func Upvar(pairs aux.Set3D, upac2bgw aux.Set3D, gsmap aux.Set3D, xpth string, zeno rdf.Zeno) (int, error) {
+func Upvar(duos aux.Set3D, upac2bgw aux.Set3D, gsmap aux.Set3D, xpth string, zeno rdf.Zeno) (int, error) {
 	nln := 0
 	mysrc := "uniprot"
 	srcU := rdf.FormU(zeno.Uris[mysrc])
@@ -427,7 +427,7 @@ func Upvar(pairs aux.Set3D, upac2bgw aux.Set3D, gsmap aux.Set3D, xpth string, ze
 	rdfNS := zeno.Uris["rdf"]
 	count := make(aux.Set3D)
 
-	for clsid, onemap := range pairs {
+	for clsid, onemap := range duos {
 		bits := strings.Split(clsid, "--")
 		idL := bits[0]
 		idR := bits[1]
@@ -493,7 +493,7 @@ func Upvar(pairs aux.Set3D, upac2bgw aux.Set3D, gsmap aux.Set3D, xpth string, ze
 }
 
 /*
-func Upvar(pairs aux.Set3D, upac2bgw aux.Set3D,  xpth string, zeno rdf.Zeno) error {
+func Upvar(duos aux.Set3D, upac2bgw aux.Set3D,  xpth string, zeno rdf.Zeno) error {
 	mysrc := "uniprot"
 	srcU := rdf.FormU(zeno.Uris[mysrc])
 	if len(srcU) == 0 {
@@ -532,7 +532,7 @@ func Upvar(pairs aux.Set3D, upac2bgw aux.Set3D,  xpth string, zeno rdf.Zeno) err
 	rdfNS := zeno.Uris["rdf"]
 	count := make(aux.Set3D)
 
-	for clsid, onemap := range pairs {
+	for clsid, onemap := range duos {
 		clsU := rdf.CompU(stmNS, clsid)
 		sb.WriteString(rdf.FormT(clsU, ourUs["sub2cls"], ourUs["stm"])); nln++
 		sb.WriteString(rdf.FormT(clsU, ourUs["sth2lbl"], rdf.FormL(clsid))); nln++
@@ -579,7 +579,7 @@ func Upvar(pairs aux.Set3D, upac2bgw aux.Set3D,  xpth string, zeno rdf.Zeno) err
 }
 */
 
-func Goa(pairs aux.Set3D, upac2bgw aux.Set3D, xpth string, zeno rdf.Zeno) (int, error) {
+func Goa(duos aux.Set3D, upac2bgw aux.Set3D, xpth string, zeno rdf.Zeno) (int, error) {
 	/*
 		Attn: isoforms are present in gpa files but lost in rdf files TODO !!
 		mironov@manjaro ~/g/g/s/b/prot2onto (master ⚡ → =)> cut -f 2 p53.gpa | grep P04637 | sort -u | wc -l
@@ -637,7 +637,7 @@ func Goa(pairs aux.Set3D, upac2bgw aux.Set3D, xpth string, zeno rdf.Zeno) (int, 
 	rdfNS := zeno.Uris["rdf"]
 	count := make(aux.Set3D)
 
-	for clsid, onemap := range pairs {
+	for clsid, onemap := range duos {
 		ppys := onemap["ppy"].Keys()
 		if len(ppys) != 1 { // unnecessary, may help debugging
 			continue
@@ -711,78 +711,16 @@ func Goa(pairs aux.Set3D, upac2bgw aux.Set3D, xpth string, zeno rdf.Zeno) (int, 
 	return nln, nil
 }
 
-func Ortho(upac2xrf, upac2bgw aux.Set3D, xpth string, zeno rdf.Zeno) (int, error) {
-	keys4b := make(aux.SliceSet)
-	keys4b["Opys"] = []string{
-		"ins2cls",
-		"mbr2lst",
-		"sth2evd",
-		"sth2ori",
-		"sth2src",
-		"sub2cls",
-	}
-	keys4b["Apys"] = []string{
-		"sth2dfn",
-		"sth2lbl",
-	}
-	keys4b["Prns"] = []string{
-		"stm",
-	}
-	// ortho graph ini
-	nln := 0
-	xfh, err := os.Create(xpth)
-	if err != nil {
-		return nln, fmt.Errorf("%s%s%s", "export.Ortho():os.Create:", xpth, err)
-	}
-	defer xfh.Close()
-	var sb strings.Builder
-	ourUs := make(map[string]string)
-	header, n := rdf.Header(ourUs, keys4b, zeno)
-	sb.WriteString(header)
-	nln += n
-	graphU := "<http://biogateway.eu/graph/ortho>"
-	xfh.Write([]byte(sb.String()))
-	sb.Reset()
-	var idmkeys = map[string]string{
-		"KO":      "kego",
-		"OrthoDB": "orthodb",
-	}
-	cnt := make(aux.Set2D)
-	for key, onemap := range upac2xrf {
-		src := idmkeys[key] // renaming
-		fmt.Println(src, onemap)
-		srcU := rdf.FormU(zeno.Uris[src])
-		sb.WriteString(rdf.FormT(graphU, ourUs["sth2src"], srcU))
-		nln++
-		for id, upacs := range onemap {
-			bagU := rdf.FormU(fmt.Sprintf("%s%s", zeno.Uris[src], id))
-			fmt.Println(bagU)
-			_, ok := cnt[src][id]
-			if !ok {
-				fmt.Println(nln)
-				sb.WriteString(rdf.FormT(bagU, ourUs["sub2cls"], ourUs["bag"]))
-				nln++
-				fmt.Println(nln)
-			}
-			for upac := range upacs {
-				fmt.Println(upac)
-			}
-		}
-	}
-
-	return n, err
-}
-
-func Mitab(pairs aux.Set3D, upac2bgw aux.Set3D, xpth string, zeno rdf.Zeno) (int, error) {
+func Mitab(duos aux.Set3D, upac2bgw aux.Set3D, xpth string, zeno rdf.Zeno) (int, error) {
 	keys4b := make(aux.SliceSet)
 	keys4b["Opys"] = []string{
 		"ins2cls",
 		"sth2evd",
 		"sth2mtd",
-		"sth2ori",
 		"sth2src",
 		"tlp2tlp",
 		"sub2cls",
+		"sub2set",
 	}
 	keys4b["Apys"] = []string{
 		"evd2lvl",
@@ -819,7 +757,7 @@ func Mitab(pairs aux.Set3D, upac2bgw aux.Set3D, xpth string, zeno rdf.Zeno) (int
 	stmNS := "http://rdf.biogateway.eu/prot-prot/"
 	rdfNS := zeno.Uris["rdf"]
 	count := make(aux.Set3D)
-	for clsid, onemap := range pairs {
+	for clsid, onemap := range duos {
 		refs := onemap["pubids"].Keys()
 		refs = aux.X1type(refs, "pubmed", ":")
 		//if len(refs) == 0 {continue}
@@ -834,7 +772,7 @@ func Mitab(pairs aux.Set3D, upac2bgw aux.Set3D, xpth string, zeno rdf.Zeno) (int
 		idR := bits[1]
 		oriL := strings.Split(idL, "!")[1] // UP AC
 		oriR := strings.Split(idR, "!")[1] // UP AC
-		clsdfn := fmt.Sprintf("%s%s%s%s", "Interaction between protein ", oriL, " and protein ", oriR)
+		clsdfn := fmt.Sprintf("%s%s%s%s", "A pair of molecular interactors ", oriL, " and ", oriR)
 		sb.WriteString(rdf.FormT(clsU, ourUs["sth2dfn"], rdf.FormL(clsdfn)))
 		nln++
 		pdc := "tlp2tlp"
@@ -878,7 +816,8 @@ func Mitab(pairs aux.Set3D, upac2bgw aux.Set3D, xpth string, zeno rdf.Zeno) (int
 				continue
 			}
 			myU := rdf.CompU(zeno.Uris["intact"], bits[1])
-			sb.WriteString(rdf.FormT(insU, ourUs["sth2ori"], myU))
+			//sb.WriteString(rdf.FormT(insU, ourUs["sth2ori"], myU))
+			sb.WriteString(rdf.FormT(insU, ourUs["sub2set"], myU)) // Attn: change prop
 			nln++
 		}
 		/// publications
@@ -923,7 +862,7 @@ func Mitab(pairs aux.Set3D, upac2bgw aux.Set3D, xpth string, zeno rdf.Zeno) (int
 	return nln, nil
 }
 
-func Tftg(pairs aux.Set3D, meta util.Meta, upac2bgw, gsmap aux.Set3D, xpth string, zeno rdf.Zeno) (int, error) {
+func Tftg(duos aux.Set3D, meta util.Meta, upac2bgw, gsmap aux.Set3D, xpth string, zeno rdf.Zeno) (int, error) {
 	keys4b := make(aux.SliceSet)
 	keys4b["Opys"] = []string{
 		"ins2cls",
@@ -950,7 +889,7 @@ func Tftg(pairs aux.Set3D, meta util.Meta, upac2bgw, gsmap aux.Set3D, xpth strin
 		"intact",
 		"goa",
 	}
-	// prot2phen graph ini
+	// tfac2gene graph ini
 	nln := 0
 	xfh, err := os.Create(xpth)
 	if err != nil {
@@ -976,7 +915,7 @@ func Tftg(pairs aux.Set3D, meta util.Meta, upac2bgw, gsmap aux.Set3D, xpth strin
 
 	stmNS := "http://rdf.biogateway.eu/tfac-gene/"
 	rdfNS := zeno.Uris["rdf"]
-	for clsid, onemap := range pairs {
+	for clsid, onemap := range duos {
 		clsU := rdf.CompU(stmNS, clsid)
 		sb.WriteString(rdf.FormT(clsU, ourUs["sub2cls"], ourUs["stm"]))
 		nln++
@@ -1058,5 +997,101 @@ func Tftg(pairs aux.Set3D, meta util.Meta, upac2bgw, gsmap aux.Set3D, xpth strin
 	}
 	xfh.Write([]byte(sb.String()))
 	sb.Reset()
+	return nln, nil
+}
+
+func Ortho(duos, upac2bgw aux.Set3D, xpth string, zeno rdf.Zeno) (int, error) {
+	keys4b := make(aux.SliceSet)
+	keys4b["Opys"] = []string{
+		"orl2orl",
+		"ins2cls",
+		"sth2src",
+		"sub2cls",
+		"sub2set",
+	}
+	keys4b["Apys"] = []string{
+		"sth2dfn",
+		"sth2lbl",
+	}
+	keys4b["Prns"] = []string{
+		"stm",
+	}
+	// ortho graph ini
+	nln := 0
+	xfh, err := os.Create(xpth)
+	if err != nil {
+		return nln, fmt.Errorf("%s%s%s", "export.Ortho():os.Create:", xpth, err)
+	}
+	defer xfh.Close()
+	var sb strings.Builder
+	ourUs := make(map[string]string)
+	header, n := rdf.Header(ourUs, keys4b, zeno)
+	sb.WriteString(header)
+	nln += n
+	graphU := "<http://biogateway.eu/graph/ortho>"
+	srcU := rdf.FormU(zeno.Uris["uniprot"])
+	sb.WriteString(rdf.FormT(graphU, ourUs["sth2src"], srcU))
+	nln++
+	xfh.Write([]byte(sb.String()))
+
+	stmNS := "http://rdf.biogateway.eu/ortho/"
+	rdfNS := zeno.Uris["rdf"]
+	var idmkeys = map[string]string{
+		"KO":      "keggortho",
+		"OrthoDB": "orthodb",
+	}
+	for clsid, duo := range duos {
+		clsU := rdf.CompU(stmNS, clsid)
+		sb.WriteString(rdf.FormT(clsU, ourUs["sub2cls"], ourUs["stm"]))
+		nln++
+		sb.WriteString(rdf.FormT(clsU, ourUs["sth2lbl"], rdf.FormL(clsid)))
+		nln++
+		bits := strings.Split(clsid, "--")
+		oriL := bits[0]
+		oriR := bits[1]
+		clsdfn := fmt.Sprintf("%s%s%s%s", "A pair of orthologous proteins ", oriL, " and ", oriR)
+		sb.WriteString(rdf.FormT(clsU, ourUs["sth2dfn"], rdf.FormL(clsdfn)))
+		nln++
+		pdc := "orl2orl"
+		sb.WriteString(rdf.FormT(clsU, rdf.CompU(rdfNS, "predicate"), ourUs[pdc]))
+		nln++
+		ourLs := upac2bgw[oriL]["bgwp"].Keys()
+		ourRs := upac2bgw[oriR]["bgwp"].Keys()
+		// multiple subjects and objects
+		// 53 human UP ACs with multiple BGW IDs
+		for _, ourL := range ourLs {
+			uriL := rdf.CompU(zeno.Uris["prot"], ourL)
+			sb.WriteString(rdf.FormT(clsU, rdf.CompU(rdfNS, "subject"), uriL))
+			nln++
+			for _, ourR := range ourRs {
+				uriR := rdf.CompU(zeno.Uris["prot"], ourR)
+				sb.WriteString(rdf.FormT(clsU, rdf.CompU(rdfNS, "object"), uriR))
+				nln++
+				sb.WriteString(rdf.FormT(uriL, ourUs[pdc], uriR))
+				nln++
+				sb.WriteString(rdf.FormT(uriR, ourUs[pdc], uriL))
+				nln++
+			}
+		}
+		for key, sets := range duo {
+			src := idmkeys[key]
+			insid := fmt.Sprintf("%s%s%s", clsid, "#", src)
+			insU := rdf.CompU(stmNS, insid)
+			sb.WriteString(rdf.FormT(insU, ourUs["ins2cls"], clsU))
+			nln++
+			srcU := rdf.FormU(zeno.Uris[src])
+			sb.WriteString(rdf.FormT(insU, ourUs["sth2src"], srcU))
+			nln++
+			for setid, _ := range sets {
+				prefix := ""
+				if key == "OrthoDB" { prefix = "?query=" }
+				lastbit := fmt.Sprintf("%s%s", prefix, setid )
+				setU := rdf.FormU(fmt.Sprintf("%s%s", zeno.Uris[src], lastbit))
+				sb.WriteString(rdf.FormT(insU, ourUs["sub2set"], setU))
+				nln++
+			}
+		}
+		fmt.Println(sb.String())
+	}
 	return nln, nil
 }

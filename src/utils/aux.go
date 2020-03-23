@@ -7,11 +7,19 @@ import (
 )
 
 type Set1D map[string]int
-
-//type Set2D map[string]map[string]int
 type Set2D map[string]Set1D
 type Set3D map[string]Set2D
 type SliceSet map[string][]string
+
+func (m Set1D) Keys() []string {
+	// extracting map keys
+	//keys := make([]string, 0, len(m))
+	var keys []string
+	for k := range m {
+		keys = append(keys, k)
+	}
+	return keys
+}
 
 func (m Set2D) Add(key0, key1 string) {
 	mm, ok := m[key0]
@@ -20,6 +28,16 @@ func (m Set2D) Add(key0, key1 string) {
 		m[key0] = mm
 	}
 	mm[key1]++
+}
+
+func (m Set2D) Keys() []string {
+	// extracting map keys
+	//keys := make([]string, 0, len(m))
+	var keys []string
+	for k := range m {
+		keys = append(keys, k)
+	}
+	return keys
 }
 
 func (m Set3D) Add(key0, key1, key2 string) {
@@ -37,27 +55,14 @@ func (m Set3D) Add(key0, key1, key2 string) {
 	mmm[key2]++
 }
 
-func Makemap(pth string, keyind int, valind int, dlm string) (Set2D, error) {
-	set := make(Set2D)
-	fh, err := os.Open(pth)
-	if err != nil {
-		return set, err
+func (m Set3D) Keys() []string {
+	// extracting map keys
+	//keys := make([]string, 0, len(m))
+	var keys []string
+	for k := range m {
+		keys = append(keys, k)
 	}
-	defer fh.Close()
-	scanner := bufio.NewScanner(fh)
-	for scanner.Scan() { // by default scans for '\n'
-		cells := strings.Split(scanner.Text(), dlm)
-		if keyind >= len(cells) {
-			continue
-		}
-		if valind >= len(cells) {
-			continue
-		}
-		key := cells[keyind]
-		val := cells[valind]
-		set.Add(key, val)
-	}
-	return set, nil
+	return keys
 }
 
 func (s SliceSet) Add(key, value string) {
@@ -75,36 +80,6 @@ func (s SliceSet) Peek(key string) (string, bool) {
 		return "", false
 	}
 	return s[key][0], true
-}
-
-func (m Set1D) Keys() []string {
-	// extracting map keys
-	//keys := make([]string, 0, len(m))
-	var keys []string
-	for k := range m {
-		keys = append(keys, k)
-	}
-	return keys
-}
-
-func (m Set2D) Keys() []string {
-	// extracting map keys
-	//keys := make([]string, 0, len(m))
-	var keys []string
-	for k := range m {
-		keys = append(keys, k)
-	}
-	return keys
-}
-
-func (m Set3D) Keys() []string {
-	// extracting map keys
-	//keys := make([]string, 0, len(m))
-	var keys []string
-	for k := range m {
-		keys = append(keys, k)
-	}
-	return keys
 }
 
 /*
@@ -143,3 +118,27 @@ func X1quoted(s []string, key string, dlm string) []string {
 	}
 	return out
 }
+
+func Makemap(pth string, keyind int, valind int, dlm string) (Set2D, error) {
+	set := make(Set2D)
+	fh, err := os.Open(pth)
+	if err != nil {
+		return set, err
+	}
+	defer fh.Close()
+	scanner := bufio.NewScanner(fh)
+	for scanner.Scan() { // by default scans for '\n'
+		cells := strings.Split(scanner.Text(), dlm)
+		if keyind >= len(cells) {
+			continue
+		}
+		if valind >= len(cells) {
+			continue
+		}
+		key := cells[keyind]
+		val := cells[valind]
+		set.Add(key, val)
+	}
+	return set, nil
+}
+
