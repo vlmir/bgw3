@@ -1,7 +1,7 @@
 package rdf
 
 import (
-	"github.com/vlmir/bgw3/src/utils" // pkg 'aux'
+	"github.com/vlmir/bgw3/src/util" // pkg 'util'
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
@@ -11,17 +11,17 @@ import (
 )
 
 type Zeno struct {
-	Opys aux.SliceSet
-	Apys aux.SliceSet
-	Prns aux.SliceSet
+	Opys util.SliceSet
+	Apys util.SliceSet
+	Prns util.SliceSet
 	Uris map[string]string
 }
 
 /// Functions
 func NewZeno() (zeno Zeno) {
-	zeno.Opys = make(aux.SliceSet)
-	zeno.Apys = make(aux.SliceSet)
-	zeno.Prns = make(aux.SliceSet)
+	zeno.Opys = make(util.SliceSet)
+	zeno.Apys = make(util.SliceSet)
+	zeno.Prns = make(util.SliceSet)
 	zeno.Uris = make(map[string]string)
 	return zeno
 }
@@ -39,24 +39,24 @@ func FormL(l string) string {
 	return strings.Join([]string{`"`, l, `"`}, "")
 }
 
-func Header(pitUs map[string]string, rdfmap aux.SliceSet, zeno Zeno) (string, int) {
+func Header(pitUs map[string]string, rdfmap util.SliceSet, zeno Zeno) (string, int) {
 	// pitUs returned via arg
 	var sb strings.Builder
 	//zvs := reflect.ValueOf(zeno) // TODO fix
 	zfs := reflect.TypeOf(zeno)
 	var mykeys []string
 	var pdc []string
-	dic := make(aux.SliceSet)
-	prns := zeno.Prns // aux.SliceSet
-	opys := zeno.Opys // aux.SliceSet
-	apys := zeno.Apys // aux.SliceSet
+	dic := make(util.SliceSet)
+	prns := zeno.Prns // util.SliceSet
+	opys := zeno.Opys // util.SliceSet
+	apys := zeno.Apys // util.SliceSet
 	uris := zeno.Uris // map[string]string
 	var rdfs string
 	nln := 0
 	for i := 0; i < zfs.NumField(); i++ {
 		field := zfs.Field(i)
-		//value := zvs.Field(i) // (type reflect.Value) must be converted to aux.SliceSet
-		//fmt.Println(aux.SliceSet(value))
+		//value := zvs.Field(i) // (type reflect.Value) must be converted to util.SliceSet
+		//fmt.Println(util.SliceSet(value))
 		key := field.Name
 		mykeys = rdfmap[key] // empty slice for Uris, no complaints
 		switch {

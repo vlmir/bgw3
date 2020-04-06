@@ -1,16 +1,16 @@
 package export
 
 import (
-	"github.com/vlmir/bgw3/src/utils" // pkg 'aux'
-	"github.com/vlmir/bgw3/src/parse"
+	"github.com/vlmir/bgw3/src/util" // pkg 'util'
 	"github.com/vlmir/bgw3/src/semweb"
-	"github.com/vlmir/bgw3/src/ancil"
+	"github.com/vlmir/bgw3/src/bgw"
+	"github.com/vlmir/bgw3/src/parse"
 	"testing"
 )
 
 /// for: GeneProt()
 type t1 struct {
-	arg1 util.Dat4rdf
+	arg1 bgw.Dat4rdf
 	arg2 string
 	arg3 string
 	arg4 string
@@ -21,9 +21,9 @@ type t1 struct {
 
 /// for: Upvar()
 type t2 struct {
-	arg1 aux.Set3D
-	arg2 aux.Set3D
-	arg3 aux.Set3D
+	arg1 util.Set3D
+	arg2 util.Set3D
+	arg3 util.Set3D
 	arg4 string
 	arg5 rdf.Zeno
 	val1 int
@@ -31,10 +31,10 @@ type t2 struct {
 
 /// for: Tftg()
 type t3 struct {
-	arg1 aux.Set3D
-	arg2 util.Meta
-	arg3 aux.Set3D
-	arg4 aux.Set3D
+	arg1 util.Set3D
+	arg2 bgw.Meta
+	arg3 util.Set3D
+	arg4 util.Set3D
 	arg5 string
 	arg6 rdf.Zeno
 	val1 int
@@ -42,8 +42,8 @@ type t3 struct {
 
 /// for: Mitab(), Gaf()
 type t4 struct {
-	arg1 aux.Set3D
-	arg2 aux.Set3D
+	arg1 util.Set3D
+	arg2 util.Set3D
 	arg3 string
 	arg4 rdf.Zeno
 	val1 int
@@ -63,7 +63,7 @@ func TestUpdat(t *testing.T) {
 	}
 	upcas, upacs, gnms, _ := parse.Upidmap(pth+"test.idm", idmkeys)
 	updat, txns, _ := parse.Updat(pth+"test.upt", upcas)
-	var arg1 util.Dat4rdf
+	var arg1 bgw.Dat4rdf
 	arg1.Udat = &updat
 	arg1.Txns = &txns
 	arg1.Upac = &upacs
@@ -95,9 +95,9 @@ func TestUpdat(t *testing.T) {
 
 func TestTftg(t *testing.T) {
 	pth := "../../tdata/"
-	arg3 := make(aux.Set3D)
+	arg3 := make(util.Set3D)
 	arg3.Add("P04637", "bgwp", "9606/chr-17/TP53/UPI000002ED67")
-	arg4 := make(aux.Set3D)
+	arg4 := make(util.Set3D)
 	arg4.Add("TP53", "bgwg", "9606/chr-17/TP53")
 	arg1, arg2 := parse.Tftg(pth+"test.f2g", arg3, arg4)
 	zeno := rdf.NewZeno()
@@ -119,9 +119,9 @@ func TestTftg(t *testing.T) {
 
 func TestUpvar(t *testing.T) {
 	pth := "../../tdata/"
-	arg2 := make(aux.Set3D)
+	arg2 := make(util.Set3D)
 	arg2.Add("P04637", "bgwp", "9606/chr-17/TP53/UPI000002ED67")
-	arg3 := make(aux.Set3D)
+	arg3 := make(util.Set3D)
 	arg3.Add("TP53", "bgwg", "9606/chr-17/TP53")
 	arg1 := parse.Upvar(pth+"test.var", arg3)
 	zeno := rdf.NewZeno()
@@ -146,7 +146,7 @@ func TestUpvar(t *testing.T) {
 
 func TestMitab(t *testing.T) {
 	pth := "../../tdata/"
-	arg2 := make(aux.Set3D)
+	arg2 := make(util.Set3D)
 	arg2.Add("P04637", "bgwp", "9606/chr-17/TP53/UPI000002ED67")
 	arg1 := parse.Mitab(pth+"test.mit", arg2)
 	zeno := rdf.NewZeno()
@@ -171,7 +171,7 @@ func TestMitab(t *testing.T) {
 
 func TestGaf(t *testing.T) {
 	pth := "../../tdata/"
-	arg2 := make(aux.Set3D)
+	arg2 := make(util.Set3D)
 	arg2.Add("P04637", "bgwp", "9606/chr-17/TP53/UPI000002ED67")
 	bps, ccs, mfs := parse.Gaf(pth +"test.gaf", arg2)
 	zeno := rdf.NewZeno()
@@ -198,15 +198,15 @@ func TestGaf(t *testing.T) {
 
 func TestOrtho(t *testing.T) {
 	type tt struct {
-		arg1 aux.Set3D
-		arg2 aux.Set3D
+		arg1 util.Set3D
+		arg2 util.Set3D
 		arg3 string
 		arg4 rdf.Zeno
 		val1 int
 	}
 	pth := "../../tdata/"
-	arg1 := make(aux.Set3D)
-	arg2 := make(aux.Set3D)
+	arg1 := make(util.Set3D)
+	arg2 := make(util.Set3D)
 	arg1.Add("P02340--P04637", "KO", "K04451")
 	arg1.Add("P02340--P04637", "OrthoDB", "257530at2759")
 	arg2.Add("P04637", "bgwp", "9606/chr-17/TP53/UPI000002ED67")
@@ -214,7 +214,7 @@ func TestOrtho(t *testing.T) {
 	zeno := rdf.NewZeno()
 	zeno.Unmarshal(pth + "zeno.json")
 	tts := []tt{
-		{arg1, arg2, "/dev/null", zeno, 31},
+		{arg1, arg2, "/dev/null", zeno, 14},
 	}
 	for i, tt := range tts {
 		n, err := Ortho(tt.arg1, tt.arg2, tt.arg3, tt.arg4)

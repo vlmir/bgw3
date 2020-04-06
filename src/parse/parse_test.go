@@ -1,7 +1,8 @@
 package parse
 
 import (
-	"github.com/vlmir/bgw3/src/utils" // pkg 'aux'
+	"github.com/vlmir/bgw3/src/bgw" // pkg 'bgw'
+	"github.com/vlmir/bgw3/src/util" // pkg 'util'
 	"testing"
 )
 
@@ -22,24 +23,24 @@ type t2 struct {
 }
 type t3 struct {
 	arg1 string
-	arg2 aux.Set2D
+	arg2 util.Set2D
 	val1 int
 	val2 int
 }
 type t4 struct {
 	arg1 string
-	arg2 aux.Set3D
+	arg2 util.Set3D
 	val1 int
 }
 type t5 struct {
 	arg1 string
-	arg2 aux.Set3D
-	arg3 aux.Set3D
+	arg2 util.Set3D
+	arg3 util.Set3D
 	val1 int
 }
 type t6 struct {
 	arg1 string
-	arg2 aux.Set3D
+	arg2 util.Set3D
 	val1 int
 	val2 int
 	val3 int
@@ -97,7 +98,7 @@ func TestUpidmap(t *testing.T) {
 
 func TestUpdat(t *testing.T) {
 	pth := "../../tdata/"
-	upt := make(aux.Set2D)
+	upt := make(util.Set2D)
 	upts := []t3{
 		{pth + "test.upt", upt, 1, 1},
 	}
@@ -123,7 +124,7 @@ func TestUpdat(t *testing.T) {
 
 func TestUpvar(t *testing.T) {
 	pth := "../../tdata/"
-	upvar := make(aux.Set3D)
+	upvar := make(util.Set3D)
 	upvars := []t4{
 		{pth + "test.var", upvar, 1},
 	}
@@ -142,7 +143,7 @@ func TestUpvar(t *testing.T) {
 
 func TestMitab(t *testing.T) {
 	pth := "../../tdata/"
-	mit := make(aux.Set3D)
+	mit := make(util.Set3D)
 	mits := []t4{
 		{pth + "test.mit", mit, 1},
 	}
@@ -161,8 +162,8 @@ func TestMitab(t *testing.T) {
 
 func TestTftg(t *testing.T) {
 	pth := "../../tdata/"
-	s1 := make(aux.Set3D)
-	s2 := make(aux.Set3D)
+	s1 := make(util.Set3D)
+	s2 := make(util.Set3D)
 	var f2gs = []t5{
 		{pth + "test.f2g", s1, s2, 1},
 	}
@@ -182,7 +183,7 @@ func TestTftg(t *testing.T) {
 
 func TestGaf(t *testing.T) {
 	pth := "../../tdata/"
-	var set = make(aux.Set3D)
+	var set = make(util.Set3D)
 	var gafs = []t6{
 		{pth + "test.gaf", set, 150, 17, 39},
 	}
@@ -213,26 +214,26 @@ func TestGaf(t *testing.T) {
 	}
 }
 
-func TestOrtho(t *testing.T){
+func TestOrthoduo(t *testing.T){
+	idmkeys := bgw.Orthokeys
 	arg1 := "../../tdata/"
-	var arg2 [5]aux.Set2D
-	var arg3 [5]aux.Set2D
+	arg3 := "9606"
+	arg2 := "10090"
+	var arg4 [5]util.Set2D // tx2pm
+	arg5 := idmkeys
 	var val1 [5]int
 	n := 1 // number of tests
 	for i := 0; i < n; i++ {
-	arg2[i] = make(aux.Set2D)
-	arg3[i] = make(aux.Set2D)
+	arg4[i] = make(util.Set2D)
 	}
-	arg2[0].Add("9606", "1")
-	arg2[0].Add("10090", "1")
-	arg3[0].Add("9606", "ortho")
-	arg3[0].Add("10090", "ortho")
-	val1[0] = 78
+	arg4[0].Add("9606", "ortho")
+	arg4[0].Add("10090", "ortho")
+	val1[0] = 1
 	for i := 0; i < n; i++ {
-		out := Ortho(arg1, arg2[i], arg3[i])
+		out, _ := Orthoduo(arg1, arg2, arg3, arg4[i], arg5)
 		if len(out) != val1[i] {
 			t.Error(
-				"For test", i+1, ": ", arg1, arg2,
+				"For test", i+1, ": ", arg1, arg2, arg3, arg4[i],
 				"\n\twant", val1[i],
 				"\n\thave", len(out),
 			)

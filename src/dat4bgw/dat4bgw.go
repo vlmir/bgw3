@@ -1,7 +1,7 @@
 package main
 
 import (
-	"github.com/vlmir/bgw3/src/utils" // pkg 'aux'
+	"github.com/vlmir/bgw3/src/util" // pkg 'util'
 	"github.com/vlmir/bgw3/src/parse"
 	"flag"
 	"fmt"
@@ -92,7 +92,7 @@ func getOneUniprot(txid string, datdir string) error {
 	return nil
 }
 
-func getAllUniprot(datdir string, txmap aux.Set2D) {
+func getAllUniprot(datdir string, txmap util.Set2D) {
 	for txid := range txmap {
 		if err := getOneUniprot(txid, datdir); err != nil {
 			log.Println("Warning: Failed to download data for:", txid, err)
@@ -112,7 +112,7 @@ func getOneIntact(txid string, datdir string) error {
 	return nil
 }
 
-func getAllIntact(datdir string, txmap aux.Set2D) {
+func getAllIntact(datdir string, txmap util.Set2D) {
 	for txid := range txmap {
 		getOneIntact(txid, datdir)
 	}
@@ -143,7 +143,7 @@ func wgetOneGoa(txid string, datdir string, gafpome string) error {
 	return nil
 }
 
-func wgetAllGoa(datdir string, txmap aux.Set2D, gafmap aux.Set2D) {
+func wgetAllGoa(datdir string, txmap util.Set2D, gafmap util.Set2D) {
 	for txid := range txmap {
 		gpomes := gafmap[txid].Keys()
 		if len(gpomes) != 1 {
@@ -153,7 +153,7 @@ func wgetAllGoa(datdir string, txmap aux.Set2D, gafmap aux.Set2D) {
 	}
 }
 
-func getAllGoa(datdir string, txmap, tx2pm aux.Set2D) {
+func getAllGoa(datdir string, txmap, tx2pm util.Set2D) {
 	for txid := range txmap {
 		var srcs = map[string]string{
 			"NCBI_TaxID": "upac",
@@ -277,7 +277,7 @@ func main() {
 		log.Println("Done with ontos in", time.Since(start))
 	}
 
-	mitmap, err := aux.Makemap(pthx, 0, 1, ".")
+	mitmap, err := util.Makemap(pthx, 0, 1, ".")
 	if err != nil {
 		log.Fatalln("main:", err)
 	}
@@ -314,7 +314,7 @@ func main() {
 	if *aP || *iP {
 		start := time.Now()
 		/*
-			tx2pm, err := aux.Makemap(pth1, 1, 0, "_")
+			tx2pm, err := util.Makemap(pth1, 1, 0, "_")
 			if err != nil { log.Fatalln("main:", err) }
 			n = len(tx2pm)
 			if n == 0 { log.Fatalln("main:Empty map:", pth1) }
@@ -330,7 +330,7 @@ func main() {
 
 	/// Step3 ///
 	if *aP || *uP {
-		mitmap, err := aux.Makemap(pthx, 0, 1, ".")
+		mitmap, err := util.Makemap(pthx, 0, 1, ".")
 		if err != nil {
 			log.Fatalln("main:", err)
 		}
@@ -358,7 +358,7 @@ func main() {
 		if err := Wget(uri, expth); err != nil {
 			log.Println("main:Wget: Failed to download:", expth, err)
 		}
-		gafmap, err := aux.Makemap(expth, 1, 2, "\t") // counting from 0
+		gafmap, err := util.Makemap(expth, 1, 2, "\t") // counting from 0
 		if err != nil {
 			log.Fatalln("main:", err)
 		}

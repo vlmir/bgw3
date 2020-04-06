@@ -1,7 +1,7 @@
 package rdf
 import (
 	"testing"
-	"github.com/vlmir/bgw3/src/utils" // pkg 'aux'"
+	"github.com/vlmir/bgw3/src/util" // pkg 'util'"
 )
 
 func TestZenoUnmarshal(t *testing.T) {
@@ -31,7 +31,7 @@ func TestHeader(t *testing.T) {
 	pth := "../../tdata/"
 	type tt struct {
 		arg1 map[string]string
-		arg2 aux.SliceSet
+		arg2 util.SliceSet
 		arg3 Zeno
 		val1 int
 		val2 int
@@ -39,7 +39,7 @@ func TestHeader(t *testing.T) {
 	uris := make(map[string]string)
 	zeno := NewZeno()
 	zeno.Unmarshal(pth + "zeno.json")
-	set1 := make(aux.SliceSet)
+	set1 := make(util.SliceSet)
 	set1["Opys"] = []string{
 		"sub2cls",
 	}

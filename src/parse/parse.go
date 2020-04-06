@@ -1,8 +1,8 @@
 package parse
 
 import (
-	"github.com/vlmir/bgw3/src/utils" // pkg 'aux'
-	"github.com/vlmir/bgw3/src/ancil"
+	"github.com/vlmir/bgw3/src/bgw" // pkg 'bgw'
+	"github.com/vlmir/bgw3/src/util" // pkg 'util'
 	"bufio"
 	"fmt"
 	"os"
@@ -12,8 +12,8 @@ import (
 // parses the output of the system 'ls' utility
 // any string can be used as a basename-extension separator
 /*
-func Basenames(pth, dlm string) (set aux.Set2D, err error) {
-	//set := make(aux.Set2D)
+func Basenames(pth, dlm string) (set util.Set2D, err error) {
+	//set := make(util.Set2D)
 	keyind := 0
 	valind := 1
 	fh, err := os.Open(pth)
@@ -32,8 +32,8 @@ func Basenames(pth, dlm string) (set aux.Set2D, err error) {
 }
 */
 
-func Idmap(pth string, srcs map[string]string, ind1, ind2, ind3 int) (aux.Set3D, error) {
-	set := make(aux.Set3D)
+func Idmap(pth string, srcs map[string]string, ind1, ind2, ind3 int) (util.Set3D, error) {
+	set := make(util.Set3D)
 	fh, err := os.Open(pth)
 	if err != nil {
 		return set, err
@@ -57,10 +57,10 @@ func Idmap(pth string, srcs map[string]string, ind1, ind2, ind3 int) (aux.Set3D,
 	return set, nil
 }
 
-func Upidmap(pth1 string, idmkeys map[string]string) (upcas aux.Set2D, upacs, gnms aux.Set3D, err error) {
-	upcas = make(aux.Set2D)
-	upacs = make(aux.Set3D)
-	gnms = make(aux.Set3D)
+func Upidmap(pth1 string, idmkeys map[string]string) (upcas util.Set2D, upacs, gnms util.Set3D, err error) {
+	upcas = make(util.Set2D)
+	upacs = make(util.Set3D)
+	gnms = make(util.Set3D)
 	fh1, err := os.Open(pth1)
 	if err != nil {
 		return upcas, upacs, gnms, err
@@ -80,7 +80,7 @@ func Upidmap(pth1 string, idmkeys map[string]string) (upcas aux.Set2D, upacs, gn
 		xrf := strings.Replace(cells[2], "\"", "", -1) // present e.g. in 44689
 		upacs.Add(upac, key, xrf)
 		upca := strings.Split(upac, "-")[0]
-		//aux.Add2keys(upcas, upca, upac)
+		//util.Add2keys(upcas, upca, upac)
 		upcas.Add(upca, upac)
 		upacs.Add(upca, "upac", upac)
 		if key == "gnm" {
@@ -111,9 +111,9 @@ UP000005640: Chromosome 1, UP000005640: Chromosome 12, UP000005640: Chromosome 6
 UP000005640: Chromosome 1, UP000005640: Chromosome 17
 */
 // Entry   Entry name      Organism        Organism ID     Protein names   Proteomes       PubMed ID       Annotation
-func Updat(pth0 string, upcas aux.Set2D) (updat, txns aux.Set3D, err error) {
-	updat = make(aux.Set3D)
-	txns = make(aux.Set3D)
+func Updat(pth0 string, upcas util.Set2D) (updat, txns util.Set3D, err error) {
+	updat = make(util.Set3D)
+	txns = make(util.Set3D)
 	fh0, err := os.Open(pth0)
 	if err != nil {
 		err = fmt.Errorf("%s%s", "parse.Updat:os.Open:", err)
@@ -141,8 +141,8 @@ func Updat(pth0 string, upcas aux.Set2D) (updat, txns aux.Set3D, err error) {
 			notInBgw++
 			continue
 		} // filtering by RefProt
-		onedat := make(aux.Set2D)
-		pomes := make(aux.Set2D)
+		onedat := make(util.Set2D)
+		pomes := make(util.Set2D)
 		/// Attn: multiple entries do occur due to diff in chromosomes !!
 		items := strings.Split(cells[5], ", ") // proteome: chromosome
 		for _, item := range items {
@@ -235,7 +235,7 @@ func Updat(pth0 string, upcas aux.Set2D) (updat, txns aux.Set3D, err error) {
 	return updat, txns, nil
 }
 
-func Upvar(pth0 string, gsmap aux.Set3D) (pairs aux.Set3D) {
+func Upvar(pth0 string, gsmap util.Set3D) (pairs util.Set3D) {
 	/*
 	 AARS	  P49588	 VAR_063527  p.Arg329His	Disease	   rs267606621 Charcot-Marie-Tooth disease 2N(CMT2N) [MIM:613287]
 	  0 gene name
@@ -254,7 +254,7 @@ func Upvar(pth0 string, gsmap aux.Set3D) (pairs aux.Set3D) {
 	}
 	defer fh0.Close()
 	scanner := bufio.NewScanner(fh0)
-	pairs = make(aux.Set3D)
+	pairs = make(util.Set3D)
 	notInBgw := 0
 	for scanner.Scan() { // by default scans for '\n'
 		line := scanner.Text()
@@ -306,7 +306,7 @@ NOT|contributes_to
 colocalizes_with
 contributes_to
 */
-func Gaf(pth0 string, upac2bgw aux.Set3D) (bp, cc, mf aux.Set3D) {
+func Gaf(pth0 string, upac2bgw util.Set3D) (bp, cc, mf util.Set3D) {
 	ourppys := map[string]string{
 		"C": "gp2cc",
 		"F": "gp2mf",
@@ -314,9 +314,9 @@ func Gaf(pth0 string, upac2bgw aux.Set3D) (bp, cc, mf aux.Set3D) {
 	}
 	srcL := "uniprot"
 	srcR := "obo"
-	bp = make(aux.Set3D)
-	cc = make(aux.Set3D)
-	mf = make(aux.Set3D)
+	bp = make(util.Set3D)
+	cc = make(util.Set3D)
+	mf = make(util.Set3D)
 	fh0, err := os.Open(pth0)
 	if err != nil {
 		return
@@ -424,7 +424,7 @@ part_of
 		5: []string{"eco", "|"},
 	}
 */
-func Gpa(pth0 string, upac2bgw aux.Set3D) (pairs aux.Set3D) {
+func Gpa(pth0 string, upac2bgw util.Set3D) (pairs util.Set3D) {
 	ourppys := map[string]string{
 		"part_of":     "gp2cc",
 		"enables":     "gp2mf",
@@ -432,7 +432,7 @@ func Gpa(pth0 string, upac2bgw aux.Set3D) (pairs aux.Set3D) {
 	}
 	srcL := "uniprot"
 	srcR := "obo"
-	pairs = make(aux.Set3D)
+	pairs = make(util.Set3D)
 	fh0, err := os.Open(pth0)
 	if err != nil {
 		return
@@ -486,7 +486,7 @@ func Gpa(pth0 string, upac2bgw aux.Set3D) (pairs aux.Set3D) {
 	return pairs
 }
 
-func Mitab(pth0 string, upac2bgw aux.Set3D) (pairs aux.Set3D) {
+func Mitab(pth0 string, upac2bgw util.Set3D) (pairs util.Set3D) {
 	tsvkeys := map[int][]string{
 		// NB: 0:1 pairs are NOT inique !
 		//0: []string{"upacA", "|"}, // 9606: all single
@@ -500,7 +500,7 @@ func Mitab(pth0 string, upac2bgw aux.Set3D) (pairs aux.Set3D) {
 		//19: []string{"xprlBs", "|"}, // 9606: all single
 		//28: []string{"hosts", "|"}, // TODO expunge
 	}
-	pairs = make(aux.Set3D)
+	pairs = make(util.Set3D)
 	fh0, err := os.Open(pth0)
 	if err != nil {
 		return
@@ -521,12 +521,12 @@ func Mitab(pth0 string, upac2bgw aux.Set3D) (pairs aux.Set3D) {
 		if len(idBs) == 0 {
 			continue
 		}
-		upacLs := aux.X1type(idAs, "uniprotkb", ":")
+		upacLs := util.X1type(idAs, "uniprotkb", ":")
 		if len(upacLs) == 0 {
 			continue
 		}
 		upacA := upacLs[0]
-		upacRs := aux.X1type(idBs, "uniprotkb", ":")
+		upacRs := util.X1type(idBs, "uniprotkb", ":")
 		upacB := ""
 		if len(upacRs) == 0 {
 			upacB = upacA // self-interaction
@@ -568,16 +568,16 @@ func Mitab(pth0 string, upac2bgw aux.Set3D) (pairs aux.Set3D) {
 	return pairs
 }
 
-func Tftg(pth0 string, upac2bgw aux.Set3D, gsmap aux.Set3D) (aux.Set3D, util.Meta) {
-	pairs := make(aux.Set3D)
-	meta := util.NewMeta()
+func Tftg(pth0 string, upac2bgw util.Set3D, gsmap util.Set3D) (util.Set3D, bgw.Meta) {
+	pairs := make(util.Set3D)
+	meta := bgw.NewMeta()
 	fh0, err := os.Open(pth0)
 	if err != nil {
 		return pairs, meta
 	} // needed in case of unnamed returned vars
 	defer fh0.Close()
 	scanner := bufio.NewScanner(fh0)
-	pairs = make(aux.Set3D)
+	pairs = make(util.Set3D)
 	notInBgw := 0
 	for scanner.Scan() { // by default scans for '\n'
 		line := scanner.Text()
@@ -703,20 +703,16 @@ func Tftg(pth0 string, upac2bgw aux.Set3D, gsmap aux.Set3D) (aux.Set3D, util.Met
 	return pairs, meta
 }
 
-func Ortho(datdir string, mitmap, tx2pm aux.Set2D) aux.Set3D {
-	var idmkeys = map[string]string{
-		"KO":      "kego",
-		"OrthoDB": "orthodb",
-	}
-	out := make(aux.Set3D) // all taxa
-	pairs := make(aux.Set3D) // all taxa
-	for txid := range mitmap {
-		pomes := tx2pm[txid].Keys()
-		pome := fmt.Sprintf("%s%s%s", pomes[0], "_", txid)
-		subdir := "idmapping/"
-		ext := ".idmapping"
-		pth0 := fmt.Sprintf("%s%s%s%s", datdir, subdir, pome, ext) // read
-		dat, _ := Idmap(pth0, idmkeys, 1, 2, 0) // one taxon
+func orthosolo (datdir, txid string, tx2pm util.Set2D, idmkeys map[string]string) (util.Set3D, error) {
+	out := make(util.Set3D)
+	subdir := "idmapping/"
+	ext := ".idmapping"
+	pomes := tx2pm[txid].Keys() // normally 1, yet multiple may occur
+	for _, pome := range pomes {
+		pome := fmt.Sprintf("%s%s%s", pome, "_", txid)
+		pth := fmt.Sprintf("%s%s%s%s", datdir, subdir, pome, ext) // read
+		dat, err := Idmap(pth, idmkeys, 1, 2, 0)
+		if err != nil {return out, err}
 		for src, all := range dat {
 			for id, one := range all {
 				for upac, _ := range one {
@@ -725,16 +721,31 @@ func Ortho(datdir string, mitmap, tx2pm aux.Set2D) aux.Set3D {
 			}
 		}
 	}
-	for src, all := range out {
-		for id, one := range all {
-			for upLac, _ := range one {
-				for upRac, _ := range one {
-					if upLac >= upRac { continue }
-					pairid := fmt.Sprintf("%s%s%s", upLac, "--", upRac)
-					pairs.Add(pairid, src, id)
+	return out, nil
+}
+func Orthoduo (datdir, txidL, txidR string, tx2pm util.Set2D, idmkeys map[string]string) (util.Set3D, error) {
+	out := make(util.Set3D)
+	outL, err := orthosolo(datdir, txidL, tx2pm, idmkeys)
+	if err != nil {return out, err}
+	outR, err := orthosolo(datdir, txidR, tx2pm, idmkeys)
+	if err != nil {return out, err}
+	for src, _ := range idmkeys {
+		allL, ok := outL[src]
+		if !ok {continue}
+		allR, ok := outR[src]
+		if !ok {continue} // now data from 'src' is present in both taxa
+		for id, oneL := range allL{
+			oneR, ok := allR[id]
+			if !ok {continue} // only shared clusters
+			for upLac, _ := range oneL {
+				for upRac, _ := range oneR {
+					if upLac >= upRac { continue } // skipping diagonal and symmetrical
+					duoid := fmt.Sprintf("%s%s%s", upLac, "--", upRac)
+					out.Add(duoid, src, id)
 				}
 			}
 		}
 	}
-	return pairs
+	return out, nil
 }
+

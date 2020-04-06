@@ -1,4 +1,4 @@
-package aux
+package util
 
 import (
 	"bufio"
