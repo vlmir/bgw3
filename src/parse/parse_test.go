@@ -6,7 +6,8 @@ import (
 	"testing"
 )
 
-type t1 struct {
+func Test_Idmap(t *testing.T) {
+type tt struct {
 	arg1 string
 	arg2 map[string]string
 	arg3 int
@@ -14,207 +15,210 @@ type t1 struct {
 	arg5 int
 	val  int
 }
-type t2 struct {
-	arg1 string
-	arg2 map[string]string
-	val1 int
-	val2 int
-	val3 int
-}
-type t3 struct {
-	arg1 string
-	arg2 util.Set2D
-	val1 int
-	val2 int
-}
-type t4 struct {
-	arg1 string
-	arg2 util.Set3D
-	val1 int
-}
-type t5 struct {
-	arg1 string
-	arg2 util.Set3D
-	arg3 util.Set3D
-	val1 int
-}
-type t6 struct {
-	arg1 string
-	arg2 util.Set3D
-	val1 int
-	val2 int
-	val3 int
-}
-
-func TestIdmap(t *testing.T) {
 	pth := "../../tdata/"
-	t1s := []t1{
+	t1s := []tt{
 		{pth + "test.idm", map[string]string{"NCBI_TaxID": "test"}, 2, 1, 0, 1},
 		{pth + "test.idm", map[string]string{"NCBI_TaxID": "test"}, 0, 1, 2, 1},
 		{pth + "test.idm", map[string]string{"UniParc": "test"}, 0, 1, 2, 9},
 	}
-	for i, t1 := range t1s {
-		idm, _ := Idmap(t1.arg1, t1.arg2, t1.arg3, t1.arg4, t1.arg5)
-		if len(idm) != t1.val {
+	for i, tt := range t1s {
+		idm, _ := Idmap(tt.arg1, tt.arg2, tt.arg3, tt.arg4, tt.arg5)
+		if len(idm) != tt.val {
 			t.Error(
-				"For test", i+1, ": ", t1.arg1, t1.arg2, t1.arg3, t1.arg4, t1.arg5,
-				"\n\twant", t1.val,
+				"For test", i+1, ": ", tt.arg1, tt.arg2, tt.arg3, tt.arg4, tt.arg5,
+				"\n\twant", tt.val,
 				"\n\thave", len(idm),
 			)
 		}
 	}
 }
 
-func TestUpidmap(t *testing.T) {
+func Test_Upidmap(t *testing.T) {
+type tt struct {
+	arg1 string
+	arg2 map[string]string
+	val1 int
+	val2 int
+	val3 int
+}
 	pth := "../../tdata/"
-	idms := []t2{
+	idms := []tt{
 		{pth + "test.idm", map[string]string{"UniParc": "test"}, 1, 9, 0},
 	}
-	for i, t2 := range idms {
-		set1, set2, set3, _ := Upidmap(t2.arg1, t2.arg2)
-		if len(set1) != t2.val1 {
+	for i, tt := range idms {
+		set1, set2, set3, _ := Upidmap(tt.arg1, tt.arg2)
+		if len(set1) != tt.val1 {
 			t.Error(
-				"For test", i+1, ": ", t2.arg1, t2.arg2,
-				"\n\twant", t2.val1,
+				"For test", i+1, ": ", tt.arg1, tt.arg2,
+				"\n\twant", tt.val1,
 				"\n\thave", len(set1),
 			)
 		}
-		if len(set2) != t2.val2 {
+		if len(set2) != tt.val2 {
 			t.Error(
-				"For test", i+1, ": ", t2.arg1, t2.arg2,
-				"\n\twant", t2.val2,
+				"For test", i+1, ": ", tt.arg1, tt.arg2,
+				"\n\twant", tt.val2,
 				"\n\thave", len(set2),
 			)
 		}
-		if len(set3) != t2.val3 {
+		if len(set3) != tt.val3 {
 			t.Error(
-				"For test", i+1, ": ", t2.arg1, t2.arg2,
-				"\n\twant", t2.val3,
+				"For test", i+1, ": ", tt.arg1, tt.arg2,
+				"\n\twant", tt.val3,
 				"\n\thave", len(set3),
 			)
 		}
 	}
 }
 
-func TestUpdat(t *testing.T) {
+func Test_Updat(t *testing.T) {
+type tt struct {
+	arg1 string
+	arg2 util.Set2D
+	val1 int
+	val2 int
+}
 	pth := "../../tdata/"
 	upt := make(util.Set2D)
-	upts := []t3{
+	upts := []tt{
 		{pth + "test.upt", upt, 1, 1},
 	}
-	for i, t3 := range upts {
-		t3.arg2.Add("P04637", "P04637-2")
-		set1, set2, _ := Updat(t3.arg1, t3.arg2)
-		if len(set1) != t3.val1 {
+	for i, tt := range upts {
+		tt.arg2.Add("P04637", "P04637-2")
+		set1, set2, _ := Updat(tt.arg1, tt.arg2)
+		if len(set1) != tt.val1 {
 			t.Error(
-				"For test", i+1, ": ", t3.arg1, t3.arg2,
-				"\n\twant", t3.val1,
+				"For test", i+1, ": ", tt.arg1, tt.arg2,
+				"\n\twant", tt.val1,
 				"\n\thave", len(set1),
 			)
 		}
-		if len(set2) != t3.val2 {
+		if len(set2) != tt.val2 {
 			t.Error(
-				"For test", i+1, ": ", t3.arg1, t3.arg2,
-				"\n\twant", t3.val2,
+				"For test", i+1, ": ", tt.arg1, tt.arg2,
+				"\n\twant", tt.val2,
 				"\n\thave", len(set2),
 			)
 		}
 	}
 }
 
-func TestUpvar(t *testing.T) {
+func Test_Upvar(t *testing.T) {
+type tt struct {
+	arg1 string
+	arg2 util.Set3D
+	val1 int
+}
 	pth := "../../tdata/"
 	upvar := make(util.Set3D)
-	upvars := []t4{
+	upvars := []tt{
 		{pth + "test.var", upvar, 1},
 	}
-	for i, t4 := range upvars {
-		t4.arg2.Add("TP53", "test", "t")
-		set1 := Upvar(t4.arg1, t4.arg2)
-		if len(set1) != t4.val1 {
+	for i, tt := range upvars {
+		tt.arg2.Add("TP53", "test", "t")
+		set1 := Upvar(tt.arg1, tt.arg2)
+		if len(set1) != tt.val1 {
 			t.Error(
-				"For test", i+1, ": ", t4.arg1, t4.arg2,
-				"\n\twant", t4.val1,
+				"For test", i+1, ": ", tt.arg1, tt.arg2,
+				"\n\twant", tt.val1,
 				"\n\thave", len(set1),
 			)
 		}
 	}
 }
 
-func TestMitab(t *testing.T) {
+func Test_Mitab(t *testing.T) {
+type tt struct {
+	arg1 string
+	arg2 util.Set3D
+	val1 int
+}
 	pth := "../../tdata/"
 	mit := make(util.Set3D)
-	mits := []t4{
+	mits := []tt{
 		{pth + "test.mit", mit, 1},
 	}
-	for i, t4 := range mits {
-		t4.arg2.Add("P04637", "test", "t")
-		set1 := Mitab(t4.arg1, t4.arg2)
-		if len(set1) != t4.val1 {
+	for i, tt := range mits {
+		tt.arg2.Add("P04637", "test", "t")
+		set1 := Mitab(tt.arg1, tt.arg2)
+		if len(set1) != tt.val1 {
 			t.Error(
-				"For test", i+1, ": ", t4.arg1, t4.arg2,
-				"\n\twant", t4.val1,
+				"For test", i+1, ": ", tt.arg1, tt.arg2,
+				"\n\twant", tt.val1,
 				"\n\thave", len(set1),
 			)
 		}
 	}
 }
 
-func TestTftg(t *testing.T) {
+func Test_Tftg(t *testing.T) {
+type tt struct {
+	arg1 string
+	arg2 util.Set3D
+	arg3 util.Set3D
+	val1 int
+}
 	pth := "../../tdata/"
 	s1 := make(util.Set3D)
 	s2 := make(util.Set3D)
-	var f2gs = []t5{
+	var f2gs = []tt{
 		{pth + "test.f2g", s1, s2, 1},
 	}
-	for i, t5 := range f2gs {
-		t5.arg2.Add("P04637", "test", "TP53")
-		t5.arg3.Add("TP53", "test", "P04637")
-		set1, _ := Tftg(t5.arg1, t5.arg2, t5.arg3)
-		if len(set1) != t5.val1 {
+	for i, tt := range f2gs {
+		tt.arg2.Add("P04637", "test", "TP53")
+		tt.arg3.Add("TP53", "test", "P04637")
+		set1, _ := Tftg(tt.arg1, tt.arg2, tt.arg3)
+		if len(set1) != tt.val1 {
 			t.Error(
-				"For test", i+1, ": ", t5.arg1, t5.arg2,
-				"\n\twant", t5.val1,
+				"For test", i+1, ": ", tt.arg1, tt.arg2,
+				"\n\twant", tt.val1,
 				"\n\thave", len(set1),
 			)
 		}
 	}
 }
 
-func TestGaf(t *testing.T) {
+func Test_Gaf(t *testing.T) {
+type tt struct {
+	arg1 string
+	arg2 util.Set3D
+	val1 int
+	val2 int
+	val3 int
+}
 	pth := "../../tdata/"
 	var set = make(util.Set3D)
-	var gafs = []t6{
+	var gafs = []tt{
 		{pth + "test.gaf", set, 150, 17, 39},
 	}
-	for i, t6 := range gafs {
-		t6.arg2.Add("P04637", "test", "t")
-		set1, set2, set3 := Gaf(t6.arg1, t6.arg2)
-		if len(set1) != t6.val1 {
+	for i, tt := range gafs {
+		tt.arg2.Add("P04637", "test", "t")
+		set1, set2, set3 := Gaf(tt.arg1, tt.arg2)
+		if len(set1) != tt.val1 {
 			t.Error(
-				"For test", i+1, ": ", t6.arg1, t6.arg2,
-				"\n\twant", t6.val1,
+				"For test", i+1, ": ", tt.arg1, tt.arg2,
+				"\n\twant", tt.val1,
 				"\n\thave", len(set1),
 			)
 		}
-		if len(set2) != t6.val2 {
+		if len(set2) != tt.val2 {
 			t.Error(
-				"For test", i+1, ": ", t6.arg1, t6.arg2,
-				"\n\twant", t6.val2,
+				"For test", i+1, ": ", tt.arg1, tt.arg2,
+				"\n\twant", tt.val2,
 				"\n\thave", len(set2),
 			)
 		}
-		if len(set3) != t6.val3 {
+		if len(set3) != tt.val3 {
 			t.Error(
-				"For test", i+1, ": ", t6.arg1, t6.arg2,
-				"\n\twant", t6.val3,
+				"For test", i+1, ": ", tt.arg1, tt.arg2,
+				"\n\twant", tt.val3,
 				"\n\thave", len(set3),
 			)
 		}
 	}
 }
 
-func TestOrthoduo(t *testing.T){
+func Test_Orthoduo(t *testing.T){
 	idmkeys := bgw.Orthokeys
 	arg1 := "../../tdata/"
 	arg3 := "9606"
@@ -228,7 +232,7 @@ func TestOrthoduo(t *testing.T){
 	}
 	arg4[0].Add("9606", "ortho")
 	arg4[0].Add("10090", "ortho")
-	val1[0] = 1
+	val1[0] = 2
 	for i := 0; i < n; i++ {
 		out, _ := Orthoduo(arg1, arg2, arg3, arg4[i], arg5)
 		if len(out) != val1[i] {

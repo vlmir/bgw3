@@ -1,10 +1,11 @@
 package main
 
 import (
-	"github.com/vlmir/bgw3/src/util" // pkg 'util'
+	"github.com/vlmir/bgw3/src/util"
 	"github.com/vlmir/bgw3/src/parse"
 	"flag"
 	"fmt"
+	"errors"
 	"io"
 	"log"
 	"net/http"
@@ -28,8 +29,9 @@ func Wget(strs ...string) (err error) {
 		url = strs[0]
 		cmd = exec.Command("wget", "-q", url) // Attn: all flags separately!
 	} else {
-		err = fmt.Errorf("main.Wget: Expexting 1 or 2 args, got: %d", n)
-		return err
+		//err = fmt.Errorf("main.Wget: Expexting 1 or 2 args, got: %d", n)
+		//return err
+		panic(errors.New(fmt.Sprintf("Expexting 1 or 2 args, got: %d", n)))
 	}
 	cmd.Stdout = os.Stdout
 	cmd.Stderr = os.Stderr
@@ -137,8 +139,10 @@ func wgetOneGoa(txid string, datdir string, gafpome string) error {
 	ext := ".gaf"
 	expth := fmt.Sprintf("%s%s%s%s", datdir, subdir, txid, ext)
 	if err := Wget(uri, expth); err != nil {
-		err := fmt.Errorf("%s%s%s", "Warning: Failed to download data for:", txid, err)
-		return err
+		//err := fmt.Errorf("%s%s%s", "Warning: Failed to download data for:", txid, err)
+		//return err
+		log.Println("txid:", txid)
+		panic(err)
 	}
 	return nil
 }

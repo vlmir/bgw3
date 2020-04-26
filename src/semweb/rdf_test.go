@@ -1,25 +1,33 @@
 package rdf
 import (
 	"testing"
-	"github.com/vlmir/bgw3/src/util" // pkg 'util'"
+	"github.com/vlmir/bgw3/src/util"
 )
 
-func TestZenoUnmarshal(t *testing.T) {
-	pth := "../../tdata/"
+func Test_FmtURIs(t *testing.T){
 	type tt struct {
-		arg1 string
+		arg1 util.SliceSet
 		val1 int
 	}
+	arg1 := make(util.SliceSet)
+	arg1["Opys"] = []string{
+		"sub2cls",
+		"ppy2prn",
+	}
+	arg1["Apys"] = []string{
+		"sth2lbl",
+	}
+	arg1["Prns"] = []string{
+		"cls",
+	}
 	tts := []tt{
-		{pth + "zeno.json", 33},
+		{arg1, 4},
 	}
 	for i, tt := range tts {
-		zeno := NewZeno()
-		zeno.Unmarshal(tt.arg1)
-		val1 := len(zeno.Uris)
+		val1 := len(FmtURIs(tt.arg1))
 		if val1 != tt.val1 {
 			t.Error(
-				"For test", i+1, ": ", tt.arg1,
+				"For test", i+1, ": ",
 				"\n\twant", tt.val1,
 				"\n\thave", val1,
 			)
@@ -27,49 +35,70 @@ func TestZenoUnmarshal(t *testing.T) {
 	}
 }
 
-func TestHeader(t *testing.T) {
-	pth := "../../tdata/"
+func Test_Capita(t *testing.T) {
 	type tt struct {
-		arg1 map[string]string
-		arg2 util.SliceSet
-		arg3 Zeno
+		arg1 util.SliceSet
 		val1 int
-		val2 int
 	}
-	uris := make(map[string]string)
-	zeno := NewZeno()
-	zeno.Unmarshal(pth + "zeno.json")
-	set1 := make(util.SliceSet)
-	set1["Opys"] = []string{
+	arg1 := make(util.SliceSet)
+	arg1["Opys"] = []string{
 		"sub2cls",
 	}
-	set1["Apys"] = []string{
+	arg1["Apys"] = []string{
 		"sth2lbl",
 	}
-	set1["Prns"] = []string{
+	arg1["Prns"] = []string{
 		"stm",
 	}
 	tts := []tt{
-		{uris, set1, zeno, 6, 3},
+		{arg1, 6},
 	}
 	for i, tt := range tts {
-		_, n := Header(tt.arg1, tt.arg2, tt.arg3)
+		_, n := Capita(tt.arg1)
 		val1 := n
 		if val1 != tt.val1 {
 			t.Error(
-				"For test", i+1, ": ", tt.arg1,
+				"For test", i+1, ": ",
 				"\n\twant", tt.val1,
 				"\n\thave", val1,
 			)
 		}
-		val2 := len(tt.arg1)
-		if val2 != tt.val2 {
-			t.Error(
-				"For test", i+1, ": ", tt.arg1,
-				"\n\twant", tt.val2,
-				"\n\thave", val2,
-			)
-		}
 	}
 }
+
+//func Test_Header(t *testing.T) {
+//	type tt struct {
+//		arg1 map[string]string
+//		arg2 util.SliceSet
+//		val1 int
+//	}
+//	arg2 := make(util.SliceSet)
+//	arg2["Opys"] = []string{
+//		"sub2cls",
+//		"ppy2prn",
+//	}
+//	arg2["Apys"] = []string{
+//		"sth2lbl",
+//	}
+//	arg2["Prns"] = []string{
+//		"cls",
+//		"opy",
+//		"apy",
+//	}
+//	arg1 := FmtURIs(arg2)
+//	tts := []tt{
+//		{arg1, arg2, 12},
+//	}
+//	for i, tt := range tts {
+//		_, n := Header(tt.arg1, tt.arg2)
+//		val1 := n
+//		if val1 != tt.val1 {
+//			t.Error(
+//				"For test", i+1, ": ",
+//				"\n\twant", tt.val1,
+//				"\n\thave", val1,
+//			)
+//		}
+//	}
+//}
 

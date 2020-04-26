@@ -1,20 +1,20 @@
 package main
 
 import (
-	"github.com/vlmir/bgw3/src/util" // pkg 'util'
-	"github.com/vlmir/bgw3/src/semweb"
+	"github.com/vlmir/bgw3/src/util"
 	"github.com/vlmir/bgw3/src/bgw"
 	"github.com/vlmir/bgw3/src/export"
 	"github.com/vlmir/bgw3/src/parse"
 	"flag"
 	"fmt"
+	"errors"
 	"log"
 	"time"
 )
 
 /// tx2pm needed for opening idmapping files
 /// mitmap needed for filtering
-func geneprot(datdir, rdfdir string, mitmap util.Set2D, zeno rdf.Zeno, tx2pm util.Set2D) {
+func geneprot(datdir, rdfdir string, mitmap util.Set2D, tx2pm util.Set2D) {
 	skippedTxn := 0
 	for txid := range mitmap {
 		_, ok := tx2pm[txid]
@@ -99,7 +99,7 @@ func geneprot(datdir, rdfdir string, mitmap util.Set2D, zeno rdf.Zeno, tx2pm uti
 		dat4rdf.Upac = &upacs
 		dat4rdf.Upca = &upcas
 		dat4rdf.Gnm = &gnms
-		ntg, ntp, err := export.GeneProt(dat4rdf, pth2, pth3, pthx, zeno)
+		ntg, ntp, err := export.GeneProt(dat4rdf, pth2, pth3, pthx)
 		if err != nil {
 			fmt.Println("main.geneprot(): ", err)
 			continue
@@ -113,7 +113,7 @@ func geneprot(datdir, rdfdir string, mitmap util.Set2D, zeno rdf.Zeno, tx2pm uti
 	fmt.Println("main.geneprot:skippedTxn:", skippedTxn)
 }
 
-func tfac2gene(datdir, rdfdir string, txmap util.Set2D, zeno rdf.Zeno) {
+func tfac2gene(datdir, rdfdir string, txmap util.Set2D) {
 	for txid := range txmap {
 		if txid != "9606" {
 			continue
@@ -144,7 +144,7 @@ func tfac2gene(datdir, rdfdir string, txmap util.Set2D, zeno rdf.Zeno) {
 			continue
 		}
 		/////////////////////////////////////////////////////////////////////////////
-		nts, err := export.Tftg(pairs, meta, upmap, gsmap, pth1, zeno)
+		nts, err := export.Tftg(pairs, meta, upmap, gsmap, pth1)
 		if err != nil {
 			fmt.Println("main.tfac2gene(): ", err)
 			continue
@@ -156,7 +156,7 @@ func tfac2gene(datdir, rdfdir string, txmap util.Set2D, zeno rdf.Zeno) {
 	}
 }
 
-func gene2phen(datdir, rdfdir string, txmap util.Set2D, zeno rdf.Zeno) {
+func gene2phen(datdir, rdfdir string, txmap util.Set2D) {
 	for txid := range txmap {
 		if txid != "9606" {
 			continue
@@ -187,7 +187,7 @@ func gene2phen(datdir, rdfdir string, txmap util.Set2D, zeno rdf.Zeno) {
 			continue
 		}
 		/////////////////////////////////////////////////////////////////////////////
-		nts, err := export.Upvar(pairs, upmap, gsmap, pth1, zeno)
+		nts, err := export.Upvar(pairs, upmap, gsmap, pth1)
 		if err != nil {
 			fmt.Println("main.gene2phen(): ", err)
 			continue
@@ -199,7 +199,7 @@ func gene2phen(datdir, rdfdir string, txmap util.Set2D, zeno rdf.Zeno) {
 	}
 }
 
-func prot2onto(datdir, rdfdir string, txmap util.Set2D, zeno rdf.Zeno, fx string) error {
+func prot2onto(datdir, rdfdir string, txmap util.Set2D, fx string) error {
 	for txid := range txmap {
 		subdir := "goa/"
 		pth0 := fmt.Sprintf("%s%s%s%s", datdir, subdir, txid, fx) // read Goa data
@@ -221,8 +221,7 @@ func prot2onto(datdir, rdfdir string, txmap util.Set2D, zeno rdf.Zeno, fx string
 		} else if fx == ".gaf" {
 			bps, ccs, mfs = parse.Gaf(pth0, upmap)
 		} else {
-			err := fmt.Errorf("%s%s", "main.prot2onto(): unrecognized file extension:", fx)
-			return err
+			panic(errors.New(fmt.Sprintf("%s%s", "Unrecognized file extension:", fx)))
 		}
 		cnt := len(bps) + len(ccs) + len(mfs)
 		if cnt == 0 {
@@ -232,19 +231,19 @@ func prot2onto(datdir, rdfdir string, txmap util.Set2D, zeno rdf.Zeno, fx string
 		/////////////////////////////////////////////////////////////////////////////
 		xpth := ""
 		xpth = fmt.Sprintf("%s%s%s%s", rdfdir, "prot2bp/", txid, ".nt") // write goa nt
-		ntp, err := export.Goa(bps, upmap, xpth, zeno)
+		ntp, err := export.Goa(bps, upmap, xpth)
 		if err != nil {
 			fmt.Println("main.prot2onto(): ", err)
 			continue
 		}
 		xpth = fmt.Sprintf("%s%s%s%s", rdfdir, "prot2cc/", txid, ".nt") // write goa nt
-		ntc, err := export.Goa(ccs, upmap, xpth, zeno)
+		ntc, err := export.Goa(ccs, upmap, xpth)
 		if err != nil {
 			fmt.Println("main.prot2onto(): ", err)
 			continue
 		}
 		xpth = fmt.Sprintf("%s%s%s%s", rdfdir, "prot2mf/", txid, ".nt") // write goa nt
-		ntf, err := export.Goa(mfs, upmap, xpth, zeno)
+		ntf, err := export.Goa(mfs, upmap, xpth)
 		if err != nil {
 			fmt.Println("main.prot2onto(): ", err)
 			continue
@@ -258,7 +257,7 @@ func prot2onto(datdir, rdfdir string, txmap util.Set2D, zeno rdf.Zeno, fx string
 	return nil
 }
 
-func prot2prot(datdir, rdfdir string, txmap util.Set2D, zeno rdf.Zeno) {
+func prot2prot(datdir, rdfdir string, txmap util.Set2D) {
 	for txid := range txmap {
 		subdir := "intact/"
 		ext := ".mit"
@@ -285,7 +284,7 @@ func prot2prot(datdir, rdfdir string, txmap util.Set2D, zeno rdf.Zeno) {
 			continue
 		}
 		/////////////////////////////////////////////////////////////////////////////
-		nts, err := export.Mitab(pairs, upmap, pth1, zeno)
+		nts, err := export.Mitab(pairs, upmap, pth1)
 		if err != nil {
 			fmt.Println("main.prot2prot(): ", err)
 			continue
@@ -298,7 +297,7 @@ func prot2prot(datdir, rdfdir string, txmap util.Set2D, zeno rdf.Zeno) {
 }
 
 /////////////////////////////////////////////////////////////////////////////
-func orthoduo(datdir, rdfdir string, txmap, tx2pm util.Set2D, zeno rdf.Zeno) (int, error) {
+func orthoduo(datdir, rdfdir string, txmap, tx2pm util.Set2D) (int, error) {
 	idmkeys := bgw.Orthokeys
 	nln := 0
 	for txidL := range txmap {
@@ -306,7 +305,8 @@ func orthoduo(datdir, rdfdir string, txmap, tx2pm util.Set2D, zeno rdf.Zeno) (in
 			if txidL >= txidR { continue } // skipping symmetrical and digonal
 			duos, err := parse.Orthoduo(datdir, txidL, txidR, tx2pm, idmkeys)
 			if err != nil {
-				return nln, fmt.Errorf("%s%s%s%s%s%s", "rdf4bgw/rdf4bgw.go:orthoduo():parse.Orthoduo:", txidL, ":", txidR, ":", err)
+				log.Println("txidL:", txidL)
+					panic(err)
 			}
 			up2bgw := make(util.Set3D)
 			subdir := "xmap/"
@@ -317,7 +317,9 @@ func orthoduo(datdir, rdfdir string, txmap, tx2pm util.Set2D, zeno rdf.Zeno) (in
 				xmap := bgw.NewXmap()
 				err := xmap.Unmarshal(pthx)
 				if err != nil {
-					return nln, fmt.Errorf("%s%s%s%s", "main.ortho(): txid: ", txid, " : ", err) }
+					log.Println("txids:", txids)
+					panic(err)
+				}
 				upmap := xmap.Upac
 				for acc, all := range upmap {
 					for src, one := range all {
@@ -331,7 +333,7 @@ func orthoduo(datdir, rdfdir string, txmap, tx2pm util.Set2D, zeno rdf.Zeno) (in
 			ext = ".nt"
 			file := fmt.Sprintf("%s%s%s%s", txidL, "-", txidR, ext)
 			xpth := fmt.Sprintf("%s%s%s", rdfdir, subdir, file)
-			nts, err := export.Ortho(duos, up2bgw, xpth, zeno)
+			nts, err := export.Ortho(duos, up2bgw, xpth)
 			if nts == 0 {
 				// taxon pairs without matches already skiped in parse.Orthoduo
 				log.Println("rdf4bgw/rdf4bgw.go:orthoduo():parse.Orthoduo:Warning: No triples for taxa:", txids)
@@ -352,64 +354,56 @@ func main() {
 	gP := flag.Bool("g", false, "export [g]ene ontology annotations")
 	rP := flag.Bool("r", false, "export [r]egulatory associations")
 	oP := flag.Bool("o", false, "export [o]rthology relateions")
-	uP := flag.String("u", "./zeno.json", "[u]ri map")
 	pP := flag.String("p", "./proteomes.pls", "[p]roteome list") // TODO -> pP
 	tP := flag.String("t", "./taxa.tls", "selected [t]axa") // TODO -> tP
 	var n int
 	flag.Parse()
 	if !flag.Parsed() {
-		log.Fatalln("main:flag.Parsed: No flags")
+		panic(errors.New(fmt.Sprintf("flag.Parse() failed")))
 	}
 	args := flag.Args()
 	n = len(args)
-	if n < 2 {
-		log.Fatalln("main:Expected more arguments than ", n)
+	m := 2
+	if n < m {
+		panic(errors.New(fmt.Sprintf("Want at least: %d args have: %d", m, n)))
 	}
 	pth0 := *pP     // path to list of RefProts
 	pth1 := args[0] // path to data directory (with a trailing '/')
 	pth2 := args[1] // path to rdf directory (with a trailing '/')
-	pthz := *uP     // read map json
 	ptht := *tP     // path to a list of selected taxa
 	log.Println("Started rdf4bgw with args:", args)
 	/////////////////////////////////////////////////////////////////////////////
-	zeno := rdf.NewZeno()
-	zeno.Unmarshal(pthz)
-	/////////////////////////////////////////////////////////////////////////////
 	/// used only by geneprot() for reading idmapping files
 	tx2pm, err := util.Makemap(pth0, 1, 0, "_")
-	if err != nil {
-		log.Fatalln("main:", err)
-	}
+	if err != nil { panic(err) }
 	n = len(tx2pm)
 	if n == 0 {
-		log.Fatalln("main:Empty map:", pth0)
+		panic(errors.New(fmt.Sprintf("No data in: %s", pth0)))
 	}
 	log.Println("tx2pm:", n)
 	/////////////////////////////////////////////////////////////////////////////
 	mitmap, err := util.Makemap(ptht, 0, 1, ".")
-	if err != nil {
-		log.Fatalln("main:", err)
-	}
+	if err != nil { panic(err) }
 	n = len(mitmap)
 	if n == 0 {
-		log.Fatalln("main:Empty map:", ptht)
+		panic(errors.New(fmt.Sprintf("No data in: %s", ptht)))
 	}
 	log.Println("mitmap:", n)
 	/////////////////////////////////////////////////////////////////////////////
 	if *aP || *eP {
 		mystart := time.Now()
-		geneprot(pth1, pth2, mitmap, zeno, tx2pm) // MUST be run before the others !!!
+		geneprot(pth1, pth2, mitmap, tx2pm) // MUST be run before the others !!!
 		log.Println("Done with geneprot in", time.Since(mystart))
 	}
 	if *aP || *dP {
 		mystart := time.Now()
-		gene2phen(pth1, pth2, mitmap, zeno)
+		gene2phen(pth1, pth2, mitmap)
 		log.Println("Done with gene2phen in", time.Since(mystart))
 	}
 	if *aP || *gP {
 		mystart := time.Now()
 		ext := ".gaf"
-		err = prot2onto(pth1, pth2, mitmap, zeno, ext)
+		err = prot2onto(pth1, pth2, mitmap, ext)
 		if err != nil {
 			log.Println(err)
 		} else {
@@ -418,17 +412,17 @@ func main() {
 	}
 	if *aP || *iP {
 		mystart := time.Now()
-		prot2prot(pth1, pth2, mitmap, zeno)
+		prot2prot(pth1, pth2, mitmap)
 		log.Println("Done with prot2prot in", time.Since(mystart))
 	}
 	if *aP || *rP {
 		mystart := time.Now()
-		tfac2gene(pth1, pth2, mitmap, zeno)
+		tfac2gene(pth1, pth2, mitmap)
 		log.Println("Done with tfac2gene in", time.Since(mystart))
 	}
 	if *aP || *oP {
 		mystart := time.Now()
-		_, err := orthoduo(pth1, pth2, mitmap, tx2pm, zeno)
+		_, err := orthoduo(pth1, pth2, mitmap, tx2pm)
 		if err != nil {
 			log.Println(err)
 		} else {

@@ -116,8 +116,7 @@ func Updat(pth0 string, upcas util.Set2D) (updat, txns util.Set3D, err error) {
 	txns = make(util.Set3D)
 	fh0, err := os.Open(pth0)
 	if err != nil {
-		err = fmt.Errorf("%s%s", "parse.Updat:os.Open:", err)
-		return updat, txns, err
+		panic(err)
 	}
 	defer fh0.Close()
 	scanner := bufio.NewScanner(fh0)

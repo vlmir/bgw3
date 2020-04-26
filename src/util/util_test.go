@@ -3,7 +3,7 @@ import (
 	"testing"
 )
 
-func TestSet1DKeys(t *testing.T) {
+func Test_Set1D_Keys(t *testing.T) {
 	type tt struct {
 		arg1 string
 		val1 int
@@ -25,7 +25,7 @@ func TestSet1DKeys(t *testing.T) {
 	}
 }
 
-func TestSet2DAdd(t *testing.T) {
+func Test_Set2D_Add(t *testing.T) {
 	type tt struct {
 		arg1 string
 		arg2 string
@@ -48,7 +48,7 @@ func TestSet2DAdd(t *testing.T) {
 	}
 }
 
-func TestSet2DKeys(t *testing.T) {
+func Test_Set2D_Keys(t *testing.T) {
 	type tt struct {
 		arg1 string
 		arg2 string
@@ -71,7 +71,7 @@ func TestSet2DKeys(t *testing.T) {
 	}
 }
 
-func TestSet3DAdd(t *testing.T) {
+func Test_Set3D_Add(t *testing.T) {
 	type tt struct {
 		arg1 string
 		arg2 string
@@ -95,7 +95,7 @@ func TestSet3DAdd(t *testing.T) {
 	}
 }
 
-func TestSet3DKeys(t *testing.T) {
+func Test_Set3D_Keys(t *testing.T) {
 	type tt struct {
 		arg1 string
 		arg2 string
@@ -119,7 +119,7 @@ func TestSet3DKeys(t *testing.T) {
 	}
 }
 
-func TestSliceSetAdd(t *testing.T) {
+func Test_SliceSet_Add(t *testing.T) {
 	type tt struct {
 		arg1 string
 		arg2 string
@@ -142,7 +142,7 @@ func TestSliceSetAdd(t *testing.T) {
 	}
 }
 
-func TestX1type(t *testing.T) {
+func Test_X1type(t *testing.T) {
 	type tt struct {
 		arg1 []string
 		arg2 string
@@ -166,7 +166,7 @@ func TestX1type(t *testing.T) {
 	}
 }
 
-func TestMakemap(t *testing.T) {
+func Test_Makemap(t *testing.T) {
 	pth := "../../tdata/"
 	type tt struct {
 		arg1 string

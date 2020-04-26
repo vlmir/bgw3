@@ -1,17 +1,18 @@
 package export
 
 import (
-	"github.com/vlmir/bgw3/src/util" // pkg 'util'
-	"github.com/vlmir/bgw3/src/semweb"
-	"github.com/vlmir/bgw3/src/bgw"
 	"encoding/json"
+	"errors"
 	"fmt"
-	"log"
+	"github.com/vlmir/bgw3/src/bgw"
+	"github.com/vlmir/bgw3/src/semweb"
+	"github.com/vlmir/bgw3/src/util" // pkg 'util'
 	"os"
 	"strings"
 )
 
-func GeneProt(dat4rdf bgw.Dat4rdf, xpthP string, xpthG string, wpthX string, zeno rdf.Zeno) (int, int, error) {
+func GeneProt(dat4rdf bgw.Dat4rdf, xpthP string, xpthG string, wpthX string) (int, int, error) {
+	nss := rdf.NameSpaces()
 	keys4g := make(util.SliceSet)
 	keys4g["Opys"] = []string{
 		"gn2gp",
@@ -53,16 +54,16 @@ func GeneProt(dat4rdf bgw.Dat4rdf, xpthP string, xpthG string, wpthX string, zen
 		"bag",
 		"tlp",
 	}
-	nlg := 0
-	nlp := 0
+	nlng := 0
+	nlnp := 0
 	txns := *dat4rdf.Txns
 	if len(txns) == 0 {
-		return nlg, nlp, fmt.Errorf("%s", "export.GeneProt: No taxon ID!") // happens!
+		panic(errors.New(fmt.Sprintf("%s", "No taxon ID!"))) // happens!
 	}
 	txn := txns.Keys()[0]
 	updat := *dat4rdf.Udat
 	if len(updat) == 0 {
-		return nlg, nlp, fmt.Errorf("%s%s", "export.GeneProt: No data for taxon: ", txn)
+		panic(errors.New(fmt.Sprintf("%s%s", "No data for taxon: ", txn)))
 	}
 	upacs := *dat4rdf.Upac
 	upcas := *dat4rdf.Upca
@@ -72,59 +73,61 @@ func GeneProt(dat4rdf bgw.Dat4rdf, xpthP string, xpthG string, wpthX string, zen
 	cnts["chrs"] = make(util.Set1D)
 	cnts["bgwgs"] = make(util.Set1D)
 	cnts["bgwps"] = make(util.Set1D)
-	srcU := rdf.FormU(zeno.Uris["uniprot"])
+	srcU := rdf.FormU(nss["uniprot"])
+	graphUg := "<http://biogateway.eu/graph/gene>"
+	graphUp := "<http://biogateway.eu/graph/prot>"
 	//srcUa := "" // actual source NB: oriU is used downstream
 	dfn := ""
 	lbl := ""
 	/////////////////////////////////////////////////////////////////////////////
-	// gene graph ini
 	xfhG, err := os.Create(xpthG)
 	if err != nil {
-		return nlg, nlp, fmt.Errorf("%s%s%s", "export.GeneProt:os.Create: ", xpthG, err)
+		panic(err)
 	}
 	defer xfhG.Close()
+	xfhP, err := os.Create(xpthP)
+	if err != nil {
+		panic(err)
+	}
+	defer xfhP.Close()
+	// gene graph ini
 	var sbG strings.Builder
-	gnUs := make(map[string]string)
-	header, ng := rdf.Header(gnUs, keys4g, zeno)
+	gnUs := rdf.FmtURIs(keys4g)// URIs for the graph 'gene'
+	header, ng := rdf.Capita(keys4g)
 	sbG.WriteString(header)
-	nlg += ng
-	sbG.WriteString(rdf.FormT("<http://biogateway.eu/graph/gene>", gnUs["sth2src"], srcU))
-	nlg++
+	nlng += ng
+	sbG.WriteString(rdf.FormT(graphUg, gnUs["sth2src"], srcU))
+	nlng++
 	//srcUa = "<https://www.uniprot.org/uniprot/?query=organism:" + txn + "&columns=id,entry%20name,organism,organism-id,protein%20names,proteome,citation,annotation%20score&format=tab>"
-	//sbG.WriteString(rdf.FormT("<http://biogateway.eu/graph/gene>", gnUs["sth2ori"], srcUa)); nlg++
-	GU := rdf.FormU(zeno.Uris["gene"])
+	//sbG.WriteString(rdf.FormT("<http://biogateway.eu/graph/gene>", gnUs["sth2ori"], srcUa)); nlng++
+	GU := rdf.FormU(nss["gene"])
 	sbG.WriteString(rdf.FormT(GU, gnUs["sub2cls"], gnUs["bag"]))
-	nlg++
+	nlng++
 	dfn = strings.Join([]string{"The set of genes in Biogateway", "."}, " ")
 	sbG.WriteString(rdf.FormT(GU, gnUs["sth2dfn"], rdf.FormL(dfn)))
-	nlg++
+	nlng++
 	sbG.WriteString(rdf.FormT(GU, gnUs["sth2lbl"], rdf.FormL("gene")))
-	nlg++
+	nlng++
 	xfhG.Write([]byte(sbG.String()))
 	sbG.Reset()
 	// prot graph ini
-	xfhP, err := os.Create(xpthP)
-	if err != nil {
-		return nlg, nlp, fmt.Errorf("%s%s%s", "export.GeneProt:os.Create:", xpthP, err)
-	}
-	defer xfhP.Close()
 	var sbP strings.Builder
-	gpUs := make(map[string]string)
-	header, np := rdf.Header(gpUs, keys4p, zeno)
+	gpUs := rdf.FmtURIs(keys4p)
+	header, np := rdf.Capita(keys4p)
 	sbP.WriteString(header)
-	nlp += np
-	sbP.WriteString(rdf.FormT("<http://biogateway.eu/graph/prot>", gpUs["sth2src"], srcU))
-	nlp++
+	nlnp += np
+	sbP.WriteString(rdf.FormT(graphUp, gpUs["sth2src"], srcU))
+	nlnp++
 	//srcUa = "<https://www.uniprot.org/uniprot/?query=organism:" + txn + "&columns=id,entry%20name,organism,organism-id,protein%20names,proteome,citation,annotation%20score&format=tab>"
-	//sbP.WriteString(rdf.FormT("<http://biogateway.eu/graph/prot>", gpUs["sth2ori"], srcUa)); nlp++
-	PU := rdf.FormU(zeno.Uris["prot"])
+	//sbP.WriteString(rdf.FormT("<http://biogateway.eu/graph/prot>", gpUs["sth2ori"], srcUa)); nlnp++
+	PU := rdf.FormU(nss["prot"])
 	sbP.WriteString(rdf.FormT(PU, gpUs["sub2cls"], gpUs["bag"]))
-	nlp++
+	nlnp++
 	dfn = strings.Join([]string{"The set of translation products in Biogateway", "."}, " ")
 	sbP.WriteString(rdf.FormT(PU, gpUs["sth2dfn"], rdf.FormL(dfn)))
-	nlp++
+	nlnp++
 	sbP.WriteString(rdf.FormT(PU, gpUs["sth2lbl"], rdf.FormL("prot")))
-	nlp++
+	nlnp++
 	xfhP.Write([]byte(sbP.String()))
 	sbP.Reset()
 	/////////////////////////////////////////////////////////////////////////////
@@ -132,64 +135,64 @@ func GeneProt(dat4rdf bgw.Dat4rdf, xpthP string, xpthG string, wpthX string, zen
 	gnm2bgw := make(util.Set3D)
 	gene2prot := make(util.Set3D)
 	spnm := txns[txn]["spnm"].Keys()[0]
-	txnU := rdf.CompU(zeno.Uris["ncbitx"], txn)
-	txnGU := rdf.CompU(zeno.Uris["gene"], txn)
+	txnU := rdf.CompU(nss["ncbitx"], txn)
+	txnGU := rdf.CompU(nss["gene"], txn)
 	sbG.WriteString(rdf.FormT(txnGU, gnUs["sub2cls"], gnUs["bag"]))
-	nlg++
+	nlng++
 	sbG.WriteString(rdf.FormT(txnGU, gnUs["sub2set"], GU))
-	nlg++
+	nlng++
 	sbG.WriteString(rdf.FormT(txnGU, gnUs["gn2txn"], txnU))
-	nlg++
+	nlng++
 	dfn = strings.Join([]string{"The set of", spnm, "genes in Biogateway", "."}, " ")
 	sbG.WriteString(rdf.FormT(txnGU, gnUs["sth2dfn"], rdf.FormL(dfn)))
-	nlg++
+	nlng++
 	lbl = strings.Join([]string{"gene", txn}, "/")
 	sbG.WriteString(rdf.FormT(txnGU, gnUs["sth2lbl"], rdf.FormL(lbl)))
-	nlg++
-	txnPU := rdf.CompU(zeno.Uris["prot"], txn)
+	nlng++
+	txnPU := rdf.CompU(nss["prot"], txn)
 	sbP.WriteString(rdf.FormT(txnPU, gpUs["sub2cls"], gpUs["bag"]))
-	nlp++
+	nlnp++
 	sbP.WriteString(rdf.FormT(txnPU, gpUs["sub2set"], PU))
-	nlp++
+	nlnp++
 	sbP.WriteString(rdf.FormT(txnPU, gpUs["gp2txn"], txnU))
-	nlp++
+	nlnp++
 	dfn = strings.Join([]string{"The set of", spnm, "translation products in Biogateway", "."}, " ")
 	sbP.WriteString(rdf.FormT(txnPU, gpUs["sth2dfn"], rdf.FormL(dfn)))
-	nlp++
+	nlnp++
 	lbl = strings.Join([]string{"prot", txn}, "/")
 	sbP.WriteString(rdf.FormT(txnPU, gpUs["sth2lbl"], rdf.FormL(lbl)))
-	nlp++
+	nlnp++
 	/////////////////////////////////////////////////////////////////////////////
 	for chr := range txns[txn]["come"] {
 		chrid := strings.Join([]string{txn, chr}, "/")
-		chrGU := rdf.CompU(zeno.Uris["gene"], chrid)
-		chrPU := rdf.CompU(zeno.Uris["prot"], chrid)
+		chrGU := rdf.CompU(nss["gene"], chrid)
+		chrPU := rdf.CompU(nss["prot"], chrid)
 		sbG.WriteString(rdf.FormT(chrGU, gnUs["sub2cls"], gnUs["bag"]))
-		nlg++
+		nlng++
 		sbG.WriteString(rdf.FormT(chrGU, gnUs["sub2set"], txnGU))
-		nlg++
+		nlng++
 		dfn := strings.Join([]string{"The set of genes residing in", spnm, chr, "."}, " ")
 		sbG.WriteString(rdf.FormT(chrGU, gnUs["sth2dfn"], rdf.FormL(dfn)))
-		nlg++
+		nlng++
 		lbl = strings.Join([]string{"gene", chrid}, "/")
 		sbG.WriteString(rdf.FormT(chrGU, gnUs["sth2lbl"], rdf.FormL(lbl)))
-		nlg++
+		nlng++
 		sbP.WriteString(rdf.FormT(chrPU, gpUs["sub2cls"], gpUs["bag"]))
-		nlp++
+		nlnp++
 		sbP.WriteString(rdf.FormT(chrPU, gpUs["sub2set"], txnPU))
-		nlp++
+		nlnp++
 		dfn = strings.Join([]string{"The set of tranlation products encoded by", spnm, chr, "."}, " ")
 		sbP.WriteString(rdf.FormT(chrPU, gpUs["sth2dfn"], rdf.FormL(dfn)))
-		nlp++
+		nlnp++
 		lbl = strings.Join([]string{"prot", chrid}, "/")
 		sbP.WriteString(rdf.FormT(chrPU, gpUs["sth2lbl"], rdf.FormL(lbl)))
-		nlp++
+		nlnp++
 	}
 
 	/////////////////////////////////////////////////////////////////////////////
 	wfhX, err := os.Create(wpthX)
 	if err != nil {
-		return nlg, nlp, fmt.Errorf("%s%s%s", "export.GeneProt:os.Create:", wpthX, err)
+		panic(err)
 	}
 	defer wfhX.Close()
 	xmap := bgw.NewXmap()
@@ -197,14 +200,14 @@ func GeneProt(dat4rdf bgw.Dat4rdf, xpthP string, xpthG string, wpthX string, zen
 	/////////////////////////////////////////////////////////////////////////////
 	for lblG, mapG := range gn2acs {
 		for _, upca := range mapG["upac"].Keys() {
-			oriU := rdf.CompU(zeno.Uris["uniprot"], upca)
+			oriU := rdf.CompU(nss["uniprot"], upca)
 			for chr := range updat[upca]["come"] {
 				chrid := strings.Join([]string{txn, chr}, "/")
-				chrGU := rdf.CompU(zeno.Uris["gene"], chrid)
+				chrGU := rdf.CompU(nss["gene"], chrid)
 				idG := fmt.Sprintf("%s%s%s%s%s", txn, "/", chr, "/", lblG)
 				up2bgw.Add(upca, "bgwg", idG)
 				gnm2bgw.Add(lblG, "bgwg", idG)
-				ourGU := rdf.CompU(zeno.Uris["gene"], idG)
+				ourGU := rdf.CompU(nss["gene"], idG)
 				snms := make(map[string]int)
 				for gac := range gn2acs[lblG]["upac"] {
 					for snm := range upacs[gac]["gsnm"] {
@@ -212,25 +215,25 @@ func GeneProt(dat4rdf bgw.Dat4rdf, xpthP string, xpthG string, wpthX string, zen
 					}
 				}
 				sbG.WriteString(rdf.FormT(ourGU, gnUs["sub2cls"], gnUs["gn"]))
-				nlg++
+				nlng++
 				sbG.WriteString(rdf.FormT(ourGU, gnUs["gn2txn"], txnU))
-				nlg++
+				nlng++
 				sbG.WriteString(rdf.FormT(ourGU, gnUs["mbr2lst"], chrGU))
-				nlg++
+				nlng++
 				dfn := strings.Join([]string{"Gene", lblG, "from", spnm, chr, "."}, " ")
 				sbG.WriteString(rdf.FormT(ourGU, gnUs["sth2dfn"], rdf.FormL(dfn)))
-				nlg++
+				nlng++
 				sbG.WriteString(rdf.FormT(ourGU, gnUs["sth2lbl"], rdf.FormL(lblG)))
-				nlg++
+				nlng++
 				for snm := range snms {
 					if snm == lblG {
 						continue
 					}
 					sbG.WriteString(rdf.FormT(ourGU, gnUs["sth2syn"], rdf.FormL(snm)))
-					nlg++
+					nlng++
 				}
 				sbG.WriteString(rdf.FormT(ourGU, gnUs["sth2ori"], oriU))
-				nlg++ // UP CA
+				nlng++ // UP CA
 				/// id mapping ///
 				xmap.Gsymb.Add(lblG, "bgwg", idG)
 				ensgs := make(map[string]int)
@@ -240,9 +243,9 @@ func GeneProt(dat4rdf bgw.Dat4rdf, xpthP string, xpthG string, wpthX string, zen
 					}
 				}
 				for ensg := range ensgs {
-					ensgU := rdf.CompU(zeno.Uris["ensg"], ensg)
+					ensgU := rdf.CompU(nss["ensg"], ensg)
 					sbG.WriteString(rdf.FormT(ourGU, gnUs["sth2clm"], ensgU))
-					nlg++
+					nlng++
 					xmap.Ensg.Add(ensg, "bgwg", idG)
 					xmap.Bgwg.Add(idG, "ensg", ensg)
 				}
@@ -253,9 +256,9 @@ func GeneProt(dat4rdf bgw.Dat4rdf, xpthP string, xpthG string, wpthX string, zen
 					}
 				}
 				for ncbig := range ncbigs {
-					ncbigU := rdf.CompU(zeno.Uris["ncbig"], ncbig)
+					ncbigU := rdf.CompU(nss["ncbig"], ncbig)
 					sbG.WriteString(rdf.FormT(ourGU, gnUs["sth2clm"], ncbigU))
-					nlg++
+					nlng++
 					xmap.Ncbig.Add(ncbig, "bgwg", idG)
 					xmap.Bgwg.Add(idG, "ncbig", ncbig)
 				}
@@ -264,7 +267,7 @@ func GeneProt(dat4rdf bgw.Dat4rdf, xpthP string, xpthG string, wpthX string, zen
 	} // end of gene
 	/////////////////////////////////////////////////////////////////////////////
 	for upca, onemap := range updat {
-		oriU := rdf.CompU(zeno.Uris["uniprot"], upca)
+		oriU := rdf.CompU(nss["uniprot"], upca)
 		upid := onemap["upid"].Keys()[0]
 		bits := strings.Split(upid, "_")
 		if len(bits) != 2 {
@@ -277,23 +280,23 @@ func GeneProt(dat4rdf bgw.Dat4rdf, xpthP string, xpthG string, wpthX string, zen
 		refmap := onemap["pubmed"]
 		pubmeds := strings.Split(refmap.Keys()[0], "; ")
 		for idG := range idGs {
-			ourBU := rdf.CompU(zeno.Uris["prot"], idG)
+			ourBU := rdf.CompU(nss["prot"], idG)
 			bits := strings.Split(idG, "/")
 			chr := bits[1]
 			lblG := bits[2]
 			chrid := strings.Join([]string{txn, chr}, "/")
-			chrPU := rdf.CompU(zeno.Uris["prot"], chrid)
+			chrPU := rdf.CompU(nss["prot"], chrid)
 			sbP.WriteString(rdf.FormT(ourBU, gpUs["sub2cls"], gpUs["bag"]))
-			nlp++
+			nlnp++
 			sbP.WriteString(rdf.FormT(ourBU, gpUs["sub2set"], chrPU))
-			nlp++
+			nlnp++
 			dfn = strings.Join([]string{"The set of tranlation products encoded by gene", lblG, "residing in", spnm, chr, "."}, " ")
 			sbP.WriteString(rdf.FormT(ourBU, gpUs["sth2dfn"], rdf.FormL(dfn)))
-			nlp++
+			nlnp++
 			sbP.WriteString(rdf.FormT(ourBU, gpUs["sth2lbl"], rdf.FormL(idG)))
-			nlp++
+			nlnp++
 			sbP.WriteString(rdf.FormT(ourBU, gpUs["sth2ori"], oriU))
-			nlp++
+			nlnp++
 
 			gsnms := upacs[upca]["gsnm"].Keys()
 			psnms := append(gsnms, lblG)
@@ -305,35 +308,35 @@ func GeneProt(dat4rdf bgw.Dat4rdf, xpthP string, xpthG string, wpthX string, zen
 				}
 				idP := fmt.Sprintf("%s%s%s", idG, "/", uparcs[0])
 				gene2prot.Add(idG, "bgwp", idP)
-				ourPU := rdf.CompU(zeno.Uris["prot"], idP)
+				ourPU := rdf.CompU(nss["prot"], idP)
 				sbP.WriteString(rdf.FormT(ourPU, gpUs["sub2cls"], gpUs["tlp"]))
-				nlp++
+				nlnp++
 				sbP.WriteString(rdf.FormT(ourPU, gpUs["mbr2lst"], ourBU))
-				nlp++
+				nlnp++
 				sbP.WriteString(rdf.FormT(ourPU, gpUs["sth2dfn"], rdf.FormL(pdfn)))
-				nlp++
+				nlnp++
 				sbP.WriteString(rdf.FormT(ourPU, gpUs["sth2lbl"], rdf.FormL(lblP)))
-				nlp++
+				nlnp++
 				sbP.WriteString(rdf.FormT(ourPU, gpUs["gp2txn"], txnU))
-				nlp++
+				nlnp++
 				sbP.WriteString(rdf.FormT(ourPU, gpUs["sth2ori"], oriU))
-				nlp++
+				nlnp++
 				for _, snm := range asnms {
 					if snm == lblP {
 						continue
 					}
 					sbP.WriteString(rdf.FormT(ourPU, gpUs["sth2syn"], rdf.FormL(snm)))
-					nlp++
+					nlnp++
 				}
 				sbP.WriteString(rdf.FormT(ourPU, gpUs["evd2lvl"], rdf.FormL(string(score))))
-				nlp++ // conversion needed?
+				nlnp++ // conversion needed?
 				for _, pubmed := range pubmeds {
 					if pubmed == "" {
 						continue
 					} // TODO see why this occurs
-					pubmedU := rdf.CompU(zeno.Uris["pubmed"], pubmed)
+					pubmedU := rdf.CompU(nss["pubmed"], pubmed)
 					sbP.WriteString(rdf.FormT(ourPU, gpUs["sth2evd"], pubmedU))
-					nlp++
+					nlnp++
 				}
 				/// id mapping ///
 				// NB: multiple ENSPs and even NPs per UPAC are common
@@ -341,17 +344,17 @@ func GeneProt(dat4rdf bgw.Dat4rdf, xpthP string, xpthG string, wpthX string, zen
 				xmap.Bgwp.Add(idP, "upac", upac)
 				ensps := upacs[upac]["ensp"]
 				for ensp := range ensps {
-					enspU := rdf.CompU(zeno.Uris["ensp"], ensp)
+					enspU := rdf.CompU(nss["ensp"], ensp)
 					sbP.WriteString(rdf.FormT(ourPU, gpUs["sth2clm"], enspU))
-					nlp++
+					nlnp++
 					xmap.Ensp.Add(ensp, "bgwp", idP)
 					xmap.Bgwp.Add(idP, "ensp", ensp)
 				}
 				rfsqs := upacs[upac]["rfsq"]
 				for rfsq := range rfsqs {
-					rfsqU := rdf.CompU(zeno.Uris["rfsq"], rfsq)
+					rfsqU := rdf.CompU(nss["rfsq"], rfsq)
 					sbP.WriteString(rdf.FormT(ourPU, gpUs["sth2clm"], rfsqU))
-					nlp++
+					nlnp++
 					xmap.Rfsq.Add(rfsq, "bgwp", idP)
 					xmap.Bgwp.Add(idP, "rfsq", rfsq)
 				}
@@ -360,11 +363,11 @@ func GeneProt(dat4rdf bgw.Dat4rdf, xpthP string, xpthG string, wpthX string, zen
 	} // end of prot
 	/////////////////////////////////////////////////////////////////////////////
 	for idG, idPmap := range gene2prot {
-		ourGU := rdf.CompU(zeno.Uris["gene"], idG)
+		ourGU := rdf.CompU(nss["gene"], idG)
 		for idP := range idPmap["bgwp"] {
-			ourPU := rdf.CompU(zeno.Uris["prot"], idP)
+			ourPU := rdf.CompU(nss["prot"], idP)
 			sbG.WriteString(rdf.FormT(ourGU, gnUs["gn2gp"], ourPU))
-			nlg++ // NB: => gene graph
+			nlng++ // NB: => gene graph
 		}
 	}
 	/////////////////////////////////////////////////////////////////////////////
@@ -374,18 +377,20 @@ func GeneProt(dat4rdf bgw.Dat4rdf, xpthP string, xpthG string, wpthX string, zen
 	sbP.Reset()
 	j, err := json.MarshalIndent(&xmap, "", " ")
 	if err != nil {
-		log.Fatalln("export.GeneProt:json.MarshalIndent:", err)
+		//log.Fatalln("export.GeneProt:json.MarshalIndent:", err)
+		panic(err)
 	}
 	wfhX.Write(j)
-	return nlg, nlp, nil
+	return nlng, nlnp, nil
 }
 
-func Upvar(duos util.Set3D, upac2bgw util.Set3D, gsmap util.Set3D, xpth string, zeno rdf.Zeno) (int, error) {
+func Upvar(duos util.Set3D, upac2bgw util.Set3D, gsmap util.Set3D, xpth string) (int, error) {
+	nss := rdf.NameSpaces()
 	nln := 0
 	mysrc := "uniprot"
-	srcU := rdf.FormU(zeno.Uris[mysrc])
+	srcU := rdf.FormU(nss[mysrc])
 	if len(srcU) == 0 {
-		return nln, fmt.Errorf("%s%s", "export.Upvar:Unknown namespase :", mysrc)
+		panic(errors.New(fmt.Sprintf("%s%s", "Unknown namespase :", mysrc)))
 	}
 	keys4b := make(util.SliceSet)
 	keys4b["Opys"] = []string{
@@ -405,12 +410,12 @@ func Upvar(duos util.Set3D, upac2bgw util.Set3D, gsmap util.Set3D, xpth string, 
 	// gene2phen graph ini
 	xfh, err := os.Create(xpth)
 	if err != nil {
-		return nln, fmt.Errorf("%s%s%s", "export.Upvar:os.Create:", xpth, err)
+		panic(err)
 	}
 	defer xfh.Close()
 	var sb strings.Builder
-	ourUs := make(map[string]string)
-	header, n := rdf.Header(ourUs, keys4b, zeno)
+	ourUs := rdf.FmtURIs(keys4b)
+	header, n := rdf.Capita(keys4b)
 	sb.WriteString(header)
 	nln += n
 	graphU := "<http://biogateway.eu/graph/gene2phen>"
@@ -424,7 +429,7 @@ func Upvar(duos util.Set3D, upac2bgw util.Set3D, gsmap util.Set3D, xpth string, 
 	sb.Reset()
 
 	stmNS := "http://rdf.biogateway.eu/gene-phen/"
-	rdfNS := zeno.Uris["rdf"]
+	rdfNS := nss["rdf"]
 	count := make(util.Set3D)
 
 	for clsid, onemap := range duos {
@@ -462,13 +467,13 @@ func Upvar(duos util.Set3D, upac2bgw util.Set3D, gsmap util.Set3D, xpth string, 
 		pdc := "gp2phn"
 		sb.WriteString(rdf.FormT(clsU, rdf.CompU(rdfNS, "predicate"), ourUs[pdc]))
 		nln++
-		uriR := rdf.CompU(zeno.Uris["omim"], oriR)
+		uriR := rdf.CompU(nss["omim"], oriR)
 		// multiple subjects
 		for _, ourL := range ourLs {
 			if len(ourLs) > 1 {
 				count.Add("oriL", oriL, ourL)
 			} // 9606:11
-			uriL := rdf.CompU(zeno.Uris["gene"], ourL)
+			uriL := rdf.CompU(nss["gene"], ourL)
 			sb.WriteString(rdf.FormT(clsU, rdf.CompU(rdfNS, "subject"), uriL))
 			nln++
 			sb.WriteString(rdf.FormT(uriL, ourUs[pdc], uriR))
@@ -483,7 +488,7 @@ func Upvar(duos util.Set3D, upac2bgw util.Set3D, gsmap util.Set3D, xpth string, 
 		sb.WriteString(rdf.FormT(insU, ourUs["sth2src"], srcU))
 		nln++
 		// metadata
-		myU := rdf.CompU(zeno.Uris["uniprot"], upca)
+		myU := rdf.CompU(nss["uniprot"], upca)
 		sb.WriteString(rdf.FormT(insU, ourUs["sth2ori"], myU))
 		nln++
 	}
@@ -492,94 +497,11 @@ func Upvar(duos util.Set3D, upac2bgw util.Set3D, gsmap util.Set3D, xpth string, 
 	return nln, nil
 }
 
-/*
-func Upvar(duos util.Set3D, upac2bgw util.Set3D,  xpth string, zeno rdf.Zeno) error {
-	mysrc := "uniprot"
-	srcU := rdf.FormU(zeno.Uris[mysrc])
-	if len(srcU) == 0 {
-		return fmt.Errorf("%s%s", "export.Upvar:Unknown namespase :", mysrc)
-	}
-	keys4b := make(util.SliceSet)
-	keys4b["Opys"] = []string{
-		"gp2phn",
-		"ins2cls",
-		"sth2ori",
-		"sth2src",
-		"sub2cls",
-	}
-	keys4b["Apys"] = []string{
-		"sth2dfn",
-		"sth2lbl",
-	}
-	keys4b["Prns"] = []string{
-		"stm",
-	}
-	// prot2phen graph ini
-	xfh, err := os.Create(xpth)
-	if err != nil {
-		return fmt.Errorf("%s%s%s", "export.Upvar:os.Create:", xpth, err)
-	}
-	defer xfh.Close()
-	var sb strings.Builder
-	ourUs := make(map[string]string)
-	sb.WriteString(rdf.Header(ourUs, keys4b, zeno)); nln++
-	graphU := "<http://biogateway.eu/graph/prot2phen>"
-	sb.WriteString(rdf.FormT(graphU, ourUs["sth2src"], srcU)); nln++
-	xfh.Write([]byte(sb.String()))
-	sb.Reset()
-
-	stmNS := "http://rdf.biogateway.eu/prot-phen/"
-	rdfNS := zeno.Uris["rdf"]
-	count := make(util.Set3D)
-
-	for clsid, onemap := range duos {
-		clsU := rdf.CompU(stmNS, clsid)
-		sb.WriteString(rdf.FormT(clsU, ourUs["sub2cls"], ourUs["stm"])); nln++
-		sb.WriteString(rdf.FormT(clsU, ourUs["sth2lbl"], rdf.FormL(clsid))); nln++
-
-		bits := strings.Split(clsid, "--")
-		idL := bits[0]
-		idR := bits[1]
-		oriL := strings.Split(idL, "!")[1] // UP AC
-		oriR := strings.Split(idR, "!")[1] // MIM ID
-		nmRs := onemap["nmR"].Keys()
-		/*
-		if len(nmRs) != 1 {// indeed multiple names in the source
-			fmt.Println("export.Upvar:Warning:", idR, "nmRs", nmRs) // 9606:68
-		}
-		// multiple labels
-		for _, nmR := range nmRs {
-			if len(nmRs) > 1 { count.Add("oriR", oriR, nmR) }
-			onedfn := fmt.Sprintf("%s%s%s%s", "Association between protein ", oriL, " and disease ", nmR)
-			sb.WriteString(rdf.FormT(clsU, ourUs["sth2dfn"], rdf.FormL(onedfn))); nln++
-		}
-		pdc := "gp2phn"
-		sb.WriteString(rdf.FormT(clsU, rdf.CompU(rdfNS, "predicate"), ourUs[pdc])); nln++
-		uriR := rdf.CompU(zeno.Uris["omim"], oriR)
-		ourLs := upac2bgw[oriL]["bgwp"].Keys()
-		// multiple subjects
-		for _, ourL := range(ourLs) {
-			if len(ourLs) > 1 { count.Add("oriL", oriL, ourL) }
-			uriL := rdf.CompU(zeno.Uris["prot"], ourL)
-			sb.WriteString(rdf.FormT(clsU, rdf.CompU(rdfNS, "subject"), uriL)); nln++
-			sb.WriteString(rdf.FormT(uriL, ourUs[pdc], uriR)); nln++
-		}
-		sb.WriteString(rdf.FormT(clsU, rdf.CompU(rdfNS, "object"), uriR)); nln++
-		insid := fmt.Sprintf("%s%s%s", clsid, "#", "uniprot")
-		insU := rdf.CompU(stmNS, insid)
-		sb.WriteString(rdf.FormT(insU, ourUs["ins2cls"], clsU)); nln++
-		sb.WriteString(rdf.FormT(insU, ourUs["sth2src"], srcU)); nln++
-		// metadata
-		myU := rdf.CompU(zeno.Uris["uniprot"], oriL)
-		sb.WriteString(rdf.FormT(insU, ourUs["sth2ori"], myU)); nln++
-	}
-	xfh.Write([]byte(sb.String()))
-	sb.Reset()
-	return nil
-}
-*/
-
-func Goa(duos util.Set3D, upac2bgw util.Set3D, xpth string, zeno rdf.Zeno) (int, error) {
+// arg1: output of parse.Gaf or parse.Gpa
+// arg2: mapping fromn UniProt accession to BGW IDs generated by GeneProt()
+// arg3: path for exporting the RDF file
+func Goa(duos util.Set3D, upac2bgw util.Set3D, xpth string) (int, error) {
+	nss := rdf.NameSpaces()
 	/*
 		Attn: isoforms are present in gpa files but lost in rdf files TODO !!
 		mironov@manjaro ~/g/g/s/b/prot2onto (master ⚡ → =)> cut -f 2 p53.gpa | grep P04637 | sort -u | wc -l
@@ -590,7 +512,7 @@ func Goa(duos util.Set3D, upac2bgw util.Set3D, xpth string, zeno rdf.Zeno) (int,
 		"gp2mf": "molecular function",
 		"gp2bp": "biological process",
 	}
-	srcU := rdf.FormU(zeno.Uris["goa"])
+	srcU := rdf.FormU(nss["goa"])
 	keys4b := make(util.SliceSet)
 	keys4b["Opys"] = []string{
 		"gp2bp",
@@ -614,12 +536,12 @@ func Goa(duos util.Set3D, upac2bgw util.Set3D, xpth string, zeno rdf.Zeno) (int,
 	nln := 0
 	xfh, err := os.Create(xpth)
 	if err != nil {
-		return nln, fmt.Errorf("%s%s%s", "export.Goa:os.Create: ", xpth, err)
+		panic(err)
 	}
 	defer xfh.Close()
 	var sb strings.Builder
-	ourUs := make(map[string]string)
-	header, n := rdf.Header(ourUs, keys4b, zeno)
+	ourUs := rdf.FmtURIs(keys4b)
+	header, n := rdf.Capita(keys4b)
 	sb.WriteString(header)
 	nln += n
 	graphU := "<http://biogateway.eu/graph/prot2onto>"
@@ -634,7 +556,7 @@ func Goa(duos util.Set3D, upac2bgw util.Set3D, xpth string, zeno rdf.Zeno) (int,
 	sb.Reset()
 
 	stmNS := "http://rdf.biogateway.eu/prot-onto/"
-	rdfNS := zeno.Uris["rdf"]
+	rdfNS := nss["rdf"]
 	count := make(util.Set3D)
 
 	for clsid, onemap := range duos {
@@ -666,13 +588,13 @@ func Goa(duos util.Set3D, upac2bgw util.Set3D, xpth string, zeno rdf.Zeno) (int,
 		sb.WriteString(rdf.FormT(clsU, rdf.CompU(rdfNS, "predicate"), ourUs[pdc]))
 		nln++
 
-		uriR := rdf.CompU(zeno.Uris["obo"], oriR)
+		uriR := rdf.CompU(nss["obo"], oriR)
 		// multiple subjects
 		for _, ourL := range ourLs {
 			if len(ourLs) > 1 {
 				count.Add("oriL", oriL, ourL)
 			}
-			uriL := rdf.CompU(zeno.Uris["prot"], ourL)
+			uriL := rdf.CompU(nss["prot"], ourL)
 			sb.WriteString(rdf.FormT(clsU, rdf.CompU(rdfNS, "subject"), uriL))
 			nln++
 			sb.WriteString(rdf.FormT(uriL, ourUs[pdc], uriR))
@@ -688,16 +610,16 @@ func Goa(duos util.Set3D, upac2bgw util.Set3D, xpth string, zeno rdf.Zeno) (int,
 		sb.WriteString(rdf.FormT(insU, ourUs["sth2src"], srcU))
 		nln++
 		// metadata
-		myU := rdf.CompU(zeno.Uris["goa"], oriL)
+		myU := rdf.CompU(nss["goa"], oriL)
 		sb.WriteString(rdf.FormT(insU, ourUs["sth2ori"], myU))
 		nln++
 		for _, ref := range util.X1type(refs, "pubmed", "!") {
-			myU := rdf.CompU(zeno.Uris["pubmed"], ref)
+			myU := rdf.CompU(nss["pubmed"], ref)
 			sb.WriteString(rdf.FormT(insU, ourUs["sth2evd"], myU))
 			nln++
 		}
 		for _, eco := range onemap["eco"].Keys() { // for GPA files
-			myU := rdf.CompU(zeno.Uris["obo"], eco)
+			myU := rdf.CompU(nss["obo"], eco)
 			sb.WriteString(rdf.FormT(insU, ourUs["sth2mtd"], myU))
 			nln++
 		}
@@ -711,7 +633,8 @@ func Goa(duos util.Set3D, upac2bgw util.Set3D, xpth string, zeno rdf.Zeno) (int,
 	return nln, nil
 }
 
-func Mitab(duos, upac2bgw util.Set3D, xpth string, zeno rdf.Zeno) (int, error) {
+func Mitab(duos, upac2bgw util.Set3D, xpth string) (int, error) {
+	nss := rdf.NameSpaces()
 	keys4b := make(util.SliceSet)
 	keys4b["Opys"] = []string{
 		"ins2cls",
@@ -730,17 +653,17 @@ func Mitab(duos, upac2bgw util.Set3D, xpth string, zeno rdf.Zeno) (int, error) {
 	keys4b["Prns"] = []string{
 		"stm",
 	}
-	srcU := rdf.FormU(zeno.Uris["intact"])
+	srcU := rdf.FormU(nss["intact"])
 	// prot2prot graph ini
 	nln := 0
 	xfh, err := os.Create(xpth)
 	if err != nil {
-		return nln, fmt.Errorf("%s%s%s", "export.Mitab():os.Create:", xpth, err)
+		panic(err)
 	}
 	defer xfh.Close()
 	var sb strings.Builder
-	ourUs := make(map[string]string)
-	header, n := rdf.Header(ourUs, keys4b, zeno)
+	ourUs := rdf.FmtURIs(keys4b)
+	header, n := rdf.Capita(keys4b)
 	sb.WriteString(header)
 	nln += n
 	graphU := "<http://biogateway.eu/graph/prot2prot>"
@@ -755,7 +678,7 @@ func Mitab(duos, upac2bgw util.Set3D, xpth string, zeno rdf.Zeno) (int, error) {
 	sb.Reset()
 
 	stmNS := "http://rdf.biogateway.eu/prot-prot/"
-	rdfNS := zeno.Uris["rdf"]
+	rdfNS := nss["rdf"]
 	count := make(util.Set3D)
 	for clsid, onemap := range duos {
 		refs := onemap["pubids"].Keys()
@@ -786,14 +709,14 @@ func Mitab(duos, upac2bgw util.Set3D, xpth string, zeno rdf.Zeno) (int, error) {
 			if len(ourLs) > 1 {
 				count.Add("oriL", oriL, ourL)
 			}
-			uriL := rdf.CompU(zeno.Uris["prot"], ourL)
+			uriL := rdf.CompU(nss["prot"], ourL)
 			sb.WriteString(rdf.FormT(clsU, rdf.CompU(rdfNS, "subject"), uriL))
 			nln++
 			for _, ourR := range ourRs {
 				if len(ourRs) > 1 {
 					count.Add("oriR", oriR, ourR)
 				}
-				uriR := rdf.CompU(zeno.Uris["prot"], ourR)
+				uriR := rdf.CompU(nss["prot"], ourR)
 				sb.WriteString(rdf.FormT(clsU, rdf.CompU(rdfNS, "object"), uriR))
 				nln++
 				sb.WriteString(rdf.FormT(uriL, ourUs[pdc], uriR))
@@ -815,7 +738,7 @@ func Mitab(duos, upac2bgw util.Set3D, xpth string, zeno rdf.Zeno) (int, error) {
 			if bits[0] != "intact" {
 				continue
 			}
-			myU := rdf.CompU(zeno.Uris["intact"], bits[1])
+			myU := rdf.CompU(nss["intact"], bits[1])
 			//sb.WriteString(rdf.FormT(insU, ourUs["sth2ori"], myU))
 			sb.WriteString(rdf.FormT(insU, ourUs["sub2set"], myU)) // Attn: change prop
 			nln++
@@ -823,7 +746,7 @@ func Mitab(duos, upac2bgw util.Set3D, xpth string, zeno rdf.Zeno) (int, error) {
 		/// publications
 		// TODO use this patter for all?
 		for _, item := range refs {
-			myU := rdf.CompU(zeno.Uris["pubmed"], item)
+			myU := rdf.CompU(nss["pubmed"], item)
 			sb.WriteString(rdf.FormT(insU, ourUs["sth2evd"], myU))
 			nln++
 		}
@@ -842,7 +765,7 @@ func Mitab(duos, upac2bgw util.Set3D, xpth string, zeno rdf.Zeno) (int, error) {
 			if bits[0] != "psi-mi:" {
 				continue
 			}
-			myU := rdf.CompU(zeno.Uris["obo"], strings.Replace(bits[1], ":", "_", 1))
+			myU := rdf.CompU(nss["obo"], strings.Replace(bits[1], ":", "_", 1))
 			sb.WriteString(rdf.FormT(insU, ourUs["ins2cls"], myU))
 			nln++
 		}
@@ -852,7 +775,7 @@ func Mitab(duos, upac2bgw util.Set3D, xpth string, zeno rdf.Zeno) (int, error) {
 			if bits[0] != "psi-mi:" {
 				continue
 			}
-			myU := rdf.CompU(zeno.Uris["obo"], strings.Replace(bits[1], ":", "_", 1))
+			myU := rdf.CompU(nss["obo"], strings.Replace(bits[1], ":", "_", 1))
 			sb.WriteString(rdf.FormT(insU, ourUs["sth2mtd"], myU))
 			nln++
 		}
@@ -862,7 +785,8 @@ func Mitab(duos, upac2bgw util.Set3D, xpth string, zeno rdf.Zeno) (int, error) {
 	return nln, nil
 }
 
-func Tftg(duos util.Set3D, meta bgw.Meta, upac2bgw, gsmap util.Set3D, xpth string, zeno rdf.Zeno) (int, error) {
+func Tftg(duos util.Set3D, meta bgw.Meta, upac2bgw, gsmap util.Set3D, xpth string) (int, error) {
+	nss := rdf.NameSpaces()
 	keys4b := make(util.SliceSet)
 	keys4b["Opys"] = []string{
 		"ins2cls",
@@ -893,19 +817,19 @@ func Tftg(duos util.Set3D, meta bgw.Meta, upac2bgw, gsmap util.Set3D, xpth strin
 	nln := 0
 	xfh, err := os.Create(xpth)
 	if err != nil {
-		return nln, fmt.Errorf("%s%s%s", "export.Tftg:os.Create:", xpth, err)
+		panic(err)
 	}
 	defer xfh.Close()
 	var sb strings.Builder
-	ourUs := make(map[string]string)
-	header, n := rdf.Header(ourUs, keys4b, zeno)
+	ourUs := rdf.FmtURIs(keys4b)
+	header, n := rdf.Capita(keys4b)
 	sb.WriteString(header)
 	nln += n
 	graphU := "<http://biogateway.eu/graph/tfac2gene>"
 	for _, src := range srcs {
-		srcU := rdf.FormU(zeno.Uris[src])
+		srcU := rdf.FormU(nss[src])
 		if len(srcU) == 0 {
-			return nln, fmt.Errorf("%s%s", "export.Tftg:Unknown namespase :", src)
+			panic(errors.New(fmt.Sprintf("%s%s", "Unknown namespase :", src)))
 		}
 		sb.WriteString(rdf.FormT(graphU, ourUs["sth2src"], srcU))
 		nln++
@@ -914,7 +838,7 @@ func Tftg(duos util.Set3D, meta bgw.Meta, upac2bgw, gsmap util.Set3D, xpth strin
 	sb.Reset()
 
 	stmNS := "http://rdf.biogateway.eu/tfac-gene/"
-	rdfNS := zeno.Uris["rdf"]
+	rdfNS := nss["rdf"]
 	for clsid, onemap := range duos {
 		clsU := rdf.CompU(stmNS, clsid)
 		sb.WriteString(rdf.FormT(clsU, ourUs["sub2cls"], ourUs["stm"]))
@@ -948,11 +872,11 @@ func Tftg(duos util.Set3D, meta bgw.Meta, upac2bgw, gsmap util.Set3D, xpth strin
 				fmt.Println("export.Tftg:Warning:", len(ourLs), " BGW IDs for:", oriL)
 			} // 9606:14
 			for _, ourL := range ourLs {
-				uriL := rdf.CompU(zeno.Uris["prot"], ourL)
+				uriL := rdf.CompU(nss["prot"], ourL)
 				sb.WriteString(rdf.FormT(clsU, rdf.CompU(rdfNS, "subject"), uriL))
 				nln++
 				for _, ourR := range ourRs {
-					uriR := rdf.CompU(zeno.Uris["gene"], ourR)
+					uriR := rdf.CompU(nss["gene"], ourR)
 					sb.WriteString(rdf.FormT(clsU, rdf.CompU(rdfNS, "object"), uriR))
 					nln++
 					sb.WriteString(rdf.FormT(uriL, ourUs[pdc], uriR))
@@ -960,7 +884,7 @@ func Tftg(duos util.Set3D, meta bgw.Meta, upac2bgw, gsmap util.Set3D, xpth strin
 					for _, src := range srcs {
 						insid := fmt.Sprintf("%s%s%s", clsid, "#", src)
 						insU := rdf.CompU(stmNS, insid)
-						srcU := rdf.FormU(zeno.Uris[src])
+						srcU := rdf.FormU(nss[src])
 						keys := meta.Refs[clsid][src].Keys() // PubMed  IDs
 						if len(keys) == 0 {
 							continue
@@ -970,7 +894,7 @@ func Tftg(duos util.Set3D, meta bgw.Meta, upac2bgw, gsmap util.Set3D, xpth strin
 						sb.WriteString(rdf.FormT(insU, ourUs["sth2src"], srcU))
 						nln++
 						for _, key := range keys {
-							pubmedU := rdf.CompU(zeno.Uris["pubmed"], key)
+							pubmedU := rdf.CompU(nss["pubmed"], key)
 							sb.WriteString(rdf.FormT(insU, ourUs["sth2evd"], pubmedU))
 							nln++
 						}
@@ -1000,7 +924,8 @@ func Tftg(duos util.Set3D, meta bgw.Meta, upac2bgw, gsmap util.Set3D, xpth strin
 	return nln, nil
 }
 
-func Ortho(duos, upac2bgw util.Set3D, xpth string, zeno rdf.Zeno) (int, error) {
+func Ortho(duos, upac2bgw util.Set3D, xpth string) (int, error) {
+	nss := rdf.NameSpaces()
 	keys4b := make(util.SliceSet)
 	keys4b["Opys"] = []string{
 		"orl2orl",
@@ -1020,49 +945,52 @@ func Ortho(duos, upac2bgw util.Set3D, xpth string, zeno rdf.Zeno) (int, error) {
 	nln := 0
 	xfh, err := os.Create(xpth)
 	if err != nil {
-		return nln, fmt.Errorf("%s%s%s", "export.Ortho():os.Create:", xpth, err)
+		panic(err)
 	}
 	defer xfh.Close()
 	var sb strings.Builder
-	ourUs := make(map[string]string)
-	header, _ := rdf.Header(ourUs, keys4b, zeno)
+	ourUs := rdf.FmtURIs(keys4b)
+	header, _ := rdf.Capita(keys4b)
+	//header, _ := rdf.Header(ourUs, keys4b)
 	sb.WriteString(header)
 	//nln += n
 	graphU := "<http://biogateway.eu/graph/ortho>"
-	srcU := rdf.FormU(zeno.Uris["uniprot"])
+	srcU := rdf.FormU(nss["uniprot"])
 	sb.WriteString(rdf.FormT(graphU, ourUs["sth2src"], srcU))
 	//nln++
 	xfh.Write([]byte(sb.String()))
 	sb.Reset()
-///////////////////////////////////////////////////////////////////////////////
+	///////////////////////////////////////////////////////////////////////////////
 	stmNS := "http://rdf.biogateway.eu/ortho/"
-	rdfNS := zeno.Uris["rdf"]
+	rdfNS := nss["rdf"]
 	idmkeys := bgw.Orthokeys
 	for clsid, duo := range duos {
 		clsU := rdf.CompU(stmNS, clsid)
+		bits := strings.Split(clsid, "--")
+		oriL := bits[0]
+		oriR := bits[1]
+		ourLs := upac2bgw[oriL]["bgwp"].Keys()
+		ourRs := upac2bgw[oriR]["bgwp"].Keys()
+		if len(ourLs) == 0 {continue}
+		if len(ourRs) == 0 {continue}
 		sb.WriteString(rdf.FormT(clsU, ourUs["sub2cls"], ourUs["stm"]))
 		nln++
 		sb.WriteString(rdf.FormT(clsU, ourUs["sth2lbl"], rdf.FormL(clsid)))
 		nln++
-		bits := strings.Split(clsid, "--")
-		oriL := bits[0]
-		oriR := bits[1]
 		clsdfn := fmt.Sprintf("%s%s%s%s", "Pair of orthologous proteins ", oriL, " and ", oriR)
 		sb.WriteString(rdf.FormT(clsU, ourUs["sth2dfn"], rdf.FormL(clsdfn)))
 		nln++
 		pdc := "orl2orl"
 		sb.WriteString(rdf.FormT(clsU, rdf.CompU(rdfNS, "predicate"), ourUs[pdc]))
 		nln++
-		ourLs := upac2bgw[oriL]["bgwp"].Keys()
-		ourRs := upac2bgw[oriR]["bgwp"].Keys()
 		// multiple subjects and objects
 		// 53 human UP ACs with multiple BGW IDs
 		for _, ourL := range ourLs {
-			uriL := rdf.CompU(zeno.Uris["prot"], ourL)
+			uriL := rdf.CompU(nss["prot"], ourL)
 			sb.WriteString(rdf.FormT(clsU, rdf.CompU(rdfNS, "subject"), uriL))
 			nln++
 			for _, ourR := range ourRs {
-				uriR := rdf.CompU(zeno.Uris["prot"], ourR)
+				uriR := rdf.CompU(nss["prot"], ourR)
 				sb.WriteString(rdf.FormT(clsU, rdf.CompU(rdfNS, "object"), uriR))
 				nln++
 				sb.WriteString(rdf.FormT(uriL, ourUs[pdc], uriR))
@@ -1077,14 +1005,16 @@ func Ortho(duos, upac2bgw util.Set3D, xpth string, zeno rdf.Zeno) (int, error) {
 			insU := rdf.CompU(stmNS, insid)
 			sb.WriteString(rdf.FormT(insU, ourUs["ins2cls"], clsU))
 			nln++
-			srcU := rdf.FormU(zeno.Uris[src])
+			srcU := rdf.FormU(nss[src])
 			sb.WriteString(rdf.FormT(insU, ourUs["sth2src"], srcU))
 			nln++
 			for setid, _ := range sets {
 				prefix := ""
-				if key == "OrthoDB" { prefix = "?query=" }
-				lastbit := fmt.Sprintf("%s%s", prefix, setid )
-				setU := rdf.FormU(fmt.Sprintf("%s%s", zeno.Uris[src], lastbit))
+				if key == "OrthoDB" {
+					prefix = "?query="
+				}
+				lastbit := fmt.Sprintf("%s%s", prefix, setid)
+				setU := rdf.FormU(fmt.Sprintf("%s%s", nss[src], lastbit))
 				sb.WriteString(rdf.FormT(insU, ourUs["sub2set"], setU))
 				nln++
 			}

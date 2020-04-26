@@ -3,13 +3,12 @@ package bgw
 import (
 	"github.com/vlmir/bgw3/src/util" // pkg 'util'
 	"encoding/json"
-	"fmt"
 	"io/ioutil"
 )
 
 var Orthokeys = map[string]string{
 	"KO":      "keggortho",
-	//"OrthoDB": "orthodb",
+	"OrthoDB": "orthodb",
 }
 
 type Meta struct {
@@ -67,12 +66,10 @@ func (xmap Xmap) Unmarshal(pthj string) error {
 	jdat, err := ioutil.ReadFile(pthj) // []bite
 	if err != nil {
 		// should be in main funcs instead
-		err = fmt.Errorf("%s%s", "bgw.Xmap.Unmarshal:outil.ReadFile: ", err)
-		return err
+		panic(err)
 	}
 	if err = json.Unmarshal(jdat, &xmap); err != nil {
-		err = fmt.Errorf("%s%s", "bgw.Xmap.Unmarshal:json.Unmarshal: ", err)
-		return err
+		panic(err)
 	}
 	return nil
 }

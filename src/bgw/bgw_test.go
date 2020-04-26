@@ -3,7 +3,7 @@ import (
 	"testing"
 )
 
-func TestXmapUnmarshal(t *testing.T) {
+func Test_Unmarshal(t *testing.T) {
 	pth := "../../tdata/"
 	type tt struct {
 		arg1 string
