@@ -1,4 +1,5 @@
 package util
+
 import (
 	"testing"
 )
@@ -176,7 +177,7 @@ func Test_Makemap(t *testing.T) {
 		val1 int
 	}
 	tts := []tt{
-		{pth + "test.idm", 0, 1, "\t", 9},
+		{pth + "test.idm", 0, 1, "\t", 10},
 	}
 	for i, tt := range tts {
 		r, _ := Makemap(tt.arg1, tt.arg2, tt.arg3, tt.arg4)
@@ -190,4 +191,3 @@ func Test_Makemap(t *testing.T) {
 		}
 	}
 }
-

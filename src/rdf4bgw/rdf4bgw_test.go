@@ -5,7 +5,39 @@ import (
 	"testing"
 )
 
-func Test_orthoduo(t *testing.T){
+func Test_tfac2gene(t *testing.T) {
+	type tt struct {
+		arg1 string
+		arg2 string
+		arg3 util.Set2D
+		arg4 map[string]string
+		val  int
+	}
+
+	pth := "../../tdata/"
+	xpth := pth + "output/"
+	var arg3 [5]util.Set2D // txmap
+	arg3[0] = make(util.Set2D)
+	arg3[0].Add("9606", "1")
+	var arg4 [5]map[string]string
+	arg4[0] = map[string]string{"tfacts": "http://www.tfacts.org"}
+	tts := []tt{
+		{pth, xpth, arg3[0], arg4[0], 37},
+	}
+
+	for i, tt := range tts {
+		n, _ := tfac2gene(tt.arg1, tt.arg2, tt.arg3, tt.arg4)
+		if n != tt.val {
+			t.Error(
+				"For test", i+1, ": ", tt.arg1, tt.arg2, tt.arg3,
+				"\n\twant", tt.val,
+				"\n\thave", n,
+			)
+		}
+	}
+}
+
+func Test_ortho(t *testing.T) {
 	type tt struct {
 		arg1 string
 		arg2 string
@@ -27,7 +59,7 @@ func Test_orthoduo(t *testing.T){
 		{pth, xpth, arg3[0], arg4[0], 14},
 	}
 	for i, tt := range tts {
-		n, _ := orthoduo(tt.arg1, tt.arg2, tt.arg3, tt.arg4)
+		n, _ := ortho(tt.arg1, tt.arg2, tt.arg3, tt.arg4)
 		if n != tt.val1 {
 			t.Error(
 				"For test", i+1, ": ", tt.arg3, tt.arg4,
@@ -37,4 +69,3 @@ func Test_orthoduo(t *testing.T){
 		}
 	}
 }
-

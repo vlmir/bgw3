@@ -1,10 +1,19 @@
 package bgw
 
 import (
-	"github.com/vlmir/bgw3/src/util" // pkg 'util'
 	"encoding/json"
+	"github.com/vlmir/bgw3/src/util"
 	"io/ioutil"
 )
+
+type Column struct {
+	Ind1 int
+	Dlm1 string
+	Ind2 int
+	Dlm2 string
+	Ind3 int
+	Key  string
+}
 
 var Orthokeys = map[string]string{
 	"KO":      "keggortho",
@@ -12,15 +21,15 @@ var Orthokeys = map[string]string{
 }
 
 type Meta struct {
-	Signs util.Set3D
 	Refs  util.Set3D
 	Cnfs  util.Set3D
+	Signs util.Set3D
 }
 
 func NewMeta() (meta Meta) {
-	meta.Signs = make(util.Set3D)
 	meta.Refs = make(util.Set3D)
 	meta.Cnfs = make(util.Set3D)
+	meta.Signs = make(util.Set3D)
 	return meta
 }
 
@@ -73,4 +82,3 @@ func (xmap Xmap) Unmarshal(pthj string) error {
 	}
 	return nil
 }
-

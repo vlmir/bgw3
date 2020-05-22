@@ -1,10 +1,11 @@
 package rdf
+
 import (
-	"testing"
 	"github.com/vlmir/bgw3/src/util"
+	"testing"
 )
 
-func Test_FmtURIs(t *testing.T){
+func Test_FmtURIs(t *testing.T) {
 	type tt struct {
 		arg1 util.SliceSet
 		val1 int
@@ -101,4 +102,3 @@ func Test_Capita(t *testing.T) {
 //		}
 //	}
 //}
-

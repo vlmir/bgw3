@@ -1,22 +1,114 @@
 package parse
 
 import (
-	"github.com/vlmir/bgw3/src/bgw" // pkg 'bgw'
-	"github.com/vlmir/bgw3/src/util" // pkg 'util'
 	"bufio"
+	"errors"
 	"fmt"
+	"github.com/vlmir/bgw3/src/bgw"
+	"github.com/vlmir/bgw3/src/util"
+	"log"
 	"os"
 	"strings"
 )
 
+func check(e error) {
+	if e != nil {
+		panic(e)
+	}
+}
+
+// Tab2set converts tabular data into a map keyed on an arbitrary combination of fields
+// Arguments:
+// 1. path to the input file (tab separated)
+// 2. data structure specifying primary key
+// 3. data structure specifying values
+// Returns:
+// 1. map primary key -> secondary key -< values -> counts
+// 2. error
+func Tab2set(rpth string, keys, vals []bgw.Column) (out util.Set3D, err error) {
+	maxind := 0
+	for _, one := range keys {
+		n := one.Ind1
+		if n > maxind {
+			maxind = n
+		}
+		n = one.Ind2
+		if n > maxind {
+			maxind = n
+		}
+	}
+	for _, one := range vals {
+		n := one.Ind1
+		if n > maxind {
+			maxind = n
+		}
+		n = one.Ind2
+		if n > maxind {
+			maxind = n
+		}
+	}
+
+	out = make(util.Set3D)
+	fh, err := os.Open(rpth)
+	check(err)
+	defer fh.Close()
+	scanner := bufio.NewScanner(fh)
+	ln := 0
+	for scanner.Scan() { // by default scans for '\n'
+		line := scanner.Text()
+		ln++
+		if len(line) == 0 {
+			continue
+		}
+		if string(line[0]) == "#" {
+			continue
+		}
+		cells := strings.Split(line, "\t")
+		var ks string
+		if len(cells) < maxind+1 {
+			msg := fmt.Sprintf("%s:%d: tooFewtFields", rpth, ln)
+			panic(errors.New(msg))
+		}
+		for i, k := range keys {
+			items := strings.Split(cells[k.Ind1], k.Dlm1)
+			if i == 0 {
+				ks = items[k.Ind2]
+			} else {
+				ks = fmt.Sprintf("%s%s%s", ks, k.Dlm2, items[k.Ind2])
+			}
+		}
+		for _, v := range vals {
+			items := strings.Split(cells[v.Ind1], v.Dlm1) // can be just one
+			for _, item := range items {
+				parts := strings.Split(item, v.Dlm2) // can be just one
+				if v.Ind3 == -1 {                    // db:id
+					key := v.Key
+					if len(key) == 0 {
+						key = parts[0]
+					}
+					out.Add(ks, key, parts[v.Ind2])
+				} else {
+					for _, part := range parts {
+						if len(part) == 0 {
+							continue
+						}
+						out.Add(ks, v.Key, part)
+					}
+				}
+			}
+		}
+	}
+	return out, nil
+}
+
 // parses the output of the system 'ls' utility
 // any string can be used as a basename-extension separator
 /*
-func Basenames(pth, dlm string) (set util.Set2D, err error) {
+func Basenames(rpth, dlm string) (set util.Set2D, err error) {
 	//set := make(util.Set2D)
 	keyind := 0
 	valind := 1
-	fh, err := os.Open(pth)
+	fh, err := os.Open(rpth)
 	if err != nil {return set, err}
 	defer fh.Close()
 	scanner := bufio.NewScanner(fh)
@@ -32,12 +124,10 @@ func Basenames(pth, dlm string) (set util.Set2D, err error) {
 }
 */
 
-func Idmap(pth string, srcs map[string]string, ind1, ind2, ind3 int) (util.Set3D, error) {
-	set := make(util.Set3D)
-	fh, err := os.Open(pth)
-	if err != nil {
-		return set, err
-	}
+func Idmap(rpth string, srcs map[string]string, ind1, ind2, ind3 int) (util.Set3D, error) {
+	out := make(util.Set3D)
+	fh, err := os.Open(rpth)
+	check(err)
 	defer fh.Close()
 	scanner := bufio.NewScanner(fh)
 	for scanner.Scan() { // by default scans for '\n'
@@ -52,19 +142,16 @@ func Idmap(pth string, srcs map[string]string, ind1, ind2, ind3 int) (util.Set3D
 		key1 := strings.Replace(cells[ind1], "\"", "''", -1) // present e.g. in 44689
 		key2 := strings.Replace(cells[ind2], "\"", "''", -1) // present e.g. in 44689
 		key3 := strings.Replace(cells[ind3], "\"", "''", -1) // present e.g. in 44689
-		set.Add(key1, key2, key3)
+		out.Add(key1, key2, key3)
 	}
-	return set, nil
+	return out, nil
 }
 
-func Upidmap(pth1 string, idmkeys map[string]string) (upcas util.Set2D, upacs, gnms util.Set3D, err error) {
-	upcas = make(util.Set2D)
-	upacs = make(util.Set3D)
-	gnms = make(util.Set3D)
-	fh1, err := os.Open(pth1)
-	if err != nil {
-		return upcas, upacs, gnms, err
-	}
+func Upidmap(pthR string, idmkeys map[string]string) (upac2xrf, gnm2upca util.Set3D, err error) {
+	upac2xrf = make(util.Set3D)
+	gnm2upca = make(util.Set3D)
+	fh1, err := os.Open(pthR)
+	check(err)
 	defer fh1.Close()
 	scanner := bufio.NewScanner(fh1)
 	for scanner.Scan() { // by default scans for '\n'
@@ -77,17 +164,17 @@ func Upidmap(pth1 string, idmkeys map[string]string) (upcas util.Set2D, upacs, g
 			continue
 		} // filtering by idmkeys
 		upac := cells[0]
-		xrf := strings.Replace(cells[2], "\"", "", -1) // present e.g. in 44689
-		upacs.Add(upac, key, xrf)
+		// TODO see if the replacement below is acceptable
+		xrf := strings.Replace(cells[2], "\"", "''", -1) // present e.g. in 44689
+		upac2xrf.Add(upac, key, xrf)
 		upca := strings.Split(upac, "-")[0]
-		//util.Add2keys(upcas, upca, upac)
-		upcas.Add(upca, upac)
-		upacs.Add(upca, "upac", upac)
+		upac2xrf.Add(upca, "upac", upac)
+		upac2xrf.Add(upac, "upca", upca)
 		if key == "gnm" {
-			gnms.Add(xrf, "upac", upac)
+			gnm2upca.Add(xrf, "upca", upca)
 		}
 	}
-	return upcas, upacs, gnms, nil
+	return upac2xrf, gnm2upca, nil
 }
 
 /*
@@ -111,105 +198,105 @@ UP000005640: Chromosome 1, UP000005640: Chromosome 12, UP000005640: Chromosome 6
 UP000005640: Chromosome 1, UP000005640: Chromosome 17
 */
 // Entry   Entry name      Organism        Organism ID     Protein names   Proteomes       PubMed ID       Annotation
-func Updat(pth0 string, upcas util.Set2D) (updat, txns util.Set3D, err error) {
+func Updat(pthR string, upacs util.Set3D) (updat, txns util.Set3D, err error) {
 	updat = make(util.Set3D)
 	txns = make(util.Set3D)
-	fh0, err := os.Open(pth0)
-	if err != nil {
-		panic(err)
-	}
-	defer fh0.Close()
-	scanner := bufio.NewScanner(fh0)
-	Unplaced := 0
-	Genome := 0
-	WGS := 0
-	multiChrom := 0
+	fhR, err := os.Open(pthR)
+	check(err)
+	defer fhR.Close()
+	scanner := bufio.NewScanner(fhR)
 	multiPome := 0
-	notInBgw := 0
-	/// by default scans for '\n'
+	noProteome := 0
+	multiProtChrom := 0
+	irregularProtChrom := 0
+	notInRefProt := 0
 	for scanner.Scan() {
+		/// by default scans for '\n'
+		// one line per UniProt canonical accession
 		cells := strings.Split(scanner.Text(), "\t")
 		if len(cells) < 8 {
-			notInBgw++
-			continue
+			continue// does not happen
 		}
 		txid := cells[3]
 		upca := cells[0]
-		_, ok := upcas[upca] // RefProt ACs
+		_, ok := upacs[upca] // RefProt ACs
 		if !ok {
-			notInBgw++
+			notInRefProt++
 			continue
 		} // filtering by RefProt
 		onedat := make(util.Set2D)
-		pomes := make(util.Set2D)
+		ptm2chr := make(util.Set2D)
 		/// Attn: multiple entries do occur due to diff in chromosomes !!
-		items := strings.Split(cells[5], ", ") // proteome: chromosome
-		for _, item := range items {
-			bits := strings.Split(item, ": ") // proteome: chromosome
+		if len(cells[5]) == 0 {
+			continue// does not happen
+		}
+		ptmchrs := strings.Split(cells[5], ", ") // proteome: chromosome
+		if len(ptmchrs) == 0 {
+			continue// does not happen
+		}
+		if len(ptmchrs) > 1 {
+			multiProtChrom++// happens in all the 25 taxa; 10230 in 367110
+		}
+		/// Processing all Proteome:Chromosome values
+		for _, ptmchr := range ptmchrs {
+			bits := strings.Split(ptmchr, ": ") // proteome: chromosome
 			if len(bits) != 2 {
-				continue
+				//fmt.Printf("parse.Updat:%s: IrregularProtChrom:%v: skipped\n", txid, bits)
+				// "Linkage Group I" "Linkage Group II" etc in 367110 
+				// "gap-filling sequence" in 284812
+				irregularProtChrom++
+				continue// happens in 367110 and 284812
 			}
 			pomeid := bits[0]
 			come := bits[1]
-			// other vals: 'Unassembled WGS sequence', 'Geneome assembly'
 			chrmbits := strings.Split(come, " ")
-			if len(chrmbits) > 2 {
-				WGS++
-				continue
-			} // skipping 'Unassembled WGS sequence'
-			// a simple minded way:
-			//come = strings.Replace(come, " ", "-", -1)
-			//pomes.Add(pomeid, come)
-			// alternatovely:
 			chrmbit := chrmbits[0]
-			if chrmbit == "Unplaced" {
-				Unplaced++
-				continue
-			}
-			if chrmbit == "Genome" {
-				Genome++
-				continue
-			}
-			trgs := []string{"Chromosome", "Mitochondrion", "Chloroplast"}
+			trgs := []string{"Chromosome", "Mitochondrion", "Chloroplast", "Apicoplast", "Plasmid"}
 			cnt := 0
 			for _, trg := range trgs {
 				if trg == chrmbit {
 					cnt++
 				}
 			}
-			if cnt > 1 {
-				multiChrom++
-			}
 			if cnt != 1 {
+				//fmt.Printf("parse.Updat:%s: IrregularChrom:%v: skipped\n", txid, come)
+			// junk like 'Unassembled WGS sequence', 'Geneome assembly', 'Unplaced' etc
 				continue
 			}
 			comeid := ""
-			if len(chrmbits) == 2 { // "e.g. 'Chromosome 1'"
+			switch chrmbit {
+			case "Chromosome": // "e.g. 'Chromosome 1'"
 				chrnbr := chrmbits[1]
 				if len(chrnbr) == 1 {
-					chrnbr = strings.Join([]string{"0", chrnbr}, "")
+					// chrnbr = strings.Join([]string{"0", chrnbr}, "")
 				}
 				comeid = strings.Join([]string{strings.ToLower(chrmbits[0][0:3]), chrnbr}, "-")
-			} else if len(chrmbits) == 1 {
-				comeid = strings.ToLower(chrmbits[0][0:6]) // e.g. Mitochondrion
-			} else {
-				continue
+			case "Mitochondrion":
+				comeid = strings.ToLower(chrmbits[0][0:6])
+			case "Chloroplast":
+				comeid = strings.ToLower(chrmbits[0][0:6])
+			case "Apicoplast":
+				// "Apicoplast A" "Apicoplat B" in 36329
+				comeid = fmt.Sprintf("%s-%s", strings.ToLower(chrmbits[0][0:5]), chrmbits[1])
+			case "Plasmid":
+				// "Plasmid 2-micron" in 559292 S.cerevisiae
+				lastbit := strings.Replace(chrmbits[1], "-", "", -1)
+				comeid = fmt.Sprintf("%s-%s", strings.ToLower(chrmbits[0][0:4]), lastbit[0:3])
 			}
-			if comeid == "" {
-				continue
+			if comeid != "" {
+				ptm2chr.Add(pomeid, comeid)
 			}
-			pomes.Add(pomeid, comeid)
-		}
-		if len(pomes) > 1 {
+		}// one Proteome:Chromosome value
+		if len(ptm2chr) > 1 {
 			multiPome++
 		}
-		if len(pomes) != 1 {
-			notInBgw++
+		if len(ptm2chr) == 0 {
+			noProteome++
 			continue
 		}
-		pome := pomes.Keys()[0]
+		pome := ptm2chr.Keys()[0]
 		onedat.Add("pome", pome)
-		for come := range pomes[pome] {
+		for come := range ptm2chr[pome] {
 			come = strings.Replace(come, " ", "-", 1)
 			onedat.Add("come", come)
 			txns.Add(txid, "come", come)
@@ -224,17 +311,41 @@ func Updat(pth0 string, upcas util.Set2D) (updat, txns util.Set3D, err error) {
 		txns.Add(txid, "spnm", cells[2]) // NEEDED !!
 		txns.Add(txid, "pome", pome)
 		updat[upca] = onedat
+	}// one UniProt canonical accession
+	txids := txns.Keys()
+	msg := ""
+	if len(txids) != 1 {
+		msg = fmt.Sprintf("MultipleTaxa: %v", txids)
+		panic(errors.New(msg))
 	}
-	fmt.Println("parse.Updat():notInBgw:", notInBgw)
-	fmt.Println("parse.Updat():Unplaced:", Unplaced)
-	fmt.Println("parse.Updat():Genome:", Genome)
-	fmt.Println("parse.Updat():WGS:", WGS)
-	fmt.Println("parse.Updat():multiChrom:", multiChrom) // all: 0
-	fmt.Println("parse.Updat():multiPome:", multiPome)   // all: 0, 1, 65
+	if noProteome != 0 {
+		msg = fmt.Sprintf("parse.Updat():%v: noProteome, skipped: %d", txids, noProteome)
+		fmt.Printf("%s\n", msg)
+	}
+	if irregularProtChrom != 0 {
+		// 10231 in 367110, 5 in 284812
+		msg = fmt.Sprintf("parse.Updat():%v: irregularProtChrom, skipped: %d", txids, irregularProtChrom)
+		fmt.Printf("%s\n", msg)
+	}
+	if notInRefProt != 0 {
+		msg = fmt.Sprintf("parse.Updat():%v: notInRefProt, skipped: %d", txids, notInRefProt)
+		fmt.Printf("%s\n", msg)
+	}
+	if multiProtChrom != 0 {
+		// occurs in all the 25 taxa, normally limited number though goes upto 10230 in 367110
+		msg = fmt.Sprintf("parse.Updat():%v: Warning: multiProtChrom : %d", txids, multiProtChrom)
+		fmt.Printf("%s\n", msg)
+	}
+	if multiPome != 0 {
+		// only once in 4588
+		msg = fmt.Sprintf("parse.Updat():%v: Warning: multiPome : %d", txids, multiPome)
+		fmt.Printf("%s\n", msg)
+	}
 	return updat, txns, nil
 }
 
-func Upvar(pth0 string, gsmap util.Set3D) (pairs util.Set3D) {
+func Upvar(pthR string, gsym2bgw util.Set3D) (duos util.Set3D) {
+	// gsym2bgw is used only for filtering
 	/*
 	 AARS	  P49588	 VAR_063527  p.Arg329His	Disease	   rs267606621 Charcot-Marie-Tooth disease 2N(CMT2N) [MIM:613287]
 	  0 gene name
@@ -245,15 +356,13 @@ func Upvar(pth0 string, gsmap util.Set3D) (pairs util.Set3D) {
 	 62 '-' possible
 	 77 description '-' possible
 	*/
-	srcL := "uniprot"
-	srcR := "omim"
-	fh0, err := os.Open(pth0)
-	if err != nil {
-		return
-	}
-	defer fh0.Close()
-	scanner := bufio.NewScanner(fh0)
-	pairs = make(util.Set3D)
+	nsL := "hgncsymb"
+	nsR := "omim"
+	fhR, err := os.Open(pthR)
+	check(err)
+	defer fhR.Close()
+	scanner := bufio.NewScanner(fhR)
+	duos = make(util.Set3D)
 	notInBgw := 0
 	for scanner.Scan() { // by default scans for '\n'
 		line := scanner.Text()
@@ -266,12 +375,12 @@ func Upvar(pth0 string, gsmap util.Set3D) (pairs util.Set3D) {
 		} // filtering, now all lines longer 78
 		//oriL := strings.TrimSpace(line[10:20])
 		oriL := strings.TrimSpace(line[0:9]) // Gene Symbol
-		_, ok := gsmap[oriL]
+		_, ok := gsym2bgw[oriL]
 		if !ok {
 			notInBgw++
 			continue
 		}
-		idL := fmt.Sprintf("%s%s%s", srcL, "!", oriL)
+		idL := fmt.Sprintf("%s%s%s", nsL, "!", oriL)
 		// TODO consider splitting on '[' and ']'
 		upca := strings.TrimSpace(line[10:20])
 		nmR := strings.TrimSpace(line[77:])
@@ -283,16 +392,16 @@ func Upvar(pth0 string, gsmap util.Set3D) (pairs util.Set3D) {
 			continue
 		} // no MIM ID
 		oriR := strings.TrimSpace(strings.Split(bits[1], "]")[0])
-		idR := fmt.Sprintf("%s%s%s", srcR, "!", oriR)
+		idR := fmt.Sprintf("%s%s%s", nsR, "!", oriR)
 		if idR == "" {
 			continue
 		}
 		pairid := fmt.Sprintf("%s%s%s", idL, "--", idR)
-		pairs.Add(pairid, "nmR", nmR)
-		pairs.Add(pairid, "upca", upca)
+		duos.Add(pairid, "nmR", nmR)
+		duos.Add(pairid, "upca", upca)
 	}
-	fmt.Println("parse.Upvar():notInBgw:", notInBgw)
-	return pairs
+	log.Println("parse.Upvar(): notInBgw:", notInBgw)
+	return duos
 }
 
 /*
@@ -305,7 +414,7 @@ NOT|contributes_to
 colocalizes_with
 contributes_to
 */
-func Gaf(pth0 string, upac2bgw util.Set3D) (bp, cc, mf util.Set3D) {
+func Gaf(pthR string, upac2bgw util.Set3D) (bp, cc, mf util.Set3D) {
 	ourppys := map[string]string{
 		"C": "gp2cc",
 		"F": "gp2mf",
@@ -316,12 +425,10 @@ func Gaf(pth0 string, upac2bgw util.Set3D) (bp, cc, mf util.Set3D) {
 	bp = make(util.Set3D)
 	cc = make(util.Set3D)
 	mf = make(util.Set3D)
-	fh0, err := os.Open(pth0)
-	if err != nil {
-		return
-	}
-	defer fh0.Close()
-	scanner := bufio.NewScanner(fh0)
+	fhR, err := os.Open(pthR)
+	check(err)
+	defer fhR.Close()
+	scanner := bufio.NewScanner(fhR)
 	notInBgw := 0
 	for scanner.Scan() { // by default scans for '\n'
 		cells := strings.Split(scanner.Text(), "\t")
@@ -378,7 +485,7 @@ func Gaf(pth0 string, upac2bgw util.Set3D) (bp, cc, mf util.Set3D) {
 			}
 		}
 	}
-	fmt.Println("parse.Gaf():notInBgw:", notInBgw)
+	log.Println("parse.Gaf(): notInBgw:", notInBgw)
 	return bp, cc, mf
 }
 
@@ -423,7 +530,7 @@ part_of
 		5: []string{"eco", "|"},
 	}
 */
-func Gpa(pth0 string, upac2bgw util.Set3D) (pairs util.Set3D) {
+func Gpa(pthR string, upac2bgw util.Set3D) (duos util.Set3D) {
 	ourppys := map[string]string{
 		"part_of":     "gp2cc",
 		"enables":     "gp2mf",
@@ -431,13 +538,11 @@ func Gpa(pth0 string, upac2bgw util.Set3D) (pairs util.Set3D) {
 	}
 	srcL := "uniprot"
 	srcR := "obo"
-	pairs = make(util.Set3D)
-	fh0, err := os.Open(pth0)
-	if err != nil {
-		return
-	}
-	defer fh0.Close()
-	scanner := bufio.NewScanner(fh0)
+	duos = make(util.Set3D)
+	fhR, err := os.Open(pthR)
+	check(err)
+	defer fhR.Close()
+	scanner := bufio.NewScanner(fhR)
 	notInBgw := 0
 	for scanner.Scan() { // by default scans for '\n'
 		cells := strings.Split(scanner.Text(), "\t")
@@ -475,19 +580,19 @@ func Gpa(pth0 string, upac2bgw util.Set3D) (pairs util.Set3D) {
 				refs = append(refs, refid)
 			}
 		}
-		pairs.Add(pairid, "ppy", ppy)
-		pairs.Add(pairid, "eco", eco)
+		duos.Add(pairid, "ppy", ppy)
+		duos.Add(pairid, "eco", eco)
 		for _, ref := range refs {
-			pairs.Add(pairid, "ref", ref)
+			duos.Add(pairid, "ref", ref)
 		}
 	}
-	fmt.Println("parse.Gpa():notInBgw:", notInBgw)
-	return pairs
+	log.Println("parse.Gpa(): notInBgw:", notInBgw)
+	return duos
 }
 
-func Mitab(pth0 string, upac2bgw util.Set3D) (pairs util.Set3D) {
+func Mitab(pthR string, upac2bgw util.Set3D) (duos util.Set3D) {
 	tsvkeys := map[int][]string{
-		// NB: 0:1 pairs are NOT inique !
+		// NB: 0:1 duos are NOT inique !
 		//0: []string{"upacA", "|"}, // 9606: all single
 		//1: []string{"upacB", "|"}, // 9606: all single
 		6:  {"mtds", "|"}, // 9606: all single
@@ -499,15 +604,13 @@ func Mitab(pth0 string, upac2bgw util.Set3D) (pairs util.Set3D) {
 		//19: []string{"xprlBs", "|"}, // 9606: all single
 		//28: []string{"hosts", "|"}, // TODO expunge
 	}
-	pairs = make(util.Set3D)
-	fh0, err := os.Open(pth0)
-	if err != nil {
-		return
-	}
-	defer fh0.Close()
+	duos = make(util.Set3D)
+	fhR, err := os.Open(pthR)
+	check(err)
+	defer fhR.Close()
 	srcL := "uniprot"
 	srcR := "uniprot"
-	scanner := bufio.NewScanner(fh0)
+	scanner := bufio.NewScanner(fhR)
 	notInBgw := 0
 	for scanner.Scan() { // by default scans for '\n'
 		cells := strings.Split(scanner.Text(), "\t")
@@ -559,150 +662,25 @@ func Mitab(pth0 string, upac2bgw util.Set3D) (pairs util.Set3D) {
 			dlm := slice[1]
 			bits := strings.Split(cell, dlm)
 			for _, bit := range bits {
-				pairs.Add(pairid, key1, bit)
+				duos.Add(pairid, key1, bit)
 			}
 		}
 	}
-	fmt.Println("parse.Mitab():notInBgw:", notInBgw)
-	return pairs
+	log.Println("parse.Mitab(): notInBgw:", notInBgw)
+	return duos
 }
 
-func Tftg(pth0 string, upac2bgw util.Set3D, gsmap util.Set3D) (util.Set3D, bgw.Meta) {
-	pairs := make(util.Set3D)
-	meta := bgw.NewMeta()
-	fh0, err := os.Open(pth0)
-	if err != nil {
-		return pairs, meta
-	} // needed in case of unnamed returned vars
-	defer fh0.Close()
-	scanner := bufio.NewScanner(fh0)
-	pairs = make(util.Set3D)
-	notInBgw := 0
-	for scanner.Scan() { // by default scans for '\n'
-		line := scanner.Text()
-		if len(line) == 0 {
-			continue
-		}
-		cells := strings.Split(line, "\t")
-		if len(cells) < 28 {
-			fmt.Println("Truncated data line for:", cells[0])
-			continue
-		}
-		bits := strings.Split(cells[0], ":") // TF:TG
-		tfnm := bits[0]                      // including AP1, NFKB, etc !
-		tgnm := bits[1]
-		_, ok := gsmap[tgnm]
-		if !ok {
-			notInBgw++
-			continue
-		}
-		pairid := fmt.Sprintf("%s%s%s", tfnm, "--", tgnm)
-		bits = strings.Split(cells[1], "|") // UP ACs, currently for AP1 and NFKB
-		if len(bits) == 0 {
-			continue
-		}
-		for _, val := range bits {
-			_, ok := upac2bgw[val]
-			if !ok {
-				notInBgw++
-				continue
-			} // essentially filtering by RefProt
-			pairs.Add(pairid, "upca", val)
-		}
-		/*
-			Metadata
-		*/
-		src := "extri"
-		bits = strings.Split(cells[4], ";")
-		for _, val := range bits {
-			if val != "" {
-				meta.Refs.Add(pairid, src, val)
-			}
-		}
-		bits = strings.Split(cells[3], ";")
-		for _, val := range bits {
-			if val != "" {
-				meta.Cnfs.Add(pairid, src, val)
-			}
-		}
-		src = "htri"
-		bits = strings.Split(cells[8], ";")
-		for _, val := range bits {
-			if val != "" {
-				meta.Refs.Add(pairid, src, val)
-			}
-		}
-		bits = strings.Split(cells[9], ";")
-		for _, val := range bits {
-			if val != "" {
-				meta.Cnfs.Add(pairid, src, val)
-			}
-		}
-		src = "trrust"
-		bits = strings.Split(cells[12], ";")
-		for _, val := range bits {
-			if val != "" {
-				meta.Refs.Add(pairid, src, val)
-			}
-		}
-		bits = strings.Split(cells[11], ";")
-		for _, val := range bits {
-			if val != "" {
-				meta.Signs.Add(pairid, src, val)
-			}
-		}
-		src = "signor"
-		bits = strings.Split(cells[27], ";")
-		for _, val := range bits {
-			if val != "" {
-				meta.Refs.Add(pairid, src, val)
-			}
-		}
-		bits = strings.Split(cells[26], ";")
-		for _, val := range bits {
-			if val != "" {
-				meta.Signs.Add(pairid, src, val)
-			}
-		}
-		src = "tfacts"
-		bits = strings.Split(cells[17], ";")
-		for _, val := range bits {
-			if val != "" {
-				meta.Refs.Add(pairid, src, val)
-			}
-		}
-		bits = strings.Split(cells[14], ";")
-		for _, val := range bits {
-			if val != "" {
-				meta.Signs.Add(pairid, src, val)
-			}
-		}
-		bits = strings.Split(cells[18], ";")
-		for _, val := range bits {
-			if val != "" {
-				meta.Cnfs.Add(pairid, src, val)
-			}
-		}
-		src = "goa"
-		bits = strings.Split(cells[20], ";")
-		for _, val := range bits {
-			if val != "" {
-				meta.Signs.Add(pairid, src, val)
-			}
-		}
-		src = "intact"
-		bits = strings.Split(cells[22], ";")
-		for _, val := range bits {
-			if val != "" {
-				meta.Refs.Add(pairid, src, val)
-			}
-		}
-	}
-	fmt.Println("parse.Tftg():notInBgw:", notInBgw)
-	return pairs, meta
-}
+// Parses a tab delimited file containing relations between human transcription factors
+// and their known target genes extracted from multiple sources (Miguel)
+// Arguments:
+// 1. path to the data file
+// 2. mapping from UniProt Accessions to BGW IDs
+// 2. mapping from HGNC Symbols to BGW IDs
+// Returns:
+// 1. data structure containing core data
+// 2. data structure containing metadata
 
-func orthosolo (datdir, txid string, tx2pm util.Set2D, idmkeys map[string]string) (util.Set3D, error) {
+func orthosolo(datdir, txid string, tx2pm util.Set2D, idmkeys map[string]string) (util.Set3D, error) {
 	out := make(util.Set3D)
 	subdir := "idmapping/"
 	ext := ".idmapping"
@@ -711,7 +689,7 @@ func orthosolo (datdir, txid string, tx2pm util.Set2D, idmkeys map[string]string
 		pome := fmt.Sprintf("%s%s%s", pome, "_", txid)
 		pth := fmt.Sprintf("%s%s%s%s", datdir, subdir, pome, ext) // read
 		dat, err := Idmap(pth, idmkeys, 1, 2, 0)
-		if err != nil {return out, err}
+		check(err)
 		for src, all := range dat {
 			for id, one := range all {
 				for upac, _ := range one {
@@ -722,24 +700,32 @@ func orthosolo (datdir, txid string, tx2pm util.Set2D, idmkeys map[string]string
 	}
 	return out, nil
 }
-func Orthoduo (datdir, txidL, txidR string, tx2pm util.Set2D, idmkeys map[string]string) (util.Set3D, error) {
+func Orthoduo(datdir, txidL, txidR string, tx2pm util.Set2D, idmkeys map[string]string) (util.Set3D, error) {
 	out := make(util.Set3D)
 	outL, err := orthosolo(datdir, txidL, tx2pm, idmkeys)
-	if err != nil {return out, err}
+	check(err)
 	outR, err := orthosolo(datdir, txidR, tx2pm, idmkeys)
-	if err != nil {return out, err}
+	check(err)
 	for src, _ := range idmkeys {
 		allL, ok := outL[src]
-		if !ok {continue}
+		if !ok {
+			continue
+		}
 		allR, ok := outR[src]
-		if !ok {continue} // now data from 'src' is present in both taxa
-		for id, oneL := range allL{
+		if !ok {
+			continue
+		} // now data from 'src' is present in both taxa
+		for id, oneL := range allL {
 			oneR, ok := allR[id]
-			if !ok {continue} // only shared clusters
+			if !ok {
+				continue
+			} // only shared clusters
 			for upLac, _ := range oneL {
 				for upRac, _ := range oneR {
-					if upLac >= upRac { continue } // skipping diagonal and symmetrical
-					duoid := fmt.Sprintf("%s%s%s", upLac, "--", upRac)
+					if upLac >= upRac {
+						continue
+					} // skipping diagonal and symmetrical
+					duoid := fmt.Sprintf("uniprot!%s--uniprot!%s", upLac, upRac)
 					out.Add(duoid, src, id)
 				}
 			}
@@ -747,4 +733,3 @@ func Orthoduo (datdir, txidL, txidR string, tx2pm util.Set2D, idmkeys map[string
 	}
 	return out, nil
 }
-

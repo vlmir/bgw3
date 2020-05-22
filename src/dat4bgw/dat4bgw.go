@@ -1,11 +1,12 @@
 package main
 
 import (
-	"github.com/vlmir/bgw3/src/util"
-	"github.com/vlmir/bgw3/src/parse"
+	"bufio"
+	"errors"
 	"flag"
 	"fmt"
-	"errors"
+	"github.com/vlmir/bgw3/src/parse"
+	"github.com/vlmir/bgw3/src/util"
 	"io"
 	"log"
 	"net/http"
@@ -14,6 +15,140 @@ import (
 	"strings"
 	"time"
 )
+
+func main() {
+	aP := flag.Bool("a", false, "download [a]ll") // should not normally be used
+	oP := flag.Bool("o", false, "download [o]ntologies")
+	OP := flag.Bool("O", false, "don't download [o]ntologies")
+	mP := flag.Bool("m", false, "download ID [m]appings")
+	MP := flag.Bool("M", false, "dont't download ID [m]appings")
+	iP := flag.Bool("i", false, "download molecular [i]ntaraction data")
+	uP := flag.Bool("u", false, "download [u]niprot data")
+	gP := flag.Bool("g", false, "download [g]ene ontology annotations")
+	//tP := flag.Bool("t",, false, "filter [t]ranscription factor - target gene data")
+	lP := flag.String("l", "./proteomes.lst", "proteome [l]ist")
+	sP := flag.String("s", "./taxa.ls", "[s]elected taxa")
+	var cnt int
+	flag.Parse()
+	if !flag.Parsed() {
+		log.Fatalln("failed to parse flags")
+	}
+	args := flag.Args()
+	cnt = len(args)
+	if cnt < 1 {
+		log.Fatalln("Expecting more arguments than ", cnt)
+	}
+	pth0 := args[0] // path to data directory (with a trailing '/')
+	pth1 := *lP     // read list of Reference Proteomes TODO write at Step0
+	pthx := *sP     // path to a list of selected taxa
+	log.Println("Started with args:", pth0, pth1, pthx)
+	n := 0
+
+	/// Step0 ///
+	// independent
+	if (*aP || *oP) && !*OP {
+		start := time.Now()
+		// Done with ontos in 54m5.856446087s
+		getAllOnto(pth0)
+		log.Println("Done with ontos in", time.Since(start))
+	}
+
+	mitmap, err := util.Makemap(pthx, 0, 1, ".")
+	if err != nil {
+		log.Fatalln("main:", err)
+	}
+	n = len(mitmap)
+	if n == 0 {
+		log.Fatalln("main:Empty map:", pthx)
+	}
+	log.Println("mitmap:", n)
+	/// Step1 ///
+	if (*aP || *mP) && !*MP {
+		// takes ~35min
+		//uri := "ftp://ftp.uniprot.org/pub/databases/uniprot/current_release/knowledgebase/reference_proteomes/Eukaryota/*.idmapping.gz"
+		/*
+			var cmd *exec.Cmd
+			cmd = exec.Command("pwd") // Attn: all flags separately!
+			cmd.Stdout = os.Stdout
+			cmd.Stderr = os.Stderr
+			err := cmd.Run()
+		*/
+		for _, txid := range mitmap.Keys() {
+			uri := "ftp://ftp.uniprot.org/pub/databases/uniprot/current_release/knowledgebase/reference_proteomes/Eukaryota/*_" + txid + ".idmapping.gz"
+			if err := Wget(uri); err != nil {
+				log.Println("main.main(): Failed to download idmapping data for: ", txid, err)
+				continue
+			}
+		}
+		// exec doesn't understand globbing...
+		// TODO genereate pth1 here
+	}
+
+	// Attn: Full stop here !!
+
+	/// Step2 ///
+	if *aP || *iP {
+		start := time.Now()
+		/*
+			tx2pm, err := util.Makemap(pth1, 1, 0, "_")
+			if err != nil { log.Fatalln("main:", err) }
+			n = len(tx2pm)
+			if n == 0 { log.Fatalln("main:Empty map:", pth1) }
+			log.Println("tx2pm:", n)
+			getAllIntact(pth0, tx2pm)
+		*/
+		getAllIntact(pth0, mitmap)
+		log.Println("Done with IntAct in", time.Since(start))
+		// TODO generate pthx here
+	}
+
+	// Attn: Full stop here !!
+
+	/// Step3 ///
+	if *aP || *uP {
+		mitmap, err := util.Makemap(pthx, 0, 1, ".")
+		if err != nil {
+			log.Fatalln("main:", err)
+		}
+		start := time.Now()
+		n = len(mitmap)
+		if n == 0 {
+			log.Fatalln("main:Empty map:", pthx)
+		}
+		log.Println("mitmap:", n)
+
+		uri := "ftp://ftp.uniprot.org/pub/databases/uniprot/current_release/knowledgebase/variants/humsavar.txt"
+		expth := pth0 + "uniprot/9606.var"
+		if err := Wget(uri, expth); err != nil {
+			log.Println("main:Wget: Failed to download:", expth, err)
+		}
+
+		getAllUniprot(pth0, mitmap)
+		log.Println("Done with UniProt in", time.Since(start))
+	}
+
+	if *aP || *gP {
+		start := time.Now()
+		uri := "ftp://ftp.ebi.ac.uk/pub/databases/GO/goa/proteomes/proteome2taxid"
+		expth := pth0 + "gafpomes.tsv"
+		if err := Wget(uri, expth); err != nil {
+			log.Println("main:Wget: Failed to download:", expth, err)
+		}
+		gafmap, err := util.Makemap(expth, 1, 2, "\t") // counting from 0
+		if err != nil {
+			log.Fatalln("main:", err)
+		}
+		n = len(gafmap)
+		if n == 0 {
+			log.Fatalln("main:Empty map:", expth)
+		}
+		log.Println("gafmap:", n)
+
+		wgetAllGoa(pth0, mitmap, gafmap)
+		//getAllGoa(pth0, mitmap, tx2pm)
+		log.Println("Done with Goa in", time.Since(start))
+	}
+}
 
 // from: https://siongui.github.io/2018/03/04/go-run-wget-via-shell-command/
 //func Wget(url, filepath string) error {
@@ -245,135 +380,45 @@ func getAllOnto(datdir string) {
 	}
 }
 
-func main() {
-	aP := flag.Bool("a", false, "download [a]ll") // should not normally be used
-	oP := flag.Bool("o", false, "download [o]ntologies")
-	OP := flag.Bool("O", false, "don't download [o]ntologies")
-	mP := flag.Bool("m", false, "download ID [m]appings")
-	MP := flag.Bool("M", false, "dont't download ID [m]appings")
-	iP := flag.Bool("i", false, "download molecular [i]ntaraction data")
-	uP := flag.Bool("u", false, "download [u]niprot data")
-	gP := flag.Bool("g", false, "download [g]ene ontology annotations")
-	lP := flag.String("l", "./proteomes.lst", "proteome [l]ist")
-	sP := flag.String("s", "./taxa.ls", "[s]elected taxa")
-	var cnt int
-	flag.Parse()
-	if !flag.Parsed() {
-		log.Fatalln("failed to parse flags")
+func check(e error) {
+	if e != nil {
+		panic(e)
 	}
-	args := flag.Args()
-	cnt = len(args)
-	if cnt < 1 {
-		log.Fatalln("Expecting more arguments than ", cnt)
-	}
-	pth0 := args[0] // path to data directory (with a trailing '/')
-	pth1 := *lP     // read list of Reference Proteomes TODO write at Step0
-	pthx := *sP     // path to a list of selected taxa
-	log.Println("Started with args:", pth0, pth1, pthx)
-	n := 0
+}
 
-	/// Step0 ///
-	// independent
-	if (*aP || *oP) && !*OP {
-		start := time.Now()
-		// Done with ontos in 54m5.856446087s
-		getAllOnto(pth0)
-		log.Println("Done with ontos in", time.Since(start))
-	}
-
-	mitmap, err := util.Makemap(pthx, 0, 1, ".")
-	if err != nil {
-		log.Fatalln("main:", err)
-	}
-	n = len(mitmap)
-	if n == 0 {
-		log.Fatalln("main:Empty map:", pthx)
-	}
-	log.Println("mitmap:", n)
-	/// Step1 ///
-	if (*aP || *mP) && !*MP {
-		// takes ~35min
-		//uri := "ftp://ftp.uniprot.org/pub/databases/uniprot/current_release/knowledgebase/reference_proteomes/Eukaryota/*.idmapping.gz"
-		/*
-			var cmd *exec.Cmd
-			cmd = exec.Command("pwd") // Attn: all flags separately!
-			cmd.Stdout = os.Stdout
-			cmd.Stderr = os.Stderr
-			err := cmd.Run()
-		*/
-		for _, txid := range mitmap.Keys() {
-			uri := "ftp://ftp.uniprot.org/pub/databases/uniprot/current_release/knowledgebase/reference_proteomes/Eukaryota/*_" + txid + ".idmapping.gz"
-			if err := Wget(uri); err != nil {
-				log.Println("main.main(): Failed to download idmapping data for: ", txid, err)
-				continue
+func x1tftg(pthR, pthW string, cols [5]int) error {
+	fhR, err := os.Open(pthR)
+	check(err)
+	defer fhR.Close()
+	fhW, err := os.Create(pthW)
+	check(err)
+	defer fhW.Close()
+	scanner := bufio.NewScanner(fhR)
+	for scanner.Scan() { // by default scans for '\n'
+		line := scanner.Text()
+		if len(line) == 0 {
+			continue
+		}
+		if string(line[0]) == "#" {
+			continue
+		}
+		cells := strings.Split(line, "\t")
+		n := len(cells)
+		m := 37
+		if n < m {
+			msg := "Want at least: %d cells, have: %d for: %s in %s"
+			fmt.Printf(msg, m, n, cells[0], pthR)
+			continue
+		}
+		nl := cells[0]
+		for _, i := range cols {
+			if i == 0 {
+				nl = strings.Join([]string{nl, ""}, "\t")
+			} else {
+				nl = strings.Join([]string{nl, cells[i-1]}, "\t")
 			}
 		}
-		// exec doesn't understand globbing...
-		// TODO genereate pth1 here
+		fhW.WriteString(fmt.Sprintf("%s\n", nl))
 	}
-
-	// Attn: Full stop here !!
-
-	/// Step2 ///
-	if *aP || *iP {
-		start := time.Now()
-		/*
-			tx2pm, err := util.Makemap(pth1, 1, 0, "_")
-			if err != nil { log.Fatalln("main:", err) }
-			n = len(tx2pm)
-			if n == 0 { log.Fatalln("main:Empty map:", pth1) }
-			log.Println("tx2pm:", n)
-			getAllIntact(pth0, tx2pm)
-		*/
-		getAllIntact(pth0, mitmap)
-		log.Println("Done with IntAct in", time.Since(start))
-		// TODO generate pthx here
-	}
-
-	// Attn: Full stop here !!
-
-	/// Step3 ///
-	if *aP || *uP {
-		mitmap, err := util.Makemap(pthx, 0, 1, ".")
-		if err != nil {
-			log.Fatalln("main:", err)
-		}
-		start := time.Now()
-		n = len(mitmap)
-		if n == 0 {
-			log.Fatalln("main:Empty map:", pthx)
-		}
-		log.Println("mitmap:", n)
-
-		uri := "ftp://ftp.uniprot.org/pub/databases/uniprot/current_release/knowledgebase/variants/humsavar.txt"
-		expth := pth0 + "uniprot/9606.var"
-		if err := Wget(uri, expth); err != nil {
-			log.Println("main:Wget: Failed to download:", expth, err)
-		}
-
-		getAllUniprot(pth0, mitmap)
-		log.Println("Done with UniProt in", time.Since(start))
-	}
-
-	if *aP || *gP {
-		start := time.Now()
-		uri := "ftp://ftp.ebi.ac.uk/pub/databases/GO/goa/proteomes/proteome2taxid"
-		expth := pth0 + "gafpomes.tsv"
-		if err := Wget(uri, expth); err != nil {
-			log.Println("main:Wget: Failed to download:", expth, err)
-		}
-		gafmap, err := util.Makemap(expth, 1, 2, "\t") // counting from 0
-		if err != nil {
-			log.Fatalln("main:", err)
-		}
-		n = len(gafmap)
-		if n == 0 {
-			log.Fatalln("main:Empty map:", expth)
-		}
-		log.Println("gafmap:", n)
-
-		wgetAllGoa(pth0, mitmap, gafmap)
-		//getAllGoa(pth0, mitmap, tx2pm)
-		log.Println("Done with Goa in", time.Since(start))
-	}
+	return nil
 }

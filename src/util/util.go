@@ -2,6 +2,7 @@ package util
 
 import (
 	"bufio"
+	"errors"
 	"os"
 	"strings"
 )
@@ -63,6 +64,24 @@ func (m Set3D) Keys() []string {
 		keys = append(keys, k)
 	}
 	return keys
+}
+
+func (m Set1D) Check() {
+	if len(m) == 0 {
+		panic(errors.New("Empty map!"))
+	}
+}
+
+func (m Set2D) Check() {
+	if len(m) == 0 {
+		panic(errors.New("Empty map!"))
+	}
+}
+
+func (m Set3D) Check() {
+	if len(m) == 0 {
+		panic(errors.New("Empty map!"))
+	}
 }
 
 func (s SliceSet) Add(key, value string) {
@@ -141,4 +160,3 @@ func Makemap(pth string, keyind int, valind int, dlm string) (Set2D, error) {
 	}
 	return set, nil
 }
-

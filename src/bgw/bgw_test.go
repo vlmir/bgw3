@@ -1,4 +1,5 @@
 package bgw
+
 import (
 	"testing"
 )
@@ -25,4 +26,3 @@ func Test_Unmarshal(t *testing.T) {
 		}
 	}
 }
-
