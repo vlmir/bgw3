@@ -5,6 +5,7 @@ import (
 	"flag"
 	"fmt"
 	"github.com/vlmir/bgw3/src/bgw"
+	"github.com/vlmir/bgw3/src/semweb"
 	"github.com/vlmir/bgw3/src/export"
 	"github.com/vlmir/bgw3/src/parse"
 	"github.com/vlmir/bgw3/src/util"
@@ -12,33 +13,19 @@ import (
 	"time"
 )
 
-var uris = map[string]string{
-	"extri":  "http://www.extri.org",
-	"htri":   "http://www.lbbc.ibb.unesp.br/htri",
-	"signor": "http://signor.uniroma2.it",
-	"tfacts": "http://www.tfacts.org",
-	"trrust": "http://www.grnpedia.org/trrust/",
-	"cytreg": "www.fuxmanlab.com",
-	"geredb": "www.thua45.cn/geredb",
-}
-
+// should stay here, needs to be passed to tfac2gene()
+var uris4tftg = rdf.Uris4tftg
 var msg = ""
 
-/// tx2pm needed for opening idmapping files
-/// mitmap needed for filtering
-func geneprot(datdir, bgwdir string, mitmap util.Set2D, tx2pm util.Set2D) {
-	TaxonNotInRefProt := 0
-	for txid := range mitmap {
-		_, ok := tx2pm[txid]
-		if !ok {
-			TaxonNotInRefProt++
-			continue
-		}
+func geneprot(datdir, bgwdir string, txn2pom util.Set2D) (ntg, ntp int, err error){
+	ntg = 0
+	ntp = 0
+	for txid := range txn2pom {
 		ext := ".upt"
 		subdir := "uniprot/"
 		rpthu := fmt.Sprintf("%s%s%s%s", datdir, subdir, txid, ext)
 		subdir = "idmapping/"
-		pomes := tx2pm[txid].Keys()
+		pomes := txn2pom[txid].Keys()
 		pome := fmt.Sprintf("%s_%s", pomes[0], txid)
 		ext = ".idmapping"
 		rpthi := fmt.Sprintf("%s%s%s%s", datdir, subdir, pome, ext) // read
@@ -51,25 +38,19 @@ func geneprot(datdir, bgwdir string, mitmap util.Set2D, tx2pm util.Set2D) {
 		subdir = "xmap/"
 		wpthx := fmt.Sprintf("%s%s%s%s", bgwdir, subdir, txid, ext) // write BGW map json
 		/////////////////////////////////////////////////////////////////////////////
-		var idmkeys = map[string]string{
-			"Gene_Name":    "gnm",
-			"Gene_Synonym": "gsnm",
-			"Ensembl_PRO":  "ensp",
-			"Ensembl":      "ensg",
-			"GeneID":       "ncbig",
-			"RefSeq":       "rfsq",
-			"UniParc":      "uparc",
-		}
-		upac2xrf, gnm2upca, err := parse.Upidmap(rpthi, idmkeys)
+		idmkeys := bgw.Upkeys
+		upac2xrf, err := parse.Upidmap(rpthi, idmkeys)
 		if err != nil {
 			panic(err)
 		}
 		/////////////////////////////////////////////////////////////////////////////
 		//rpthi = datdir + "intact.lst" // for filtering, TODO eliminate the hard coding
-		updat, txns, err := parse.Updat(rpthu, upac2xrf)
+		dat4rdf, err := parse.Updat(rpthu, upac2xrf)
 		if err != nil {
 			panic(err)
 		}
+		updat := *dat4rdf.Udat
+		txns := *dat4rdf.Txns
 		if len(updat) == 0 || len(txns) == 0 {
 			err := errors.New(fmt.Sprintf("%s: Not enough data", rpthu))
 			panic(err)
@@ -80,24 +61,22 @@ func geneprot(datdir, bgwdir string, mitmap util.Set2D, tx2pm util.Set2D) {
 		}
 		/////////////////////////////////////////////////////////////////////////////
 		// passing pointers, seems slightly faster, at most by 10%
-		var dat4rdf bgw.Dat4rdf
-		dat4rdf.Udat = &updat
-		dat4rdf.Txns = &txns
 		dat4rdf.Upac = &upac2xrf
-		dat4rdf.Gnm = &gnm2upca
-		ntg, ntp, err := export.GeneProt(dat4rdf, wpthg, wpthp, wpthx)
+		nlg, nlp, err := export.GeneProt(dat4rdf, wpthg, wpthp, wpthx)
 		if err != nil {
 			panic(err)
 		}
-		if ntg == 0 || ntp == 0 {
+		if nlg == 0 || nlp == 0 {
 			err := errors.New(fmt.Sprintf("Taxon %s: No triples", txid))
 			panic(err)
 		}
+		ntg += nlg
+		ntp += nlp
 	}
-	fmt.Printf("main.geneprot(): TaxonNotInRefProt: %d\n", TaxonNotInRefProt)
+	return ntg, ntp, nil
 }
 
-func tfac2gene(datdir, bgwdir string, txmap util.Set2D, uris map[string]string) (int, error) {
+func tfac2gene(datdir, bgwdir string, txn2pom util.Set2D, uris4tftg map[string]string) (int, error) {
 	keys := []bgw.Column{
 		{0, ":", 0, "--", 0, ""},
 		{0, ":", 1, "--", 0, ""},
@@ -111,7 +90,7 @@ func tfac2gene(datdir, bgwdir string, txmap util.Set2D, uris map[string]string) 
 	graph := "tfac2gene"
 	wdir := fmt.Sprintf("%s%s/", bgwdir, graph)
 	nln := 0
-	for txid := range txmap {
+	for txid := range txn2pom {
 		if txid != "9606" {
 			continue
 		} // for now
@@ -130,7 +109,7 @@ func tfac2gene(datdir, bgwdir string, txmap util.Set2D, uris map[string]string) 
 		}
 		upac2bgw := xmap.Upac
 		gsym2bgw := xmap.Gsymb
-		for src, uri := range uris {
+		for src, uri := range uris4tftg {
 			dat4txn[src] = make(util.Set3D)
 			ext := ".f2g"
 			rpth := fmt.Sprintf("%s%s%s", rdir, src, ext)
@@ -154,8 +133,8 @@ func tfac2gene(datdir, bgwdir string, txmap util.Set2D, uris map[string]string) 
 	return nln, nil
 } //tfac2gene
 
-func gene2phen(datdir, bgwdir string, txmap util.Set2D) {
-	for txid := range txmap {
+func gene2phen(datdir, bgwdir string, txn2pom util.Set2D) {
+	for txid := range txn2pom {
 		if txid != "9606" {
 			continue
 		}
@@ -193,8 +172,8 @@ func gene2phen(datdir, bgwdir string, txmap util.Set2D) {
 	}
 }
 
-func prot2onto(datdir, bgwdir string, txmap util.Set2D, fx string) error {
-	for txid := range txmap {
+func prot2onto(datdir, bgwdir string, txn2pom util.Set2D, fx string) error {
+	for txid := range txn2pom {
 		subdir := "goa/"
 		pth0 := fmt.Sprintf("%s%s%s%s", datdir, subdir, txid, fx) // read Goa data
 		subdir = "xmap/"
@@ -228,19 +207,19 @@ func prot2onto(datdir, bgwdir string, txmap util.Set2D, fx string) error {
 		ext := ".nt"
 		subdir = "prot2bp/"
 		xpth = fmt.Sprintf("%s%s%s%s", bgwdir, subdir, txid, ext) // write goa nt
-		ntp, err := export.Goa(bps, upac2bgw, xpth)
+		ntp, err := export.Prot2go(bps, upac2bgw, xpth)
 		if err != nil {
 			panic(err)
 		}
 		subdir = "prot2cc/"
 		xpth = fmt.Sprintf("%s%s%s%s", bgwdir, subdir, txid, ext) // write goa nt
-		ntc, err := export.Goa(ccs, upac2bgw, xpth)
+		ntc, err := export.Prot2go(ccs, upac2bgw, xpth)
 		if err != nil {
 			panic(err)
 		}
 		subdir = "prot2mf/"
 		xpth = fmt.Sprintf("%s%s%s%s", bgwdir, subdir, txid, ext) // write goa nt
-		ntf, err := export.Goa(mfs, upac2bgw, xpth)
+		ntf, err := export.Prot2go(mfs, upac2bgw, xpth)
 		if err != nil {
 			panic(err)
 		}
@@ -253,8 +232,8 @@ func prot2onto(datdir, bgwdir string, txmap util.Set2D, fx string) error {
 	return nil
 }
 
-func prot2prot(datdir, bgwdir string, txmap util.Set2D) {
-	for txid := range txmap {
+func prot2prot(datdir, bgwdir string, txn2pom util.Set2D) {
+	for txid := range txn2pom {
 		subdir := "intact/"
 		ext := ".mit"
 		pth0 := fmt.Sprintf("%s%s%s%s", datdir, subdir, txid, ext) // read IntAct tsv
@@ -273,34 +252,29 @@ func prot2prot(datdir, bgwdir string, txmap util.Set2D) {
 		upac2bgw := xmap.Upac
 		/////////////////////////////////////////////////////////////////////////////
 		duos := parse.Mitab(pth0, upac2bgw)
-		var cnt int
-		cnt = len(duos)
-		if cnt == 0 {
-			msg = fmt.Sprintf("%s: NoData", pth0)
-			panic(errors.New(msg))
+		if len(duos) == 0 {
+			msg = fmt.Sprintf("main.prot2prot():parse.Mitab():%s: NoData", txid)
+			fmt.Printf("%s\n", msg)
+			continue
 		}
 		/////////////////////////////////////////////////////////////////////////////
-		nts, err := export.Mitab(duos, upac2bgw, pth1)
-		if err != nil {
+		nts, err := export.Prot2prot(duos, upac2bgw, pth1)
+		if err != nil || nts == 0 {
 			panic(err)
-		}
-		if nts == 0 {
-			msg = fmt.Sprintf("%s: NoTriples", txid)
-			panic(errors.New(msg))
 		}
 	}
 }
 
 /////////////////////////////////////////////////////////////////////////////
-func ortho(datdir, bgwdir string, txmap, tx2pm util.Set2D) (int, error) {
+func ortho(datdir, bgwdir string, txn2pom util.Set2D) (int, error) {
 	idmkeys := bgw.Orthokeys
 	nln := 0
-	for txidL := range txmap {
-		for txidR := range txmap {
+	for txidL := range txn2pom {
+		for txidR := range txn2pom {
 			if txidL >= txidR {
 				continue
 			} // skipping symmetrical and digonal
-			duos, err := parse.Orthoduo(datdir, txidL, txidR, tx2pm, idmkeys)
+			duos, err := parse.Orthoduo(datdir, txidL, txidR, txn2pom, idmkeys)
 			if err != nil {
 				panic(err)
 			}
@@ -331,9 +305,11 @@ func ortho(datdir, bgwdir string, txmap, tx2pm util.Set2D) (int, error) {
 			nts, err := export.Ortho(duos, up2bgw, xpth)
 			if nts == 0 {
 				// taxon duos without matches already skiped in parse.Orthoduo
-				msg = fmt.Sprintf("%v: NoTriples", txids)
-				panic(errors.New(msg))
-			}
+				msg = fmt.Sprintf("%v: NoContent", txids)
+				//panic(errors.New(msg))
+				fmt.Printf("main.ortho():%s\n", msg)
+				continue
+			}// TODO see why this happens
 			nln += nts
 		} // txidR
 	} // txidL
@@ -376,37 +352,56 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
-	if len(tx2pm) == 0 {
-		msg = fmt.Sprintf("%s: NoData", pth0)
+	n = len(tx2pm)
+	if n == 0 {
+		msg = fmt.Sprintf("%s: NoProteomes", pth0)
 		panic(errors.New(msg))
 	}
 	log.Println("tx2pm:", n)
 	////////////////////////////////////////////////////////////////////////////
-	mitmap, err := util.Makemap(ptht, 0, 1, ".")
+	taxa4bgw, err := util.Makemap(ptht, 0, 1, ".")
 	if err != nil {
 		panic(err)
 	}
-	n = len(mitmap)
+	n = len(taxa4bgw)
 	if n == 0 {
 		msg = fmt.Sprintf("%s: NoData", ptht)
 		panic(errors.New(msg))
 	}
-	log.Println("mitmap:", n)
+	log.Println("taxa4bgw:", n)
+	/////////////////////////////////////////////////////////////////////////////
+	txn2pom := make(util.Set2D)
+	for txid, _ := range(taxa4bgw){
+		poms, ok := tx2pm[txid]
+		if !ok {continue}// filtering by ReferenceProteomes
+		if l := len(poms); l > 1 {
+			msg := fmt.Sprintf("main:%s: %d ReferenceProteomes", txid, l)
+			fmt.Printf("%s,\n", msg)
+		}// 20200531 download: never happens
+		for pom, _ := range(poms){
+			txn2pom.Add(txid, pom)
+		}
+	}
+	if len(txn2pom) == 0 {
+		msg = fmt.Sprintf("%s: NoProteomes", pth0)
+		panic(errors.New(msg))
+	}
+	fmt.Println(txn2pom)
 	/////////////////////////////////////////////////////////////////////////////
 	if *aP || *eP {
 		mystart := time.Now()
-		geneprot(pth1, pth2, mitmap, tx2pm) // MUST be run before the others !!!
+		geneprot(pth1, pth2, txn2pom) // MUST be run before the others !!!
 		log.Println("Done with geneprot in", time.Since(mystart))
 	}
 	if *aP || *dP {
 		mystart := time.Now()
-		gene2phen(pth1, pth2, mitmap)
+		gene2phen(pth1, pth2, txn2pom)
 		log.Println("Done with gene2phen in", time.Since(mystart))
 	}
 	if *aP || *gP {
 		mystart := time.Now()
 		ext := ".gaf"
-		err = prot2onto(pth1, pth2, mitmap, ext)
+		err = prot2onto(pth1, pth2, txn2pom, ext)
 		if err != nil {
 			log.Println(err)
 		} else {
@@ -415,17 +410,17 @@ func main() {
 	}
 	if *aP || *iP {
 		mystart := time.Now()
-		prot2prot(pth1, pth2, mitmap)
+		prot2prot(pth1, pth2, txn2pom)
 		log.Println("Done with prot2prot in", time.Since(mystart))
 	}
 	if *aP || *rP {
 		mystart := time.Now()
-		tfac2gene(pth1, pth2, mitmap, uris)
+		tfac2gene(pth1, pth2, txn2pom, uris4tftg)
 		log.Println("Done with tfac2gene in", time.Since(mystart))
 	}
 	if *aP || *oP {
 		mystart := time.Now()
-		_, err := ortho(pth1, pth2, mitmap, tx2pm)
+		_, err := ortho(pth1, pth2, txn2pom)
 		if err != nil {
 			log.Println(err)
 		} else {

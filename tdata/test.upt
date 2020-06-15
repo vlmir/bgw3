@@ -1,2 +1,3 @@
-P04637	P53_HUMAN	Homo sapiens (Human)	9606	Cellular tumor antigen p53 (Antigen NY-CO-13) (Phosphoprotein p53) (Tumor suppressor p53)	UP000005640: Chromosome 17	4006916; 25732823	5 out of 5
-FOOFOO	P53_HUMAN	Homo sapiens (Human)	9606	Cellular tumor antigen p53 (Antigen NY-CO-13) (Phosphoprotein p53) (Tumor suppressor p53)	UP000005640: Chromosome 00, UP000005640: Chromosome 17	4006916; 25732823	5 out of 5
+Entry   Entry name      Gene names  (primary )  Gene names  (synonym )  Organism        Organism ID     Protein names   Proteomes       PubMed ID       Annotation      Cross-reference (GeneID)
+P04637	P53_HUMAN	TP53	P53	Homo sapiens (Human)	9606	Cellular tumor antigen p53 (Antigen NY-CO-13) (Phosphoprotein p53) (Tumor suppressor p53)	UP000005640: Chromosome 17	4006916; 25732823	5 out of 5	7157;
+FOOFOO	P53_GHOST	TP53; FOO	P53; YOU BAR	Homo sapiens	9606	Cellular tumor antigen p53	UP000005640: Chromosome Z, UP000005640: Chromosome 17		1 out of 5

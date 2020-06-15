@@ -64,6 +64,7 @@ var Opys = util.SliceSet{
 	"orl2orl": {"sio", "SIO_000558", "is orthologous to"},
 }
 var Apys = util.SliceSet{
+	"sth2vrs": {"owl", "versionInfo", "current version"},
 	"sth2lbl": {"skos", "prefLabel", "has name"},
 	// only in entities
 	"sth2dfn": {"skos", "definition", "has definition"},          // in gene prot
@@ -85,6 +86,16 @@ var Prns = util.SliceSet{
 	"gn":  {"sio", "SIO_010035", "gene"},
 	"chr": {"obo", "GO_0005694", "chromosome"},
 	"gom": {"obo", "SO_0001026", "genome"},
+}
+
+var Uris4tftg = map[string]string{
+	"extri":  "http://www.extri.org",
+	"htri":   "http://www.lbbc.ibb.unesp.br/htri",
+	"signor": "http://signor.uniroma2.it",
+	"tfacts": "http://www.tfacts.org",
+	"trrust": "http://www.grnpedia.org/trrust/",
+	"cytreg": "https://www.fuxmanlab.com",
+	"geredb": "http://www.thua45.cn/geredb",
 }
 
 /// Functions

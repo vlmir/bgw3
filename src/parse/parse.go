@@ -147,9 +147,9 @@ func Idmap(rpth string, srcs map[string]string, ind1, ind2, ind3 int) (util.Set3
 	return out, nil
 }
 
-func Upidmap(pthR string, idmkeys map[string]string) (upac2xrf, gnm2upca util.Set3D, err error) {
+// needed for retrieving all iso-form accessions in export.GeneProt()!
+func Upidmap(pthR string, idmkeys map[string]string) (upac2xrf util.Set3D, err error) {
 	upac2xrf = make(util.Set3D)
-	gnm2upca = make(util.Set3D)
 	fh1, err := os.Open(pthR)
 	check(err)
 	defer fh1.Close()
@@ -170,11 +170,8 @@ func Upidmap(pthR string, idmkeys map[string]string) (upac2xrf, gnm2upca util.Se
 		upca := strings.Split(upac, "-")[0]
 		upac2xrf.Add(upca, "upac", upac)
 		upac2xrf.Add(upac, "upca", upca)
-		if key == "gnm" {
-			gnm2upca.Add(xrf, "upca", upca)
-		}
 	}
-	return upac2xrf, gnm2upca, nil
+	return upac2xrf, nil
 }
 
 /*
@@ -198,45 +195,66 @@ UP000005640: Chromosome 1, UP000005640: Chromosome 12, UP000005640: Chromosome 6
 UP000005640: Chromosome 1, UP000005640: Chromosome 17
 */
 // Entry   Entry name      Organism        Organism ID     Protein names   Proteomes       PubMed ID       Annotation
-func Updat(pthR string, upacs util.Set3D) (updat, txns util.Set3D, err error) {
-	updat = make(util.Set3D)
-	txns = make(util.Set3D)
+func Updat(pthR string, upacs util.Set3D) (out bgw.Dat4rdf, err error) {
+	updat := make(util.Set3D)
+	taxa := make(util.Set3D)
+	genes := make(util.Set3D)
 	fhR, err := os.Open(pthR)
 	check(err)
 	defer fhR.Close()
 	scanner := bufio.NewScanner(fhR)
+	notInRefProt := 0
+	noGeneName := 0
 	multiPome := 0
 	noProteome := 0
 	multiProtChrom := 0
 	irregularProtChrom := 0
-	notInRefProt := 0
 	for scanner.Scan() {
 		/// by default scans for '\n'
 		// one line per UniProt canonical accession
 		cells := strings.Split(scanner.Text(), "\t")
-		if len(cells) < 8 {
-			continue// does not happen
+		if len(cells) < 10 {
+			continue// never happens
 		}
-		txid := cells[3]
 		upca := cells[0]
 		_, ok := upacs[upca] // RefProt ACs
 		if !ok {
 			notInRefProt++
 			continue
 		} // filtering by RefProt
+		txid := cells[5]
 		onedat := make(util.Set2D)
+		// GeneNames separated by "; ":
+		gnms := strings.Split(cells[2], "; ")
+		if len(gnms) == 0 {
+			noGeneName++
+			continue// 
+		}
+		// Groups of " " separated GeneSynonyms, separated by "; "
+		synonyms := true
+		gsnms := strings.Split(cells[3], "; ")
+		if len(gsnms) != len(gnms) {
+			synonyms = false
+		}
+		if !synonyms {
+			msg := fmt.Sprintf("parse.Updat():%s:%s: Mismatch: %v:%v", txid, upca, gnms, gsnms)
+			fmt.Printf("%s\n", msg)
+		}
+		// Pairs Proteome: Chromosome separated by ", "
+		// A single Reference Proteome expected
 		ptm2chr := make(util.Set2D)
 		/// Attn: multiple entries do occur due to diff in chromosomes !!
-		if len(cells[5]) == 0 {
-			continue// does not happen
+		if len(cells[7]) == 0 {
+			continue// never happens
 		}
-		ptmchrs := strings.Split(cells[5], ", ") // proteome: chromosome
+		ptmchrs := strings.Split(cells[7], ", ") // proteome: chromosome pairs
 		if len(ptmchrs) == 0 {
-			continue// does not happen
+			continue// never happens
 		}
 		if len(ptmchrs) > 1 {
 			multiProtChrom++// happens in all the 25 taxa; 10230 in 367110
 		}
+
 		/// Processing all Proteome:Chromosome values
 		for _, ptmchr := range ptmchrs {
 			bits := strings.Split(ptmchr, ": ") // proteome: chromosome
@@ -287,6 +305,7 @@ func Updat(pthR string, upacs util.Set3D) (updat, txns util.Set3D, err error) {
 				ptm2chr.Add(pomeid, comeid)
 			}
 		}// one Proteome:Chromosome value
+
 		if len(ptm2chr) > 1 {
 			multiPome++
 		}
@@ -294,25 +313,40 @@ func Updat(pthR string, upacs util.Set3D) (updat, txns util.Set3D, err error) {
 			noProteome++
 			continue
 		}
+		if len(gnms) > 1 {
+			for i, _ := range gnms {
+				gnms[i] = cells[1]
+			}
+		} // replacing GeneNames with UnoProtID, a quick fix TODO
+		for i, gnm := range gnms {
+			genes.Add(gnm, "upca", upca)
+			onedat.Add("gnm", gnm)
+			if synonyms {
+				for _, gsnm := range strings.Split(gsnms[i], " ") {
+				genes.Add(gnm, "gsnm", gsnm)
+				onedat.Add("gsnm", gsnm)
+			}
+			}// adding original GeneNames to synonyms instead
+		}
 		pome := ptm2chr.Keys()[0]
 		onedat.Add("pome", pome)
 		for come := range ptm2chr[pome] {
 			come = strings.Replace(come, " ", "-", 1)
 			onedat.Add("come", come)
-			txns.Add(txid, "come", come)
+			taxa.Add(txid, "come", come)
 		}
 		onedat.Add("upid", cells[1])
-		onedat.Add("spnm", cells[2])
-		onedat.Add("txn", txid)
-		onedat.Add("pdfn", strings.Replace(cells[4], "\"", ",,", 1))
-		onedat.Add("pubmed", cells[6])
-		bits := strings.Split(cells[7], " ")
+		onedat.Add("spnm", cells[4])
+		onedat.Add("txid", txid)
+		onedat.Add("pdfn", strings.Replace(cells[6], "\"", ",,", 1))
+		onedat.Add("pubmed", cells[8])
+		bits := strings.Split(cells[9], " ")
 		onedat.Add("score", bits[0])
-		txns.Add(txid, "spnm", cells[2]) // NEEDED !!
-		txns.Add(txid, "pome", pome)
+		taxa.Add(txid, "spnm", cells[4]) // NEEDED !!
+		taxa.Add(txid, "pome", pome)
 		updat[upca] = onedat
 	}// one UniProt canonical accession
-	txids := txns.Keys()
+	txids := taxa.Keys()
 	msg := ""
 	if len(txids) != 1 {
 		msg = fmt.Sprintf("MultipleTaxa: %v", txids)
@@ -333,6 +367,7 @@ func Updat(pthR string, upacs util.Set3D) (updat, txns util.Set3D, err error) {
 	}
 	if multiProtChrom != 0 {
 		// occurs in all the 25 taxa, normally limited number though goes upto 10230 in 367110
+		// 15 canonical accessions in 9606
 		msg = fmt.Sprintf("parse.Updat():%v: Warning: multiProtChrom : %d", txids, multiProtChrom)
 		fmt.Printf("%s\n", msg)
 	}
@@ -341,7 +376,10 @@ func Updat(pthR string, upacs util.Set3D) (updat, txns util.Set3D, err error) {
 		msg = fmt.Sprintf("parse.Updat():%v: Warning: multiPome : %d", txids, multiPome)
 		fmt.Printf("%s\n", msg)
 	}
-	return updat, txns, nil
+		out.Udat = &updat
+		out.Txns = &taxa
+		out.Gnm = &genes
+	return out, nil
 }
 
 func Upvar(pthR string, gsym2bgw util.Set3D) (duos util.Set3D) {
@@ -400,7 +438,9 @@ func Upvar(pthR string, gsym2bgw util.Set3D) (duos util.Set3D) {
 		duos.Add(pairid, "nmR", nmR)
 		duos.Add(pairid, "upca", upca)
 	}
-	log.Println("parse.Upvar(): notInBgw:", notInBgw)
+	if notInBgw != 0 {
+		log.Println("parse.Upvar(): notInBgw:", notInBgw)
+	}
 	return duos
 }
 
@@ -485,7 +525,9 @@ func Gaf(pthR string, upac2bgw util.Set3D) (bp, cc, mf util.Set3D) {
 			}
 		}
 	}
-	log.Println("parse.Gaf(): notInBgw:", notInBgw)
+	if notInBgw != 0 {
+		log.Println("parse.Upvar(): notInBgw:", notInBgw)
+	}
 	return bp, cc, mf
 }
 
@@ -586,7 +628,9 @@ func Gpa(pthR string, upac2bgw util.Set3D) (duos util.Set3D) {
 			duos.Add(pairid, "ref", ref)
 		}
 	}
-	log.Println("parse.Gpa(): notInBgw:", notInBgw)
+	if notInBgw != 0 {
+		log.Println("parse.Upvar(): notInBgw:", notInBgw)
+	}
 	return duos
 }
 
@@ -666,7 +710,9 @@ func Mitab(pthR string, upac2bgw util.Set3D) (duos util.Set3D) {
 			}
 		}
 	}
-	log.Println("parse.Mitab(): notInBgw:", notInBgw)
+	if notInBgw != 0 {
+		log.Println("parse.Upvar(): notInBgw:", notInBgw)
+	}
 	return duos
 }
 

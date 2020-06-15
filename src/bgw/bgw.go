@@ -15,9 +15,21 @@ type Column struct {
 	Key  string
 }
 
+var CV = "3.3.0"
+
+var Upkeys = map[string]string{
+	//"Gene_Name":    "gnm",
+	//"Gene_Synonym": "gsnm",
+	"Ensembl_PRO":  "ensp",
+	"Ensembl":      "ensg",
+	"GeneID":       "ncbig",
+	"RefSeq":       "rfsq",
+	"UniParc":      "uparc",
+}
+
 var Orthokeys = map[string]string{
 	"KO":      "keggortho",
-	"OrthoDB": "orthodb",
+	// "OrthoDB": "orthodb",
 }
 
 type Meta struct {
@@ -43,9 +55,8 @@ func (meta Meta) New() {
 type Dat4rdf struct {
 	Udat *util.Set3D
 	Txns *util.Set3D
-	Upac *util.Set3D
-	Upca *util.Set2D
 	Gnm  *util.Set3D
+	Upac *util.Set3D
 }
 
 type Xmap struct {

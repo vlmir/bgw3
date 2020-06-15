@@ -177,7 +177,7 @@ func Test_Makemap(t *testing.T) {
 		val1 int
 	}
 	tts := []tt{
-		{pth + "test.idm", 0, 1, "\t", 10},
+		{pth + "test.idm", 0, 1, "\t", 4},
 	}
 	for i, tt := range tts {
 		r, _ := Makemap(tt.arg1, tt.arg2, tt.arg3, tt.arg4)

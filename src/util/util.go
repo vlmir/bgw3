@@ -4,6 +4,7 @@ import (
 	"bufio"
 	"errors"
 	"os"
+	"sort"
 	"strings"
 )
 
@@ -19,6 +20,7 @@ func (m Set1D) Keys() []string {
 	for k := range m {
 		keys = append(keys, k)
 	}
+	sort.Strings(keys)
 	return keys
 }
 
@@ -38,6 +40,7 @@ func (m Set2D) Keys() []string {
 	for k := range m {
 		keys = append(keys, k)
 	}
+	sort.Strings(keys)
 	return keys
 }
 
@@ -63,6 +66,7 @@ func (m Set3D) Keys() []string {
 	for k := range m {
 		keys = append(keys, k)
 	}
+	sort.Strings(keys)
 	return keys
 }
 

@@ -218,8 +218,8 @@ func getFile(uri, expth string) error {
 }
 
 func getOneUniprot(txid string, datdir string) error {
-	/// UniProt, 3702:~2.5 min
-	uri := "https://www.uniprot.org/uniprot/?query=organism:" + txid + "&columns=id,entry%20name,organism,organism-id,protein%20names,proteome,citation,annotation%20score&format=tab"
+	// "https://www.uniprot.org/uniprot/?query=organism:9606&columns=id,entry%20name,genes(PREFERRED),genes(ALTERNATIVE),organism,organism-id,protein%20names,proteome,citation&format=tab" -O 9606.upt
+	uri := "https://www.uniprot.org/uniprot/?query=organism:" + txid + "&columns=id,entry%20name,genes(PREFERRED),genes(ALTERNATIVE),organism,organism-id,protein%20names,proteome,citation,annotation%20score,database(GeneID)&format=tab"
 	subdir := "uniprot/"
 	ext := ".upt"
 	expth := fmt.Sprintf("%s%s%s%s", datdir, subdir, txid, ext)

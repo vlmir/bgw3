@@ -75,7 +75,7 @@ func Test_Idmap(t *testing.T) {
 	t1s := []tt{
 		{pth + "test.idm", map[string]string{"NCBI_TaxID": "test"}, 2, 1, 0, 1},
 		{pth + "test.idm", map[string]string{"NCBI_TaxID": "test"}, 0, 1, 2, 1},
-		{pth + "test.idm", map[string]string{"UniParc": "test"}, 0, 1, 2, 9},
+		{pth + "test.idm", map[string]string{"UniParc": "test"}, 0, 1, 2, 4},
 	}
 	for i, tt := range t1s {
 		idm, _ := Idmap(tt.arg1, tt.arg2, tt.arg3, tt.arg4, tt.arg5)
@@ -94,27 +94,18 @@ func Test_Upidmap(t *testing.T) {
 		arg1 string
 		arg2 map[string]string
 		val1 int
-		val2 int
-		val3 int
 	}
 	pth := "../../tdata/"
 	idms := []tt{
-		{pth + "test.idm", map[string]string{"UniParc": "test"}, 1, 9, 0},
+		{pth + "test.idm", map[string]string{"UniParc": "test"}, 4},
 	}
 	for i, tt := range idms {
-		set2, set3, _ := Upidmap(tt.arg1, tt.arg2)
-		if len(set2) != tt.val2 {
+		out, _ := Upidmap(tt.arg1, tt.arg2)
+		if len(out) != tt.val1 {
 			t.Error(
 				"For test", i+1, ": ", tt.arg1, tt.arg2,
-				"\n\twant", tt.val2,
-				"\n\thave", len(set2),
-			)
-		}
-		if len(set3) != tt.val3 {
-			t.Error(
-				"For test", i+1, ": ", tt.arg1, tt.arg2,
-				"\n\twant", tt.val3,
-				"\n\thave", len(set3),
+				"\n\twant", tt.val1,
+				"\n\thave", len(out),
 			)
 		}
 	}
@@ -126,15 +117,20 @@ func Test_Updat(t *testing.T) {
 		arg2 util.Set3D
 		val1 int
 		val2 int
+		val3 int
 	}
 	pth := "../../tdata/"
 	upt := make(util.Set3D)
 	upts := []tt{
-		{pth + "test.upt", upt, 1, 1},
+		{pth + "test.upt", upt, 2, 1, 2},
 	}
 	for i, tt := range upts {
 		tt.arg2.Add("P04637", "upac", "P04637-2")
-		set1, set2, _ := Updat(tt.arg1, tt.arg2)
+		tt.arg2.Add("FOOFOO", "upac", "FOOFOO-2")
+		out, _ := Updat(tt.arg1, tt.arg2)
+		set1 := *out.Udat
+		set2 := *out.Txns
+		set3 := *out.Gnm
 		if len(set1) != tt.val1 {
 			t.Error(
 				"For test", i+1, ": ", tt.arg1, tt.arg2,
@@ -147,6 +143,13 @@ func Test_Updat(t *testing.T) {
 				"For test", i+1, ": ", tt.arg1, tt.arg2,
 				"\n\twant", tt.val2,
 				"\n\thave", len(set2),
+			)
+		}
+		if len(set3) != tt.val3 {
+			t.Error(
+				"For test", i+1, ": ", tt.arg1, tt.arg2,
+				"\n\twant", tt.val3,
+				"\n\thave", len(set3),
 			)
 		}
 	}
@@ -254,7 +257,7 @@ func Test_Orthoduo(t *testing.T) {
 	}
 	arg4[0].Add("9606", "ortho")
 	arg4[0].Add("10090", "ortho")
-	val1[0] = 2
+	val1[0] = 1
 	for i := 0; i < n; i++ {
 		out, _ := Orthoduo(arg1, arg2, arg3, arg4[i], arg5)
 		if len(out) != val1[i] {
