@@ -3,6 +3,7 @@ package util
 import (
 	"bufio"
 	"errors"
+	"fmt"
 	"os"
 	"sort"
 	"strings"
@@ -11,7 +12,17 @@ import (
 type Set1D map[string]int
 type Set2D map[string]Set1D
 type Set3D map[string]Set2D
+type Set4D map[string]Set3D
 type SliceSet map[string][]string
+
+// TODO return error instead of paniccing?
+func CheckStrings(s ...string) {
+	for i, v := range s {
+		if strings.TrimSpace(v) == "" {
+			panic(errors.New(fmt.Sprintf("%v: index: %d: EmptyString", s, i)))
+		}
+	}
+}
 
 func (m Set1D) Keys() []string {
 	// extracting map keys
@@ -25,6 +36,7 @@ func (m Set1D) Keys() []string {
 }
 
 func (m Set2D) Add(key0, key1 string) {
+	CheckStrings(key0, key1)
 	mm, ok := m[key0]
 	if !ok {
 		mm = make(map[string]int)
@@ -45,9 +57,9 @@ func (m Set2D) Keys() []string {
 }
 
 func (m Set3D) Add(key0, key1, key2 string) {
+	CheckStrings(key0, key1, key2)
 	mm, ok := m[key0]
 	if !ok {
-		//mm = make(map[string]map[string]int)
 		mm = make(Set2D)
 		m[key0] = mm
 	}
@@ -59,9 +71,38 @@ func (m Set3D) Add(key0, key1, key2 string) {
 	mmm[key2]++
 }
 
+func (m Set4D) Add(key0, key1, key2, key3 string) {
+	CheckStrings(key0, key1, key2, key3)
+	mm, ok := m[key0]
+	if !ok {
+		mm = make(Set3D)
+		m[key0] = mm
+	}
+	mmm, ok := mm[key1]
+	if !ok {
+		mmm = make(Set2D)
+		mm[key1] = mmm
+	}
+	mmmm, ok := mmm[key2]
+	if !ok {
+		mmmm = make(Set1D)
+		mmm[key2] = mmmm
+	}
+	mmmm[key3]++
+}
+
+func (m Set4D) Keys() []string {
+	// extracting map keys
+	var keys []string
+	for k := range m {
+		keys = append(keys, k)
+	}
+	sort.Strings(keys)
+	return keys
+}
+
 func (m Set3D) Keys() []string {
 	// extracting map keys
-	//keys := make([]string, 0, len(m))
 	var keys []string
 	for k := range m {
 		keys = append(keys, k)
@@ -83,6 +124,12 @@ func (m Set2D) Check() {
 }
 
 func (m Set3D) Check() {
+	if len(m) == 0 {
+		panic(errors.New("Empty map!"))
+	}
+}
+
+func (m Set4D) Check() {
 	if len(m) == 0 {
 		panic(errors.New("Empty map!"))
 	}
@@ -142,7 +189,41 @@ func X1quoted(s []string, key string, dlm string) []string {
 	return out
 }
 
-func Makemap(pth string, keyind int, valind int, dlm string) (Set2D, error) {
+// FilterByValues filters a tab-delimited file by values in a specified field
+func FilterByValues(rpth string, srcs map[string]string, ind1, ind2, ind3 int) (Set3D, error) {
+	// used only in parse.orthosolo() and dat4bgw
+	// looks like a problem with memory leakage TODO fis
+	out := make(Set3D)
+	fh, err := os.Open(rpth)
+	CheckE(err)
+	defer fh.Close()
+	scanner := bufio.NewScanner(fh)
+	indmax := 0
+	inds := [3]int{ind1, ind2, ind3}
+	for _, v := range inds {
+		if v > indmax {
+			indmax = v
+		}
+	}
+	for scanner.Scan() { // by default scans for '\n'
+		cells := strings.Split(scanner.Text(), "\t")
+		if len(cells) <= indmax {
+			continue
+		}
+		_, ok := srcs[cells[ind2]] // filtering
+		if !ok {
+			continue
+		} // filtering by srcs
+		key1 := strings.Replace(cells[ind1], "\"", "''", -1) // present e.g. in 44689
+		key2 := strings.Replace(cells[ind2], "\"", "''", -1) // present e.g. in 44689
+		key3 := strings.Replace(cells[ind3], "\"", "''", -1) // present e.g. in 44689
+		out.Add(key1, key2, key3)
+	}
+	return out, nil
+}
+
+// MakeMap generates a map from a file delimited by an arbitrary string
+func MakeMap(pth string, keyind int, valind int, dlm string) (Set2D, error) {
 	set := make(Set2D)
 	fh, err := os.Open(pth)
 	if err != nil {
@@ -163,4 +244,10 @@ func Makemap(pth string, keyind int, valind int, dlm string) (Set2D, error) {
 		set.Add(key, val)
 	}
 	return set, nil
+}
+
+func CheckE(e error) {
+	if e != nil {
+		panic(e)
+	}
 }

@@ -1,3 +1,6 @@
+tmp
+log
+backup
 configs/ssh/known_hosts
 dots/ssh/known_hosts
 configs/my.ssh/known_hosts

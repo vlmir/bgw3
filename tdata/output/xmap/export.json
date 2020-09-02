@@ -7,14 +7,6 @@
    "ncbig": {
     "7157": 1
    }
-  },
-  "9606/multi-FOOFOO/P53_GHOST": {
-   "ensg": {
-    "ENSG00000141510": 1
-   },
-   "ncbig": {
-    "7157": 1
-   }
   }
  },
  "Bgwp": {
@@ -40,12 +32,22 @@
     "P04637-2": 1
    }
   },
-  "9606/multi-FOOFOO/P53_GHOST/UPI000002ED67": {
+  "9606/multi/FOO/UPI000002ED67": {
    "upac": {
     "FOOFOO": 1
    }
   },
-  "9606/multi-FOOFOO/P53_GHOST/UPI0000456A12": {
+  "9606/multi/FOO/UPI0000456A12": {
+   "upac": {
+    "FOOFOO-2": 1
+   }
+  },
+  "9606/multi/TP53/UPI000002ED67": {
+   "upac": {
+    "FOOFOO": 1
+   }
+  },
+  "9606/multi/TP53/UPI0000456A12": {
    "upac": {
     "FOOFOO-2": 1
    }
@@ -54,12 +56,14 @@
  "Upac": {
   "FOOFOO": {
    "bgwp": {
-    "9606/multi-FOOFOO/P53_GHOST/UPI000002ED67": 1
+    "9606/multi/FOO/UPI000002ED67": 1,
+    "9606/multi/TP53/UPI000002ED67": 1
    }
   },
   "FOOFOO-2": {
    "bgwp": {
-    "9606/multi-FOOFOO/P53_GHOST/UPI0000456A12": 1
+    "9606/multi/FOO/UPI0000456A12": 1,
+    "9606/multi/TP53/UPI0000456A12": 1
    }
   },
   "P04637": {
@@ -79,35 +83,39 @@
     "TP53": 1
    }
   },
-  "9606/multi-FOOFOO/P53_GHOST": {
+  "9606/multi/FOO": {
    "gnm": {
-    "P53_GHOST": 1
+    "FOO": 1
    }
   },
-  "P53_GHOST": {
+  "9606/multi/TP53": {
+   "gnm": {
+    "TP53": 1
+   }
+  },
+  "FOO": {
    "bgwg": {
-    "9606/multi-FOOFOO/P53_GHOST": 1
+    "9606/multi/FOO": 1
    }
   },
   "TP53": {
    "bgwg": {
-    "9606/chr-17/TP53": 1
+    "9606/chr-17/TP53": 1,
+    "9606/multi/TP53": 1
    }
   }
  },
  "Ensg": {
   "ENSG00000141510": {
    "bgwg": {
-    "9606/chr-17/TP53": 1,
-    "9606/multi-FOOFOO/P53_GHOST": 1
+    "9606/chr-17/TP53": 1
    }
   }
  },
  "Ncbig": {
   "7157": {
    "bgwg": {
-    "9606/chr-17/TP53": 1,
-    "9606/multi-FOOFOO/P53_GHOST": 1
+    "9606/chr-17/TP53": 1
    }
   }
  },

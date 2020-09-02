@@ -25,14 +25,16 @@ func Test_GeneProt(t *testing.T) {
 		"RefSeq":      "rfsq",
 		"UniParc":     "uparc",
 	}
-	upacs, _ := parse.Upidmap(pth+"test.idm", idmkeys)
-	arg1, _ := parse.Updat(pth+"test.upt", upacs)
+	txn2prm := make(util.Set2D)
+	txn2prm.Add("9606", "UP000005640")
+	upacs, _ := parse.UpIdMap(pth+"test.idm", idmkeys)
+	arg1, _ := parse.UpTab(pth+"test.upt", upacs, txn2prm)
 	arg1.Upac = &upacs
 	arg2 := xpth + "gene/export.nt"
 	arg3 := xpth + "prot/export.nt"
 	arg4 := xpth + "xmap/export.json"
 	t1s := []tt{
-		{arg1, arg2, arg3, arg4, 31, 55},
+		{arg1, arg2, arg3, arg4, 35, 76},
 	}
 	for i, tt := range t1s {
 		n, m, _ := GeneProt(tt.arg1, tt.arg2, tt.arg3, tt.arg4)
@@ -66,6 +68,7 @@ func Test_Tfac2gene(t *testing.T) {
 	arg1 := make(map[string]util.Set3D)
 	set1 := make(util.Set3D)
 	set1.Add("TP53--TP53", "uniprot", "P04637")
+	set1.Add("TP53--TP53", "ncbig", "7157")
 	set1.Add("TP53--TP53", "pubmed", "P04637")
 	set1.Add("TP53--TP53", "pubmed", "04637")
 	set1.Add("TP53--TP53", "confidence", "High")
@@ -75,6 +78,7 @@ func Test_Tfac2gene(t *testing.T) {
 	arg1["tfacts"] = set1
 	set2 := make(util.Set3D)
 	set2.Add("TP53--TP53", "uniprot", "P04637")
+	set2.Add("TP53--TP53", "ncbig", "7157")
 	set2.Add("TP53--TP53", "pubmed", "04637")
 	set2.Add("test", "uri", "http://www.test.org")
 	arg1["test"] = set2
@@ -83,6 +87,7 @@ func Test_Tfac2gene(t *testing.T) {
 	arg2.Add("P04637", "bgwp", "9606/chr-17/TP53/UPI000002ED67")
 	arg3 := make(util.Set3D)
 	arg3.Add("TP53", "bgwg", "9606/chr-17/TP53")
+	arg3.Add("7157", "bgwg", "9606/chr-17/TP53")
 	arg4 := xpth + "tfac2gene/export.nt"
 	t3s := []tt{
 		{arg1, arg2, arg3, arg4, 24},
@@ -99,7 +104,7 @@ func Test_Tfac2gene(t *testing.T) {
 	}
 }
 
-func Test_Upvar(t *testing.T) {
+func Test_UpVar(t *testing.T) {
 	type tt struct {
 		arg1 util.Set3D
 		arg3 util.Set3D
@@ -110,7 +115,7 @@ func Test_Upvar(t *testing.T) {
 	xpth := pth + "output/"
 	arg3 := make(util.Set3D)
 	arg3.Add("TP53", "bgwg", "9606/chr-17/TP53")
-	arg1 := parse.Upvar(pth+"test.var", arg3)
+	arg1, _ := parse.UpVar(pth+"test.var", arg3)
 	arg4 := xpth + "gene2phen/export.nt"
 	t2s := []tt{
 		{arg1, arg3, arg4, 10},
@@ -130,7 +135,7 @@ func Test_Upvar(t *testing.T) {
 	}
 }
 
-func Test_Mitab(t *testing.T) {
+func Test_MiTab(t *testing.T) {
 	type tt struct {
 		arg1 util.Set3D
 		arg2 util.Set3D
@@ -142,7 +147,7 @@ func Test_Mitab(t *testing.T) {
 	xpth := pth + "output/"
 	arg2 := make(util.Set3D)
 	arg2.Add("P04637", "bgwp", "9606/chr-17/TP53/UPI000002ED67")
-	arg1 := parse.Mitab(pth+"test.mit", arg2)
+	arg1, _ := parse.MiTab(pth+"test.mit", arg2)
 	arg3 := xpth + "prot2prot/export.nt"
 	tts := []tt{
 		{arg1, arg2, arg3, 72},
@@ -173,7 +178,7 @@ func Test_Prot2go(t *testing.T) {
 	xpth := pth + "output/"
 	arg2 := make(util.Set3D)
 	arg2.Add("P04637", "bgwp", "9606/chr-17/TP53/UPI000002ED67")
-	bps, ccs, mfs := parse.Gaf(pth+"test.gaf", arg2)
+	bps, ccs, mfs, _ := parse.Gaf(pth+"test.gaf", arg2)
 	out := [3]string{"prot2bp/export.nt", "prot2cc/export.nt", "prot2mf/export.nt"}
 	tts := []tt{
 		{bps, arg2, xpth + out[0], 1811},

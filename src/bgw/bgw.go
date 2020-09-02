@@ -20,15 +20,17 @@ var CV = "3.3.0"
 var Upkeys = map[string]string{
 	//"Gene_Name":    "gnm",
 	//"Gene_Synonym": "gsnm",
-	"Ensembl_PRO":  "ensp",
-	"Ensembl":      "ensg",
-	"GeneID":       "ncbig",
-	"RefSeq":       "rfsq",
-	"UniParc":      "uparc",
+	"Ensembl":     "ensg",
+	"Ensembl_PRO": "ensp",
+	//"EnsemblGenome":     "ensg",
+	//"EnsemblGenome_PRO": "ensp",
+	"GeneID":  "ncbig",
+	"RefSeq":  "rfsq",
+	"UniParc": "uparc",
 }
 
 var Orthokeys = map[string]string{
-	"KO":      "keggortho",
+	"KO": "keggortho",
 	// "OrthoDB": "orthodb",
 }
 

@@ -100,29 +100,20 @@ var Uris4tftg = map[string]string{
 
 /// Functions
 
-func checkS(s string) {
-	if len(s) == 0 {
-		panic(errors.New(fmt.Sprintf("Empty strings not allowed!")))
-	}
-}
-
 func FormU(u string) string {
-	checkS(u)
+	util.CheckStrings(u)
 	return strings.Join([]string{"<", u, ">"}, "")
 }
 func CompU(ns string, ext string) string {
-	checkS(ns)
-	checkS(ext)
+	util.CheckStrings(ns, ext)
 	return strings.Join([]string{"<", ns, ext, ">"}, "")
 }
 func FormT(s string, p string, o string) string {
-	checkS(s)
-	checkS(p)
-	checkS(o)
+	util.CheckStrings(s, p, o)
 	return strings.Join([]string{s, p, o, ".\n"}, " ")
 }
 func FormL(l string) string {
-	checkS(l)
+	util.CheckStrings(l)
 	return strings.Join([]string{`"`, l, `"`}, "")
 }
 
@@ -142,7 +133,7 @@ func FmtURIs(rdfmap util.SliceSet) map[string]string {
 		for _, urikey := range urikeys {
 			bits, ok := dic[urikey] // []string{nsk, uid}
 			if !ok {
-				msg := fmt.Sprintf("No entry for: %s", urikey)
+				msg := fmt.Sprintf("NoEntryFor: %s", urikey)
 				panic(errors.New(msg))
 			}
 			if len(bits) < 2 {
@@ -150,12 +141,14 @@ func FmtURIs(rdfmap util.SliceSet) map[string]string {
 				panic(errors.New(msg))
 			}
 			nsk := bits[0]
-			checkS(nsk)
 			uid := bits[1]
-			if len(uid) == 0 {
-				panic(errors.New(fmt.Sprintf("Empty string")))
+			ns, ok := Nss[nsk]
+			if !ok {
+				msg := fmt.Sprintf("NoEntryFor: %s", nsk)
+				panic(errors.New(msg))
 			}
-			myU := CompU(Nss[nsk], uid)
+			myU := CompU(ns, uid)
+			util.CheckStrings(myU)
 			fmtURIs[urikey] = myU
 		}
 	}
@@ -199,8 +192,12 @@ func Capita(rdfmap util.SliceSet) (string, int) {
 		lbits := Apys["sth2lbl"]
 		plU = CompU(Nss[lbits[0]], lbits[1])
 		for _, urikey := range urikeys {
-			// skipping the sanity checks performed in fmtURIs()
-			bits := dic[urikey] // []string
+			util.CheckStrings(urikey)
+			bits, ok := dic[urikey] // []string
+			if !ok {
+				msg := fmt.Sprintf("NoEntryFor: %s", urikey)
+				panic(errors.New(msg))
+			}
 			sU := CompU(Nss[bits[0]], bits[1])
 			oU := CompU(Nss["rdfs"], rdfs)
 			sb.WriteString(FormT(sU, pU, oU))
@@ -209,7 +206,7 @@ func Capita(rdfmap util.SliceSet) (string, int) {
 			nln++
 		}
 	}
-	checkS(sb.String())
+	util.CheckStrings(sb.String())
 	return sb.String(), nln
 }
 

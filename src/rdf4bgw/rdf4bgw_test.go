@@ -10,8 +10,8 @@ func Test_geneprot(t *testing.T) {
 		arg1 string
 		arg2 string
 		arg3 util.Set2D
-		val1  int
-		val2  int
+		val1 int
+		val2 int
 	}
 
 	pth := "../../tdata/"
@@ -20,7 +20,7 @@ func Test_geneprot(t *testing.T) {
 	arg3[0] = make(util.Set2D)
 	arg3[0].Add("9606", "UP000005640")
 	tts := []tt{
-		{pth, xpth, arg3[0], 31, 55},
+		{pth, xpth, arg3[0], 35, 76},
 	}
 
 	for i, tt := range tts {
@@ -59,10 +59,10 @@ func Test_tfac2gene(t *testing.T) {
 	var arg4 [5]map[string]string
 	arg4[0] = map[string]string{
 		"tfacts": "http://www.tfacts.org",
-		"htri": "http://www.htri.org",
+		"htri":   "http://www.htri.org",
 	}
 	tts := []tt{
-		{pth, xpth, arg3[0], arg4[0], 33},
+		{pth, xpth, arg3[0], arg4[0], 41},
 	}
 
 	for i, tt := range tts {

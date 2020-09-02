@@ -5,7 +5,6 @@ import (
 	"errors"
 	"flag"
 	"fmt"
-	"github.com/vlmir/bgw3/src/parse"
 	"github.com/vlmir/bgw3/src/util"
 	"io"
 	"log"
@@ -53,7 +52,7 @@ func main() {
 		log.Println("Done with ontos in", time.Since(start))
 	}
 
-	mitmap, err := util.Makemap(pthx, 0, 1, ".")
+	mitmap, err := util.MakeMap(pthx, 0, 1, ".")
 	if err != nil {
 		log.Fatalln("main:", err)
 	}
@@ -90,7 +89,7 @@ func main() {
 	if *aP || *iP {
 		start := time.Now()
 		/*
-			tx2pm, err := util.Makemap(pth1, 1, 0, "_")
+			tx2pm, err := util.MakeMap(pth1, 1, 0, "_")
 			if err != nil { log.Fatalln("main:", err) }
 			n = len(tx2pm)
 			if n == 0 { log.Fatalln("main:Empty map:", pth1) }
@@ -106,7 +105,7 @@ func main() {
 
 	/// Step3 ///
 	if *aP || *uP {
-		mitmap, err := util.Makemap(pthx, 0, 1, ".")
+		mitmap, err := util.MakeMap(pthx, 0, 1, ".")
 		if err != nil {
 			log.Fatalln("main:", err)
 		}
@@ -134,7 +133,7 @@ func main() {
 		if err := Wget(uri, expth); err != nil {
 			log.Println("main:Wget: Failed to download:", expth, err)
 		}
-		gafmap, err := util.Makemap(expth, 1, 2, "\t") // counting from 0
+		gafmap, err := util.MakeMap(expth, 1, 2, "\t") // counting from 0
 		if err != nil {
 			log.Fatalln("main:", err)
 		}
@@ -304,8 +303,8 @@ func getAllGoa(datdir string, txmap, tx2pm util.Set2D) {
 		ext := ".idmapping"
 		subdir := "idmapping/"
 		idmpth := fmt.Sprintf("%s%s%s%s%s%s", datdir, subdir, pomes[0], "_", txid, ext)
-		//idmap, err := parse.Idmap(idmpth, srcs, 2, 0)
-		idmap, err := parse.Idmap(idmpth, srcs, 2, 1, 0) // TODO test
+		//idmap, err := parse.FilterByValues(idmpth, srcs, 2, 0)
+		idmap, err := util.FilterByValues(idmpth, srcs, 2, 1, 0) // TODO test
 		if err != nil {
 			continue
 		}

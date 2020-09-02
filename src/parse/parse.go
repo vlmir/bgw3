@@ -11,13 +11,46 @@ import (
 	"strings"
 )
 
-func check(e error) {
-	if e != nil {
-		panic(e)
+func checkID(id string, filter util.Set3D, counter util.Set1D) (out int) {
+	out = 0
+	_, ok := filter[id]
+	if !ok {
+		out++
+		_, ok := counter[id]
+		if !ok {
+			out++
+			counter[id]++
+		}
 	}
+	return out
 }
 
-// Tab2set converts tabular data into a map keyed on an arbitrary combination of fields
+// used only in orthosolo()
+func Idmap(rpth string, srcs map[string]string, ind1, ind2, ind3 int) (util.Set3D, error) {
+	out := make(util.Set3D)
+	fh, err := os.Open(rpth)
+	util.CheckE(err)
+	defer fh.Close()
+	scanner := bufio.NewScanner(fh)
+	for scanner.Scan() { // by default scans for '\n'
+		cells := strings.Split(scanner.Text(), "\t")
+		if len(cells) != 3 {
+			continue
+		}
+		_, ok := srcs[cells[1]] // filtering
+		if !ok {
+			continue
+		} // filtering by srcs
+		key1 := strings.Replace(cells[ind1], "\"", "''", -1) // present e.g. in 44689
+		key2 := strings.Replace(cells[ind2], "\"", "''", -1) // present e.g. in 44689
+		key3 := strings.Replace(cells[ind3], "\"", "''", -1) // present e.g. in 44689
+		out.Add(key1, key2, key3)
+	}
+	return out, nil
+}
+
+// GetSetFromTab is a generic parser for tab-delimeted files with sub-fields (up to 2 levels)
+// GetSetFromTab converts tabular data into a map keyed on an arbitrary combination of fields
 // Arguments:
 // 1. path to the input file (tab separated)
 // 2. data structure specifying primary key
@@ -25,7 +58,7 @@ func check(e error) {
 // Returns:
 // 1. map primary key -> secondary key -< values -> counts
 // 2. error
-func Tab2set(rpth string, keys, vals []bgw.Column) (out util.Set3D, err error) {
+func GetSetFromTab(rpth string, keys, vals []bgw.Column) (out util.Set3D, err error) {
 	maxind := 0
 	for _, one := range keys {
 		n := one.Ind1
@@ -50,7 +83,7 @@ func Tab2set(rpth string, keys, vals []bgw.Column) (out util.Set3D, err error) {
 
 	out = make(util.Set3D)
 	fh, err := os.Open(rpth)
-	check(err)
+	util.CheckE(err)
 	defer fh.Close()
 	scanner := bufio.NewScanner(fh)
 	ln := 0
@@ -63,43 +96,63 @@ func Tab2set(rpth string, keys, vals []bgw.Column) (out util.Set3D, err error) {
 		if string(line[0]) == "#" {
 			continue
 		}
-		cells := strings.Split(line, "\t")
-		var ks string
+		cells := strings.Split(line, "\t") // fields
 		if len(cells) < maxind+1 {
-			msg := fmt.Sprintf("%s:%d: tooFewtFields", rpth, ln)
+			msg := fmt.Sprintf("%s:%d: TooFewtFields", rpth, ln)
 			panic(errors.New(msg))
 		}
+		var pk string // the primary key to be used in the output map
 		for i, k := range keys {
-			items := strings.Split(cells[k.Ind1], k.Dlm1)
-			if i == 0 {
-				ks = items[k.Ind2]
+			// i: index, k: bgw.Column
+			items := strings.Split(cells[k.Ind1], k.Dlm1) // sub-fields
+			if i == 0 {                                   // is this really necessary?
+				pk = strings.TrimSpace(items[k.Ind2])
 			} else {
-				ks = fmt.Sprintf("%s%s%s", ks, k.Dlm2, items[k.Ind2])
+				pk = fmt.Sprintf("%s%s%s", pk, k.Dlm2, strings.TrimSpace(items[k.Ind2]))
 			}
-		}
+		} // the order of componenets in the key is deterministic, no variation from call to call
+		util.CheckStrings(pk)
+		/// values ///
 		for _, v := range vals {
-			items := strings.Split(cells[v.Ind1], v.Dlm1) // can be just one
+			// v: bgw.Column; specify fields to be extracted
+			cell := strings.TrimSpace(cells[v.Ind1])
+			if cell == "" {
+				continue
+			}
+			items := strings.Split(cell, v.Dlm1) // Dlm1: primary delimiter for multiple values
+			// there is at least one item
 			for _, item := range items {
-				parts := strings.Split(item, v.Dlm2) // can be just one
-				if v.Ind3 == -1 {                    // db:id
-					key := v.Key
-					if len(key) == 0 {
-						key = parts[0]
+				// subfields, may contain secondary delimiters
+				parts := strings.Split(item, v.Dlm2) // Dlm2: secondary delimiter
+				// the code below is rather sloppy, e.g. Ind3 is not properly used TODO sort out
+				if v.Ind3 == -1 {
+					// db:id
+					sk := v.Key // secondary key explicitely specified
+					if len(sk) == 0 {
+						// SIC! by design - secondary key is not explcitly specified
+						sk = strings.TrimSpace(parts[0]) // e.g. db:id
 					}
-					out.Add(ks, key, parts[v.Ind2])
+					util.CheckStrings(sk)
+					out.Add(pk, sk, strings.TrimSpace(parts[v.Ind2]))
+					// Ind2/3 should be used here ! TODO
 				} else {
 					for _, part := range parts {
+						part = strings.TrimSpace(part)
 						if len(part) == 0 {
 							continue
 						}
-						out.Add(ks, v.Key, part)
+						out.Add(pk, v.Key, part)
 					}
 				}
 			}
 		}
 	}
+	if len(out) == 0 {
+		msg := fmt.Sprintf("parse.GetSetFromTab():%s: NoData", rpth)
+		return out, errors.New(msg)
+	}
 	return out, nil
-}
+} // GetSetFromTab()
 
 // parses the output of the system 'ls' utility
 // any string can be used as a basename-extension separator
@@ -124,36 +177,15 @@ func Basenames(rpth, dlm string) (set util.Set2D, err error) {
 }
 */
 
-func Idmap(rpth string, srcs map[string]string, ind1, ind2, ind3 int) (util.Set3D, error) {
-	out := make(util.Set3D)
-	fh, err := os.Open(rpth)
-	check(err)
-	defer fh.Close()
-	scanner := bufio.NewScanner(fh)
-	for scanner.Scan() { // by default scans for '\n'
-		cells := strings.Split(scanner.Text(), "\t")
-		if len(cells) != 3 {
-			continue
-		}
-		_, ok := srcs[cells[1]] // filtering
-		if !ok {
-			continue
-		} // filtering by srcs
-		key1 := strings.Replace(cells[ind1], "\"", "''", -1) // present e.g. in 44689
-		key2 := strings.Replace(cells[ind2], "\"", "''", -1) // present e.g. in 44689
-		key3 := strings.Replace(cells[ind3], "\"", "''", -1) // present e.g. in 44689
-		out.Add(key1, key2, key3)
-	}
-	return out, nil
-}
-
-// needed for retrieving all iso-form accessions in export.GeneProt()!
-func Upidmap(pthR string, idmkeys map[string]string) (upac2xrf util.Set3D, err error) {
-	upac2xrf = make(util.Set3D)
-	fh1, err := os.Open(pthR)
-	check(err)
-	defer fh1.Close()
-	scanner := bufio.NewScanner(fh1)
+// UpIdMap filters a file of the form db1id\tdb2label\tdb2id by values of db2lablel
+func UpIdMap(rpth string, idmkeys map[string]string) (out util.Set3D, err error) {
+	// used one only in rdf4bgw.go pass out to parse.UpTab():
+	// needed for retrieving all iso-form accessions in export.GeneProt()!
+	out = make(util.Set3D)
+	rfh, err := os.Open(rpth)
+	util.CheckE(err)
+	defer rfh.Close()
+	scanner := bufio.NewScanner(rfh)
 	for scanner.Scan() { // by default scans for '\n'
 		cells := strings.Split(scanner.Text(), "\t")
 		if len(cells) != 3 {
@@ -166,12 +198,14 @@ func Upidmap(pthR string, idmkeys map[string]string) (upac2xrf util.Set3D, err e
 		upac := cells[0]
 		// TODO see if the replacement below is acceptable
 		xrf := strings.Replace(cells[2], "\"", "''", -1) // present e.g. in 44689
-		upac2xrf.Add(upac, key, xrf)
+		out.Add(upac, key, xrf)
+		// used 2 time in export.GeneProt() only
+		// TODO see how to get rid of this
 		upca := strings.Split(upac, "-")[0]
-		upac2xrf.Add(upca, "upac", upac)
-		upac2xrf.Add(upac, "upca", upca)
+		out.Add(upca, "upac", upac)
+		//out.Add(upac, "upca", upca)
 	}
-	return upac2xrf, nil
+	return out, nil
 }
 
 /*
@@ -195,195 +229,259 @@ UP000005640: Chromosome 1, UP000005640: Chromosome 12, UP000005640: Chromosome 6
 UP000005640: Chromosome 1, UP000005640: Chromosome 17
 */
 // Entry   Entry name      Organism        Organism ID     Protein names   Proteomes       PubMed ID       Annotation
-func Updat(pthR string, upacs util.Set3D) (out bgw.Dat4rdf, err error) {
-	updat := make(util.Set3D)
-	taxa := make(util.Set3D)
-	genes := make(util.Set3D)
-	fhR, err := os.Open(pthR)
-	check(err)
+func UpTab(rpth string, upac2xrf util.Set3D, txn2prm util.Set2D) (out bgw.Dat4rdf, err error) {
+	allPs := make(util.Set3D)
+	allTs := make(util.Set3D)
+	allGs := make(util.Set3D)
+	fhR, err := os.Open(rpth)
+	util.CheckE(err)
 	defer fhR.Close()
 	scanner := bufio.NewScanner(fhR)
-	notInRefProt := 0
-	noGeneName := 0
-	multiPome := 0
-	noProteome := 0
-	multiProtChrom := 0
-	irregularProtChrom := 0
+	notInRefProt := make(util.Set1D)
+	noGeneName := make(util.Set1D)
+	noChrom := make(util.Set1D)
+	multiProtChrom := make(util.Set1D)
+	multiGene := make(util.Set1D)
+	ln := 0 // line counter
 	for scanner.Scan() {
 		/// by default scans for '\n'
 		// one line per UniProt canonical accession
+		ln++
+		if ln == 1 {
+			continue
+		}
 		cells := strings.Split(scanner.Text(), "\t")
+		// the # of fields is currently 11 but only 10 in test files !!
+		// the last field (GeneID) is not currently used
 		if len(cells) < 10 {
-			continue// never happens
+			msg := fmt.Sprintf("parse.UpTab():%s:line:%d: TooFewFields", rpth, ln)
+			panic(errors.New(msg))
 		}
 		upca := cells[0]
-		_, ok := upacs[upca] // RefProt ACs
+		_, ok := upac2xrf[upca] // RefProt ACs
 		if !ok {
-			notInRefProt++
+			notInRefProt[upca]++
 			continue
 		} // filtering by RefProt
+		upid := cells[1]
 		txid := cells[5]
-		onedat := make(util.Set2D)
-		// GeneNames separated by "; ":
-		gnms := strings.Split(cells[2], "; ")
-		if len(gnms) == 0 {
-			noGeneName++
-			continue// 
-		}
-		// Groups of " " separated GeneSynonyms, separated by "; "
-		synonyms := true
-		gsnms := strings.Split(cells[3], "; ")
-		if len(gsnms) != len(gnms) {
-			synonyms = false
-		}
-		if !synonyms {
-			msg := fmt.Sprintf("parse.Updat():%s:%s: Mismatch: %v:%v", txid, upca, gnms, gsnms)
-			fmt.Printf("%s\n", msg)
-		}
+		prmid := txn2prm[txid].Keys()[0] // a single value
+		oneP := make(util.Set2D)
 		// Pairs Proteome: Chromosome separated by ", "
 		// A single Reference Proteome expected
-		ptm2chr := make(util.Set2D)
+		prm2chr := make(util.Set2D)
 		/// Attn: multiple entries do occur due to diff in chromosomes !!
 		if len(cells[7]) == 0 {
-			continue// never happens
-		}
-		ptmchrs := strings.Split(cells[7], ", ") // proteome: chromosome pairs
-		if len(ptmchrs) == 0 {
-			continue// never happens
-		}
-		if len(ptmchrs) > 1 {
-			multiProtChrom++// happens in all the 25 taxa; 10230 in 367110
-		}
-
+			panic("PrmChrEmpty") // never happens for Reference Proteoms
+		} // at least one apir RefProtID: ChromoID
+		prmchrs := strings.Split(cells[7], ", ") // proteome: chromosome pairs
 		/// Processing all Proteome:Chromosome values
-		for _, ptmchr := range ptmchrs {
-			bits := strings.Split(ptmchr, ": ") // proteome: chromosome
-			if len(bits) != 2 {
-				//fmt.Printf("parse.Updat:%s: IrregularProtChrom:%v: skipped\n", txid, bits)
-				// "Linkage Group I" "Linkage Group II" etc in 367110 
-				// "gap-filling sequence" in 284812
-				irregularProtChrom++
-				continue// happens in 367110 and 284812
-			}
-			pomeid := bits[0]
-			come := bits[1]
-			chrmbits := strings.Split(come, " ")
-			chrmbit := chrmbits[0]
-			trgs := []string{"Chromosome", "Mitochondrion", "Chloroplast", "Apicoplast", "Plasmid"}
-			cnt := 0
-			for _, trg := range trgs {
-				if trg == chrmbit {
-					cnt++
-				}
-			}
-			if cnt != 1 {
-				//fmt.Printf("parse.Updat:%s: IrregularChrom:%v: skipped\n", txid, come)
-			// junk like 'Unassembled WGS sequence', 'Geneome assembly', 'Unplaced' etc
+		for _, prmchr := range prmchrs {
+			bits := strings.Split(prmchr, ": ") // proteome: chromosome
+			if bits[0] != prmid {
 				continue
+			} // only the reference proteom now
+			if len(bits) < 2 {
+				// happens in 367110 and 284812
+				// "Linkage Group I" "Linkage Group II" etc in 367110
+				// e.g.UP000001805: Chromosome 1, Linkage Group I, UP000001805: Unassembled WGS sequence
+				// "gap-filling sequence" in 284812
+				// e.g. UP000002485: Chromosome II, gap-filling sequence
+				// at least one pair contains RefProtID
+				// one more problem in 36329:
+				// UP000001450: Chromosome: api 20200531: 10
+				// UP000001450: Chromosome: mit 20200531: 2
+				// alongside with
+				// Apicoplast A/B 20200531: 30
+				// UP000001450: Mitochondrion 20200531: 3
+				// TODO
+				continue // go to the next pair
 			}
-			comeid := ""
-			switch chrmbit {
-			case "Chromosome": // "e.g. 'Chromosome 1'"
-				chrnbr := chrmbits[1]
-				if len(chrnbr) == 1 {
-					// chrnbr = strings.Join([]string{"0", chrnbr}, "")
+			chr := bits[1]
+			chrbits := strings.Split(chr, " ")
+			chrbit := chrbits[0]
+			/*
+				trgs := []string{"Chromosome", "Mitochondrion", "Chloroplast", "Apicoplast", "Plasmid"}
+				cnt := 0
+				for _, trg := range trgs {
+					if trg == chrbit {
+						cnt++
+					}
 				}
-				comeid = strings.Join([]string{strings.ToLower(chrmbits[0][0:3]), chrnbr}, "-")
+			*/
+			chrid := ""
+			switch chrbit {
+			case "Chromosome": // "e.g. 'Chromosome 1'"
+				shortbit := strings.ToLower(chrbit[0:3])
+				if len(bits) == 2 {
+					chrnbr := chrbits[1]
+					chrid = strings.Join([]string{shortbit, chrnbr}, "-")
+				} else if len(bits) == 3 {
+					chrlbl := bits[2]
+					chrid = fmt.Sprintf("%s-%s", shortbit, chrlbl)
+				}
 			case "Mitochondrion":
-				comeid = strings.ToLower(chrmbits[0][0:6])
+				chrid = strings.ToLower(chrbits[0][0:6])
 			case "Chloroplast":
-				comeid = strings.ToLower(chrmbits[0][0:6])
+				chrid = strings.ToLower(chrbits[0][0:6])
 			case "Apicoplast":
 				// "Apicoplast A" "Apicoplat B" in 36329
-				comeid = fmt.Sprintf("%s-%s", strings.ToLower(chrmbits[0][0:5]), chrmbits[1])
+				chrid = fmt.Sprintf("%s-%s", strings.ToLower(chrbits[0][0:5]), chrbits[1])
 			case "Plasmid":
 				// "Plasmid 2-micron" in 559292 S.cerevisiae
-				lastbit := strings.Replace(chrmbits[1], "-", "", -1)
-				comeid = fmt.Sprintf("%s-%s", strings.ToLower(chrmbits[0][0:4]), lastbit[0:3])
+				lastbit := strings.Replace(chrbits[1], "-", "", -1)
+				chrid = fmt.Sprintf("%s-%s", strings.ToLower(chrbits[0][0:4]), lastbit[0:3])
 			}
-			if comeid != "" {
-				ptm2chr.Add(pomeid, comeid)
+			if chrid != "" {
+				prm2chr.Add(prmid, chrid)
 			}
-		}// one Proteome:Chromosome value
+		} // all Proteome:Chromosome values
+		if len(prm2chr) == 0 {
+			// junk like 'Unassembled WGS sequence', 'Geneome assembly', 'Unplaced' etc
+			noChrom[upca]++
+			chrid := fmt.Sprintf("dummy") // unmapped entries allowed as of 2020-08-19
+			prm2chr.Add(prmid, chrid)
+		}
+		// a SINGLE proteome from now on !!
 
-		if len(ptm2chr) > 1 {
-			multiPome++
+		chrs := prm2chr[prmid].Keys()
+		if len(chrs) > 1 {
+			// happens in all the 25 taxa; 10230 in 367110
+			multiProtChrom[upca]++
+			msg := fmt.Sprintf("parse.UpTab():%s: MultiChrom: %s: %v", txid, upca, chrs)
+			fmt.Printf("%s\n", msg)
 		}
-		if len(ptm2chr) == 0 {
-			noProteome++
-			continue
+		// Primary Gene Names separated by "; ":
+		// empty strings for many entries
+		// numerous entries like: "14-3-3 protein", "20 amino acid ORF", "7 ER" etc
+		gnmbag := strings.Split(cells[2], "; ")
+		// Groups of " " separated GeneSynonyms, separated by "; "
+		// empty string and somethin lik"; ; ;" occur as values
+		gsnmbag := strings.Split(cells[3], "; ")
+		if len(gsnmbag) != len(gnmbag) {
+			msg := fmt.Sprintf("parse.UpTab():%s:%s: Mismatch: %v:%v", txid, upca, gnmbag, gsnmbag)
+			panic(errors.New(msg))
+		} // never happens
+		// removing empty strings
+		var gnms, gsnms []string
+		for i, gnm := range gnmbag {
+			if gnm == "" {
+				continue
+			}
+			gnms = append(gnms, gnm)
+			gsnms = append(gsnms, gsnmbag[i]) // empty strings likely
 		}
+		if len(gnms) == 0 {
+			noGeneName[upca]++
+			gnms = append(gnms, upid) // allowing entries without Gene Name as of 200-07-19
+		}
+
 		if len(gnms) > 1 {
-			for i, _ := range gnms {
-				gnms[i] = cells[1]
-			}
-		} // replacing GeneNames with UnoProtID, a quick fix TODO
+			/*
+				for i, _ := range gnms {
+					gnms[i] = cells[1]
+				} // replacing GeneNames with UnoProtID
+			*/
+			multiGene[upca]++
+			msg := fmt.Sprintf("parse.UpTab():%s: MultiGene: %s: %d %v", txid, upca, len(gnms), gnms)
+			fmt.Printf("%s\n", msg)
+		}
+		if len(chrs) > 1 && len(gnms) > 1 {
+			msg := fmt.Sprintf("parse.UpTab():%s: MultiChromGene: %s", txid, upca)
+			fmt.Printf("%s\n", msg)
+			//continue // TODO decide
+			chrs = []string{"multi"}
+		}
 		for i, gnm := range gnms {
-			genes.Add(gnm, "upca", upca)
-			onedat.Add("gnm", gnm)
-			if synonyms {
-				for _, gsnm := range strings.Split(gsnms[i], " ") {
-				genes.Add(gnm, "gsnm", gsnm)
-				onedat.Add("gsnm", gsnm)
+			allGs.Add(gnm, "upca", upca)
+			oneP.Add("gnm", gnm)
+			if len(gsnms) != len(gnms) {
+				continue
+			} // occurs if an artificial GeneName added
+			for _, gsnm := range strings.Split(gsnms[i], " ") {
+				if gsnm == "" {
+					continue
+				} // no synonyms for a particulare GeneName
+				allGs.Add(gnm, "gsnm", gsnm)
+				oneP.Add("gsnm", gsnm)
 			}
-			}// adding original GeneNames to synonyms instead
 		}
-		pome := ptm2chr.Keys()[0]
-		onedat.Add("pome", pome)
-		for come := range ptm2chr[pome] {
-			come = strings.Replace(come, " ", "-", 1)
-			onedat.Add("come", come)
-			taxa.Add(txid, "come", come)
+		oneP.Add("prmid", prmid)
+		//		for chr := range prm2chr[prmid] {
+		for _, chr := range chrs {
+			chr = strings.Replace(chr, " ", "-", 1)
+			oneP.Add("chr", chr)
+			allTs.Add(txid, "chr", chr)
 		}
-		onedat.Add("upid", cells[1])
-		onedat.Add("spnm", cells[4])
-		onedat.Add("txid", txid)
-		onedat.Add("pdfn", strings.Replace(cells[6], "\"", ",,", 1))
-		onedat.Add("pubmed", cells[8])
-		bits := strings.Split(cells[9], " ")
-		onedat.Add("score", bits[0])
-		taxa.Add(txid, "spnm", cells[4]) // NEEDED !!
-		taxa.Add(txid, "pome", pome)
-		updat[upca] = onedat
-	}// one UniProt canonical accession
-	txids := taxa.Keys()
+		oneP.Add("upid", cells[1])
+		oneP.Add("spnm", cells[4])
+		oneP.Add("txid", txid)
+		oneP.Add("pdfn", strings.Replace(cells[6], "\"", "''", -1))
+		//oneP.Add("pubmed", cells[8])
+		for _, pmid := range strings.Split(cells[8], "; ") {
+			if pmid == "" {
+				continue
+			}
+			oneP.Add("pubmed", pmid)
+		}
+		oneP.Add("score", strings.Split(cells[9], " ")[0])
+		allTs.Add(txid, "spnm", cells[4]) // NEEDED !!
+		allTs.Add(txid, "prmid", prmid)
+		allPs[upca] = oneP
+	} // one UniProt canonical accession
+	/////////////////////////////////////////////////////////////////////////////
+	txids := allTs.Keys()
 	msg := ""
 	if len(txids) != 1 {
 		msg = fmt.Sprintf("MultipleTaxa: %v", txids)
-		panic(errors.New(msg))
+		return out, errors.New(msg)
 	}
-	if noProteome != 0 {
-		msg = fmt.Sprintf("parse.Updat():%v: noProteome, skipped: %d", txids, noProteome)
-		fmt.Printf("%s\n", msg)
+	if len(allPs) == 0 {
+		msg = fmt.Sprintf("parse.UpTab():%s: NoProts", txids)
+		return out, errors.New(msg)
 	}
-	if irregularProtChrom != 0 {
-		// 10231 in 367110, 5 in 284812
-		msg = fmt.Sprintf("parse.Updat():%v: irregularProtChrom, skipped: %d", txids, irregularProtChrom)
-		fmt.Printf("%s\n", msg)
+	if len(allGs) == 0 {
+		msg = fmt.Sprintf("parse.UpTab():%s: NoGenes", txids)
+		return out, errors.New(msg)
 	}
-	if notInRefProt != 0 {
-		msg = fmt.Sprintf("parse.Updat():%v: notInRefProt, skipped: %d", txids, notInRefProt)
-		fmt.Printf("%s\n", msg)
+	msg = fmt.Sprintf("parse.UpTab():%v: ProcessedEntries: %d", txids, ln)
+	log.Println(msg)
+	// skipped:
+	if len(notInRefProt) != 0 {
+		msg = fmt.Sprintf("parse.UpTab():%v: Skipped: NotInRefProt: %d", txids, len(notInRefProt))
+		log.Println(msg)
 	}
-	if multiProtChrom != 0 {
+	// not skipped:
+	if len(noGeneName) != 0 {
+		msg = fmt.Sprintf("parse.UpTab():%v: Warning: NoGeneName: %d", txids, len(noGeneName))
+		log.Println(msg)
+	}
+	if len(noChrom) != 0 {
+		msg = fmt.Sprintf("parse.UpTab():%v: Warning: NoChrom: %d", txids, len(noChrom))
+		log.Println(msg)
+	}
+	if len(multiProtChrom) != 0 {
 		// occurs in all the 25 taxa, normally limited number though goes upto 10230 in 367110
 		// 15 canonical accessions in 9606
-		msg = fmt.Sprintf("parse.Updat():%v: Warning: multiProtChrom : %d", txids, multiProtChrom)
-		fmt.Printf("%s\n", msg)
+		msg = fmt.Sprintf("parse.UpTab():%v: Warning: MultiChrom: %d", txids, len(multiProtChrom))
+		log.Println(msg)
 	}
-	if multiPome != 0 {
-		// only once in 4588
-		msg = fmt.Sprintf("parse.Updat():%v: Warning: multiPome : %d", txids, multiPome)
-		fmt.Printf("%s\n", msg)
+	if len(multiGene) != 0 {
+		msg = fmt.Sprintf("parse.UpTab():%v: Warning: MultiGene: %d", txids, len(multiGene))
+		log.Println(msg)
 	}
-		out.Udat = &updat
-		out.Txns = &taxa
-		out.Gnm = &genes
+	msg = fmt.Sprintf("parse.UpTab():%s: AcceptedEntries: %d", txids, len(allPs))
+	log.Println(msg)
+	out.Upac = &upac2xrf // checked in rdf4bgw
+	// all checked above
+	out.Txns = &allTs
+	out.Udat = &allPs
+	out.Gnm = &allGs
 	return out, nil
-}
+} // UpTab()
 
-func Upvar(pthR string, gsym2bgw util.Set3D) (duos util.Set3D) {
-	// gsym2bgw is used only for filtering
+func UpVar(rpth string, filters ...util.Set3D) (duos util.Set3D, err error) {
+	// filters is used only for filtering
 	/*
 	 AARS	  P49588	 VAR_063527  p.Arg329His	Disease	   rs267606621 Charcot-Marie-Tooth disease 2N(CMT2N) [MIM:613287]
 	  0 gene name
@@ -396,53 +494,69 @@ func Upvar(pthR string, gsym2bgw util.Set3D) (duos util.Set3D) {
 	*/
 	nsL := "hgncsymb"
 	nsR := "omim"
-	fhR, err := os.Open(pthR)
-	check(err)
+	fhR, err := os.Open(rpth)
+	util.CheckE(err)
 	defer fhR.Close()
 	scanner := bufio.NewScanner(fhR)
 	duos = make(util.Set3D)
-	notInBgw := 0
+	notInBgw := make(util.Set1D)
 	for scanner.Scan() { // by default scans for '\n'
 		line := scanner.Text()
 		if len(line) < 79 {
 			continue
-		} // skipping lines with '-' in the last field
-		typ := strings.TrimSpace(line[48:61])
-		if typ != "Disease" {
+		} // skipping lines with '-' in the last field SIC!
+		if strings.TrimSpace(line[48:61]) != "Disease" {
 			continue
-		} // filtering, now all lines longer 78
-		//oriL := strings.TrimSpace(line[10:20])
-		oriL := strings.TrimSpace(line[0:9]) // Gene Symbol
-		_, ok := gsym2bgw[oriL]
-		if !ok {
-			notInBgw++
-			continue
+		}
+		upca := strings.TrimSpace(line[10:20])
+		symG := strings.TrimSpace(line[0:9])
+		//oriL := upca // TODO revert ?
+		oriL := symG
+		if len(filters) == 1 {
+			if out := checkID(oriL, filters[0], notInBgw); out != 0 {
+				continue
+			}
 		}
 		idL := fmt.Sprintf("%s%s%s", nsL, "!", oriL)
 		// TODO consider splitting on '[' and ']'
-		upca := strings.TrimSpace(line[10:20])
-		nmR := strings.TrimSpace(line[77:])
-		if nmR == "" {
+		dfn := strings.TrimSpace(line[77:])
+		// only one definition per line
+		if dfn == "" {
 			continue
-		}
-		bits := strings.Split(nmR, ":") // sic, returns 1 value
+		} // seem redundant
+		bits := strings.Split(dfn, "[MIM:") // sic, returns 1 value
+		// Attn: multiple ':' may occur !!!
+		// 20200531: only for "OXCT1     P55809":
+		// Succinyl-CoA:3-oxoacid CoA transferase deficiency (SCOTD) [MIM:245050]
 		if len(bits) < 2 {
 			continue
 		} // no MIM ID
-		oriR := strings.TrimSpace(strings.Split(bits[1], "]")[0])
+		if len(bits) > 2 {
+			msg := fmt.Sprintf("parse.UpVar():%s:%s: MultiMIMs, skipped", upca, symG)
+			fmt.Printf("%s\n", msg)
+			continue
+		} // normally should never happen
+		// remuving the trailing ']':
+		oriR := strings.TrimSuffix(bits[1], "]")
 		idR := fmt.Sprintf("%s%s%s", nsR, "!", oriR)
 		if idR == "" {
 			continue
 		}
 		pairid := fmt.Sprintf("%s%s%s", idL, "--", idR)
-		duos.Add(pairid, "nmR", nmR)
+		duos.Add(pairid, "dfn", bits[0])
 		duos.Add(pairid, "upca", upca)
 	}
-	if notInBgw != 0 {
-		log.Println("parse.Upvar(): notInBgw:", notInBgw)
+	if len(filters) == 1 {
+		msg := fmt.Sprintf("parse.UpVar():%s: NotInBgw: %d", rpth, len(notInBgw))
+		log.Println(msg)
+		//fmt.Printf("%s\n", msg)
 	}
-	return duos
-}
+	if len(duos) == 0 {
+		msg := fmt.Sprintf("parse.UpVar():%s: NoData", rpth)
+		return duos, errors.New(msg)
+	}
+	return duos, nil
+} // UpVar()
 
 /*
 fields:
@@ -454,7 +568,7 @@ NOT|contributes_to
 colocalizes_with
 contributes_to
 */
-func Gaf(pthR string, upac2bgw util.Set3D) (bp, cc, mf util.Set3D) {
+func Gaf(rpth string, filters ...util.Set3D) (bp, cc, mf util.Set3D, err error) {
 	ourppys := map[string]string{
 		"C": "gp2cc",
 		"F": "gp2mf",
@@ -465,11 +579,11 @@ func Gaf(pthR string, upac2bgw util.Set3D) (bp, cc, mf util.Set3D) {
 	bp = make(util.Set3D)
 	cc = make(util.Set3D)
 	mf = make(util.Set3D)
-	fhR, err := os.Open(pthR)
-	check(err)
+	fhR, err := os.Open(rpth)
+	util.CheckE(err)
 	defer fhR.Close()
 	scanner := bufio.NewScanner(fhR)
-	notInBgw := 0
+	notInBgw := make(util.Set1D)
 	for scanner.Scan() { // by default scans for '\n'
 		cells := strings.Split(scanner.Text(), "\t")
 		upac := ""
@@ -479,10 +593,10 @@ func Gaf(pthR string, upac2bgw util.Set3D) (bp, cc, mf util.Set3D) {
 			continue
 		}
 		// filtering by RefProt
-		_, ok := upac2bgw[upac]
-		if !ok {
-			notInBgw++
-			continue
+		if len(filters) == 1 {
+			if out := checkID(upac, filters[0], notInBgw); out != 0 {
+				continue
+			}
 		}
 		goid := strings.Replace(cells[4], ":", "_", 1)
 		if cells[3] == "NOT" {
@@ -525,11 +639,18 @@ func Gaf(pthR string, upac2bgw util.Set3D) (bp, cc, mf util.Set3D) {
 			}
 		}
 	}
-	if notInBgw != 0 {
-		log.Println("parse.Upvar(): notInBgw:", notInBgw)
+	if len(filters) == 1 {
+		msg := fmt.Sprintf("parse.Gaf():%s: NotInBgw: %d", rpth, len(notInBgw))
+		log.Println(msg)
+		//fmt.Printf("%s\n", msg)
 	}
-	return bp, cc, mf
-}
+	if len(bp)+len(cc)+len(mf) == 0 {
+		msg := fmt.Sprintf("parse.Gaf():%s: NoData", rpth)
+		err := errors.New(msg)
+		return bp, cc, mf, err
+	}
+	return bp, cc, mf, nil
+} // Gaf()
 
 /*
 !   name                         required? cardinality             GAF column #
@@ -572,7 +693,7 @@ part_of
 		5: []string{"eco", "|"},
 	}
 */
-func Gpa(pthR string, upac2bgw util.Set3D) (duos util.Set3D) {
+func Gpa(rpth string, filters ...util.Set3D) (duos util.Set3D) {
 	ourppys := map[string]string{
 		"part_of":     "gp2cc",
 		"enables":     "gp2mf",
@@ -581,11 +702,11 @@ func Gpa(pthR string, upac2bgw util.Set3D) (duos util.Set3D) {
 	srcL := "uniprot"
 	srcR := "obo"
 	duos = make(util.Set3D)
-	fhR, err := os.Open(pthR)
-	check(err)
+	fhR, err := os.Open(rpth)
+	util.CheckE(err)
 	defer fhR.Close()
 	scanner := bufio.NewScanner(fhR)
-	notInBgw := 0
+	notInBgw := make(util.Set1D)
 	for scanner.Scan() { // by default scans for '\n'
 		cells := strings.Split(scanner.Text(), "\t")
 		upac := ""
@@ -595,10 +716,10 @@ func Gpa(pthR string, upac2bgw util.Set3D) (duos util.Set3D) {
 			continue
 		}
 		// filtering by RefProt
-		_, ok := upac2bgw[upac]
-		if !ok {
-			notInBgw++
-			continue
+		if len(filters) == 1 {
+			if out := checkID(upac, filters[0], notInBgw); out != 0 {
+				continue
+			}
 		}
 		goid := strings.Replace(cells[3], ":", "_", 1)
 		qlrs := strings.Split(cells[2], "|")
@@ -628,34 +749,37 @@ func Gpa(pthR string, upac2bgw util.Set3D) (duos util.Set3D) {
 			duos.Add(pairid, "ref", ref)
 		}
 	}
-	if notInBgw != 0 {
-		log.Println("parse.Upvar(): notInBgw:", notInBgw)
+	if len(filters) == 1 {
+		msg := fmt.Sprintf("parse.Gpa():%s: NotInBgw: %d", rpth, len(notInBgw))
+		log.Println(msg)
+		//fmt.Printf("%s\n", msg)
 	}
 	return duos
-}
+} // Gpa()
 
-func Mitab(pthR string, upac2bgw util.Set3D) (duos util.Set3D) {
+// TODO  use GetSetFromTab()
+func MiTab(rpth string, filters ...util.Set3D) (duos util.Set3D, err error) {
 	tsvkeys := map[int][]string{
 		// NB: 0:1 duos are NOT inique !
 		//0: []string{"upacA", "|"}, // 9606: all single
 		//1: []string{"upacB", "|"}, // 9606: all single
 		6:  {"mtds", "|"}, // 9606: all single
-		8:  {"pubids", "|"},
-		11: {"inactps", "|"}, // 9606: all single
-		13: {"inacids", "|"}, // intact:EBI-20559053|imex:IM-26397-1
-		14: {"cnfvals", "|"}, // author score:D|intact-miscore:0.37
+		8:  {"pubmedIds", "|"},
+		11: {"intactTypes", "|"}, // 9606: all single
+		13: {"intactIds", "|"},   // intact:EBI-20559053|imex:IM-26397-1
+		14: {"cnfvals", "|"},     // author score:D|intact-miscore:0.37
 		//18: []string{"xprlAs", "|"}, // 9606: all single
 		//19: []string{"xprlBs", "|"}, // 9606: all single
 		//28: []string{"hosts", "|"}, // TODO expunge
 	}
 	duos = make(util.Set3D)
-	fhR, err := os.Open(pthR)
-	check(err)
+	fhR, err := os.Open(rpth)
+	util.CheckE(err)
 	defer fhR.Close()
 	srcL := "uniprot"
 	srcR := "uniprot"
 	scanner := bufio.NewScanner(fhR)
-	notInBgw := 0
+	notInBgw := make(util.Set1D)
 	for scanner.Scan() { // by default scans for '\n'
 		cells := strings.Split(scanner.Text(), "\t")
 		/// processing IDs
@@ -680,15 +804,13 @@ func Mitab(pthR string, upac2bgw util.Set3D) (duos util.Set3D) {
 			upacB = upacRs[0]
 		}
 		// filtering by RefProt
-		_, ok := upac2bgw[upacA]
-		if !ok {
-			notInBgw++
-			continue
-		}
-		_, ok = upac2bgw[upacB]
-		if !ok {
-			notInBgw++
-			continue
+		if len(filters) == 1 {
+			if out := checkID(upacA, filters[0], notInBgw); out != 0 {
+				continue
+			}
+			if out := checkID(upacB, filters[0], notInBgw); out != 0 {
+				continue
+			}
 		}
 		// re-assigning
 		cells[0] = upacA
@@ -710,48 +832,58 @@ func Mitab(pthR string, upac2bgw util.Set3D) (duos util.Set3D) {
 			}
 		}
 	}
-	if notInBgw != 0 {
-		log.Println("parse.Upvar(): notInBgw:", notInBgw)
+	if len(filters) == 1 {
+		msg := fmt.Sprintf("parse.MiTab():%s: NotInBgw: %d", rpth, len(notInBgw))
+		log.Println(msg)
+		//fmt.Printf("%s\n", msg)
 	}
-	return duos
-}
+	if len(duos) == 0 {
+		msg := fmt.Sprintf("parse.MiTab():%s: NoData", rpth)
+		return duos, errors.New(msg)
+	}
+	return duos, nil
+} // MiTab()
 
-// Parses a tab delimited file containing relations between human transcription factors
-// and their known target genes extracted from multiple sources (Miguel)
-// Arguments:
-// 1. path to the data file
-// 2. mapping from UniProt Accessions to BGW IDs
-// 2. mapping from HGNC Symbols to BGW IDs
-// Returns:
-// 1. data structure containing core data
-// 2. data structure containing metadata
-
-func orthosolo(datdir, txid string, tx2pm util.Set2D, idmkeys map[string]string) (util.Set3D, error) {
-	out := make(util.Set3D)
+func orthosolo(datdir, txid string, txn2prm util.Set2D, idmkeys map[string]string) (util.Set3D, error) {
+	solos := make(util.Set3D)
 	subdir := "idmapping/"
 	ext := ".idmapping"
-	pomes := tx2pm[txid].Keys() // normally 1, yet multiple may occur
-	for _, pome := range pomes {
-		pome := fmt.Sprintf("%s%s%s", pome, "_", txid)
-		pth := fmt.Sprintf("%s%s%s%s", datdir, subdir, pome, ext) // read
+	prmids := txn2prm[txid].Keys() // normally 1, yet multiple may occur
+	for _, prmid := range prmids {
+		prmid := fmt.Sprintf("%s%s%s", prmid, "_", txid)
+		pth := fmt.Sprintf("%s%s%s%s", datdir, subdir, prmid, ext) // read
+		//dat, err := util.FilterByValues(pth, idmkeys, 1, 1, 0)
 		dat, err := Idmap(pth, idmkeys, 1, 2, 0)
-		check(err)
+		util.CheckE(err)
 		for src, all := range dat {
 			for id, one := range all {
 				for upac, _ := range one {
-					out.Add(src, id, upac)
+					solos.Add(src, id, upac)
 				}
 			}
-		}
+		} // src; e.g. KO, OrthoDB
 	}
-	return out, nil
-}
-func Orthoduo(datdir, txidL, txidR string, tx2pm util.Set2D, idmkeys map[string]string) (util.Set3D, error) {
-	out := make(util.Set3D)
-	outL, err := orthosolo(datdir, txidL, tx2pm, idmkeys)
-	check(err)
-	outR, err := orthosolo(datdir, txidR, tx2pm, idmkeys)
-	check(err)
+	count := 0
+	for src, _ := range solos {
+		count += len(solos[src])
+	}
+	if count == 0 {
+		msg := fmt.Sprintf("parse.orthosolo:%s: NoData", txid)
+		return solos, errors.New(msg)
+	} // no orthology in any of the sources
+	return solos, nil
+} // orthosolo()
+
+func OrthoDuo(datdir, txidL, txidR string, txn2prm util.Set2D, idmkeys map[string]string) (util.Set3D, error) {
+	duos := make(util.Set3D)
+	outL, err := orthosolo(datdir, txidL, txn2prm, idmkeys)
+	if err != nil {
+		return duos, err
+	} // NoDate for one taxaon
+	outR, err := orthosolo(datdir, txidR, txn2prm, idmkeys)
+	if err != nil {
+		return duos, err
+	} // NoDate for one taxaon
 	for src, _ := range idmkeys {
 		allL, ok := outL[src]
 		if !ok {
@@ -772,10 +904,14 @@ func Orthoduo(datdir, txidL, txidR string, tx2pm util.Set2D, idmkeys map[string]
 						continue
 					} // skipping diagonal and symmetrical
 					duoid := fmt.Sprintf("uniprot!%s--uniprot!%s", upLac, upRac)
-					out.Add(duoid, src, id)
+					duos.Add(duoid, src, id)
 				}
 			}
 		}
 	}
-	return out, nil
-}
+	if len(duos) == 0 {
+		msg := fmt.Sprintf("parse.OrthoDuo():%s--%s: NoData", txidL, txidR)
+		return duos, errors.New(msg)
+	} // 20200531: none Note: no filtering by BGW
+	return duos, nil
+} // OrthoDuo()
