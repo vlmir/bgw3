@@ -99,9 +99,9 @@ func tfac2gene(datdir, bgwdir string, txn2prm util.Set2D, uris4tftg map[string]s
 		xmap := bgw.NewXmap()
 		err := xmap.Unmarshal(rpthx)
 		util.CheckE(err)
-		upac2bgw := xmap.Upac
-		//gene2bgw := xmap.Gsymb
-		gene2bgw := xmap.Ncbig
+		//upac2bgw := xmap.Upac
+		//gene2bgw := xmap.Lblg
+		//gene2bgw := xmap.Ncbig
 		for src, uri := range uris4tftg {
 			ext := ".f2g"
 			rpth := fmt.Sprintf("%s%s%s", rdir, src, ext)
@@ -119,7 +119,8 @@ func tfac2gene(datdir, bgwdir string, txn2prm util.Set2D, uris4tftg map[string]s
 			msg := fmt.Sprintf("rdf4bgw.go:main.tfac2gene():%s: NoData", txid)
 			log.Println(msg)
 		}
-		n, err := export.Tfac2gene(dat4one, upac2bgw, gene2bgw, wpth)
+		//n, err := export.Tfac2gene(dat4one, upac2bgw, gene2bgw, wpth)
+		n, err := export.Tfac2gene(dat4one, xmap, wpth)
 		if err != nil {
 			msg := fmt.Sprintf("rdf4bgw.go:main.tfac2gene():%s: %s", err, txid)
 			log.Println(msg)
@@ -150,7 +151,7 @@ func gene2phen(datdir, bgwdir string, txn2prm util.Set2D) (int, error) {
 		xmap := bgw.NewXmap()
 		err := xmap.Unmarshal(rpthx)
 		util.CheckE(err)
-		gsym2bgw := xmap.Gsymb
+		gsym2bgw := xmap.Lblg
 		/////////////////////////////////////////////////////////////////////////////
 		//duos, err := parse.UpVar(rpth, gsym2bgw)
 		duos, err := parse.UpVar(rpth)

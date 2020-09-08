@@ -348,7 +348,7 @@ func UpTab(rpth string, upac2xrf util.Set3D, txn2prm util.Set2D) (out bgw.Dat4rd
 		if len(chrs) > 1 {
 			// happens in all the 25 taxa; 10230 in 367110
 			multiProtChrom[upca]++
-			msg := fmt.Sprintf("parse.UpTab():%s: MultiChrom: %s: %v", txid, upca, chrs)
+			msg := fmt.Sprintf("parse.UpTab():%s:%s: MultiChrom: %d %v", txid, upca, len(chrs), chrs)
 			fmt.Printf("%s\n", msg)
 		}
 		// Primary Gene Names separated by "; ":
@@ -362,7 +362,7 @@ func UpTab(rpth string, upac2xrf util.Set3D, txn2prm util.Set2D) (out bgw.Dat4rd
 			msg := fmt.Sprintf("parse.UpTab():%s:%s: Mismatch: %v:%v", txid, upca, gnmbag, gsnmbag)
 			panic(errors.New(msg))
 		} // never happens
-		// removing empty strings
+		// removing empty strings, uccur in 3702 for exampl
 		var gnms, gsnms []string
 		for i, gnm := range gnmbag {
 			if gnm == "" {
@@ -383,13 +383,14 @@ func UpTab(rpth string, upac2xrf util.Set3D, txn2prm util.Set2D) (out bgw.Dat4rd
 				} // replacing GeneNames with UnoProtID
 			*/
 			multiGene[upca]++
-			msg := fmt.Sprintf("parse.UpTab():%s: MultiGene: %s: %d %v", txid, upca, len(gnms), gnms)
+			msg := fmt.Sprintf("parse.UpTab():%s:%s: MultiGene: %d %v", txid, upca, len(gnms), gnms)
+			fmt.Printf("%s\n", msg)
+		}
+		if len(chrs) > 1 && len(gnms) == 1 {
+			msg := fmt.Sprintf("parse.UpTab():%s:%s: OneGeneMultiChrom: %s %v", txid, upca, gnms[0], chrs)
 			fmt.Printf("%s\n", msg)
 		}
 		if len(chrs) > 1 && len(gnms) > 1 {
-			msg := fmt.Sprintf("parse.UpTab():%s: MultiChromGene: %s", txid, upca)
-			fmt.Printf("%s\n", msg)
-			//continue // TODO decide
 			chrs = []string{"multi"}
 		}
 		for i, gnm := range gnms {
@@ -397,7 +398,7 @@ func UpTab(rpth string, upac2xrf util.Set3D, txn2prm util.Set2D) (out bgw.Dat4rd
 			oneP.Add("gnm", gnm)
 			if len(gsnms) != len(gnms) {
 				continue
-			} // occurs if an artificial GeneName added
+			} // occurs if an artificial GeneName added. e.g. if UP provides no primary gene name
 			for _, gsnm := range strings.Split(gsnms[i], " ") {
 				if gsnm == "" {
 					continue
@@ -523,7 +524,7 @@ func UpVar(rpth string, filters ...util.Set3D) (duos util.Set3D, err error) {
 		// only one definition per line
 		if dfn == "" {
 			continue
-		} // seem redundant
+		} // seems redundant
 		bits := strings.Split(dfn, "[MIM:") // sic, returns 1 value
 		// Attn: multiple ':' may occur !!!
 		// 20200531: only for "OXCT1     P55809":

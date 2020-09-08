@@ -65,7 +65,8 @@ type Xmap struct {
 	Bgwg  util.Set3D
 	Bgwp  util.Set3D
 	Upac  util.Set3D
-	Gsymb util.Set3D
+	Lblg util.Set3D
+	Syng util.Set3D
 	Ensg  util.Set3D
 	Ncbig util.Set3D
 	Ensp  util.Set3D
@@ -74,7 +75,8 @@ type Xmap struct {
 
 func NewXmap() (xmap Xmap) {
 	xmap.Upac = make(util.Set3D)
-	xmap.Gsymb = make(util.Set3D)
+	xmap.Lblg = make(util.Set3D)
+	xmap.Syng = make(util.Set3D)
 	xmap.Bgwp = make(util.Set3D)
 	xmap.Bgwg = make(util.Set3D)
 	xmap.Ensg = make(util.Set3D)

@@ -88,12 +88,16 @@ func Test_Tfac2gene(t *testing.T) {
 	arg3 := make(util.Set3D)
 	arg3.Add("TP53", "bgwg", "9606/chr-17/TP53")
 	arg3.Add("7157", "bgwg", "9606/chr-17/TP53")
+		xmap := bgw.NewXmap()
+		xmap.Upac = arg2
+		xmap.Lblg = arg3
 	arg4 := xpth + "tfac2gene/export.nt"
 	t3s := []tt{
 		{arg1, arg2, arg3, arg4, 24},
 	}
 	for i, tt := range t3s {
-		n, _ := Tfac2gene(tt.arg1, tt.arg2, tt.arg3, tt.arg4)
+		//n, _ := Tfac2gene(tt.arg1, tt.arg2, tt.arg3, tt.arg4)
+		n, _ := Tfac2gene(tt.arg1, xmap, tt.arg4)
 		if n != tt.val1 {
 			t.Error(
 				"For test", i+1, ": ", len(tt.arg1), tt.arg2, tt.arg3,

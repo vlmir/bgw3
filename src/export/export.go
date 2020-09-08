@@ -237,7 +237,6 @@ func GeneProt(dat4rdf bgw.Dat4rdf, wpthG, wpthP, wpthX string) (int, int, error)
 	// allGs: ALL GeneNams in the Reference Protome!
 	cnt := make(util.Set2D)
 	for _, lblG := range allGs.Keys() {
-		// lblG == UniProtID for entries with multiple GeneNames now
 		oneG, ok := allGs[lblG]
 		if !ok {
 			panic("Impossible!")
@@ -272,7 +271,7 @@ func GeneProt(dat4rdf bgw.Dat4rdf, wpthG, wpthP, wpthX string) (int, int, error)
 			// there is at least one in allPs
 			chrs := oneP["chr"].Keys() // sorted
 			//chr := chrs[0]
-			if len(chrs) > 1 {
+			if len(chrs) > 1 || chrs[0] == "multi" {
 				// indeed multiple chromosomes an a single UP entry
 				// e.g.M0QZ52: 3 chromoomes, 3 Ensembk_PRO, 3 HGNC IDs, but SINGLE UniParc
 				// UP000005640: Chromosome 14, UP000005640: Chromosome 19, UP000005640: Chromosome 2
@@ -316,6 +315,8 @@ func GeneProt(dat4rdf bgw.Dat4rdf, wpthG, wpthP, wpthX string) (int, int, error)
 					}
 					sbG.WriteString(rdf.FormT(ourGU, gnUs["sth2syn"], rdf.FormL(synG)))
 					nlng++
+				xmap.Syng.Add(synG, "bgwg", bgwG)
+				xmap.Syng.Add(bgwG, "syng", synG)
 				}
 				sbG.WriteString(rdf.FormT(ourGU, gnUs["sth2ori"], oriU))
 				nlng++
@@ -323,8 +324,8 @@ func GeneProt(dat4rdf bgw.Dat4rdf, wpthG, wpthP, wpthX string) (int, int, error)
 				// multiple BGW GeneIDs per GeneName are possible, e.g.:
 				//<http://rdf.biogateway.eu/gene/9606/multi/CALM1>
 				// <http://rdf.biogateway.eu/gene/9606/chr-14/CALM1>
-				xmap.Gsymb.Add(lblG, "bgwg", bgwG)
-				xmap.Gsymb.Add(bgwG, "gnm", lblG)
+				xmap.Lblg.Add(lblG, "bgwg", bgwG)
+				xmap.Lblg.Add(bgwG, "gnm", lblG)
 				if len(oneP["gnm"]) == 1 {
 					// ensgs and ncbigs sorted
 					for _, ensg := range ensgs {
@@ -565,7 +566,7 @@ func GeneProt(dat4rdf bgw.Dat4rdf, wpthG, wpthP, wpthX string) (int, int, error)
 	wfhX.Write(j)
 	/////////////////////////////////////////////////////////////////////////////
 	if l := len(cnt["noGx"]); l > 0 {
-		log.Println("export.GeneProt(): Skipped: NoGeneXref:", l)
+		log.Println("export.GeneProt(): Warning: NoGeneXref:", l)
 	}
 	return nlng, nlnp, nil
 } // GeneProt
@@ -1041,7 +1042,8 @@ func Prot2prot(duos, upac2bgw util.Set3D, wpth string) (int, error) {
 // Retturns:
 // 1. number of lines written to the output RDF file
 // 2. error
-func Tfac2gene(dat4txn util.Set4D, upac2bgw, gene2bgw util.Set3D, wpth string) (int, error) {
+//func Tfac2gene(dat4txn util.Set4D, upac2bgw, lblg2bgw util.Set3D, wpth string) (int, error) {
+func Tfac2gene(dat4txn util.Set4D, xmap bgw.Xmap, wpth string) (int, error) {
 	// TODO re-implement to reduce redundancy
 	// Note: no isoforms in this graph
 	nss := rdf.Nss // BGW URI name spaces
@@ -1125,14 +1127,27 @@ func Tfac2gene(dat4txn util.Set4D, upac2bgw, gene2bgw util.Set3D, wpth string) (
 			// multiple BGW genes due to multiple GeneSymbols for a single UP ACC
 			oriRs := duo["ncbig"].Keys() // NCBI GeneID, single
 			if len(oriRs) != 1 {
-				continue
+				continue // all entries have strictly 1 GeneID
 			}
 			oriR := oriRs[0]
-			//bgwRs := gene2bgw[gsymR]["bgwg"].Keys()
-			bgwRs := gene2bgw[oriR]["bgwg"].Keys()
-			if l := counter(bgwRs, cnt, "addG", "dropG", oriR); l == 0 {
+			ncbig2bgw := xmap.Ncbig
+		lblg2bgw := xmap.Lblg
+		syng2bgw := xmap.Syng
+		upac2bgw := xmap.Upac
+			bgwRs := ncbig2bgw[oriR]["bgwg"].Keys()
+			if len(bgwRs) == 0 {
+			bgwRs = lblg2bgw[gsymR]["bgwg"].Keys()
+			}
+			if len(bgwRs) == 0 {
+			bgwRs = syng2bgw[gsymR]["bgwg"].Keys()
+			}
+			if l := counter(bgwRs, cnt, "addG", "dropG", gsymR); l == 0 {
 				continue
 			}
+				if len(bgwRs) > 1 {
+					msg := fmt.Sprintf("export.Tfac2gene():%s:%s: %d GeneIDs: %v ", gsymR, oriR, len(bgwRs), bgwRs)
+					fmt.Printf("%s\n", msg)
+				} // 112 unique. among those 77 with no 'dumm'
 			cntL := 0
 			for _, oriL := range oriLs { // sorted above
 				bgwLs := upac2bgw[oriL]["bgwp"].Keys()
@@ -1156,7 +1171,7 @@ func Tfac2gene(dat4txn util.Set4D, upac2bgw, gene2bgw util.Set3D, wpth string) (
 				bgwLs := upac2bgw[oriL]["bgwp"].Keys()
 				//if len(bgwLs) = 0 // 9606:14, 13 unique; only 3 UP ACCs: P62805, P69905, Q16385
 				if len(bgwLs) > 1 {
-					msg := fmt.Sprintf("export.Tfac2gene():%s:%s: %d ProtIDs ", gsymL, oriL, len(bgwLs))
+					msg := fmt.Sprintf("export.Tfac2gene():%s:%s: %d ProtIDs: %v ", gsymL, oriL, len(bgwLs), bgwLs)
 					fmt.Printf("%s\n", msg)
 				} // 9606:25 unique accessions no BGW protein, e.g.Q9NRY4, present in idmapping
 				for _, bgwL := range bgwLs { // sorted above
@@ -1182,10 +1197,9 @@ func Tfac2gene(dat4txn util.Set4D, upac2bgw, gene2bgw util.Set3D, wpth string) (
 						sb.WriteString(rdf.FormT(insU, ourUs["sth2src"], srcU))
 						nln++
 						// Cleaning up the mess in the data file: PubMed ID: \d+
-						// TODO do this better
 						for _, key := range refs { // sorted above
 							if key[0] < 48 || key[0] > 57 {
-								continue
+								continue // TODO do this better
 							}
 							pubmedU := rdf.CompU(nss["pubmed"], key)
 							sb.WriteString(rdf.FormT(insU, ourUs["sth2evd"], pubmedU))
@@ -1239,10 +1253,12 @@ func Tfac2gene(dat4txn util.Set4D, upac2bgw, gene2bgw util.Set3D, wpth string) (
 		msg := fmt.Sprintf("export.Tfac2gene():NotInBgw:prot:%s", prot)
 		fmt.Printf("%s\n", msg)
 	} // 20200531: 11
+	/*
 	for gene, _ := range cnt["dropG"] {
 		msg := fmt.Sprintf("export.Tfac2gene():NotInBgw:gene:%s", gene)
 		fmt.Printf("%s\n", msg)
-	} // 20200531: using gsym:1640 ncbig:742
+	} // 20200531: 412, ~9/10th non-protein coding genes
+	*/
 	msg = fmt.Sprintf("export.Tfac2gene(): Prots: added: %d dropped: %d", len(cnt["addP"]), len(cnt["dropP"]))
 	log.Println(msg)
 	msg = fmt.Sprintf("export.Tfac2gene(): Genes: added: %d dropped: %d", len(cnt["addG"]), len(cnt["dropG"]))
