@@ -22,7 +22,7 @@ var Upkeys = map[string]string{
 	//"Gene_Synonym": "gsnm",
 	"Ensembl":     "ensg",
 	"Ensembl_PRO": "ensp",
-	//"EnsemblGenome":     "ensg",
+	"EnsemblGenome":     "ensom",
 	//"EnsemblGenome_PRO": "ensp",
 	"GeneID":  "ncbig",
 	"RefSeq":  "rfsq",

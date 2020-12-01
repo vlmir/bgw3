@@ -19,6 +19,7 @@ func Test_geneprot(t *testing.T) {
 	var arg3 [5]util.Set2D // txmap
 	arg3[0] = make(util.Set2D)
 	arg3[0].Add("9606", "UP000005640")
+	//arg3[0].Add("7227", "UP000000803")
 	tts := []tt{
 		{pth, xpth, arg3[0], 35, 76},
 	}

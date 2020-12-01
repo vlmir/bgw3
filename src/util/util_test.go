@@ -201,11 +201,11 @@ func Test_FilterByValues(t *testing.T) {
 		arg5 int
 		val  int
 	}
-	pth := "../../tdata/"
+	pth := "../../tdata/idmapping/"
 	t1s := []tt{
-		{pth + "test.idm", map[string]string{"NCBI_TaxID": "test"}, 2, 1, 0, 1},
-		{pth + "test.idm", map[string]string{"NCBI_TaxID": "test"}, 0, 1, 2, 1},
-		{pth + "test.idm", map[string]string{"UniParc": "test"}, 0, 1, 2, 4},
+		{pth + "UP000005640_9606.idmapping", map[string]string{"NCBI_TaxID": "test"}, 2, 1, 0, 1},
+		{pth + "UP000005640_9606.idmapping", map[string]string{"NCBI_TaxID": "test"}, 0, 1, 2, 1},
+		{pth + "UP000005640_9606.idmapping", map[string]string{"UniParc": "test"}, 0, 1, 2, 4},
 	}
 	for i, tt := range t1s {
 		idm, _ := FilterByValues(tt.arg1, tt.arg2, tt.arg3, tt.arg4, tt.arg5)
@@ -220,7 +220,7 @@ func Test_FilterByValues(t *testing.T) {
 }
 
 func Test_MakeMap(t *testing.T) {
-	pth := "../../tdata/"
+	pth := "../../tdata/idmapping/"
 	type tt struct {
 		arg1 string
 		arg2 int
@@ -229,7 +229,7 @@ func Test_MakeMap(t *testing.T) {
 		val1 int
 	}
 	tts := []tt{
-		{pth + "test.idm", 0, 1, "\t", 4},
+		{pth + "UP000005640_9606.idmapping", 0, 1, "\t", 4},
 	}
 	for i, tt := range tts {
 		r, _ := MakeMap(tt.arg1, tt.arg2, tt.arg3, tt.arg4)

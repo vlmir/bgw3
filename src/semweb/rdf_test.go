@@ -13,7 +13,7 @@ func Test_FmtURIs(t *testing.T) {
 	arg1 := make(util.SliceSet)
 	arg1["Opys"] = []string{
 		"sub2cls",
-		"ppy2prn",
+		"sub2ppy",
 	}
 	arg1["Apys"] = []string{
 		"sth2lbl",
@@ -76,7 +76,7 @@ func Test_Capita(t *testing.T) {
 //	arg2 := make(util.SliceSet)
 //	arg2["Opys"] = []string{
 //		"sub2cls",
-//		"ppy2prn",
+//		"sub2ppy",
 //	}
 //	arg2["Apys"] = []string{
 //		"sth2lbl",

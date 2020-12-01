@@ -8,6 +8,7 @@ import (
 )
 
 func Test_GeneProt(t *testing.T) {
+	// TODO implement properly without duplicating the tests
 	type tt struct {
 		arg1 bgw.Dat4rdf
 		arg2 string
@@ -21,20 +22,48 @@ func Test_GeneProt(t *testing.T) {
 	var idmkeys = map[string]string{
 		"Ensembl_PRO": "ensp",
 		"Ensembl":     "ensg",
+	"EnsemblGenome":     "ensom",
 		"GeneID":      "ncbig",
 		"RefSeq":      "rfsq",
 		"UniParc":     "uparc",
 	}
 	txn2prm := make(util.Set2D)
 	txn2prm.Add("9606", "UP000005640")
-	upacs, _ := parse.UpIdMap(pth+"test.idm", idmkeys)
-	arg1, _ := parse.UpTab(pth+"test.upt", upacs, txn2prm)
-	arg1.Upac = &upacs
-	arg2 := xpth + "gene/export.nt"
-	arg3 := xpth + "prot/export.nt"
-	arg4 := xpth + "xmap/export.json"
+	txn2prm.Add("7227", "UP000000803")
+	upacs, _ := parse.UpIdMap(pth+"idmapping/UP000005640_9606.idmapping", idmkeys)
+	arg01, _ := parse.UpTab(pth+"uniprot/9606.upt", upacs, txn2prm)
+	arg01.Upac = &upacs
+	arg02 := xpth + "gene/export0.nt"
+	arg03 := xpth + "prot/export0.nt"
+	arg04 := xpth + "xmap/export0.json"
 	t1s := []tt{
-		{arg1, arg2, arg3, arg4, 35, 76},
+		{arg01, arg02, arg03, arg04, 35, 76},
+	}
+	for i, tt := range t1s {
+		n, m, _ := GeneProt(tt.arg1, tt.arg2, tt.arg3, tt.arg4)
+		if n != tt.val1 {
+			t.Error(
+				"For test", i+1, ": ",
+				"\n\twant", tt.val1,
+				"\n\thave", n,
+			)
+		}
+		if m != tt.val2 {
+			t.Error(
+				"For test", i+1, ": ",
+				"\n\twant", tt.val2,
+				"\n\thave", m,
+			)
+		}
+	}
+	upacs, _ = parse.UpIdMap(pth+"idmapping/UP000000803_7227.idmapping", idmkeys)
+	arg11, _ := parse.UpTab(pth+"uniprot/7227.upt", upacs, txn2prm)
+	arg11.Upac = &upacs
+	arg12 := xpth + "gene/export1.nt"
+	arg13 := xpth + "prot/export1.nt"
+	arg14 := xpth + "xmap/export1.json"
+	t1s = []tt{
+		{arg11, arg12, arg13, arg14, 14, 33},
 	}
 	for i, tt := range t1s {
 		n, m, _ := GeneProt(tt.arg1, tt.arg2, tt.arg3, tt.arg4)

@@ -28,34 +28,37 @@ var Nss = map[string]string{
 	"pubmed":    "http://identifiers.org/pubmed/",
 	"ensp":      "http://identifiers.org/ensembl/",
 	"ensg":      "http://identifiers.org/ensembl/",
+	"enspl":      "https://plants.ensembl.org/id/",
+	"ensfu":      "https://fungi.ensembl.org/id/",
+	"ensme":      "https://metazoa.ensembl.org/id/",
+	"enspr":      "https://protists.ensembl.org/id/",
 	"go":        "http://purl.obolibrary.org/obo/GO_",
 	"bgw":       "http://rdf.biogateway.eu/",
 	"gene":      "http://rdf.biogateway.eu/gene/",
 	"prot":      "http://rdf.biogateway.eu/prot/",
-	"tsf_gn":    "http://rdf.biogateway.eu/prot-gene/", // for TF-TG
-	"up_up":     "http://rdf.biogateway.eu/prot-prot/",
-	"up_obo":    "http://rdf.biogateway.eu/prot-obo/",
-	"up_mim":    "http://rdf.biogateway.eu/prot-omim/",
+	// "tsf_gn":    "http://rdf.biogateway.eu/prot-gene/", // for TF-TG
+	// "up_up":     "http://rdf.biogateway.eu/prot-prot/",
+	// "up_obo":    "http://rdf.biogateway.eu/prot-obo/",
+	// "up_mim":    "http://rdf.biogateway.eu/prot-omim/",
 }
 
 //"orthodb": "https://www.orthodb.org/?query=", // accepts IDs from UP idmapping
 
 var Opys = util.SliceSet{
 	"sub2cls": {"rdfs", "subClassOf", "is subclass of"},
-	"ppy2prn": {"rdfs", "subPropertyOf", "is subproperty of"},
-	"sth2evd": {"sio", "SIO_000772", "has evidence"},                                                                                          // PubMed only: ALL
-	"sth2ori": {"schema", "evidenceOrigin", "has evidence origin"},                                                                            // DATA sources; ALL; e.g. bgwp 2 upca
-	"sth2src": {"sio", "SIO_000253", "has source", "has source is a relation between an entity and another entity from which it stems from."}, // TODO sth2src => iaf2src (e.g. graph, statement)
-	"sth2clm": {"skos", "closeMatch", "has close match"},                                                                                      // GeneProt
+	"sub2ppy": {"rdfs", "subPropertyOf", "is subproperty of"},
+	"sth2evd": {"sio", "SIO_000772", "has evidence"}, // PubMed only: ALL
+	"sth2ori": {"schema", "evidenceOrigin", "has evidence origin"}, // DATA sources; ALL; e.g. bgwp 2 upca
+	"sth2src": {"sio", "SIO_000253", "has source", "has source is a relation between an entity and another entity from which it stems from."},
+	"sth2clm": {"skos", "closeMatch", "has close match"},
+	"sub2set": {"obo", "BFO_0000050", "is part of"},
 	"gn2txn":  {"obo", "BFO_0000052", "inheres in"},
-	"gn2chr":  {"obo", "BFO_0000050", "part of"},
-	"sub2set": {"obo", "BFO_0000050", "part of"},
-	"gp2txn":  {"obo", "BFO_0000052", "inheres in"}, // gene or gene product
+	"gp2txn":  {"obo", "BFO_0000052", "inheres in"},
 	"mbr2lst": {"schema", "memberOf", "is member of"},
 	"ins2cls": {"rdf", "type", "is instance of"},
-	"gp2phn":  {"obo", "RO_0002331", "involved in"},
+	"gn2phn":  {"obo", "RO_0002331", "involved in"},
 	"gp2bp":   {"obo", "RO_0002331", "involved in", "biological_process"},
-	"gp2cc":   {"obo", "BFO_0000050", "part of", "cellular_component"},
+	"gp2cc":   {"obo", "BFO_0000050", "is part of", "cellular_component"},
 	"gp2mf":   {"obo", "RO_0002327", "enables", "molecular_function"},
 	"gn2gp":   {"sio", "SIO_010078", "encodes"},
 	"tlp2tlp": {"obo", "RO_0002436", "molecularly interacts with"},
@@ -181,11 +184,11 @@ func Capita(rdfmap util.SliceSet) (string, int) {
 			rdfs = "Class"
 		case group == "Opys":
 			dic = Opys
-			pdc = Opys["ppy2prn"]
+			pdc = Opys["sub2ppy"]
 			rdfs = "ObjectProperty"
 		case group == "Apys":
 			dic = Apys
-			pdc = Opys["ppy2prn"]
+			pdc = Opys["sub2ppy"]
 			rdfs = "AnnotationProperty"
 		}
 		pU := CompU(Nss[pdc[0]], pdc[1])
@@ -222,10 +225,10 @@ func Capita(rdfmap util.SliceSet) (string, int) {
 //			k4p = "sub2cls"
 //			k4o = "cls"
 //		case group == "Opys":
-//			k4p = "ppy2prn"
+//			k4p = "sub2ppy"
 //			k4o = "opy"
 //		case group == "Apys":
-//			k4p = "ppy2prn"
+//			k4p = "sub2ppy"
 //			k4o = "apy"
 //		}
 //		plU := uris["sth2lbl"]

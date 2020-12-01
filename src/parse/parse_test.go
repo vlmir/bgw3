@@ -68,9 +68,10 @@ func Test_UpIdMap(t *testing.T) {
 		arg2 map[string]string
 		val1 int
 	}
-	pth := "../../tdata/"
+	pth := "../../tdata/idmapping/"
 	idms := []tt{
-		{pth + "test.idm", map[string]string{"UniParc": "test"}, 4},
+		{pth + "UP000005640_9606.idmapping", map[string]string{"UniParc": "test"}, 4},
+		{pth + "UP000000803_7227.idmapping", map[string]string{"EnsemblGenome": "test"}, 1},
 	}
 	for i, tt := range idms {
 		out, _ := UpIdMap(tt.arg1, tt.arg2)
@@ -96,13 +97,16 @@ func Test_UpTab(t *testing.T) {
 	pth := "../../tdata/"
 	txn2prm := make(util.Set2D)
 	txn2prm.Add("9606", "UP000005640")
+	txn2prm.Add("7227", "UP000000803")
 	upt := make(util.Set3D)
 	upts := []tt{
-		{pth + "test.upt", upt, txn2prm, 2, 1, 2},
+		{pth + "uniprot/9606.upt", upt, txn2prm, 2, 1, 2},
+		{pth + "uniprot/7227.upt", upt, txn2prm, 1, 1, 1},
 	}
 	for i, tt := range upts {
 		tt.arg2.Add("P04637", "upac", "P04637-2")
 		tt.arg2.Add("FOOFOO", "upac", "FOOFOO-2")
+		tt.arg2.Add("P00528", "upac", "P00528")
 		out, _ := UpTab(tt.arg1, tt.arg2, txn2prm)
 		set1 := *out.Udat
 		set2 := *out.Txns

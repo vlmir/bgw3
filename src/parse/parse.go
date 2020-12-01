@@ -230,6 +230,7 @@ UP000005640: Chromosome 1, UP000005640: Chromosome 17
 */
 // Entry   Entry name      Organism        Organism ID     Protein names   Proteomes       PubMed ID       Annotation
 func UpTab(rpth string, upac2xrf util.Set3D, txn2prm util.Set2D) (out bgw.Dat4rdf, err error) {
+	// Attn: the input file MUST hane no blank lines !!! TODO
 	allPs := make(util.Set3D)
 	allTs := make(util.Set3D)
 	allGs := make(util.Set3D)
@@ -246,18 +247,18 @@ func UpTab(rpth string, upac2xrf util.Set3D, txn2prm util.Set2D) (out bgw.Dat4rd
 	for scanner.Scan() {
 		/// by default scans for '\n'
 		// one line per UniProt canonical accession
-		ln++
-		if ln == 1 {
-			continue
-		}
 		cells := strings.Split(scanner.Text(), "\t")
 		// the # of fields is currently 11 but only 10 in test files !!
 		// the last field (GeneID) is not currently used
+		upca := cells[0]
+		if upca == "Entry" {
+			continue
+		}
 		if len(cells) < 10 {
 			msg := fmt.Sprintf("parse.UpTab():%s:line:%d: TooFewFields", rpth, ln)
 			panic(errors.New(msg))
 		}
-		upca := cells[0]
+		ln++
 		_, ok := upac2xrf[upca] // RefProt ACs
 		if !ok {
 			notInRefProt[upca]++
@@ -344,6 +345,7 @@ func UpTab(rpth string, upac2xrf util.Set3D, txn2prm util.Set2D) (out bgw.Dat4rd
 		}
 		// a SINGLE proteome from now on !!
 
+		// proteome-chromosome pairs
 		chrs := prm2chr[prmid].Keys()
 		if len(chrs) > 1 {
 			// happens in all the 25 taxa; 10230 in 367110
@@ -434,7 +436,7 @@ func UpTab(rpth string, upac2xrf util.Set3D, txn2prm util.Set2D) (out bgw.Dat4rd
 	txids := allTs.Keys()
 	msg := ""
 	if len(txids) != 1 {
-		msg = fmt.Sprintf("MultipleTaxa: %v", txids)
+		msg = fmt.Sprintf("parse.UpTab(): MaldefinedTaxon: %v", txids)
 		return out, errors.New(msg)
 	}
 	if len(allPs) == 0 {

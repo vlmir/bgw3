@@ -45,21 +45,9 @@ func geneprot(datdir, bgwdir string, txn2prm util.Set2D) (ntg, ntp int, err erro
 		//rpthi = datdir + "intact.lst" // for filtering, TODO eliminate the hard coding
 		dat4rdf, err := parse.UpTab(rpthu, upac2xrf, txn2prm)
 		util.CheckE(err)
-		/* all checked in parse.UpTab()
-		updat := *dat4rdf.Udat
-		txns := *dat4rdf.Txns
-		if len(updat) == 0 || len(txns) == 0 {
-			err := errors.New(fmt.Sprintf("%s: NoTaxon", rpthu))
-			panic(err)
-		}
-		if len(txns) > 1 {
-			err := errors.New(fmt.Sprintf("%s: MultipleTaxa: %v", rpthu, txns))
-			panic(err)
-		}
 		/////////////////////////////////////////////////////////////////////////////
 		// passing pointers, seems slightly faster, at most by 10%
 		//dat4rdf.Upac = &upac2xrf
-		*/
 		nlg, nlp, err := export.GeneProt(dat4rdf, wpthg, wpthp, wpthx)
 		util.CheckE(err)
 		ntg += nlg
