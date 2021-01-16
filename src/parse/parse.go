@@ -190,7 +190,7 @@ func UpIdMap(rpth string, idmkeys map[string]string) (out util.Set3D, err error)
 		cells := strings.Split(scanner.Text(), "\t")
 		if len(cells) != 3 {
 			continue
-		}
+		} // just a sanity check
 		key, ok := idmkeys[cells[1]]
 		if !ok {
 			continue
@@ -199,11 +199,11 @@ func UpIdMap(rpth string, idmkeys map[string]string) (out util.Set3D, err error)
 		// TODO see if the replacement below is acceptable
 		xrf := strings.Replace(cells[2], "\"", "''", -1) // present e.g. in 44689
 		out.Add(upac, key, xrf)
-		// used 2 time in export.GeneProt() only
 		// TODO see how to get rid of this
-		upca := strings.Split(upac, "-")[0]
-		out.Add(upca, "upac", upac)
-		//out.Add(upac, "upca", upca)
+		bits := strings.Split(upac, "-")
+		if len(bits) == 2 {
+			out.Add(bits[0], "upac", upac)
+		} // only iso-forms added
 	}
 	return out, nil
 }
@@ -253,7 +253,7 @@ func UpTab(rpth string, upac2xrf util.Set3D, txn2prm util.Set2D) (out bgw.Dat4rd
 		upca := cells[0]
 		if upca == "Entry" {
 			continue
-		}
+		} // skipping the header line
 		if len(cells) < 10 {
 			msg := fmt.Sprintf("parse.UpTab():%s:line:%d: TooFewFields", rpth, ln)
 			panic(errors.New(msg))
@@ -264,7 +264,7 @@ func UpTab(rpth string, upac2xrf util.Set3D, txn2prm util.Set2D) (out bgw.Dat4rd
 			notInRefProt[upca]++
 			continue
 		} // filtering by RefProt
-		upid := cells[1]
+		//v34 upid := cells[1]
 		txid := cells[5]
 		prmid := txn2prm[txid].Keys()[0] // a single value
 		oneP := make(util.Set2D)
@@ -336,12 +336,12 @@ func UpTab(rpth string, upac2xrf util.Set3D, txn2prm util.Set2D) (out bgw.Dat4rd
 			if chrid != "" {
 				prm2chr.Add(prmid, chrid)
 			}
-		} // all Proteome:Chromosome values
+		} // all Proteome:Chromosome values for the given UP entry
 		if len(prm2chr) == 0 {
 			// junk like 'Unassembled WGS sequence', 'Geneome assembly', 'Unplaced' etc
 			noChrom[upca]++
-			chrid := fmt.Sprintf("dummy") // unmapped entries allowed as of 2020-08-19
-			prm2chr.Add(prmid, chrid)
+			//v34 chrid := fmt.Sprintf("dummy") // unmapped entries allowed as of 2020-08-19
+			//v34 prm2chr.Add(prmid, chrid)
 		}
 		// a SINGLE proteome from now on !!
 
@@ -358,13 +358,13 @@ func UpTab(rpth string, upac2xrf util.Set3D, txn2prm util.Set2D) (out bgw.Dat4rd
 		// numerous entries like: "14-3-3 protein", "20 amino acid ORF", "7 ER" etc
 		gnmbag := strings.Split(cells[2], "; ")
 		// Groups of " " separated GeneSynonyms, separated by "; "
-		// empty string and somethin lik"; ; ;" occur as values
+		// empty string and something like"; ; ;" occur as values
 		gsnmbag := strings.Split(cells[3], "; ")
 		if len(gsnmbag) != len(gnmbag) {
 			msg := fmt.Sprintf("parse.UpTab():%s:%s: Mismatch: %v:%v", txid, upca, gnmbag, gsnmbag)
 			panic(errors.New(msg))
 		} // never happens
-		// removing empty strings, uccur in 3702 for exampl
+		// removing empty strings, occur in 3702 for example
 		var gnms, gsnms []string
 		for i, gnm := range gnmbag {
 			if gnm == "" {
@@ -375,7 +375,9 @@ func UpTab(rpth string, upac2xrf util.Set3D, txn2prm util.Set2D) (out bgw.Dat4rd
 		}
 		if len(gnms) == 0 {
 			noGeneName[upca]++
-			gnms = append(gnms, upid) // allowing entries without Gene Name as of 200-07-19
+			msg := fmt.Sprintf("parse.UpTab():%s:%s: NoGene", txid, upca)
+			fmt.Printf("%s\n", msg)
+			//v334 gnms = append(gnms, upid) // allowing entries without Gene Name as of 200-07-19
 		}
 
 		if len(gnms) > 1 {
@@ -393,10 +395,16 @@ func UpTab(rpth string, upac2xrf util.Set3D, txn2prm util.Set2D) (out bgw.Dat4rd
 			fmt.Printf("%s\n", msg)
 		}
 		if len(chrs) > 1 && len(gnms) > 1 {
-			chrs = []string{"multi"}
+			//v34 chrs = []string{"multi"}
+			msg := fmt.Sprintf("parse.UpTab():%s:%s: MultiGeneMultiChrom: %d %v", txid, upca, len(gnms), chrs)
+			fmt.Printf("%s\n", msg)
 		}
 		for i, gnm := range gnms {
 			allGs.Add(gnm, "upca", upca)
+			if len(chrs) == 1 {
+				allGs.Add(gnm, "chr", chrs[0])
+			}
+
 			oneP.Add("gnm", gnm)
 			if len(gsnms) != len(gnms) {
 				continue
@@ -415,6 +423,9 @@ func UpTab(rpth string, upac2xrf util.Set3D, txn2prm util.Set2D) (out bgw.Dat4rd
 			chr = strings.Replace(chr, " ", "-", 1)
 			oneP.Add("chr", chr)
 			allTs.Add(txid, "chr", chr)
+			if len(gnms) == 1 {
+				allGs.Add(gnms[0], "chr", chr)
+			}
 		}
 		oneP.Add("upid", cells[1])
 		oneP.Add("spnm", cells[4])

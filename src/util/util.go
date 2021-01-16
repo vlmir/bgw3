@@ -233,8 +233,12 @@ func MakeMap(pth string, keyind int, valind int, dlm string) (Set2D, error) {
 	scanner := bufio.NewScanner(fh)
 	for scanner.Scan() { // by default scans for '\n'
 		line := scanner.Text()
-		if len(line) == 0 {continue}
-		if string(line[0]) == "#" {continue}
+		if len(line) == 0 {
+			continue
+		}
+		if string(line[0]) == "#" {
+			continue
+		}
 		cells := strings.Split(line, dlm)
 		if keyind >= len(cells) {
 			continue

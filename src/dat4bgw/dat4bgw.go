@@ -340,13 +340,16 @@ func getAllGoa(datdir string, txmap, tx2pm util.Set2D) {
 	}
 }
 
+// alternative downloads including subspecies:
+// wget 'http://purl.obolibrary.org/obo/ncbitaxon.obo'
+// wget 'http://purl.obolibrary.org/obo/ncbitaxon.owl'
 func getAllOnto(datdir string) {
 	ns := "http://data.bioontology.org/ontologies/"
 	key := "/download?apikey=8b5b7825-538d-40e0-9e9e-5ab9274a9aeb"
 	ff := "&download_format=rdf"
 	subdir := "onto/"
 	ext := ".xml"
-	for _, onto := range [...]string{"BFO", "RO", "MI", "ECO", "GO"} {
+	for _, onto := range [...]string{"BFO", "OBOREL", "MI", "ECO", "GO", "PR"} {
 		uri := fmt.Sprintf("%s%s%s%s", ns, onto, key, ff)
 		pth := fmt.Sprintf("%s%s%s%s", datdir, subdir, strings.ToLower(onto), ext)
 		if err := HttpFile(uri, pth); err != nil {
@@ -355,8 +358,8 @@ func getAllOnto(datdir string) {
 	}
 	// Attn: needs to be updated !
 	var subms = map[string]string{
-		"OMIM":      "/submissions/16",
-		"NCBITAXON": "/submissions/14",
+		"OMIM": "/submissions/16",
+		// "NCBITAXON": "/submissions/14",
 	}
 	ext = ".ttl"
 	for _, onto := range [...]string{"OMIM", "NCBITAXON"} {
@@ -366,12 +369,13 @@ func getAllOnto(datdir string) {
 			log.Println("main.getAllOnto:", err)
 		}
 	}
-	var nss = map[string]string{
-		"sio": "http://semanticscience.org/ontology/",
+	var uris = map[string]string{
+		"sio":    "http://semanticscience.org/ontology/",
+		"ncbitx": "http://purl.obolibrary.org/obo/ncbitaxon.owl",
 	}
 	ext = ".owl"
 	for _, onto := range [...]string{"sio"} {
-		uri := fmt.Sprintf("%s%s%s", nss[onto], onto, ext)
+		uri := fmt.Sprintf("%s%s%s", uris[onto], onto, ext)
 		pth := fmt.Sprintf("%s%s%s%s", datdir, subdir, onto, ext)
 		if err := HttpFile(uri, pth); err != nil {
 			log.Println("main.getAllOnto:", err)

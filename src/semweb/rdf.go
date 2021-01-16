@@ -16,7 +16,7 @@ var Nss = map[string]string{
 	"obo":       "http://purl.obolibrary.org/obo/",
 	"sio":       "http://semanticscience.org/resource/", // resolvable (2014-09-29)
 	"uniprot":   "http://uniprot.org/uniprot/",          // accepts both UPID and UPAC
-	"uparc":     "http://identifiers.org/uniparc/",
+	"uparc":     "http://uniprot.org/uniparc/",
 	"ncbig":     "http://identifiers.org/ncbigene/",
 	"ncbitx":    "http://purl.bioontology.org/ontology/NCBITAXON/",
 	"rfsq":      "http://identifiers.org/refseq/",
@@ -28,10 +28,10 @@ var Nss = map[string]string{
 	"pubmed":    "http://identifiers.org/pubmed/",
 	"ensp":      "http://identifiers.org/ensembl/",
 	"ensg":      "http://identifiers.org/ensembl/",
-	"enspl":      "https://plants.ensembl.org/id/",
-	"ensfu":      "https://fungi.ensembl.org/id/",
-	"ensme":      "https://metazoa.ensembl.org/id/",
-	"enspr":      "https://protists.ensembl.org/id/",
+	"enspl":     "https://plants.ensembl.org/id/",
+	"ensfu":     "https://fungi.ensembl.org/id/",
+	"ensme":     "https://metazoa.ensembl.org/id/",
+	"enspr":     "https://protists.ensembl.org/id/",
 	"go":        "http://purl.obolibrary.org/obo/GO_",
 	"bgw":       "http://rdf.biogateway.eu/",
 	"gene":      "http://rdf.biogateway.eu/gene/",
@@ -47,9 +47,10 @@ var Nss = map[string]string{
 var Opys = util.SliceSet{
 	"sub2cls": {"rdfs", "subClassOf", "is subclass of"},
 	"sub2ppy": {"rdfs", "subPropertyOf", "is subproperty of"},
-	"sth2evd": {"sio", "SIO_000772", "has evidence"}, // PubMed only: ALL
+	"sth2evd": {"sio", "SIO_000772", "has evidence"},               // PubMed only: ALL
 	"sth2ori": {"schema", "evidenceOrigin", "has evidence origin"}, // DATA sources; ALL; e.g. bgwp 2 upca
 	"sth2src": {"sio", "SIO_000253", "has source", "has source is a relation between an entity and another entity from which it stems from."},
+	"sth2eqv": {"owl", "sameAs", "is equivalent to"},
 	"sth2clm": {"skos", "closeMatch", "has close match"},
 	"sub2set": {"obo", "BFO_0000050", "is part of"},
 	"gn2txn":  {"obo", "BFO_0000052", "inheres in"},
@@ -84,11 +85,11 @@ var Prns = util.SliceSet{
 	//"opy": {"rdfs", "ObjectProperty", "object property"},
 	//"apy": {"rdfs", "AnnotationProperty", "annotation property"},
 	"bag": {"rdf", "Bag", "unordered collection"},
-	"stm": {"rdf", "Statement", "triple"},
-	"tlp": {"sio", "SIO_010043", "protein"},
-	"gn":  {"sio", "SIO_010035", "gene"},
-	"chr": {"obo", "GO_0005694", "chromosome"},
-	"gom": {"obo", "SO_0001026", "genome"},
+	"stm": {"rdf", "Statement", "Triple"},
+	"tlp": {"sio", "SIO_010043", "Protein"},
+	"gn":  {"sio", "SIO_010035", "Gene"},
+	"chr": {"obo", "GO_0005694", "Chromosome"},
+	"gom": {"obo", "SO_0001026", "Genome"},
 }
 
 var Uris4tftg = map[string]string{
@@ -172,7 +173,7 @@ func FmtURIs(rdfmap util.SliceSet) map[string]string {
 func Capita(rdfmap util.SliceSet) (string, int) {
 	dic := make(util.SliceSet)
 	var pdc []string
-	var rdfs string
+	var top string
 	var plU string
 	var sb strings.Builder
 	nln := 0
@@ -180,16 +181,16 @@ func Capita(rdfmap util.SliceSet) (string, int) {
 		switch {
 		case group == "Prns":
 			dic = Prns
-			pdc = Opys["sub2cls"]
-			rdfs = "Class"
+			pdc = Opys["ins2cls"]
+			top = "Class"
 		case group == "Opys":
 			dic = Opys
 			pdc = Opys["sub2ppy"]
-			rdfs = "ObjectProperty"
+			top = "ObjectProperty"
 		case group == "Apys":
 			dic = Apys
 			pdc = Opys["sub2ppy"]
-			rdfs = "AnnotationProperty"
+			top = "AnnotationProperty"
 		}
 		pU := CompU(Nss[pdc[0]], pdc[1])
 		lbits := Apys["sth2lbl"]
@@ -202,7 +203,7 @@ func Capita(rdfmap util.SliceSet) (string, int) {
 				panic(errors.New(msg))
 			}
 			sU := CompU(Nss[bits[0]], bits[1])
-			oU := CompU(Nss["rdfs"], rdfs)
+			oU := CompU(Nss["owl"], top)
 			sb.WriteString(FormT(sU, pU, oU))
 			nln++
 			sb.WriteString(FormT(sU, plU, FormL(bits[2])))

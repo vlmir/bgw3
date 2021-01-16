@@ -21,7 +21,8 @@ func Test_geneprot(t *testing.T) {
 	arg3[0].Add("9606", "UP000005640")
 	//arg3[0].Add("7227", "UP000000803")
 	tts := []tt{
-		{pth, xpth, arg3[0], 35, 76},
+		//		{pth, xpth, arg3[0], 35, 76},
+		{pth, xpth, arg3[0], 34, 52},
 	}
 
 	for i, tt := range tts {
@@ -63,7 +64,8 @@ func Test_tfac2gene(t *testing.T) {
 		"htri":   "http://www.htri.org",
 	}
 	tts := []tt{
-		{pth, xpth, arg3[0], arg4[0], 41},
+		// {pth, xpth, arg3[0], arg4[0], 41},
+		{pth, xpth, arg3[0], arg4[0], 35},
 	}
 
 	for i, tt := range tts {
@@ -92,7 +94,7 @@ func Test_ortho(t *testing.T) {
 	arg3[0].Add("9606", "ortho")
 	arg3[0].Add("10090", "ortho")
 	tts := []tt{
-		{pth, xpth, arg3[0], 11},
+		{pth, xpth, arg3[0], 12},
 	}
 	for i, tt := range tts {
 		n, _ := ortho(tt.arg1, tt.arg2, tt.arg3)

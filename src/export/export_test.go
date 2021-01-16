@@ -20,12 +20,12 @@ func Test_GeneProt(t *testing.T) {
 	pth := "../../tdata/"
 	xpth := pth + "output/"
 	var idmkeys = map[string]string{
-		"Ensembl_PRO": "ensp",
-		"Ensembl":     "ensg",
-	"EnsemblGenome":     "ensom",
-		"GeneID":      "ncbig",
-		"RefSeq":      "rfsq",
-		"UniParc":     "uparc",
+		"Ensembl_PRO":   "ensp",
+		"Ensembl":       "ensg",
+		"EnsemblGenome": "ensom",
+		"GeneID":        "ncbig",
+		"RefSeq":        "rfsq",
+		"UniParc":       "uparc",
 	}
 	txn2prm := make(util.Set2D)
 	txn2prm.Add("9606", "UP000005640")
@@ -37,7 +37,8 @@ func Test_GeneProt(t *testing.T) {
 	arg03 := xpth + "prot/export0.nt"
 	arg04 := xpth + "xmap/export0.json"
 	t1s := []tt{
-		{arg01, arg02, arg03, arg04, 35, 76},
+		//		{arg01, arg02, arg03, arg04, 35, 76},
+		{arg01, arg02, arg03, arg04, 34, 52},
 	}
 	for i, tt := range t1s {
 		n, m, _ := GeneProt(tt.arg1, tt.arg2, tt.arg3, tt.arg4)
@@ -63,7 +64,8 @@ func Test_GeneProt(t *testing.T) {
 	arg13 := xpth + "prot/export1.nt"
 	arg14 := xpth + "xmap/export1.json"
 	t1s = []tt{
-		{arg11, arg12, arg13, arg14, 14, 33},
+		//		{arg11, arg12, arg13, arg14, 14, 33},
+		{arg11, arg12, arg13, arg14, 19, 34},
 	}
 	for i, tt := range t1s {
 		n, m, _ := GeneProt(tt.arg1, tt.arg2, tt.arg3, tt.arg4)
@@ -113,16 +115,16 @@ func Test_Tfac2gene(t *testing.T) {
 	arg1["test"] = set2
 
 	arg2 := make(util.Set3D)
-	arg2.Add("P04637", "bgwp", "9606/chr-17/TP53/UPI000002ED67")
+	arg2.Add("P04637", "bgwp", "9606/P04637/UPI000002ED67")
 	arg3 := make(util.Set3D)
-	arg3.Add("TP53", "bgwg", "9606/chr-17/TP53")
-	arg3.Add("7157", "bgwg", "9606/chr-17/TP53")
-		xmap := bgw.NewXmap()
-		xmap.Upac = arg2
-		xmap.Lblg = arg3
+	arg3.Add("TP53", "bgwg", "9606/TP53")
+	arg3.Add("7157", "bgwg", "9606/TP53")
+	xmap := bgw.NewXmap()
+	xmap.Upac = arg2
+	xmap.Lblg = arg3
 	arg4 := xpth + "tfac2gene/export.nt"
 	t3s := []tt{
-		{arg1, arg2, arg3, arg4, 24},
+		{arg1, arg2, arg3, arg4, 26},
 	}
 	for i, tt := range t3s {
 		//n, _ := Tfac2gene(tt.arg1, tt.arg2, tt.arg3, tt.arg4)
@@ -147,11 +149,11 @@ func Test_UpVar(t *testing.T) {
 	pth := "../../tdata/"
 	xpth := pth + "output/"
 	arg3 := make(util.Set3D)
-	arg3.Add("TP53", "bgwg", "9606/chr-17/TP53")
+	arg3.Add("TP53", "bgwg", "9606/TP53")
 	arg1, _ := parse.UpVar(pth+"test.var", arg3)
 	arg4 := xpth + "gene2phen/export.nt"
 	t2s := []tt{
-		{arg1, arg3, arg4, 10},
+		{arg1, arg3, arg4, 11},
 	}
 	for i, tt := range t2s {
 		n, err := Gene2phen(tt.arg1, tt.arg3, tt.arg4)
@@ -179,11 +181,11 @@ func Test_MiTab(t *testing.T) {
 	pth := "../../tdata/"
 	xpth := pth + "output/"
 	arg2 := make(util.Set3D)
-	arg2.Add("P04637", "bgwp", "9606/chr-17/TP53/UPI000002ED67")
+	arg2.Add("P04637", "bgwp", "9606/P04637/UPI000002ED67")
 	arg1, _ := parse.MiTab(pth+"test.mit", arg2)
 	arg3 := xpth + "prot2prot/export.nt"
 	tts := []tt{
-		{arg1, arg2, arg3, 72},
+		{arg1, arg2, arg3, 73},
 	}
 	for i, tt := range tts {
 		n, err := Prot2prot(tt.arg1, tt.arg2, tt.arg3)
@@ -210,13 +212,13 @@ func Test_Prot2go(t *testing.T) {
 	pth := "../../tdata/"
 	xpth := pth + "output/"
 	arg2 := make(util.Set3D)
-	arg2.Add("P04637", "bgwp", "9606/chr-17/TP53/UPI000002ED67")
+	arg2.Add("P04637", "bgwp", "9606/P04637/UPI000002ED67")
 	bps, ccs, mfs, _ := parse.Gaf(pth+"test.gaf", arg2)
 	out := [3]string{"prot2bp/export.nt", "prot2cc/export.nt", "prot2mf/export.nt"}
 	tts := []tt{
-		{bps, arg2, xpth + out[0], 1811},
-		{ccs, arg2, xpth + out[1], 243},
-		{mfs, arg2, xpth + out[2], 814},
+		{bps, arg2, xpth + out[0], 1961},
+		{ccs, arg2, xpth + out[1], 260},
+		{mfs, arg2, xpth + out[2], 853},
 	}
 	for i, tt := range tts {
 		n, err := Prot2go(tt.arg1, tt.arg2, tt.arg3)
@@ -246,11 +248,13 @@ func Test_Ortho(t *testing.T) {
 	arg2 := make(util.Set3D)
 	arg1.Add("uniprot!P02340--uniprot!P04637", "KO", "K04451")
 	arg1.Add("uniprot!P02340--uniprot!P04637", "OrthoDB", "257530at2759")
-	arg2.Add("P04637", "bgwp", "9606/chr-17/TP53/UPI000002ED67")
-	arg2.Add("P02340", "bgwp", "10090/chr-11/Tp53/UPI00000002B3")
+	// arg2.Add("P04637", "bgwp", "9606/P04637#UPI000002ED67")
+	arg2.Add("P04637", "bgwp", "9606/P04637")
+	// arg2.Add("P02340", "bgwp", "10090/P02340#PI00000002B3")
+	arg2.Add("P02340", "bgwp", "10090/P02340")
 	arg3 := xpth + "ortho/export.nt"
 	tts := []tt{
-		{arg1, arg2, arg3, 11},
+		{arg1, arg2, arg3, 12},
 	}
 	for i, tt := range tts {
 		n, err := Ortho(tt.arg1, tt.arg2, tt.arg3)

@@ -106,7 +106,7 @@ func tfac2gene(datdir, bgwdir string, txn2prm util.Set2D, uris4tftg map[string]s
 		if len(dat4one) == 0 {
 			msg := fmt.Sprintf("rdf4bgw.go:main.tfac2gene():%s: NoData", txid)
 			log.Println(msg)
-		}
+		} // TODO delete, makes no sense
 		//n, err := export.Tfac2gene(dat4one, upac2bgw, gene2bgw, wpth)
 		n, err := export.Tfac2gene(dat4one, xmap, wpth)
 		if err != nil {

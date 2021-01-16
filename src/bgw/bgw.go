@@ -20,9 +20,9 @@ var CV = "3.3.0"
 var Upkeys = map[string]string{
 	//"Gene_Name":    "gnm",
 	//"Gene_Synonym": "gsnm",
-	"Ensembl":     "ensg",
-	"Ensembl_PRO": "ensp",
-	"EnsemblGenome":     "ensom",
+	"Ensembl":       "ensg",
+	"Ensembl_PRO":   "ensp",
+	"EnsemblGenome": "ensom",
 	//"EnsemblGenome_PRO": "ensp",
 	"GeneID":  "ncbig",
 	"RefSeq":  "rfsq",
@@ -65,8 +65,8 @@ type Xmap struct {
 	Bgwg  util.Set3D
 	Bgwp  util.Set3D
 	Upac  util.Set3D
-	Lblg util.Set3D
-	Syng util.Set3D
+	Lblg  util.Set3D
+	Syng  util.Set3D
 	Ensg  util.Set3D
 	Ncbig util.Set3D
 	Ensp  util.Set3D
