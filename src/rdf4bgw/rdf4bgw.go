@@ -13,9 +13,6 @@ import (
 	"time"
 )
 
-// should stay here, needs to be passed to tfac2gene()
-var uris4tftg = rdf.Uris4tftg
-
 func geneprot(datdir, bgwdir string, txn2prm util.Set2D) (ntg, ntp int, err error) {
 	ntg = 0
 	ntp = 0
@@ -56,7 +53,7 @@ func geneprot(datdir, bgwdir string, txn2prm util.Set2D) (ntg, ntp int, err erro
 	return ntg, ntp, nil
 } // geneprot()
 
-func tfac2gene(datdir, bgwdir string, txn2prm util.Set2D, uris4tftg map[string]string) (int, error) {
+func tfac2gene(datdir, bgwdir string, txn2prm util.Set2D) (int, error) {
 	keys := []bgw.Column{
 		{0, ":", 0, "--", 0, ""},
 		{0, ":", 1, "--", 0, ""},
@@ -83,32 +80,48 @@ func tfac2gene(datdir, bgwdir string, txn2prm util.Set2D, uris4tftg map[string]s
 		subdir = "xmap/"
 		ext = ".json"
 		rpthx := fmt.Sprintf("%s%s%s%s", bgwdir, subdir, txid, ext) // read BGW map json
-		dat4one := make(map[string]util.Set3D)
+		dat4txn := make(util.Set4D)
 		xmap := bgw.NewXmap()
 		err := xmap.Unmarshal(rpthx)
 		util.CheckE(err)
 		//upac2bgw := xmap.Upac
 		//gene2bgw := xmap.Lblg
 		//gene2bgw := xmap.Ncbig
-		for src, uri := range uris4tftg {
+		for src, _ := range rdf.Uris4tftg {
 			ext := ".f2g"
 			rpth := fmt.Sprintf("%s%s%s", rdir, src, ext)
 			duos, err := parse.GetSetFromTab(rpth, keys, vals)
 			if err != nil {
 				msg := fmt.Sprintf("rdf4bgw.go:main.tfac2gene():%s: %s", err, src)
 				log.Println(msg)
-				//continue // SIC!
+				continue // SIC!
 			}
-			duos.Add(src, "uri", uri)
-			dat4one[src] = make(util.Set3D)
-			dat4one[src] = duos
+			if len(duos) == 0 {
+				msg := fmt.Sprintf("rdf4bgw.go:main.tfac2gene():%s: NoDataFor: %s", txid, src)
+				log.Println(msg)
+				continue
+			}
+			for duoid, duo := range duos {
+				// dat4txn[duoid] = make(util.Set3D)
+				// dat4txn[duoid][src] = make(util.Set2D)
+				for key, vals := range duo {
+					for val, _ := range vals {
+						if key == "uniprot" || key == "ncbig" {
+							dat4txn.Add(duoid, key, val, src)
+						} else {
+							dat4txn.Add(duoid, src, key, val)
+						}
+					}
+				}
+				// dat4txn[duoid][src] = duo
+				fmt.Println(dat4txn[duoid])
+			}
 		} //src
-		if len(dat4one) == 0 {
+		if len(dat4txn) == 0 {
 			msg := fmt.Sprintf("rdf4bgw.go:main.tfac2gene():%s: NoData", txid)
-			log.Println(msg)
-		} // TODO delete, makes no sense
-		//n, err := export.Tfac2gene(dat4one, upac2bgw, gene2bgw, wpth)
-		n, err := export.Tfac2gene(dat4one, xmap, wpth)
+			panic(errors.New(msg))
+		} // all sorces failed
+		n, err := export.Tfac2gene(dat4txn, xmap, wpth)
 		if err != nil {
 			msg := fmt.Sprintf("rdf4bgw.go:main.tfac2gene():%s: %s", err, txid)
 			log.Println(msg)
@@ -385,7 +398,7 @@ func main() {
 	}
 	if *aP || *rP {
 		mystart := time.Now()
-		tfac2gene(datdir, bgwdir, txn2prm, uris4tftg)
+		tfac2gene(datdir, bgwdir, txn2prm)
 		log.Println("Done with tfac2gene in", time.Since(mystart))
 	}
 	if *aP || *oP {

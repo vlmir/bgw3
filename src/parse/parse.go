@@ -83,7 +83,10 @@ func GetSetFromTab(rpth string, keys, vals []bgw.Column) (out util.Set3D, err er
 
 	out = make(util.Set3D)
 	fh, err := os.Open(rpth)
-	util.CheckE(err)
+	// util.CheckE(err)
+	if err != nil {
+		return out, err
+	}
 	defer fh.Close()
 	scanner := bufio.NewScanner(fh)
 	ln := 0

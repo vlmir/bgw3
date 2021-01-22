@@ -49,7 +49,6 @@ func Test_tfac2gene(t *testing.T) {
 		arg1 string
 		arg2 string
 		arg3 util.Set2D
-		arg4 map[string]string
 		val  int
 	}
 
@@ -58,18 +57,13 @@ func Test_tfac2gene(t *testing.T) {
 	var arg3 [5]util.Set2D // txmap
 	arg3[0] = make(util.Set2D)
 	arg3[0].Add("9606", "1")
-	var arg4 [5]map[string]string
-	arg4[0] = map[string]string{
-		"tfacts": "http://www.tfacts.org",
-		"htri":   "http://www.htri.org",
-	}
 	tts := []tt{
 		// {pth, xpth, arg3[0], arg4[0], 41},
-		{pth, xpth, arg3[0], arg4[0], 35},
+		{pth, xpth, arg3[0], 26},
 	}
 
 	for i, tt := range tts {
-		n, _ := tfac2gene(tt.arg1, tt.arg2, tt.arg3, tt.arg4)
+		n, _ := tfac2gene(tt.arg1, tt.arg2, tt.arg3)
 		if n != tt.val {
 			t.Error(
 				"For test", i+1, ": ", tt.arg1, tt.arg2, tt.arg3,

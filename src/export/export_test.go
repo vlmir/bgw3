@@ -6,6 +6,7 @@ import (
 	"github.com/vlmir/bgw3/src/util"
 	"testing"
 )
+// TODO use Test_Tfac2gene as a paradigm
 
 func Test_GeneProt(t *testing.T) {
 	// TODO implement properly without duplicating the tests
@@ -36,11 +37,11 @@ func Test_GeneProt(t *testing.T) {
 	arg02 := xpth + "gene/export0.nt"
 	arg03 := xpth + "prot/export0.nt"
 	arg04 := xpth + "xmap/export0.json"
-	t1s := []tt{
+	tts := []tt{
 		//		{arg01, arg02, arg03, arg04, 35, 76},
 		{arg01, arg02, arg03, arg04, 34, 52},
 	}
-	for i, tt := range t1s {
+	for i, tt := range tts {
 		n, m, _ := GeneProt(tt.arg1, tt.arg2, tt.arg3, tt.arg4)
 		if n != tt.val1 {
 			t.Error(
@@ -63,11 +64,11 @@ func Test_GeneProt(t *testing.T) {
 	arg12 := xpth + "gene/export1.nt"
 	arg13 := xpth + "prot/export1.nt"
 	arg14 := xpth + "xmap/export1.json"
-	t1s = []tt{
+	tts = []tt{
 		//		{arg11, arg12, arg13, arg14, 14, 33},
 		{arg11, arg12, arg13, arg14, 19, 34},
 	}
-	for i, tt := range t1s {
+	for i, tt := range tts {
 		n, m, _ := GeneProt(tt.arg1, tt.arg2, tt.arg3, tt.arg4)
 		if n != tt.val1 {
 			t.Error(
@@ -88,47 +89,32 @@ func Test_GeneProt(t *testing.T) {
 
 func Test_Tfac2gene(t *testing.T) {
 	type tt struct {
-		arg1 map[string]util.Set3D
-		arg2 util.Set3D
-		arg3 util.Set3D
-		arg4 string
+		arg1 util.Set4D
+		arg2 bgw.Xmap
+		arg3 string
 		val1 int
 	}
 	pth := "../../tdata/"
 	xpth := pth + "output/"
-	arg1 := make(map[string]util.Set3D)
-	set1 := make(util.Set3D)
-	set1.Add("TP53--TP53", "uniprot", "P04637")
-	set1.Add("TP53--TP53", "ncbig", "7157")
-	set1.Add("TP53--TP53", "pubmed", "P04637")
-	set1.Add("TP53--TP53", "pubmed", "04637")
-	set1.Add("TP53--TP53", "confidence", "High")
-	set1.Add("TP53--TP53", "mode", "UP")
-	set1.Add("TP53--TP53", "mode", "Unknown")
-	set1.Add("tfacts", "uri", "http://www.tfacts.org")
-	arg1["tfacts"] = set1
-	set2 := make(util.Set3D)
-	set2.Add("TP53--TP53", "uniprot", "P04637")
-	set2.Add("TP53--TP53", "ncbig", "7157")
-	set2.Add("TP53--TP53", "pubmed", "04637")
-	set2.Add("test", "uri", "http://www.test.org")
-	arg1["test"] = set2
+	arg01 := make(util.Set4D)
+	arg01.Add("TP53--TP53", "uniprot", "P04637", "tfacts")
+	arg01.Add("TP53--TP53", "ncbig", "7157", "tfacts")
+	arg01.Add("TP53--TP53", "tfacts", "pubmed", "P04637")
+	arg01.Add("TP53--TP53", "tfacts", "pubmed", "04637")
+	arg01.Add("TP53--TP53", "tfacts", "confidence", "High")
+	arg01.Add("TP53--TP53", "tfacts", "mode", "UP")
+	arg01.Add("TP53--TP53", "tfacts", "mode", "Unknown")
 
-	arg2 := make(util.Set3D)
-	arg2.Add("P04637", "bgwp", "9606/P04637/UPI000002ED67")
-	arg3 := make(util.Set3D)
-	arg3.Add("TP53", "bgwg", "9606/TP53")
-	arg3.Add("7157", "bgwg", "9606/TP53")
-	xmap := bgw.NewXmap()
-	xmap.Upac = arg2
-	xmap.Lblg = arg3
-	arg4 := xpth + "tfac2gene/export.nt"
-	t3s := []tt{
-		{arg1, arg2, arg3, arg4, 26},
+	arg02 := bgw.NewXmap()
+	arg02.Upac.Add("P04637", "bgwp", "9606/P04637")
+	arg02.Lblg.Add("TP53", "bgwg", "9606/TP53")
+	arg02.Lblg.Add("7157", "bgwg", "9606/TP53")
+	arg03 := xpth + "tfac2gene/export.nt"
+	tts := []tt{
+		{arg01, arg02, arg03, 20},
 	}
-	for i, tt := range t3s {
-		//n, _ := Tfac2gene(tt.arg1, tt.arg2, tt.arg3, tt.arg4)
-		n, _ := Tfac2gene(tt.arg1, xmap, tt.arg4)
+	for i, tt := range tts {
+		n, _ := Tfac2gene(tt.arg1, tt.arg2, tt.arg3)
 		if n != tt.val1 {
 			t.Error(
 				"For test", i+1, ": ", len(tt.arg1), tt.arg2, tt.arg3,
@@ -181,7 +167,7 @@ func Test_MiTab(t *testing.T) {
 	pth := "../../tdata/"
 	xpth := pth + "output/"
 	arg2 := make(util.Set3D)
-	arg2.Add("P04637", "bgwp", "9606/P04637/UPI000002ED67")
+	arg2.Add("P04637", "bgwp", "9606/P04637")
 	arg1, _ := parse.MiTab(pth+"test.mit", arg2)
 	arg3 := xpth + "prot2prot/export.nt"
 	tts := []tt{
@@ -212,7 +198,7 @@ func Test_Prot2go(t *testing.T) {
 	pth := "../../tdata/"
 	xpth := pth + "output/"
 	arg2 := make(util.Set3D)
-	arg2.Add("P04637", "bgwp", "9606/P04637/UPI000002ED67")
+	arg2.Add("P04637", "bgwp", "9606/P04637")
 	bps, ccs, mfs, _ := parse.Gaf(pth+"test.gaf", arg2)
 	out := [3]string{"prot2bp/export.nt", "prot2cc/export.nt", "prot2mf/export.nt"}
 	tts := []tt{

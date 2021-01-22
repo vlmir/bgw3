@@ -354,12 +354,12 @@ func GeneProt(dat4rdf bgw.Dat4rdf, wpthG, wpthP, wpthX string) (int, int, error)
 		} // upca
 		for _, src := range xrfs4oneg.Keys() {
 			for _, xrf := range xrfs4oneg[src].Keys() {
-			insG := fmt.Sprintf("%s%s%s", clsG, "#", xrf)
-			insGU := rdf.CompU(nss["gene"], insG)
-			sbG.WriteString(rdf.FormT(insGU, gpUs["ins2cls"], clsGU))
-			nlng++
-			sbG.WriteString(rdf.FormT(insGU, gpUs["sth2lbl"], rdf.FormL(xrf)))
-			nlng++
+				insG := fmt.Sprintf("%s%s%s", clsG, "#", xrf)
+				insGU := rdf.CompU(nss["gene"], insG)
+				sbG.WriteString(rdf.FormT(insGU, gpUs["ins2cls"], clsGU))
+				nlng++
+				sbG.WriteString(rdf.FormT(insGU, gpUs["sth2lbl"], rdf.FormL(xrf)))
+				nlng++
 				xrfU := rdf.CompU(nss[src], xrf)
 				sbG.WriteString(rdf.FormT(insGU, gnUs["sth2clm"], xrfU))
 				nlng++
@@ -691,7 +691,8 @@ func Gene2phen(duos, gsym2bgw util.Set3D, wpth string) (int, error) {
 		nln++
 		sb.WriteString(rdf.FormT(duoU, ourUs["sub2cls"], ourUs["stm"]))
 		nln++
-		sb.WriteString(rdf.FormT(duoU, ourUs["sth2lbl"], rdf.FormL(duoid)))
+		clslbl := fmt.Sprintf("%s--%s", oriL, oriR)
+		sb.WriteString(rdf.FormT(duoU, ourUs["sth2lbl"], rdf.FormL(clslbl)))
 		nln++
 		upcas := duo["upca"].Keys()
 		if len(upcas) > 1 {
@@ -842,10 +843,11 @@ func Prot2go(duos, upac2bgw util.Set3D, wpth string) (int, error) {
 
 		sb.WriteString(rdf.FormT(duoU, ourUs["sub2cls"], ourUs["stm"]))
 		nln++
-		sb.WriteString(rdf.FormT(duoU, ourUs["sth2lbl"], rdf.FormL(duoid)))
+		oboid := strings.Replace(oriR, "_", ":", 1)
+		clslbl := fmt.Sprintf("%s--%s", oriL, oboid)
+		sb.WriteString(rdf.FormT(duoU, ourUs["sth2lbl"], rdf.FormL(clslbl)))
 		nln++
 		pdc := ppys[0]
-		oboid := strings.Replace(oriR, "_", ":", 1)
 		clsdfn := fmt.Sprintf("Association between protein %s and %s %s", oriL, gosubs[pdc], oboid)
 		sb.WriteString(rdf.FormT(duoU, ourUs["sth2dfn"], rdf.FormL(clsdfn)))
 		nln++
@@ -971,10 +973,12 @@ func Prot2prot(duos, upac2bgw util.Set3D, wpth string) (int, error) {
 		bits := strings.Split(duoid, "--")
 		idL := bits[0]
 		idR := bits[1]
-		oriL := strings.Split(idL, "!")[1]     // UP AC
-		oriR := strings.Split(idR, "!")[1]     // UP AC
-		bgwLs := upac2bgw[oriL]["bgwp"].Keys() // sorted
-		bgwRs := upac2bgw[oriR]["bgwp"].Keys() // sorted
+		oriL := strings.Split(idL, "!")[1] // UP accession
+		oriL = strings.Split(oriL, "-")[0] // UP canonical accession
+		oriR := strings.Split(idR, "!")[1] // UP accession
+		oriR = strings.Split(oriR, "-")[0] // UP canonical accession
+		bgwLs := upac2bgw[oriL]["bgwp"].Keys()
+		bgwRs := upac2bgw[oriR]["bgwp"].Keys()
 		if l := counter(bgwLs, cnt, "addP", "dropP", oriL); l == 0 {
 			continue
 		}
@@ -983,7 +987,8 @@ func Prot2prot(duos, upac2bgw util.Set3D, wpth string) (int, error) {
 		}
 		sb.WriteString(rdf.FormT(duoU, ourUs["sub2cls"], ourUs["stm"]))
 		nln++
-		sb.WriteString(rdf.FormT(duoU, ourUs["sth2lbl"], rdf.FormL(duoid)))
+		clslbl := fmt.Sprintf("%s--%s", oriL, oriR)
+		sb.WriteString(rdf.FormT(duoU, ourUs["sth2lbl"], rdf.FormL(clslbl)))
 		nln++
 		clsdfn := fmt.Sprintf("Pair of molecular interactors %s and %s", oriL, oriR)
 		sb.WriteString(rdf.FormT(duoU, ourUs["sth2dfn"], rdf.FormL(clsdfn)))
@@ -1099,7 +1104,6 @@ func Prot2prot(duos, upac2bgw util.Set3D, wpth string) (int, error) {
 //func Tfac2gene(dat4txn util.Set4D, upac2bgw, lblg2bgw util.Set3D, wpth string) (int, error) {
 func Tfac2gene(dat4txn util.Set4D, xmap bgw.Xmap, wpth string) (int, error) {
 	// TODO re-implement to reduce redundancy
-	// Note: no isoforms in this graph
 	nss := rdf.Nss // BGW URI name spaces
 	keys4b := make(util.SliceSet)
 	keys4b["Opys"] = []string{
@@ -1157,74 +1161,87 @@ func Tfac2gene(dat4txn util.Set4D, xmap bgw.Xmap, wpth string) (int, error) {
 	cnt := make(util.Set2D)
 	cntA := 0
 	cntD := 0
-	for _, src := range dat4txn.Keys() {
-		duos := dat4txn[src]
-		if len(duos) == 0 {
-			continue
-		}
-		uri := duos[src]["uri"].Keys()[0]
+	pfxL := "hgncsymb"
+	pfxR := "hgncsymb"
+	/*
+		for _, src := range dat4txn.Keys() {
+			duos := dat4txn[src]
+			if len(duos) == 0 {
+				continue
+			}
+	*/
+	for _, uri := range rdf.Uris4tftg {
 		srcU := rdf.FormU(uri)
 		sb.WriteString(rdf.FormT(graphU, ourUs["sth2src"], srcU))
 		nln++
-		for _, duoid := range duos.Keys() {
-			if duoid == src {
-				continue
-			} // TODO ugly, do something
-			cnt.Add("allD", duoid)
-			duo := duos[duoid]
-			duoU := rdf.CompU(stmNS, duoid)
+	} // srcs
+
+	// for _, duoid := range duos.Keys() {
+	for _, duoid := range dat4txn.Keys() {
+		bits := strings.Split(duoid, "--")
+		if len(bits) != 2 {
+			continue
+		}
+		duo := dat4txn[duoid]
+		cnt.Add("allD", duoid)
+
+		gsymL := bits[0]
+		gsymR := bits[1]
+		duoid = fmt.Sprintf("%s!%s--%s!%s", pfxL, gsymL, pfxR, gsymR) // renaming
+		duoU := rdf.CompU(stmNS, duoid)
 		sb.WriteString(rdf.FormT(duoU, ourUs["ins2cls"], clsU))
 		nln++
-
-			bits := strings.Split(duoid, "--")
-			gsymL := bits[0]
-			gsymR := bits[1]
-			oriLs := duo["uniprot"].Keys() // UniProt canonical accessions
-			//if len(oriLs) != 1 // only NFKB and AP1
-			// multiple BGW genes due to multiple GeneSymbols for a single UP ACC
-			oriRs := duo["ncbig"].Keys() // NCBI GeneID, single
-			if len(oriRs) != 1 {
-				continue // all entries have strictly 1 GeneID
-			}
-			oriR := oriRs[0]
-			ncbig2bgw := xmap.Ncbig
-			lblg2bgw := xmap.Lblg
-			syng2bgw := xmap.Syng
-			upac2bgw := xmap.Upac
-			bgwRs := ncbig2bgw[oriR]["bgwg"].Keys()
-			if len(bgwRs) == 0 {
-				bgwRs = lblg2bgw[gsymR]["bgwg"].Keys()
-			}
-			if len(bgwRs) == 0 {
-				bgwRs = syng2bgw[gsymR]["bgwg"].Keys()
-			}
-			if l := counter(bgwRs, cnt, "addG", "dropG", gsymR); l == 0 {
-				continue
-			}
-			if len(bgwRs) > 1 {
-				msg := fmt.Sprintf("export.Tfac2gene():%s:%s: %d GeneIDs: %v ", gsymR, oriR, len(bgwRs), bgwRs)
-				fmt.Printf("%s\n", msg)
-			} // 112 unique. among those 77 with no 'dumm'
-			cntL := 0
-			for _, oriL := range oriLs { // sorted above
-				bgwLs := upac2bgw[oriL]["bgwp"].Keys()
-				cntL += counter(bgwLs, cnt, "addP", "dropP", oriL)
-			}
-			if cntL == 0 {
-				continue
-			}
-			sb.WriteString(rdf.FormT(duoU, ourUs["sub2cls"], ourUs["stm"]))
+		oriLs := duo["uniprot"].Keys() // UniProt canonical accessions
+		//if len(oriLs) != 1 // only NFKB and AP1
+		// v3.3: multiple BGW genes due to multiple GeneSymbols for a single UP ACC
+		oriRs := duo["ncbig"].Keys() // NCBI GeneID, single
+		if len(oriRs) != 1 {
+			continue // all entries have strictly 1 GeneID
+		}
+		oriR := oriRs[0]
+		ncbig2bgw := xmap.Ncbig
+		lblg2bgw := xmap.Lblg
+		syng2bgw := xmap.Syng
+		upac2bgw := xmap.Upac
+		bgwRs := ncbig2bgw[oriR]["bgwg"].Keys()
+		if len(bgwRs) == 0 {
+			bgwRs = lblg2bgw[gsymR]["bgwg"].Keys()
+		}
+		if len(bgwRs) == 0 {
+			bgwRs = syng2bgw[gsymR]["bgwg"].Keys()
+		}
+		if l := counter(bgwRs, cnt, "addG", "dropG", gsymR); l == 0 {
+			continue
+		}
+		if len(bgwRs) > 1 {
+			msg := fmt.Sprintf("export.Tfac2gene():%s:%s: %d GeneIDs: %v ", gsymR, oriR, len(bgwRs), bgwRs)
+			fmt.Printf("%s\n", msg)
+		} // v3,3: 112 unique. among those 77 with no 'dummy'
+		cntL := 0
+		for _, oriL := range oriLs { // sorted above
+			bgwLs := upac2bgw[oriL]["bgwp"].Keys()
+			cntL += counter(bgwLs, cnt, "addP", "dropP", oriL)
+		}
+		if cntL == 0 {
+			continue
+		}
+		sb.WriteString(rdf.FormT(duoU, ourUs["sub2cls"], ourUs["stm"]))
+		nln++
+		clslbl := fmt.Sprintf("%s--%s", gsymL, gsymR)
+		sb.WriteString(rdf.FormT(duoU, ourUs["sth2lbl"], rdf.FormL(clslbl)))
+		nln++
+		clsdfn := fmt.Sprintf("Regulation of gene %s by transcription factor %s", gsymR, gsymL)
+		sb.WriteString(rdf.FormT(duoU, ourUs["sth2dfn"], rdf.FormL(clsdfn)))
+		nln++
+		pdc := "rgr2trg"
+		sb.WriteString(rdf.FormT(duoU, rdf.CompU(rdfNS, "predicate"), ourUs[pdc]))
+		nln++ // nln:31
+		//if len(bgwRs) != 1 // 9606:1110
+		for _, bgwR := range bgwRs {
+			uriR := rdf.CompU(nss["gene"], bgwR)
+			sb.WriteString(rdf.FormT(duoU, rdf.CompU(rdfNS, "object"), uriR))
 			nln++
-			sb.WriteString(rdf.FormT(duoU, ourUs["sth2lbl"], rdf.FormL(duoid)))
-			nln++
-			clsdfn := fmt.Sprintf("Regulation of gene %s by transcription factor %s", gsymR, gsymL)
-			sb.WriteString(rdf.FormT(duoU, ourUs["sth2dfn"], rdf.FormL(clsdfn)))
-			nln++
-			pdc := "rgr2trg"
-			sb.WriteString(rdf.FormT(duoU, rdf.CompU(rdfNS, "predicate"), ourUs[pdc]))
-			nln++ // nln:31
-			//if len(bgwRs) != 1 // 9606:1110
-			for _, oriL := range oriLs { // sorted above
+			for _, oriL := range oriLs {
 				bgwLs := upac2bgw[oriL]["bgwp"].Keys()
 				//if len(bgwLs) = 0 // 9606:14, 13 unique; only 3 UP ACCs: P62805, P69905, Q16385
 				if len(bgwLs) > 1 {
@@ -1235,55 +1252,59 @@ func Tfac2gene(dat4txn util.Set4D, xmap bgw.Xmap, wpth string) (int, error) {
 					uriL := rdf.CompU(nss["prot"], bgwL)
 					sb.WriteString(rdf.FormT(duoU, rdf.CompU(rdfNS, "subject"), uriL))
 					nln++
-					for _, bgwR := range bgwRs { // sortedd above
-						refs := duo["pubmed"].Keys() // PubMed  IDs
-						if len(refs) == 0 {
-							//msg := fmt.Sprintf("export.Tfac2gene():%s:%s: NoPubMedIDs ", src, duoid)
-							//fmt.Printf("%s\n", msg)
-							//continue // TODO || !TODO?
-						} // only 'tfacts': 3384 unique
-						uriR := rdf.CompU(nss["gene"], bgwR)
-						sb.WriteString(rdf.FormT(duoU, rdf.CompU(rdfNS, "object"), uriR))
-						nln++
-						sb.WriteString(rdf.FormT(uriL, ourUs[pdc], uriR))
-						nln++
-						insid := fmt.Sprintf("%s%s%s", duoid, "#", src)
-						insU := rdf.CompU(stmNS, insid)
-						sb.WriteString(rdf.FormT(insU, ourUs["ins2cls"], duoU))
-						nln++
-						sb.WriteString(rdf.FormT(insU, ourUs["sth2src"], srcU))
-						nln++
-						// Cleaning up the mess in the data file: PubMed ID: \d+
-						for _, key := range refs { // sorted above
-							if key[0] < 48 || key[0] > 57 {
-								continue // TODO do this better
-							}
-							pubmedU := rdf.CompU(nss["pubmed"], key)
-							sb.WriteString(rdf.FormT(insU, ourUs["sth2evd"], pubmedU))
-							nln++
-						}
-						// confidence levels
-						for _, key := range duo["confidence"].Keys() {
-							sb.WriteString(rdf.FormT(insU, ourUs["evd2lvl"], rdf.FormL(key)))
-							nln++
-						}
-						// regulation mode
-						for _, key := range duo["mode"].Keys() {
-							val, ok := modes[key]
-							if !ok {
-								continue
-							}
-							sb.WriteString(rdf.FormT(insU, ourUs["sth2val"], rdf.FormL(val)))
-							nln++ // the last write
-						}
-					} // bgwRs
+					sb.WriteString(rdf.FormT(uriL, ourUs[pdc], uriR))
+					nln++
 				} // bgwLs
-			} // oriLs
-			cnt.Add("addD", duoid)
-			wfh.Write([]byte(sb.String()))
-			sb.Reset()
-		} // duoid
-	} // srcs
+			} // orius
+		} // bgwRs
+
+		/// INSTANCWS
+		for _, src := range duo.Keys() {
+			uri, ok := rdf.Uris4tftg[src]
+			if !ok {
+				continue
+			}
+			refs := duo[src]["pubmed"].Keys() // PubMed  IDs
+			if len(refs) == 0 {
+				//msg := fmt.Sprintf("export.Tfac2gene():%s:%s: NoPubMedIDs ", src, duoid)
+				//fmt.Printf("%s\n", msg)
+				//continue // TODO || !TODO?
+			} // only 'tfacts': 3384 unique
+			insid := fmt.Sprintf("%s%s%s", duoid, "#", src)
+			insU := rdf.CompU(stmNS, insid)
+			sb.WriteString(rdf.FormT(insU, ourUs["ins2cls"], duoU))
+			nln++
+			srcU := rdf.FormU(uri)
+			sb.WriteString(rdf.FormT(insU, ourUs["sth2src"], srcU))
+			nln++
+			// Cleaning up the mess in the data file: PubMed ID: \d+
+			for _, key := range refs { // sorted above
+				if key[0] < 48 || key[0] > 57 {
+					continue // TODO do this better
+				}
+				pubmedU := rdf.CompU(nss["pubmed"], key)
+				sb.WriteString(rdf.FormT(insU, ourUs["sth2evd"], pubmedU))
+				nln++
+			}
+			// confidence levels
+			for _, key := range duo[src]["confidence"].Keys() {
+				sb.WriteString(rdf.FormT(insU, ourUs["evd2lvl"], rdf.FormL(key)))
+				nln++
+			}
+			// regulation mode
+			for _, key := range duo[src]["mode"].Keys() {
+				val, ok := modes[key]
+				if !ok {
+					continue
+				}
+				sb.WriteString(rdf.FormT(insU, ourUs["sth2val"], rdf.FormL(val)))
+				nln++ // the last write
+			}
+		} // instances
+		cnt.Add("addD", duoid)
+		wfh.Write([]byte(sb.String()))
+		sb.Reset()
+	} // duoid
 	msg := ""
 	cntD = len(cnt["addD"])
 	cntA = len(cnt["allD"])
@@ -1389,7 +1410,8 @@ func Ortho(duos, upac2bgw util.Set3D, wpth string) (int, error) {
 		}
 		sb.WriteString(rdf.FormT(duoU, ourUs["sub2cls"], ourUs["stm"]))
 		nln++
-		sb.WriteString(rdf.FormT(duoU, ourUs["sth2lbl"], rdf.FormL(duoid)))
+		clslbl := fmt.Sprintf("%s--%s", oriL, oriR)
+		sb.WriteString(rdf.FormT(duoU, ourUs["sth2lbl"], rdf.FormL(clslbl)))
 		nln++
 		clsdfn := fmt.Sprintf("Pair of orthologous proteins %s and %s", oriL, oriR)
 		sb.WriteString(rdf.FormT(duoU, ourUs["sth2dfn"], rdf.FormL(clsdfn)))
