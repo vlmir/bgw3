@@ -22,7 +22,7 @@ func Test_geneprot(t *testing.T) {
 	//arg3[0].Add("7227", "UP000000803")
 	tts := []tt{
 		//		{pth, xpth, arg3[0], 35, 76},
-		{pth, xpth, arg3[0], 34, 52},
+		{pth, xpth, arg3[0], 36, 49},
 	}
 
 	for i, tt := range tts {

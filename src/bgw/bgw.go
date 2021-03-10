@@ -20,13 +20,12 @@ var CV = "3.3.0"
 var Upkeys = map[string]string{
 	//"Gene_Name":    "gnm",
 	//"Gene_Synonym": "gsnm",
-	"Ensembl":       "ensg",
-	"Ensembl_PRO":   "ensp",
+	"Ensembl":       "ensgene",
+	"Ensembl_PRO":   "ensprotein",
 	"EnsemblGenome": "ensom",
-	//"EnsemblGenome_PRO": "ensp",
-	"GeneID":  "ncbig",
-	"RefSeq":  "rfsq",
-	"UniParc": "uparc",
+	"GeneID":  "ncbigene",
+	"RefSeq":  "refseq",
+	"UniParc": "uniparc",
 }
 
 var Orthokeys = map[string]string{

@@ -21,12 +21,12 @@ func Test_GeneProt(t *testing.T) {
 	pth := "../../tdata/"
 	xpth := pth + "output/"
 	var idmkeys = map[string]string{
-		"Ensembl_PRO":   "ensp",
-		"Ensembl":       "ensg",
+		"Ensembl_PRO":   "ensprotein",
+		"Ensembl":       "ensgene",
 		"EnsemblGenome": "ensom",
-		"GeneID":        "ncbig",
-		"RefSeq":        "rfsq",
-		"UniParc":       "uparc",
+		"GeneID":        "ncbigene",
+		"RefSeq":        "refseq",
+		"UniParc":       "uniparc",
 	}
 	txn2prm := make(util.Set2D)
 	txn2prm.Add("9606", "UP000005640")
@@ -39,7 +39,7 @@ func Test_GeneProt(t *testing.T) {
 	arg04 := xpth + "xmap/export0.json"
 	tts := []tt{
 		//		{arg01, arg02, arg03, arg04, 35, 76},
-		{arg01, arg02, arg03, arg04, 34, 52},
+		{arg01, arg02, arg03, arg04, 36, 49},
 	}
 	for i, tt := range tts {
 		n, m, _ := GeneProt(tt.arg1, tt.arg2, tt.arg3, tt.arg4)
@@ -66,7 +66,7 @@ func Test_GeneProt(t *testing.T) {
 	arg14 := xpth + "xmap/export1.json"
 	tts = []tt{
 		//		{arg11, arg12, arg13, arg14, 14, 33},
-		{arg11, arg12, arg13, arg14, 19, 34},
+		{arg11, arg12, arg13, arg14, 21, 25},
 	}
 	for i, tt := range tts {
 		n, m, _ := GeneProt(tt.arg1, tt.arg2, tt.arg3, tt.arg4)
@@ -98,7 +98,7 @@ func Test_Tfac2gene(t *testing.T) {
 	xpth := pth + "output/"
 	arg01 := make(util.Set4D)
 	arg01.Add("TP53--TP53", "uniprot", "P04637", "tfacts")
-	arg01.Add("TP53--TP53", "ncbig", "7157", "tfacts")
+	arg01.Add("TP53--TP53", "ncbigene", "7157", "tfacts")
 	arg01.Add("TP53--TP53", "tfacts", "pubmed", "P04637")
 	arg01.Add("TP53--TP53", "tfacts", "pubmed", "04637")
 	arg01.Add("TP53--TP53", "tfacts", "confidence", "High")

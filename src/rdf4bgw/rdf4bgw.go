@@ -60,7 +60,7 @@ func tfac2gene(datdir, bgwdir string, txn2prm util.Set2D) (int, error) {
 	}
 	vals := []bgw.Column{
 		{1, "|", 0, "|", 0, "uniprot"},
-		{2, "|", 0, "|", 0, "ncbig"},
+		{2, "|", 0, "|", 0, "ncbigene"},
 		{3, "|", 0, ";", 0, "pubmed"},
 		{4, "|", 0, ";", 0, "confidence"},
 		{5, "|", 0, ";", 0, "mode"},
@@ -106,7 +106,7 @@ func tfac2gene(datdir, bgwdir string, txn2prm util.Set2D) (int, error) {
 				// dat4txn[duoid][src] = make(util.Set2D)
 				for key, vals := range duo {
 					for val, _ := range vals {
-						if key == "uniprot" || key == "ncbig" {
+						if key == "uniprot" || key == "ncbigene" {
 							dat4txn.Add(duoid, key, val, src)
 						} else {
 							dat4txn.Add(duoid, src, key, val)
