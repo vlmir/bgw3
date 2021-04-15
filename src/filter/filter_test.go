@@ -17,7 +17,7 @@ func Test_subset(t *testing.T) {
 	}
 	pth := "../../tdata/"
 	tts := []tt{
-		{pth + "test.f2g", pth + "output/filter/htri.f2g", fields["htri"], nil},
+		{pth + "htri.ori", pth + "output/filter/htri.f2g", fields["htri"], nil},
 	}
 	for i, tt := range tts {
 		err := subset(tt.arg1, tt.arg2, tt.arg3)

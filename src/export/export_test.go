@@ -6,6 +6,7 @@ import (
 	"github.com/vlmir/bgw3/src/util"
 	"testing"
 )
+
 // TODO use Test_Tfac2gene as a paradigm
 
 func Test_GeneProt(t *testing.T) {

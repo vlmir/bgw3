@@ -18,8 +18,8 @@ func Test_GetSetFromTab(t *testing.T) {
 		{1, ":", 1, "--", 0, ""},
 	}
 	arg3_1 := []bgw.Column{
-		{8, "|", 1, ":", -1, ""},
-		{6, "|", 1, "\"", -1, "mtd"},
+		{8, "|", 1, ":", -1, "pubmed"},
+		{6, "|", 1, "\"", 1, "mtd"},
 	}
 	arg2_2 := []bgw.Column{
 		{0, ":", 0, "--", 0, ""},
@@ -28,26 +28,17 @@ func Test_GetSetFromTab(t *testing.T) {
 	arg3_2 := []bgw.Column{
 		{1, "|", 0, "|", 0, "uniprot"},
 		{2, "|", 0, "|", 0, "ncbig"},
-	}
-	arg2_3 := []bgw.Column{
-		{0, ":", 0, "--", 0, ""},
-		{0, ":", 1, "--", 0, ""},
-	}
-	arg3_3 := []bgw.Column{
-		{1, "|", 0, "|", 0, "uniprot"},
 		{3, "|", 0, ";", 0, "pubmed"},
 		{4, "|", 0, ";", 0, "confidence"},
 		{5, "|", 0, ";", 0, "mode"},
 	}
 	pth := "../../tdata/"
 	tts := []tt{
-		{pth + "test.mit", arg2_1, arg3_1, 5},
-		{pth + "test.f2g", arg2_2, arg3_2, 2},
-		{pth + "tfacts.f2g", arg2_3, arg3_3, 4},
+		{pth + "test.mit", arg2_1, arg3_1, 2},
+		{pth + "test.f2g", arg2_2, arg3_2, 5},
 	}
 	keys := []string{
 		"P04637--P04637",
-		"TP53--TP53",
 		"AP1--SPP1",
 	}
 	for i, tt := range tts {

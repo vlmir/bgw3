@@ -2,6 +2,7 @@ package main
 
 import (
 	"bufio"
+	"errors"
 	"fmt"
 	"os"
 	"strings"
@@ -37,15 +38,18 @@ func subset(pthR, pthW string, inds [5]int) error {
 			fmt.Printf(msg, m, n, cells[0], pthR)
 			continue
 		}
-		nl := cells[0]
+		subline := cells[0]
 		for _, i := range inds {
 			if i == 0 {
-				nl = strings.Join([]string{nl, ""}, "\t")
+				subline = strings.Join([]string{subline, ""}, "\t")
 			} else {
-				nl = strings.Join([]string{nl, cells[i-1]}, "\t")
+				subline = strings.Join([]string{subline, cells[i-1]}, "\t")
 			}
 		}
-		fhW.WriteString(fmt.Sprintf("%s\n", nl))
+		if len(subline) == 0 {
+			msg := fmt.Sprintf("%s", "EmptyString")
+			panic(errors.New(msg))}
+		fhW.WriteString(fmt.Sprintf("%s\n", subline))
 	}
 	return nil
 }

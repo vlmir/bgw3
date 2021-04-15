@@ -537,17 +537,17 @@ func GeneProt(dat4rdf bgw.Dat4rdf, wpthG, wpthP, wpthX string) (int, int, error)
 			xmap.Upac.Add(upac, "bgwp", insP)
 			xmap.Bgwp.Add(insP, "upac", upac)
 			xrf := ""
-//			if upac == fmt.Sprintf("%s-0", upca) {
-//				// no iso-forms or the set of iso-forms excludes the canonical sequence
-//				upac = upca
-//				sbP.WriteString(rdf.FormT(insPU, gpUs["sth2clm"], oriU))
-//				nlnp++
-//			} else {
-//				xrf = fmt.Sprintf("%s%s%s", upca, "#", upac)
-//				xrfU := rdf.CompU(nss["uniprot"], xrf)
-//				sbP.WriteString(rdf.FormT(insPU, gpUs["sth2clm"], xrfU))
-//				nlnp++
-//			}
+			//			if upac == fmt.Sprintf("%s-0", upca) {
+			//				// no iso-forms or the set of iso-forms excludes the canonical sequence
+			//				upac = upca
+			//				sbP.WriteString(rdf.FormT(insPU, gpUs["sth2clm"], oriU))
+			//				nlnp++
+			//			} else {
+			//				xrf = fmt.Sprintf("%s%s%s", upca, "#", upac)
+			//				xrfU := rdf.CompU(nss["uniprot"], xrf)
+			//				sbP.WriteString(rdf.FormT(insPU, gpUs["sth2clm"], xrfU))
+			//				nlnp++
+			//			}
 			xrf = upi
 			xrfU := rdf.CompU(nss["uniparc"], xrf)
 			sbP.WriteString(rdf.FormT(insPU, gpUs["sth2clm"], xrfU))

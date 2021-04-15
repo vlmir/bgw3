@@ -23,9 +23,9 @@ var Upkeys = map[string]string{
 	"Ensembl":       "ensgene",
 	"Ensembl_PRO":   "ensprotein",
 	"EnsemblGenome": "ensom",
-	"GeneID":  "ncbigene",
-	"RefSeq":  "refseq",
-	"UniParc": "uniparc",
+	"GeneID":        "ncbigene",
+	"RefSeq":        "refseq",
+	"UniParc":       "uniparc",
 }
 
 var Orthokeys = map[string]string{

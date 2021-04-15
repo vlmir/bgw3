@@ -89,8 +89,9 @@ func GetSetFromTab(rpth string, keys, vals []bgw.Column) (out util.Set3D, err er
 	}
 	defer fh.Close()
 	scanner := bufio.NewScanner(fh)
-	ln := 0
-	for scanner.Scan() { // by default scans for '\n'
+	ln := 0 // current line number
+	for scanner.Scan() {
+		// by default scans for '\n'
 		line := scanner.Text()
 		ln++
 		if len(line) == 0 {
@@ -104,6 +105,7 @@ func GetSetFromTab(rpth string, keys, vals []bgw.Column) (out util.Set3D, err er
 			msg := fmt.Sprintf("%s:%d: TooFewtFields", rpth, ln)
 			panic(errors.New(msg))
 		}
+		/// primary key
 		var pk string // the primary key to be used in the output map
 		for i, k := range keys {
 			// i: index, k: bgw.Column
@@ -111,49 +113,44 @@ func GetSetFromTab(rpth string, keys, vals []bgw.Column) (out util.Set3D, err er
 			if i == 0 {                                   // is this really necessary?
 				pk = strings.TrimSpace(items[k.Ind2])
 			} else {
+				// joining on Dlm2
 				pk = fmt.Sprintf("%s%s%s", pk, k.Dlm2, strings.TrimSpace(items[k.Ind2]))
 			}
 		} // the order of componenets in the key is deterministic, no variation from call to call
 		util.CheckStrings(pk)
-		/// values ///
+		/// values
 		for _, v := range vals {
 			// v: bgw.Column; specify fields to be extracted
 			cell := strings.TrimSpace(cells[v.Ind1])
 			if cell == "" {
 				continue
 			}
-			items := strings.Split(cell, v.Dlm1) // Dlm1: primary delimiter for multiple values
-			// there is at least one item
-			for _, item := range items {
-				// subfields, may contain secondary delimiters
-				parts := strings.Split(item, v.Dlm2) // Dlm2: secondary delimiter
-				// the code below is rather sloppy, e.g. Ind3 is not properly used TODO sort out
+			// Dlm1: primary delimiter for multiple values
+			// there is at least one value, may contain secondary delimiters
+			for _, pval := range strings.Split(cell, v.Dlm1) {
+				// Dlm2: secondary delimiter
+				// subfields
+				svals := strings.Split(pval, v.Dlm2)
+				sval := strings.TrimSpace(svals[v.Ind2])
+				if len(sval) == 0 {
+					continue
+				}
+				sk := v.Key // secondary key explicitely specified
+				// db:id
 				if v.Ind3 == -1 {
-					// db:id
-					sk := v.Key // secondary key explicitely specified
-					if len(sk) == 0 {
-						// SIC! by design - secondary key is not explcitly specified
-						sk = strings.TrimSpace(parts[0]) // e.g. db:id
-					}
-					util.CheckStrings(sk)
-					out.Add(pk, sk, strings.TrimSpace(parts[v.Ind2]))
-					// Ind2/3 should be used here ! TODO
-				} else {
-					for _, part := range parts {
-						part = strings.TrimSpace(part)
-						if len(part) == 0 {
-							continue
-						}
-						out.Add(pk, v.Key, part)
+					if strings.TrimSpace(svals[0]) != sk {
+						continue
 					}
 				}
+				out.Add(pk, sk, sval)
 			}
-		}
-	}
+		} // one field
+	} // one line
 	if len(out) == 0 {
 		msg := fmt.Sprintf("parse.GetSetFromTab():%s: NoData", rpth)
 		return out, errors.New(msg)
 	}
+	fmt.Println(out)
 	return out, nil
 } // GetSetFromTab()
 
