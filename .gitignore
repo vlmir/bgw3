@@ -12,3 +12,7 @@ _*
 *.out
 *.pyc
 *.nt
+*.pls
+*.tls
+*.txt*
+TODO

@@ -90,7 +90,7 @@ func tfac2gene(datdir, bgwdir string, txn2prm util.Set2D) (int, error) {
 		for src, _ := range rdf.Uris4tftg {
 			ext := ".f2g"
 			rpth := fmt.Sprintf("%s%s%s", rdir, src, ext)
-			duos, err := parse.GetSetFromTab(rpth, keys, vals)
+			duos, err := parse.Tab2set3D(rpth, keys, vals)
 			if err != nil {
 				msg := fmt.Sprintf("rdf4bgw.go:main.tfac2gene():%s: %s", err, src)
 				log.Println(msg)
@@ -114,7 +114,7 @@ func tfac2gene(datdir, bgwdir string, txn2prm util.Set2D) (int, error) {
 					}
 				}
 				// dat4txn[duoid][src] = duo
-				fmt.Println(dat4txn[duoid])
+				// fmt.Println(dat4txn[duoid])
 			}
 		} //src
 		if len(dat4txn) == 0 {

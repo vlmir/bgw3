@@ -33,24 +33,18 @@ var Orthokeys = map[string]string{
 	// "OrthoDB": "orthodb",
 }
 
-type Meta struct {
-	Refs  util.Set3D
-	Cnfs  util.Set3D
-	Signs util.Set3D
+type Dat4bridge struct {
+	Duos  util.Set3D
+	OriAs  util.Set3D
+	OriBs util.Set3D
 }
 
-func NewMeta() (meta Meta) {
-	meta.Refs = make(util.Set3D)
-	meta.Cnfs = make(util.Set3D)
-	meta.Signs = make(util.Set3D)
-	return meta
-}
-
-// TODO make it work
-func (meta Meta) New() {
-	meta.Signs = make(util.Set3D)
-	meta.Refs = make(util.Set3D)
-	meta.Cnfs = make(util.Set3D)
+func (p *Dat4bridge) New() {
+	d4b := *p
+	d4b.Duos = make(util.Set3D)
+	d4b.OriAs = make(util.Set3D)
+	d4b.OriBs = make(util.Set3D)
+	*p = d4b
 }
 
 type Dat4rdf struct {
@@ -58,6 +52,16 @@ type Dat4rdf struct {
 	Txns *util.Set3D
 	Gnm  *util.Set3D
 	Upac *util.Set3D
+}
+
+func (p *Dat4rdf) New() {
+	d := *p
+	n := make(util.Set3D)
+	d.Udat = &n
+	d.Txns = &n
+	d.Gnm = &n
+	d.Upac = &n
+	*p = d
 }
 
 type Xmap struct {

@@ -49,8 +49,8 @@ func Idmap(rpth string, srcs map[string]string, ind1, ind2, ind3 int) (util.Set3
 	return out, nil
 }
 
-// GetSetFromTab is a generic parser for tab-delimeted files with sub-fields (up to 2 levels)
-// GetSetFromTab converts tabular data into a map keyed on an arbitrary combination of fields
+// Tab2set3D is a generic parser for tab-delimeted files with sub-fields (up to 2 levels)
+// Tab2set3D converts tabular data into a map keyed on an arbitrary combination of fields
 // Arguments:
 // 1. path to the input file (tab separated)
 // 2. data structure specifying primary key
@@ -58,7 +58,7 @@ func Idmap(rpth string, srcs map[string]string, ind1, ind2, ind3 int) (util.Set3
 // Returns:
 // 1. map primary key -> secondary key -< values -> counts
 // 2. error
-func GetSetFromTab(rpth string, keys, vals []bgw.Column) (out util.Set3D, err error) {
+func Tab2set3D(rpth string, keys, vals []bgw.Column) (out util.Set3D, err error) {
 	maxind := 0
 	for _, one := range keys {
 		n := one.Ind1
@@ -122,7 +122,7 @@ func GetSetFromTab(rpth string, keys, vals []bgw.Column) (out util.Set3D, err er
 		for _, v := range vals {
 			// v: bgw.Column; specify fields to be extracted
 			cell := strings.TrimSpace(cells[v.Ind1])
-			if cell == "" {
+			if (cell == "") || (cell == "-") {
 				continue
 			}
 			// Dlm1: primary delimiter for multiple values
@@ -147,12 +147,12 @@ func GetSetFromTab(rpth string, keys, vals []bgw.Column) (out util.Set3D, err er
 		} // one field
 	} // one line
 	if len(out) == 0 {
-		msg := fmt.Sprintf("parse.GetSetFromTab():%s: NoData", rpth)
+		msg := fmt.Sprintf("parse.Tab2set3D():%s: NoData", rpth)
 		return out, errors.New(msg)
 	}
 	fmt.Println(out)
 	return out, nil
-} // GetSetFromTab()
+} // Tab2set3D()
 
 // parses the output of the system 'ls' utility
 // any string can be used as a basename-extension separator
@@ -771,7 +771,7 @@ func Gpa(rpth string, filters ...util.Set3D) (duos util.Set3D) {
 	return duos
 } // Gpa()
 
-// TODO  use GetSetFromTab()
+// TODO  use Tab2set3D()
 func MiTab(rpth string, filters ...util.Set3D) (duos util.Set3D, err error) {
 	tsvkeys := map[int][]string{
 		// NB: 0:1 duos are NOT inique !

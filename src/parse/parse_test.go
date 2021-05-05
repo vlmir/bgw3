@@ -6,7 +6,7 @@ import (
 	"testing"
 )
 
-func Test_GetSetFromTab(t *testing.T) {
+func Test_Tab2set3D(t *testing.T) {
 	type tt struct {
 		arg1 string
 		arg2 []bgw.Column
@@ -18,8 +18,8 @@ func Test_GetSetFromTab(t *testing.T) {
 		{1, ":", 1, "--", 0, ""},
 	}
 	arg3_1 := []bgw.Column{
-		{8, "|", 1, ":", -1, "pubmed"},
 		{6, "|", 1, "\"", 1, "mtd"},
+		{8, "|", 1, ":", -1, "pubmed"},
 	}
 	arg2_2 := []bgw.Column{
 		{0, ":", 0, "--", 0, ""},
@@ -32,17 +32,36 @@ func Test_GetSetFromTab(t *testing.T) {
 		{4, "|", 0, ";", 0, "confidence"},
 		{5, "|", 0, ";", 0, "mode"},
 	}
+	arg2_3 := []bgw.Column{
+		{0, "|", 0, "--", 0, ""},
+		{1, "|", 0, "--", 0, ""},
+	}
+	arg3_3 := []bgw.Column{
+		{8, "|", 1, ":", -1, "pubmed"},
+		{11, "|", 1, "\"", 1, "typeABid"},
+		{11, "|", 2, "\"", 1, "typeABlbl"},
+		{14, "|", 1, ":", 1, "score"},
+		{20, "|", 1, "\"", 1, "typeAid"},
+		{20, "|", 2, "\"", 1, "typeAlbl"},
+		{21, "|", 1, "\"", 1, "typeBid"},
+		{21, "|", 2, "\"", 1, "typeBlbl"},
+		{44, "|", 1, "\"", 1, "mechanism"},
+		{45, "|", 1, "\"", 1, "stmid"},
+		{45, "|", 2, "\"", 1, "stmlbl"},
+	}
 	pth := "../../tdata/"
 	tts := []tt{
 		{pth + "test.mit", arg2_1, arg3_1, 2},
 		{pth + "test.f2g", arg2_2, arg3_2, 5},
+		{pth + "signor/9606.psi28", arg2_3, arg3_3, 10},
 	}
 	keys := []string{
 		"P04637--P04637",
 		"AP1--SPP1",
+		"signor:SIGNOR-C54--uniprotkb:P04637",
 	}
 	for i, tt := range tts {
-		out, _ := GetSetFromTab(tt.arg1, tt.arg2, tt.arg3)
+		out, _ := Tab2set3D(tt.arg1, tt.arg2, tt.arg3)
 		if len(out[keys[i]]) != tt.val {
 			t.Error(
 				"For test", i+1, ": ", tt.arg1, tt.arg2, tt.arg3,

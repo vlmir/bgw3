@@ -27,6 +27,7 @@ var Nss = map[string]string{
 	"intact":      "http://identifiers.org/intact/",
 	"goa":         "http://identifiers.org/goa/",
 	"pubmed":      "http://identifiers.org/pubmed/",
+	"signor": "https://signor.uniroma2.it/relation_result.php?id=",
 	"ensprotein":  "http://identifiers.org/ensembl/",
 	"ensgene":     "http://identifiers.org/ensembl/",
 	"ensplants":   "https://plants.ensembl.org/id/",
