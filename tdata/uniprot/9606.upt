@@ -1,3 +1,4 @@
 Entry	Entry name	Gene names  (primary )	Gene names  (synonym )	Organism	Organism ID	Protein names	Proteomes	PubMed ID	Annotation	Cross-reference (GeneID)
 P04637	P53_HUMAN	TP53	P53	Homo sapiens (Human)	9606	Cellular tumor antigen p53 (Antigen NY-CO-13) (Phosphoprotein p53) (Tumor suppressor p53)	UP000005640: Chromosome 17	4006916; 25732823	5 out of 5	7157;
 FOOFOO	P53_GHOST	TP53; FOO	P53; YOU BAR	Homo sapiens	9606	Cellular tumor antigen p53	UP000005640: Chromosome Z, UP000005640: Chromosome 17		1 out of 5
+Q01081	U2AF1_HUMAN	U2AF1	U2AF35 U2AFBP	Homo sapiens (Human)	9606	Splicing factor U2AF 35 kDa subunit (U2 auxiliary factor 35 kDa subunit) (U2 small nuclear RNA auxiliary factor 1) (U2 snRNP auxiliary factor small subunit)	UP000005640: Chromosome 21	11551507	5 out of 5	7307;

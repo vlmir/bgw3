@@ -20,7 +20,7 @@ func TestDat4bridgeNew(t *testing.T) {
 		val1 := len(d4b.Duos["abc"])
 		if val1 != tt.val1 {
 			t.Error(
-				"For test", i+1, ": ", 
+				"For test", i+1, ": ",
 				"\n\twant", tt.val1,
 				"\n\thave", val1,
 			)
@@ -28,7 +28,7 @@ func TestDat4bridgeNew(t *testing.T) {
 		val2 := len(d4b.Duos["abc"]["def"])
 		if val2 != tt.val2 {
 			t.Error(
-				"For test", i+1, ": ", 
+				"For test", i+1, ": ",
 				"\n\twant", tt.val2,
 				"\n\thave", val2,
 			)
@@ -51,7 +51,7 @@ func TestDat4rdfNew(t *testing.T) {
 		val1 := len((*d.Udat)["abc"])
 		if val1 != tt.val1 {
 			t.Error(
-				"For test", i+1, ": ", 
+				"For test", i+1, ": ",
 				"\n\twant", tt.val1,
 				"\n\thave", val1,
 			)
@@ -67,7 +67,7 @@ func Test_Unmarshal(t *testing.T) {
 		val1 int
 	}
 	tts := []tt{
-		{pth + "xmap.json", 9},
+		{pth + "bgw/xmap.json", 9},
 	}
 	for i, tt := range tts {
 		xmap := NewXmap()

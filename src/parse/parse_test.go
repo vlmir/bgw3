@@ -6,6 +6,50 @@ import (
 	"testing"
 )
 
+func Test_Tab2struct(t *testing.T) {
+	type tt struct {
+		arg1 string
+		arg2 []bgw.Column
+		arg3 []bgw.Column
+		arg4 *bgw.Dat4bridge
+		val  int
+	}
+	arg2_1 := []bgw.Column{
+		{0, ":", 1, "--", 0, ""},
+		{1, ":", 1, "--", 0, ""},
+	}
+	arg3_1 := []bgw.Column{
+		{6, "|", 1, "\"", 1, "mtd"},
+		{8, "|", 1, ":", -1, "pubmed"},
+	}
+	arg2_2, arg3_2 := bgw.TftgParseConf()
+	arg2_3, arg3_3 := bgw.SignorParseConf()
+	var d4b bgw.Dat4bridge
+	d4b.New()
+	arg4 := &d4b
+	pth := "../../tdata/"
+	tts := []tt{
+		{pth + "parse/test.mit", arg2_1, arg3_1, arg4, 2},
+		{pth + "parse/test.f2g", arg2_2, arg3_2, arg4, 5},
+		{pth + "signor/9606.mi28", arg2_3, arg3_3, arg4, 12},
+	}
+	keys := []string{
+		"P04637--P04637",
+		"AP1--SPP1",
+		"uniprotkb:Q9BTC0--uniprotkb:P08648",
+	}
+	for i, tt := range tts {
+		_ = Tab2struct(tt.arg1, tt.arg2, tt.arg3, tt.arg4)
+		if len(d4b.Duos[keys[i]]) != tt.val {
+			t.Error(
+				"For test", i+1, ": ", tt.arg1, tt.arg2, tt.arg3,
+				"\n\twant", tt.val,
+				"\n\thave", len(d4b.Duos[keys[i]]),
+			)
+		}
+	}
+}
+
 func Test_Tab2set3D(t *testing.T) {
 	type tt struct {
 		arg1 string
@@ -21,44 +65,16 @@ func Test_Tab2set3D(t *testing.T) {
 		{6, "|", 1, "\"", 1, "mtd"},
 		{8, "|", 1, ":", -1, "pubmed"},
 	}
-	arg2_2 := []bgw.Column{
-		{0, ":", 0, "--", 0, ""},
-		{0, ":", 1, "--", 0, ""},
-	}
-	arg3_2 := []bgw.Column{
-		{1, "|", 0, "|", 0, "uniprot"},
-		{2, "|", 0, "|", 0, "ncbig"},
-		{3, "|", 0, ";", 0, "pubmed"},
-		{4, "|", 0, ";", 0, "confidence"},
-		{5, "|", 0, ";", 0, "mode"},
-	}
-	arg2_3 := []bgw.Column{
-		{0, "|", 0, "--", 0, ""},
-		{1, "|", 0, "--", 0, ""},
-	}
-	arg3_3 := []bgw.Column{
-		{8, "|", 1, ":", -1, "pubmed"},
-		{11, "|", 1, "\"", 1, "typeABid"},
-		{11, "|", 2, "\"", 1, "typeABlbl"},
-		{14, "|", 1, ":", 1, "score"},
-		{20, "|", 1, "\"", 1, "typeAid"},
-		{20, "|", 2, "\"", 1, "typeAlbl"},
-		{21, "|", 1, "\"", 1, "typeBid"},
-		{21, "|", 2, "\"", 1, "typeBlbl"},
-		{44, "|", 1, "\"", 1, "mechanism"},
-		{45, "|", 1, "\"", 1, "stmid"},
-		{45, "|", 2, "\"", 1, "stmlbl"},
-	}
+	arg2_2, arg3_2 := bgw.TftgParseConf()
 	pth := "../../tdata/"
 	tts := []tt{
-		{pth + "test.mit", arg2_1, arg3_1, 2},
-		{pth + "test.f2g", arg2_2, arg3_2, 5},
-		{pth + "signor/9606.psi28", arg2_3, arg3_3, 10},
+		{pth + "parse/test.mit", arg2_1, arg3_1, 2},
+		{pth + "parse/test.f2g", arg2_2, arg3_2, 5},
 	}
 	keys := []string{
 		"P04637--P04637",
 		"AP1--SPP1",
-		"signor:SIGNOR-C54--uniprotkb:P04637",
+		"uniprotkb:Q9BTC0--uniprotkb:P08648",
 	}
 	for i, tt := range tts {
 		out, _ := Tab2set3D(tt.arg1, tt.arg2, tt.arg3)
@@ -80,7 +96,7 @@ func Test_UpIdMap(t *testing.T) {
 	}
 	pth := "../../tdata/idmapping/"
 	idms := []tt{
-		{pth + "UP000005640_9606.idmapping", map[string]string{"UniParc": "test"}, 4},
+		{pth + "UP000005640_9606.idmapping", map[string]string{"UniParc": "test"}, 5},
 		{pth + "UP000000803_7227.idmapping", map[string]string{"EnsemblGenome": "test"}, 1},
 	}
 	for i, tt := range idms {
@@ -154,7 +170,7 @@ func Test_UpVar(t *testing.T) {
 	pth := "../../tdata/"
 	upvar := make(util.Set3D)
 	upvars := []tt{
-		{pth + "test.var", upvar, 1},
+		{pth + "parse/test.var", upvar, 1},
 	}
 	for i, tt := range upvars {
 		tt.arg2.Add("TP53", "test", "t")
@@ -178,7 +194,7 @@ func Test_MiTab(t *testing.T) {
 	pth := "../../tdata/"
 	mit := make(util.Set3D)
 	mits := []tt{
-		{pth + "test.mit", mit, 1},
+		{pth + "parse/test.mit", mit, 1},
 	}
 	for i, tt := range mits {
 		tt.arg2.Add("P04637", "test", "t")
@@ -204,7 +220,7 @@ func Test_Gaf(t *testing.T) {
 	pth := "../../tdata/"
 	var set = make(util.Set3D)
 	var gafs = []tt{
-		{pth + "test.gaf", set, 150, 17, 39},
+		{pth + "parse/test.gaf", set, 150, 17, 39},
 	}
 	for i, tt := range gafs {
 		tt.arg2.Add("P04637", "test", "t")

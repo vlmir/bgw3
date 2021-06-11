@@ -48,7 +48,8 @@ func subset(pthR, pthW string, inds [5]int) error {
 		}
 		if len(subline) == 0 {
 			msg := fmt.Sprintf("%s", "EmptyString")
-			panic(errors.New(msg))}
+			panic(errors.New(msg))
+		}
 		fhW.WriteString(fmt.Sprintf("%s\n", subline))
 	}
 	return nil

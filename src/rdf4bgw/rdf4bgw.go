@@ -53,6 +53,83 @@ func geneprot(datdir, bgwdir string, txn2prm util.Set2D) (ntg, ntp int, err erro
 	return ntg, ntp, nil
 } // geneprot()
 
+func rgr2trg(datdir, bgwdir string, txn2prm util.Set2D) (util.Set2D, error) {
+	cnts := make(util.Set2D)
+	var pdcks = []string{
+	"preg2targ",
+	"nreg2targ",
+	"reg2targ",
+	}
+	for src, _ := range rdf.Uris4tftg {
+		var vals []bgw.Column
+		var keys []bgw.Column
+		ext := ""
+		rpth := ""
+		if src == "signor" {
+			keys, vals = bgw.SignorParseConf()
+			ext = ".mi28"
+		} else {
+			keys, vals = bgw.TftgParseConf()
+			ext = ".f2g"
+		}
+		for taxid := range txn2prm {
+			if taxid != "9606" {
+				continue
+			} // for now
+			var d4b bgw.Dat4bridge
+			d4b.New()
+			if src == "signor" {
+				rpth = fmt.Sprintf("%s%s%s%s%s", datdir, src, "/", taxid, ext)
+			} else {
+				rpth = fmt.Sprintf("%s%s%s%s%s", datdir, src, "/", src, ext)
+			}
+			err := parse.Tab2struct(rpth, keys, vals, &d4b)
+			if err != nil {
+				log.Println(err)
+				continue
+			}
+			xmap := bgw.NewXmap()
+			subdir := "xmap/"
+			ext := ".json"
+			rpthx := fmt.Sprintf("%s%s%s%s", bgwdir, subdir, taxid, ext) // read BGW map json
+			err = xmap.Unmarshal(rpthx)
+			util.CheckE(err)
+			if src == "signor" {
+				keys = []bgw.Column{
+					{0, "|", 0, "", 0, ""},
+				}
+				vals = []bgw.Column{
+					{1, "|", 0, "|", 1, "lbl"},
+					{2, "|", 0, "|", 1, "ids"},
+				}
+				rpth = fmt.Sprintf("%s%s%s%s%s", datdir, src, "/", taxid, ".map")
+				sigmap, err := parse.Tab2set3D(rpth, keys, vals)
+				util.CheckE(err)
+				/*
+				if err != nil {
+					panic(err)
+				}
+				*/
+				xmap.Signor = sigmap
+			}
+
+			d4b.Src = src
+			d4b.Taxid = taxid
+			err = export.Rgr2trg(&d4b, &xmap, bgwdir)
+			if err != nil {
+				//panic(err)
+				log.Println(err)
+				continue
+			}
+			for _, pdck := range pdcks {
+			cnts.Add(pdck, src)
+			cnts[pdck][src] = d4b.Cnts[pdck][src]
+			}
+		}
+	}
+	return cnts, nil
+}
+
 func tfac2gene(datdir, bgwdir string, txn2prm util.Set2D) (int, error) {
 	keys := []bgw.Column{
 		{0, ":", 0, "--", 0, ""},
@@ -114,7 +191,6 @@ func tfac2gene(datdir, bgwdir string, txn2prm util.Set2D) (int, error) {
 					}
 				}
 				// dat4txn[duoid][src] = duo
-				// fmt.Println(dat4txn[duoid])
 			}
 		} //src
 		if len(dat4txn) == 0 {
@@ -398,7 +474,8 @@ func main() {
 	}
 	if *aP || *rP {
 		mystart := time.Now()
-		tfac2gene(datdir, bgwdir, txn2prm)
+		// tfac2gene(datdir, bgwdir, txn2prm)
+		rgr2trg(datdir, bgwdir, txn2prm)
 		log.Println("Done with tfac2gene in", time.Since(mystart))
 	}
 	if *aP || *oP {

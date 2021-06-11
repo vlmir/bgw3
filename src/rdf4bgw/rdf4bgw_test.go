@@ -15,14 +15,14 @@ func Test_geneprot(t *testing.T) {
 	}
 
 	pth := "../../tdata/"
-	xpth := pth + "output/"
+	xpth := pth + "rdf4bgw/"
 	var arg3 [5]util.Set2D // txmap
 	arg3[0] = make(util.Set2D)
 	arg3[0].Add("9606", "UP000005640")
 	//arg3[0].Add("7227", "UP000000803")
 	tts := []tt{
 		//		{pth, xpth, arg3[0], 35, 76},
-		{pth, xpth, arg3[0], 36, 49},
+		{pth, xpth, arg3[0], 50, 68},
 	}
 
 	for i, tt := range tts {
@@ -44,6 +44,35 @@ func Test_geneprot(t *testing.T) {
 	}
 }
 
+func Test_rgr2trg(t *testing.T) {
+	type tt struct {
+		arg1 string
+		arg2 string
+		arg3 util.Set2D
+		val  int
+	}
+	pth := "../../tdata/"
+	xpth := pth + "rdf4bgw/"
+	var arg3 [5]util.Set2D // txmap
+	arg3[0] = make(util.Set2D)
+	arg3[0].Add("9606", "testprome")
+	tts := []tt{
+		{pth, xpth, arg3[0], 6},
+	}
+	pdck := "preg2targ"
+	src := "tfacts"
+	for i, tt := range tts {
+		cnts, _ := rgr2trg(tt.arg1, tt.arg2, tt.arg3)
+		if cnts[pdck][src] != tt.val {
+			t.Error(
+				"For test", i+1, ": ", tt.arg1, tt.arg2, tt.arg3,
+				"\n\twant", tt.val,
+				"\n\thave", cnts[pdck][src],
+			)
+		}
+	}
+}
+
 func Test_tfac2gene(t *testing.T) {
 	type tt struct {
 		arg1 string
@@ -53,13 +82,13 @@ func Test_tfac2gene(t *testing.T) {
 	}
 
 	pth := "../../tdata/"
-	xpth := pth + "output/"
+	xpth := pth + "rdf4bgw/"
 	var arg3 [5]util.Set2D // txmap
 	arg3[0] = make(util.Set2D)
 	arg3[0].Add("9606", "1")
 	tts := []tt{
 		// {pth, xpth, arg3[0], arg4[0], 41},
-		{pth, xpth, arg3[0], 26},
+		{pth, xpth, arg3[0], 22},
 	}
 
 	for i, tt := range tts {
@@ -82,7 +111,7 @@ func Test_ortho(t *testing.T) {
 		val1 int
 	}
 	pth := "../../tdata/"
-	xpth := pth + "output/"
+	xpth := pth + "rdf4bgw/"
 	var arg3 [5]util.Set2D // txmap
 	arg3[0] = make(util.Set2D)
 	arg3[0].Add("9606", "ortho")

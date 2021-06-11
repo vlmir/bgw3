@@ -34,16 +34,20 @@ var Orthokeys = map[string]string{
 }
 
 type Dat4bridge struct {
+	Src   string
+	Taxid string
 	Duos  util.Set3D
-	OriAs  util.Set3D
-	OriBs util.Set3D
+	Mode  util.Set3D
+	Cnts util.Set2D
 }
 
 func (p *Dat4bridge) New() {
 	d4b := *p
+	d4b.Src = ""
+	d4b.Taxid = ""
 	d4b.Duos = make(util.Set3D)
-	d4b.OriAs = make(util.Set3D)
-	d4b.OriBs = make(util.Set3D)
+	d4b.Mode = make(util.Set3D)
+	d4b.Cnts = make(util.Set2D)
 	*p = d4b
 }
 
@@ -65,17 +69,34 @@ func (p *Dat4rdf) New() {
 }
 
 type Xmap struct {
-	Bgwg  util.Set3D
-	Bgwp  util.Set3D
-	Upac  util.Set3D
-	Lblg  util.Set3D
-	Syng  util.Set3D
-	Ensg  util.Set3D
-	Ncbig util.Set3D
-	Ensp  util.Set3D
-	Rfsq  util.Set3D
+	Bgwg   util.Set3D
+	Bgwp   util.Set3D
+	Upac   util.Set3D
+	Lblg   util.Set3D
+	Syng   util.Set3D
+	Ensg   util.Set3D
+	Ncbig  util.Set3D
+	Ensp   util.Set3D
+	Rfsq   util.Set3D
+	Signor util.Set3D
 }
 
+func (p *Xmap) New() {
+	xm := *p
+	xm.Bgwg = make(util.Set3D)
+	xm.Bgwp = make(util.Set3D)
+	xm.Upac = make(util.Set3D)
+	xm.Lblg = make(util.Set3D)
+	xm.Syng = make(util.Set3D)
+	xm.Ensg = make(util.Set3D)
+	xm.Ncbig = make(util.Set3D)
+	xm.Ensp = make(util.Set3D)
+	xm.Rfsq = make(util.Set3D)
+	xm.Signor = make(util.Set3D)
+	*p = xm
+}
+
+// TODO to be eliminated
 func NewXmap() (xmap Xmap) {
 	xmap.Upac = make(util.Set3D)
 	xmap.Lblg = make(util.Set3D)
@@ -99,4 +120,63 @@ func (xmap Xmap) Unmarshal(pthj string) error {
 		panic(err)
 	}
 	return nil
+}
+func TftgParseConf() ([]Column, []Column) {
+	keys := []Column{
+		{0, ":", 0, "--", 0, ""},
+		{0, ":", 1, "--", 0, ""},
+	}
+	vals := []Column{
+		{1, "|", 0, "|", 0, "uniprot"},
+		{2, "|", 0, "|", 0, "ncbig"},
+		{3, "|", 0, ";", 0, "pubmed"},
+		{4, "|", 0, ";", 0, "score"},
+		{5, "|", 0, ";", 0, "mode"},
+	}
+	return keys, vals
+}
+
+func SignorParseConf() ([]Column, []Column) {
+	keys := []Column{
+		{0, "|", 0, "--", 0, ""},
+		{1, "|", 0, "--", 0, ""},
+	}
+	vals := []Column{
+		{8, "|", 1, ":", -1, "pubmed"},
+		{11, "|", 1, "\"", 1, "typeABid"},
+		{11, "|", 2, "\"", 1, "typeABlbl"},
+		{14, "|", 1, ":", 1, "score"},
+		{20, "|", 1, "\"", 1, "typeAid"},
+		{20, "|", 2, "\"", 1, "typeAlbl"},
+		{21, "|", 1, "\"", 1, "typeBid"},
+		{21, "|", 2, "\"", 1, "typeBlbl"},
+		{44, "|", 1, "\"", 1, "reglevelid"},
+		{44, "|", 2, "\"", 1, "reglevellbl"},
+		{45, "|", 1, "\"", 1, "stmid"},
+		{45, "|", 2, "\"", 1, "mode"},
+	}
+	return keys, vals
+}
+
+func Keys4rgrs() util.SliceSet {
+	keys := make(util.SliceSet)
+	keys["Opys"] = []string{
+		"preg2targ",
+		"nreg2targ",
+		"reg2targ",
+		"ins2cls",
+		"sth2src",
+		"sth2rlm",
+		"sub2cls",
+		"sth2evd",
+	}
+	keys["Apys"] = []string{
+		"sth2dfn",
+		"sth2lbl",
+		"evd2lvl",
+	}
+	keys["Prns"] = []string{
+		"stm",
+	}
+	return keys
 }

@@ -26,10 +26,15 @@ func checkID(id string, filter util.Set3D, counter util.Set1D) (out int) {
 }
 
 // used only in orthosolo()
-func Idmap(rpth string, srcs map[string]string, ind1, ind2, ind3 int) (util.Set3D, error) {
+func Idmap(rpth string, srcs map[string]string, i1, i2, i3 int) (util.Set3D, error) {
 	out := make(util.Set3D)
 	fh, err := os.Open(rpth)
-	util.CheckE(err)
+	//util.CheckE(err)
+	if err != nil {
+		msg := fmt.Sprintf("parse.Idmap(%s, %v, %d, %d, %d):", rpth, srcs, i1, i2, i3)
+		log.Println(msg)
+		return out, err
+	}
 	defer fh.Close()
 	scanner := bufio.NewScanner(fh)
 	for scanner.Scan() { // by default scans for '\n'
@@ -41,13 +46,111 @@ func Idmap(rpth string, srcs map[string]string, ind1, ind2, ind3 int) (util.Set3
 		if !ok {
 			continue
 		} // filtering by srcs
-		key1 := strings.Replace(cells[ind1], "\"", "''", -1) // present e.g. in 44689
-		key2 := strings.Replace(cells[ind2], "\"", "''", -1) // present e.g. in 44689
-		key3 := strings.Replace(cells[ind3], "\"", "''", -1) // present e.g. in 44689
+		key1 := strings.Replace(cells[i1], "\"", "''", -1) // present e.g. in 44689
+		key2 := strings.Replace(cells[i2], "\"", "''", -1) // present e.g. in 44689
+		key3 := strings.Replace(cells[i3], "\"", "''", -1) // present e.g. in 44689
 		out.Add(key1, key2, key3)
 	}
 	return out, nil
 }
+
+func Tab2struct(rpth string, keys, vals []bgw.Column, p *bgw.Dat4bridge) (err error) {
+	d4b := *p
+	maxind := 0
+	for _, one := range keys {
+		n := one.Ind1
+		if n > maxind {
+			maxind = n
+		}
+		n = one.Ind2
+		if n > maxind {
+			maxind = n
+		}
+	}
+	for _, one := range vals {
+		n := one.Ind1
+		if n > maxind {
+			maxind = n
+		}
+		n = one.Ind2
+		if n > maxind {
+			maxind = n
+		}
+	}
+
+	duos := d4b.Duos
+	fh, err := os.Open(rpth)
+	// util.CheckE(err)
+	if err != nil {
+		return err
+	}
+	defer fh.Close()
+	scanner := bufio.NewScanner(fh)
+	ln := 0 // current line number
+	for scanner.Scan() {
+		// by default scans for '\n'
+		line := scanner.Text()
+		ln++
+		if len(line) == 0 {
+			continue
+		}
+		if string(line[0]) == "#" {
+			continue
+		}
+		cells := strings.Split(line, "\t") // fields
+		if len(cells) < maxind+1 {
+			msg := fmt.Sprintf("%s:%d: TooFewtFields", rpth, ln)
+			panic(errors.New(msg))
+		}
+		/// primary key
+		var pk string // the primary key to be used in the output map
+		for i, k := range keys {
+			// i: index, k: bgw.Column
+			items := strings.Split(cells[k.Ind1], k.Dlm1) // sub-fields
+			if i == 0 {                                   // is this really necessary?
+				pk = strings.TrimSpace(items[k.Ind2])
+			} else {
+				// joining on Dlm2
+				pk = fmt.Sprintf("%s%s%s", pk, k.Dlm2, strings.TrimSpace(items[k.Ind2]))
+			}
+		} // the order of componenets in the key is deterministic, no variation from call to call
+		util.CheckStrings(pk)
+		/// values
+		for _, v := range vals {
+			// v: bgw.Column; specify fields to be extracted
+			cell := strings.TrimSpace(cells[v.Ind1])
+			if (cell == "") || (cell == "-") {
+				continue
+			}
+			// Dlm1: primary delimiter for multiple values
+			// there is at least one value, may contain secondary delimiters
+			for _, pval := range strings.Split(cell, v.Dlm1) {
+				// Dlm2: secondary delimiter
+				// subfields
+				svals := strings.Split(pval, v.Dlm2)
+				sval := strings.TrimSpace(svals[v.Ind2])
+				if len(sval) == 0 {
+					continue
+				}
+				sk := v.Key // secondary key explicitely specified
+				// db:id
+				if v.Ind3 == -1 {
+					if strings.TrimSpace(svals[0]) != sk {
+						continue
+					}
+				}
+				duos.Add(pk, sk, sval)
+			}
+		} // one field
+	} // one line
+	if len(duos) == 0 {
+		msg := fmt.Sprintf("parse.Tab2set3D():%s: NoData", rpth)
+		return errors.New(msg)
+	}
+	d4b.Duos = duos
+	*p = d4b
+	return nil
+} // Tab2set3D()
 
 // Tab2set3D is a generic parser for tab-delimeted files with sub-fields (up to 2 levels)
 // Tab2set3D converts tabular data into a map keyed on an arbitrary combination of fields
@@ -150,7 +253,6 @@ func Tab2set3D(rpth string, keys, vals []bgw.Column) (out util.Set3D, err error)
 		msg := fmt.Sprintf("parse.Tab2set3D():%s: NoData", rpth)
 		return out, errors.New(msg)
 	}
-	fmt.Println(out)
 	return out, nil
 } // Tab2set3D()
 
