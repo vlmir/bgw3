@@ -1,0 +1,80 @@
+<http://semanticscience.org/resource/SIO_010078> <http://www.w3.org/2000/01/rdf-schema#subPropertyOf> <http://www.w3.org/2002/07/owl#ObjectProperty> .
+<http://semanticscience.org/resource/SIO_010078> <http://www.w3.org/2004/02/skos/core#prefLabel> "encodes" .
+<http://purl.obolibrary.org/obo/BFO_0000052> <http://www.w3.org/2000/01/rdf-schema#subPropertyOf> <http://www.w3.org/2002/07/owl#ObjectProperty> .
+<http://purl.obolibrary.org/obo/BFO_0000052> <http://www.w3.org/2004/02/skos/core#prefLabel> "inheres in" .
+<http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2000/01/rdf-schema#subPropertyOf> <http://www.w3.org/2002/07/owl#ObjectProperty> .
+<http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2004/02/skos/core#prefLabel> "is instance of" .
+<http://www.w3.org/2004/02/skos/core#closeMatch> <http://www.w3.org/2000/01/rdf-schema#subPropertyOf> <http://www.w3.org/2002/07/owl#ObjectProperty> .
+<http://www.w3.org/2004/02/skos/core#closeMatch> <http://www.w3.org/2004/02/skos/core#prefLabel> "has close match" .
+<http://schema.org/evidenceOrigin> <http://www.w3.org/2000/01/rdf-schema#subPropertyOf> <http://www.w3.org/2002/07/owl#ObjectProperty> .
+<http://schema.org/evidenceOrigin> <http://www.w3.org/2004/02/skos/core#prefLabel> "has evidence origin" .
+<http://semanticscience.org/resource/SIO_000253> <http://www.w3.org/2000/01/rdf-schema#subPropertyOf> <http://www.w3.org/2002/07/owl#ObjectProperty> .
+<http://semanticscience.org/resource/SIO_000253> <http://www.w3.org/2004/02/skos/core#prefLabel> "has source" .
+<http://www.w3.org/2000/01/rdf-schema#subClassOf> <http://www.w3.org/2000/01/rdf-schema#subPropertyOf> <http://www.w3.org/2002/07/owl#ObjectProperty> .
+<http://www.w3.org/2000/01/rdf-schema#subClassOf> <http://www.w3.org/2004/02/skos/core#prefLabel> "is subclass of" .
+<http://www.w3.org/2004/02/skos/core#definition> <http://www.w3.org/2000/01/rdf-schema#subPropertyOf> <http://www.w3.org/2002/07/owl#AnnotationProperty> .
+<http://www.w3.org/2004/02/skos/core#definition> <http://www.w3.org/2004/02/skos/core#prefLabel> "has definition" .
+<http://www.w3.org/2004/02/skos/core#prefLabel> <http://www.w3.org/2000/01/rdf-schema#subPropertyOf> <http://www.w3.org/2002/07/owl#AnnotationProperty> .
+<http://www.w3.org/2004/02/skos/core#prefLabel> <http://www.w3.org/2004/02/skos/core#prefLabel> "has name" .
+<http://www.w3.org/2004/02/skos/core#altLabel> <http://www.w3.org/2000/01/rdf-schema#subPropertyOf> <http://www.w3.org/2002/07/owl#AnnotationProperty> .
+<http://www.w3.org/2004/02/skos/core#altLabel> <http://www.w3.org/2004/02/skos/core#prefLabel> "has synonym" .
+<http://semanticscience.org/resource/SIO_010035> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#Class> .
+<http://semanticscience.org/resource/SIO_010035> <http://www.w3.org/2004/02/skos/core#prefLabel> "Gene" .
+<http://rdf.biogateway.eu/graph/gene> <http://semanticscience.org/resource/SIO_000253> <http://uniprot.org/uniprot/> .
+<http://rdf.biogateway.eu/gene/> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#Class> .
+<http://rdf.biogateway.eu/gene/> <http://www.w3.org/2004/02/skos/core#definition> "Set of genes in Biogateway" .
+<http://rdf.biogateway.eu/gene/> <http://www.w3.org/2004/02/skos/core#prefLabel> "gene" .
+<http://rdf.biogateway.eu/gene/9606> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#Class> .
+<http://rdf.biogateway.eu/gene/9606> <http://www.w3.org/2000/01/rdf-schema#subClassOf> <http://rdf.biogateway.eu/gene/> .
+<http://rdf.biogateway.eu/gene/9606> <http://www.w3.org/2004/02/skos/core#definition> "Set of Homo sapiens genes in Biogateway" .
+<http://rdf.biogateway.eu/gene/9606> <http://www.w3.org/2004/02/skos/core#prefLabel> "gene/9606" .
+<http://rdf.biogateway.eu/gene/9606/chr-17> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#Class> .
+<http://rdf.biogateway.eu/gene/9606/chr-17> <http://www.w3.org/2000/01/rdf-schema#subClassOf> <http://rdf.biogateway.eu/gene/9606> .
+<http://rdf.biogateway.eu/gene/9606/chr-17> <http://www.w3.org/2004/02/skos/core#definition> "Set of genes residing in Homo sapiens chr-17" .
+<http://rdf.biogateway.eu/gene/9606/chr-17> <http://www.w3.org/2004/02/skos/core#prefLabel> "gene/9606/chr-17" .
+<http://rdf.biogateway.eu/gene/9606/chr-21> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#Class> .
+<http://rdf.biogateway.eu/gene/9606/chr-21> <http://www.w3.org/2000/01/rdf-schema#subClassOf> <http://rdf.biogateway.eu/gene/9606> .
+<http://rdf.biogateway.eu/gene/9606/chr-21> <http://www.w3.org/2004/02/skos/core#definition> "Set of genes residing in Homo sapiens chr-21" .
+<http://rdf.biogateway.eu/gene/9606/chr-21> <http://www.w3.org/2004/02/skos/core#prefLabel> "gene/9606/chr-21" .
+<http://rdf.biogateway.eu/gene/9606/chr-Z> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#Class> .
+<http://rdf.biogateway.eu/gene/9606/chr-Z> <http://www.w3.org/2000/01/rdf-schema#subClassOf> <http://rdf.biogateway.eu/gene/9606> .
+<http://rdf.biogateway.eu/gene/9606/chr-Z> <http://www.w3.org/2004/02/skos/core#definition> "Set of genes residing in Homo sapiens chr-Z" .
+<http://rdf.biogateway.eu/gene/9606/chr-Z> <http://www.w3.org/2004/02/skos/core#prefLabel> "gene/9606/chr-Z" .
+<http://rdf.biogateway.eu/gene/9606/FOO> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#Class> .
+<http://rdf.biogateway.eu/gene/9606/FOO> <http://www.w3.org/2000/01/rdf-schema#subClassOf> <http://semanticscience.org/resource/SIO_010035> .
+<http://rdf.biogateway.eu/gene/9606/FOO> <http://purl.obolibrary.org/obo/BFO_0000052> <http://purl.obolibrary.org/obo/NCBITaxon_9606> .
+<http://rdf.biogateway.eu/gene/9606/FOO> <http://www.w3.org/2004/02/skos/core#definition> "Homo sapiens gene FOO" .
+<http://rdf.biogateway.eu/gene/9606/FOO> <http://www.w3.org/2004/02/skos/core#prefLabel> "FOO" .
+<http://rdf.biogateway.eu/gene/9606/FOO> <http://www.w3.org/2004/02/skos/core#altLabel> "BAR" .
+<http://rdf.biogateway.eu/gene/9606/FOO> <http://www.w3.org/2004/02/skos/core#altLabel> "YOU" .
+<http://rdf.biogateway.eu/gene/9606/FOO> <http://semanticscience.org/resource/SIO_010078> <http://rdf.biogateway.eu/prot/9606/FOOFOO> .
+<http://rdf.biogateway.eu/gene/9606/FOO> <http://schema.org/evidenceOrigin> <http://uniprot.org/uniprot/FOOFOO> .
+<http://rdf.biogateway.eu/gene/9606/TP53> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#Class> .
+<http://rdf.biogateway.eu/gene/9606/TP53> <http://www.w3.org/2000/01/rdf-schema#subClassOf> <http://rdf.biogateway.eu/gene/9606/chr-17> .
+<http://rdf.biogateway.eu/gene/9606/TP53> <http://www.w3.org/2000/01/rdf-schema#subClassOf> <http://semanticscience.org/resource/SIO_010035> .
+<http://rdf.biogateway.eu/gene/9606/TP53> <http://purl.obolibrary.org/obo/BFO_0000052> <http://purl.obolibrary.org/obo/NCBITaxon_9606> .
+<http://rdf.biogateway.eu/gene/9606/TP53> <http://www.w3.org/2004/02/skos/core#definition> "Homo sapiens gene TP53" .
+<http://rdf.biogateway.eu/gene/9606/TP53> <http://www.w3.org/2004/02/skos/core#prefLabel> "TP53" .
+<http://rdf.biogateway.eu/gene/9606/TP53> <http://www.w3.org/2004/02/skos/core#altLabel> "P53" .
+<http://rdf.biogateway.eu/gene/9606/TP53> <http://semanticscience.org/resource/SIO_010078> <http://rdf.biogateway.eu/prot/9606/FOOFOO> .
+<http://rdf.biogateway.eu/gene/9606/TP53> <http://schema.org/evidenceOrigin> <http://uniprot.org/uniprot/FOOFOO> .
+<http://rdf.biogateway.eu/gene/9606/TP53> <http://semanticscience.org/resource/SIO_010078> <http://rdf.biogateway.eu/prot/9606/P04637> .
+<http://rdf.biogateway.eu/gene/9606/TP53> <http://schema.org/evidenceOrigin> <http://uniprot.org/uniprot/P04637> .
+<http://rdf.biogateway.eu/gene/9606/TP53> <http://www.w3.org/2004/02/skos/core#closeMatch> <http://identifiers.org/ensembl/ENSG00000141510> .
+<http://rdf.biogateway.eu/gene/9606/TP53#ENSG00000141510> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://rdf.biogateway.eu/gene/9606/TP53> .
+<http://rdf.biogateway.eu/gene/9606/TP53#ENSG00000141510> <http://www.w3.org/2004/02/skos/core#prefLabel> "ensgene#ENSG00000141510" .
+<http://rdf.biogateway.eu/gene/9606/TP53#ENSG00000141510> <http://www.w3.org/2004/02/skos/core#closeMatch> <http://identifiers.org/ensembl/ENSG00000141510> .
+<http://rdf.biogateway.eu/gene/9606/TP53> <http://www.w3.org/2004/02/skos/core#closeMatch> <http://identifiers.org/ncbigene/7157> .
+<http://rdf.biogateway.eu/gene/9606/TP53#7157> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://rdf.biogateway.eu/gene/9606/TP53> .
+<http://rdf.biogateway.eu/gene/9606/TP53#7157> <http://www.w3.org/2004/02/skos/core#prefLabel> "ncbigene#7157" .
+<http://rdf.biogateway.eu/gene/9606/TP53#7157> <http://www.w3.org/2004/02/skos/core#closeMatch> <http://identifiers.org/ncbigene/7157> .
+<http://rdf.biogateway.eu/gene/9606/U2AF1> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#Class> .
+<http://rdf.biogateway.eu/gene/9606/U2AF1> <http://www.w3.org/2000/01/rdf-schema#subClassOf> <http://rdf.biogateway.eu/gene/9606/chr-21> .
+<http://rdf.biogateway.eu/gene/9606/U2AF1> <http://www.w3.org/2000/01/rdf-schema#subClassOf> <http://semanticscience.org/resource/SIO_010035> .
+<http://rdf.biogateway.eu/gene/9606/U2AF1> <http://purl.obolibrary.org/obo/BFO_0000052> <http://purl.obolibrary.org/obo/NCBITaxon_9606> .
+<http://rdf.biogateway.eu/gene/9606/U2AF1> <http://www.w3.org/2004/02/skos/core#definition> "Homo sapiens gene U2AF1" .
+<http://rdf.biogateway.eu/gene/9606/U2AF1> <http://www.w3.org/2004/02/skos/core#prefLabel> "U2AF1" .
+<http://rdf.biogateway.eu/gene/9606/U2AF1> <http://www.w3.org/2004/02/skos/core#altLabel> "U2AF35" .
+<http://rdf.biogateway.eu/gene/9606/U2AF1> <http://www.w3.org/2004/02/skos/core#altLabel> "U2AFBP" .
+<http://rdf.biogateway.eu/gene/9606/U2AF1> <http://semanticscience.org/resource/SIO_010078> <http://rdf.biogateway.eu/prot/9606/Q01081> .
+<http://rdf.biogateway.eu/gene/9606/U2AF1> <http://schema.org/evidenceOrigin> <http://uniprot.org/uniprot/Q01081> .

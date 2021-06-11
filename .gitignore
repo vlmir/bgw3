@@ -11,7 +11,6 @@ _*
 *.err
 *.out
 *.pyc
-*.nt
 *.pls
 *.tls
 *.txt*
