@@ -56,9 +56,9 @@ func geneprot(datdir, bgwdir string, txn2prm util.Set2D) (ntg, ntp int, err erro
 func rgr2trg(datdir, bgwdir string, txn2prm util.Set2D) (util.Set2D, error) {
 	cnts := make(util.Set2D)
 	var pdcks = []string{
-	"preg2targ",
-	"nreg2targ",
-	"reg2targ",
+		"preg2targ",
+		"nreg2targ",
+		"reg2targ",
 	}
 	for src, _ := range rdf.Uris4tftg {
 		var vals []bgw.Column
@@ -106,9 +106,9 @@ func rgr2trg(datdir, bgwdir string, txn2prm util.Set2D) (util.Set2D, error) {
 				sigmap, err := parse.Tab2set3D(rpth, keys, vals)
 				util.CheckE(err)
 				/*
-				if err != nil {
-					panic(err)
-				}
+					if err != nil {
+						panic(err)
+					}
 				*/
 				xmap.Signor = sigmap
 			}
@@ -122,8 +122,8 @@ func rgr2trg(datdir, bgwdir string, txn2prm util.Set2D) (util.Set2D, error) {
 				continue
 			}
 			for _, pdck := range pdcks {
-			cnts.Add(pdck, src)
-			cnts[pdck][src] = d4b.Cnts[pdck][src]
+				cnts.Add(pdck, src)
+				cnts[pdck][src] = d4b.Cnts[pdck][src]
 			}
 		}
 	}

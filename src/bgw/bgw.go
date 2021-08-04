@@ -38,7 +38,7 @@ type Dat4bridge struct {
 	Taxid string
 	Duos  util.Set3D
 	Mode  util.Set3D
-	Cnts util.Set2D
+	Cnts  util.Set2D
 }
 
 func (p *Dat4bridge) New() {

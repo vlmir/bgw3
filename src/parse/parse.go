@@ -600,13 +600,13 @@ func UpVar(rpth string, filters ...util.Set3D) (duos util.Set3D, err error) {
 	// filters is used only for filtering
 	/*
 	 AARS	  P49588	 VAR_063527  p.Arg329His	Disease	   rs267606621 Charcot-Marie-Tooth disease 2N(CMT2N) [MIM:613287]
-	  0 gene name
-	 10 up acc // always present and single
-	 21
-	 33 aa change
-	 48 type
-	 62 '-' possible
-	 77 description '-' possible
+	  0  => 0 gene name
+	 10 => 10 up acc // always present and single
+	 21 => 21
+	 33 => 33 aa change
+	 48 => 48 type
+	 62 => 57 '-' possible
+	 77 => 72 description '-' possible
 	*/
 	nsL := "hgncsymb"
 	nsR := "omim"
@@ -618,11 +618,11 @@ func UpVar(rpth string, filters ...util.Set3D) (duos util.Set3D, err error) {
 	notInBgw := make(util.Set1D)
 	for scanner.Scan() { // by default scans for '\n'
 		line := scanner.Text()
-		if len(line) < 79 {
+		if len(line) < 74 {
 			continue
 		} // skipping lines with '-' in the last field SIC!
-		if strings.TrimSpace(line[48:61]) != "Disease" {
-			continue
+		if strings.TrimSpace(line[48:56]) != "Disease" {
+		//	continue // Disease => LP/P; seems superfluous anyway
 		}
 		upca := strings.TrimSpace(line[10:20])
 		symG := strings.TrimSpace(line[0:9])
@@ -635,7 +635,7 @@ func UpVar(rpth string, filters ...util.Set3D) (duos util.Set3D, err error) {
 		}
 		idL := fmt.Sprintf("%s%s%s", nsL, "!", oriL)
 		// TODO consider splitting on '[' and ']'
-		dfn := strings.TrimSpace(line[77:])
+		dfn := strings.TrimSpace(line[72:])
 		// only one definition per line
 		if dfn == "" {
 			continue

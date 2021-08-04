@@ -170,7 +170,7 @@ func Test_UpVar(t *testing.T) {
 	pth := "../../tdata/"
 	upvar := make(util.Set3D)
 	upvars := []tt{
-		{pth + "parse/test.var", upvar, 1},
+		{pth + "parse/P04637.var", upvar, 1},
 	}
 	for i, tt := range upvars {
 		tt.arg2.Add("TP53", "test", "t")

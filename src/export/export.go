@@ -67,7 +67,7 @@ func Shared(slA, slB []string) []string {
 	return s
 }
 
-func Rgr2trg(d *bgw.Dat4bridge, x *bgw.Xmap, wdir string) (error) {
+func Rgr2trg(d *bgw.Dat4bridge, x *bgw.Xmap, wdir string) error {
 	d4b := *d
 	xmap := *x
 	src := d4b.Src
@@ -1311,7 +1311,7 @@ func Gene2phen(duos, gsym2bgw util.Set3D, wpth string) (int, error) {
 	} // duoid
 	msg := ""
 	if cntD == 0 {
-		msg = fmt.Sprintf("export.Prot2phen(): NoDuos")
+		msg = fmt.Sprintf("export.Gene2phen(): NoDuos")
 		panic(errors.New(msg))
 	}
 	msg = fmt.Sprintf("export.Gene2phen(): Pairs: added: %d dropped: %d", cntD, len(duos)-cntD)

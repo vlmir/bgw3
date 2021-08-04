@@ -20,7 +20,7 @@ func Test_GeneProt(t *testing.T) {
 		val2 int
 	}
 	pth := "../../tdata/"
-	xpth := pth + "export/"
+	wpth := pth + "export/"
 	var idmkeys = map[string]string{
 		"Ensembl_PRO":   "ensprotein",
 		"Ensembl":       "ensgene",
@@ -35,9 +35,9 @@ func Test_GeneProt(t *testing.T) {
 	upacs, _ := parse.UpIdMap(pth+"idmapping/UP000005640_9606.idmapping", idmkeys)
 	arg01, _ := parse.UpTab(pth+"uniprot/9606.upt", upacs, txn2prm)
 	arg01.Upac = &upacs
-	arg02 := xpth + "gene/9606.nt"
-	arg03 := xpth + "prot/9606.nt"
-	arg04 := xpth + "xmap/9606.json"
+	arg02 := wpth + "gene/9606.nt"
+	arg03 := wpth + "prot/9606.nt"
+	arg04 := wpth + "xmap/9606.json"
 	tts := []tt{
 		//		{arg01, arg02, arg03, arg04, 35, 76},
 		{arg01, arg02, arg03, arg04, 50, 68},
@@ -62,9 +62,9 @@ func Test_GeneProt(t *testing.T) {
 	upacs, _ = parse.UpIdMap(pth+"idmapping/UP000000803_7227.idmapping", idmkeys)
 	arg11, _ := parse.UpTab(pth+"uniprot/7227.upt", upacs, txn2prm)
 	arg11.Upac = &upacs
-	arg12 := xpth + "gene/7227.nt"
-	arg13 := xpth + "prot/7227.nt"
-	arg14 := xpth + "xmap/7227.json"
+	arg12 := wpth + "gene/7227.nt"
+	arg13 := wpth + "prot/7227.nt"
+	arg14 := wpth + "xmap/7227.json"
 	tts = []tt{
 		//		{arg11, arg12, arg13, arg14, 14, 33},
 		{arg11, arg12, arg13, arg14, 21, 25},
@@ -195,7 +195,7 @@ func Test_Tfac2gene(t *testing.T) {
 		val1 int
 	}
 	pth := "../../tdata/"
-	xpth := pth + "export/"
+	wpth := pth + "export/"
 	arg01 := make(util.Set4D)
 	arg01.Add("TP53--TP53", "uniprot", "P04637", "tfacts")
 	arg01.Add("TP53--TP53", "ncbigene", "7157", "tfacts")
@@ -209,7 +209,7 @@ func Test_Tfac2gene(t *testing.T) {
 	arg02.Upac.Add("P04637", "bgwp", "9606/P04637")
 	arg02.Lblg.Add("TP53", "bgwg", "9606/TP53")
 	arg02.Lblg.Add("7157", "bgwg", "9606/TP53")
-	arg03 := xpth + "tfac2gene/tfacts-9606.nt"
+	arg03 := wpth + "tfac2gene/tfacts-9606.nt"
 	tts := []tt{
 		{arg01, arg02, arg03, 20},
 	}
@@ -233,11 +233,11 @@ func Test_UpVar(t *testing.T) {
 		val1 int
 	}
 	pth := "../../tdata/"
-	xpth := pth + "export/"
+	wpth := pth + "export/"
 	arg3 := make(util.Set3D)
 	arg3.Add("TP53", "bgwg", "9606/TP53")
-	arg1, _ := parse.UpVar(pth+"parse/test.var", arg3)
-	arg4 := xpth + "gene2phen/9606.nt"
+	arg1, _ := parse.UpVar(pth+"parse/test.var")
+	arg4 := wpth + "gene2phen/9606.nt"
 	t2s := []tt{
 		{arg1, arg3, arg4, 11},
 	}
@@ -265,11 +265,11 @@ func Test_MiTab(t *testing.T) {
 	}
 
 	pth := "../../tdata/"
-	xpth := pth + "export/"
+	wpth := pth + "export/"
 	arg2 := make(util.Set3D)
 	arg2.Add("P04637", "bgwp", "9606/P04637")
 	arg1, _ := parse.MiTab(pth+"parse/test.mit", arg2)
-	arg3 := xpth + "prot2prot/9606.nt"
+	arg3 := wpth + "prot2prot/9606.nt"
 	tts := []tt{
 		{arg1, arg2, arg3, 73},
 	}
@@ -296,15 +296,15 @@ func Test_Prot2go(t *testing.T) {
 		val1 int
 	}
 	pth := "../../tdata/"
-	xpth := pth + "export/"
+	wpth := pth + "export/"
 	arg2 := make(util.Set3D)
 	arg2.Add("P04637", "bgwp", "9606/P04637")
 	bps, ccs, mfs, _ := parse.Gaf(pth+"parse/test.gaf", arg2)
 	out := [3]string{"prot2bp/9606.nt", "prot2cc/9606.nt", "prot2mf/9606.nt"}
 	tts := []tt{
-		{bps, arg2, xpth + out[0], 1961},
-		{ccs, arg2, xpth + out[1], 260},
-		{mfs, arg2, xpth + out[2], 853},
+		{bps, arg2, wpth + out[0], 1961},
+		{ccs, arg2, wpth + out[1], 260},
+		{mfs, arg2, wpth + out[2], 853},
 	}
 	for i, tt := range tts {
 		n, err := Prot2go(tt.arg1, tt.arg2, tt.arg3)
@@ -329,7 +329,7 @@ func Test_Ortho(t *testing.T) {
 		val1 int
 	}
 	pth := "../../tdata/"
-	xpth := pth + "export/"
+	wpth := pth + "export/"
 	arg1 := make(util.Set3D)
 	arg2 := make(util.Set3D)
 	arg1.Add("uniprot!P02340--uniprot!P04637", "KO", "K04451")
@@ -338,7 +338,7 @@ func Test_Ortho(t *testing.T) {
 	arg2.Add("P04637", "bgwp", "9606/P04637")
 	// arg2.Add("P02340", "bgwp", "10090/P02340#PI00000002B3")
 	arg2.Add("P02340", "bgwp", "10090/P02340")
-	arg3 := xpth + "ortho/10090-9606.nt"
+	arg3 := wpth + "ortho/10090-9606.nt"
 	tts := []tt{
 		{arg1, arg2, arg3, 12},
 	}

@@ -1,0 +1,1338 @@
+TP53      P04637     VAR_005851  p.Asp7His      US       rs587782646    A sporadic cancer
+TP53      P04637     VAR_005852  p.Leu35Phe     US       rs121912661    Sporadic cancers
+TP53      P04637     VAR_005853  p.Leu43Ser     US       -              A sporadic cancer
+TP53      P04637     VAR_005854  p.Trp53Cys     US       -              Sporadic cancers
+TP53      P04637     VAR_005855  p.Pro60Ser     US       -              A sporadic cancer
+TP53      P04637     VAR_005856  p.Pro72Arg     LB/B     rs1042522      -
+TP53      P04637     VAR_005857  p.Ala79Thr     US       -              A sporadic cancer
+TP53      P04637     VAR_005858  p.Pro87Gln     US       -              Sporadic cancers
+TP53      P04637     VAR_005859  p.Ser94Thr     US       -              Sporadic cancers
+TP53      P04637     VAR_005860  p.Arg110Cys    US       rs587781371    Sporadic cancers
+TP53      P04637     VAR_005861  p.Arg110Leu    US       rs11540654     A familial cancer not matching LFS
+TP53      P04637     VAR_005862  p.Arg110Pro    US       rs11540654     Sporadic cancers
+TP53      P04637     VAR_005863  p.Phe113Cys    US       -              Sporadic cancers
+TP53      P04637     VAR_005864  p.Thr125Met    US       rs786201057    Sporadic cancers
+TP53      P04637     VAR_005865  p.Tyr126Asp    US       rs886039483    Sporadic cancers
+TP53      P04637     VAR_005866  p.Tyr126Asn    US       rs886039483    Sporadic cancers
+TP53      P04637     VAR_005867  p.Ser127Phe    US       rs730881999    Sporadic cancers
+TP53      P04637     VAR_005868  p.Pro128Ser    US       -              Sporadic cancers
+TP53      P04637     VAR_005869  p.Ala129Asp    US       -              Sporadic cancers
+TP53      P04637     VAR_005870  p.Leu130Arg    US       -              Sporadic cancers
+TP53      P04637     VAR_005871  p.Asn131Ser    US       -              Sporadic cancers
+TP53      P04637     VAR_005872  p.Asn131Lys    US       rs769270327    Sporadic cancers
+TP53      P04637     VAR_005873  p.Lys132Met    US       rs1057519996   Sporadic cancers
+TP53      P04637     VAR_005874  p.Lys132Gln    US       rs747342068    Sporadic cancers
+TP53      P04637     VAR_005875  p.Met133Thr    LP/P     rs28934873     Li-Fraumeni syndrome (LFS) [MIM:151623]
+TP53      P04637     VAR_005876  p.Cys135Ser    US       rs1057519975   Sporadic cancers
+TP53      P04637     VAR_005877  p.Cys135Phe    US       rs587781991    Sporadic cancers
+TP53      P04637     VAR_005878  p.Gln136Glu    US       rs1555526268   Sporadic cancers
+TP53      P04637     VAR_005879  p.Gln136Lys    US       -              A sporadic cancer
+TP53      P04637     VAR_005880  p.Leu137Gln    US       -              Sporadic cancers
+TP53      P04637     VAR_005881  p.Ala138Pro    LP/P     rs28934875     Li-Fraumeni syndrome (LFS) [MIM:151623]
+TP53      P04637     VAR_005882  p.Lys139Asn    US       -              Sporadic cancers
+TP53      P04637     VAR_005884  p.Cys141Gly    US       rs1057519978   Sporadic cancers
+TP53      P04637     VAR_005885  p.Cys141Phe    US       rs587781288    Sporadic cancers
+TP53      P04637     VAR_005886  p.Cys141Tyr    LP/P     rs587781288    Li-Fraumeni syndrome (LFS) [MIM:151623]
+TP53      P04637     VAR_005887  p.Val143Ala    US       -              Sporadic cancers
+TP53      P04637     VAR_005888  p.Gln144Pro    US       rs786203071    Sporadic cancers
+TP53      P04637     VAR_005889  p.Leu145Pro    US       rs587782197    Sporadic cancers
+TP53      P04637     VAR_005890  p.Leu145Gln    US       -              Sporadic cancers
+TP53      P04637     VAR_005891  p.Val147Asp    US       -              Sporadic cancers
+TP53      P04637     VAR_005892  p.Val147Gly    US       rs1453167097   Sporadic cancers
+TP53      P04637     VAR_005893  p.Ser149Pro    US       -              Sporadic cancers
+TP53      P04637     VAR_005894  p.Pro151Ala    US       rs28934874     Sporadic cancers
+TP53      P04637     VAR_005895  p.Pro151Ser    LP/P     rs28934874     Li-Fraumeni syndrome (LFS) [MIM:151623]
+TP53      P04637     VAR_005896  p.Pro151Thr    LP/P     rs28934874     Li-Fraumeni syndrome (LFS) [MIM:151623]
+TP53      P04637     VAR_005897  p.Pro152Leu    LP/P     rs587782705    Li-Fraumeni syndrome (LFS) [MIM:151623]
+TP53      P04637     VAR_005898  p.Pro152Ser    US       rs767328513    Sporadic cancers
+TP53      P04637     VAR_005899  p.Pro153Thr    US       -              Sporadic cancers
+TP53      P04637     VAR_005900  p.Gly154Val    US       rs762846821    A brain tumor with no family history
+TP53      P04637     VAR_005901  p.Thr155Ala    US       rs772683278    Sporadic cancers
+TP53      P04637     VAR_005902  p.Arg156Pro    US       -              Sporadic cancers
+TP53      P04637     VAR_005903  p.Val157Asp    US       -              Sporadic cancers
+TP53      P04637     VAR_005904  p.Val157Phe    US       rs121912654    Sporadic cancers
+TP53      P04637     VAR_005905  p.Arg158Cys    US       rs587780068    Sporadic cancers
+TP53      P04637     VAR_005906  p.Arg158Gly    LP/P     -              Li-Fraumeni syndrome (LFS) [MIM:151623]
+TP53      P04637     VAR_005907  p.Arg158His    LP/P     rs587782144    Li-Fraumeni syndrome (LFS) [MIM:151623]
+TP53      P04637     VAR_005908  p.Met160Ile    US       rs772354334    Sporadic cancers
+TP53      P04637     VAR_005909  p.Ala161Ser    US       -              Sporadic cancers
+TP53      P04637     VAR_005910  p.Ile162Ser    US       rs587780069    Sporadic cancers
+TP53      P04637     VAR_005911  p.Ile162Val    US       -              Sporadic cancers
+TP53      P04637     VAR_005912  p.Tyr163His    US       rs786203436    Sporadic cancers
+TP53      P04637     VAR_005913  p.Lys164Asn    US       rs1131691034   Sporadic cancers
+TP53      P04637     VAR_005914  p.Lys164Gln    US       -              Sporadic cancers
+TP53      P04637     VAR_005915  p.Gln165Leu    US       -              Sporadic cancers
+TP53      P04637     VAR_005916  p.Gln165Arg    US       -              Sporadic cancers
+TP53      P04637     VAR_005917  p.Ser166Leu    US       rs1555526101   Sporadic cancers
+TP53      P04637     VAR_005918  p.His168Arg    US       rs867114783    Sporadic cancers
+TP53      P04637     VAR_005919  p.Met169Ile    US       -              Sporadic cancers
+TP53      P04637     VAR_005920  p.Met169Thr    US       -              Sporadic cancers
+TP53      P04637     VAR_005921  p.Thr170Met    US       rs779000871    Sporadic cancers
+TP53      P04637     VAR_005922  p.Thr170Ser    US       -              Sporadic cancers
+TP53      P04637     VAR_005923  p.Val172Ala    US       -              Sporadic cancers
+TP53      P04637     VAR_005924  p.Val173Glu    US       rs1057519747   Sporadic cancers
+TP53      P04637     VAR_005925  p.Val173Leu    US       rs876660754    Sporadic cancers
+TP53      P04637     VAR_005926  p.Val173Met    LP/P     rs876660754    Li-Fraumeni syndrome (LFS) [MIM:151623]
+TP53      P04637     VAR_005927  p.Arg174Lys    US       rs1064796681   Sporadic cancers
+TP53      P04637     VAR_005928  p.Arg175Cys    US       rs138729528    Sporadic cancers
+TP53      P04637     VAR_005929  p.Arg175Gly    LP/P     rs138729528    Li-Fraumeni syndrome (LFS) [MIM:151623]
+TP53      P04637     VAR_005930  p.Arg175Leu    LP/P     rs28934578     Li-Fraumeni syndrome (LFS) [MIM:151623]
+TP53      P04637     VAR_005931  p.Arg175Pro    US       -              Sporadic cancers
+TP53      P04637     VAR_005932  p.Arg175His    LP/P     rs28934578     Li-Fraumeni syndrome (LFS) [MIM:151623]
+TP53      P04637     VAR_005933  p.Cys176Phe    US       rs786202962    Sporadic cancers
+TP53      P04637     VAR_005934  p.Cys176Trp    US       rs1057519980   Sporadic cancers
+TP53      P04637     VAR_005935  p.Pro177Leu    US       rs751477326    Sporadic cancers
+TP53      P04637     VAR_005937  p.Arg181Leu    US       rs397514495    A familial cancer not matching LFS
+TP53      P04637     VAR_005938  p.Cys182Ser    US       -              Sporadic cancers
+TP53      P04637     VAR_005939  p.Asp184Tyr    US       -              Sporadic cancers
+TP53      P04637     VAR_005940  p.Asp186Tyr    US       -              A sporadic cancer
+TP53      P04637     VAR_005941  p.Gly187Cys    US       -              Sporadic cancers
+TP53      P04637     VAR_005942  p.Gly187Ser    US       rs776167460    Sporadic cancers
+TP53      P04637     VAR_005943  p.Ala189Pro    US       -              Sporadic cancers
+TP53      P04637     VAR_005944  p.Pro190Leu    US       rs876660825    Sporadic cancers
+TP53      P04637     VAR_005945  p.Pro191Thr    US       -              Sporadic cancers
+TP53      P04637     VAR_005946  p.Gln192Arg    US       rs730882002    Sporadic cancers
+TP53      P04637     VAR_005947  p.His193Asp    US       rs876658468    Sporadic cancers
+TP53      P04637     VAR_005948  p.His193Arg    LP/P     rs786201838    Li-Fraumeni syndrome (LFS) [MIM:151623]
+TP53      P04637     VAR_005949  p.Leu194Pro    US       rs1057519998   Sporadic cancers
+TP53      P04637     VAR_005950  p.Leu194Arg    US       rs1057519998   Sporadic cancers
+TP53      P04637     VAR_005951  p.Ile195Thr    US       rs760043106    Sporadic cancers
+TP53      P04637     VAR_005952  p.Glu198Lys    US       -              Sporadic cancers
+TP53      P04637     VAR_005953  p.Tyr205Cys    US       rs1057520007   Sporadic cancers
+TP53      P04637     VAR_005954  p.Tyr205Asp    US       rs1057520008   Sporadic cancers
+TP53      P04637     VAR_005955  p.Arg213Gln    LP/P     rs587778720    Li-Fraumeni syndrome (LFS) [MIM:151623]
+TP53      P04637     VAR_005956  p.Val216Met    US       rs730882025    Sporadic cancers
+TP53      P04637     VAR_005957  p.Tyr220Cys    LP/P     rs121912666    Li-Fraumeni syndrome (LFS) [MIM:151623]
+TP53      P04637     VAR_005958  p.Tyr220His    US       rs530941076    Sporadic cancers
+TP53      P04637     VAR_005959  p.Tyr220Ser    US       rs121912666    A brain tumor with no family history
+TP53      P04637     VAR_005960  p.Asp228Glu    US       -              Sporadic cancers
+TP53      P04637     VAR_005961  p.Thr230Ile    US       -              Sporadic cancers
+TP53      P04637     VAR_005962  p.Ile232Thr    US       rs587781589    Sporadic cancers
+TP53      P04637     VAR_005963  p.Tyr234Cys    LP/P     rs587780073    Li-Fraumeni syndrome (LFS) [MIM:151623]
+TP53      P04637     VAR_005964  p.Tyr234His    US       rs864622237    Sporadic cancers
+TP53      P04637     VAR_005965  p.Met237Ile    LP/P     rs587782664    Li-Fraumeni syndrome (LFS) [MIM:151623]
+TP53      P04637     VAR_005966  p.Cys238Phe    US       rs730882005    Sporadic cancers
+TP53      P04637     VAR_005967  p.Cys238Tyr    US       rs730882005    A familial cancer not matching LFS
+TP53      P04637     VAR_005968  p.Ser240Ile    US       -              Sporadic cancers
+TP53      P04637     VAR_005969  p.Ser241Phe    LP/P     rs28934573     Li-Fraumeni syndrome (LFS) [MIM:151623]
+TP53      P04637     VAR_005970  p.Cys242Phe    US       rs121912655    Sporadic cancers
+TP53      P04637     VAR_005971  p.Gly245Ala    US       rs121912656    Sporadic cancers
+TP53      P04637     VAR_005972  p.Gly245Cys    LP/P     rs28934575     Li-Fraumeni syndrome (LFS) [MIM:151623]
+TP53      P04637     VAR_005973  p.Gly245Asp    LP/P     rs121912656    Li-Fraumeni syndrome (LFS) [MIM:151623]
+TP53      P04637     VAR_005974  p.Gly245Ser    LP/P     rs28934575     Li-Fraumeni syndrome (LFS) [MIM:151623]
+TP53      P04637     VAR_005975  p.Gly245Val    LP/P     rs121912656    Li-Fraumeni syndrome (LFS) [MIM:151623]
+TP53      P04637     VAR_005976  p.Met246Arg    US       rs587780074    Sporadic cancers
+TP53      P04637     VAR_005977  p.Met246Thr    US       rs587780074    Sporadic cancers
+TP53      P04637     VAR_005978  p.Met246Val    LP/P     rs483352695    Li-Fraumeni syndrome (LFS) [MIM:151623]
+TP53      P04637     VAR_005980  p.Asn247Ile    US       rs786201762    Sporadic cancers
+TP53      P04637     VAR_005981  p.Arg248Gly    US       rs121912651    Sporadic cancers
+TP53      P04637     VAR_005982  p.Arg248Leu    US       rs11540652     Sporadic cancers
+TP53      P04637     VAR_005983  p.Arg248Gln    LP/P     rs11540652     Li-Fraumeni syndrome (LFS) [MIM:151623]
+TP53      P04637     VAR_005984  p.Arg248Trp    LP/P     rs121912651    Li-Fraumeni syndrome (LFS) [MIM:151623]
+TP53      P04637     VAR_005985  p.Arg249Gly    US       rs587782082    Sporadic cancers
+TP53      P04637     VAR_005986  p.Arg249Ser    US       rs28934571     Sporadic cancers
+TP53      P04637     VAR_005987  p.Ile251Asn    US       -              Sporadic cancers
+TP53      P04637     VAR_005988  p.Leu252Pro    LP/P     rs121912653    Li-Fraumeni syndrome (LFS) [MIM:151623]
+TP53      P04637     VAR_005989  p.Leu257Pro    US       -              Sporadic cancers
+TP53      P04637     VAR_005990  p.Glu258Asp    US       -              Sporadic cancers
+TP53      P04637     VAR_005991  p.Glu258Lys    LP/P     rs121912652    Li-Fraumeni syndrome (LFS) [MIM:151623]
+TP53      P04637     VAR_005992  p.Val272Leu    LP/P     rs121912657    Li-Fraumeni syndrome (LFS) [MIM:151623]
+TP53      P04637     VAR_005993  p.Arg273Cys    LP/P     rs121913343    Li-Fraumeni syndrome (LFS) [MIM:151623]
+TP53      P04637     VAR_005994  p.Arg273Gly    LP/P     -              Li-Fraumeni syndrome (LFS) [MIM:151623]
+TP53      P04637     VAR_005995  p.Arg273His    LP/P     rs28934576     Li-Fraumeni syndrome (LFS) [MIM:151623]
+TP53      P04637     VAR_005997  p.Val274Phe    US       rs1057520005   Sporadic cancers
+TP53      P04637     VAR_005998  p.Cys275Tyr    LP/P     rs863224451    Li-Fraumeni syndrome (LFS) [MIM:151623]
+TP53      P04637     VAR_005999  p.Cys275Trp    US       rs1555525279   Sporadic cancers
+TP53      P04637     VAR_006000  p.Cys277Gly    US       rs1064795369   Sporadic cancers
+TP53      P04637     VAR_006001  p.Pro278Ala    US       rs17849781     Sporadic cancers
+TP53      P04637     VAR_006002  p.Pro278His    US       rs876659802    Sporadic cancers
+TP53      P04637     VAR_006003  p.Pro278Leu    LP/P     rs876659802    Li-Fraumeni syndrome (LFS) [MIM:151623]
+TP53      P04637     VAR_006004  p.Pro278Ser    LP/P     rs17849781     Li-Fraumeni syndrome (LFS) [MIM:151623]
+TP53      P04637     VAR_006005  p.Pro278Thr    LP/P     rs17849781     Li-Fraumeni syndrome (LFS) [MIM:151623]
+TP53      P04637     VAR_006006  p.Gly279Glu    US       rs1064793881   Sporadic cancers
+TP53      P04637     VAR_006007  p.Arg280Lys    US       rs121912660    A familial cancer not matching LFS
+TP53      P04637     VAR_006008  p.Arg280Ile    US       rs121912660    Sporadic cancers
+TP53      P04637     VAR_006009  p.Arg280Thr    US       rs121912660    Sporadic cancers
+TP53      P04637     VAR_006010  p.Asp281Ala    US       rs587781525    Sporadic cancers
+TP53      P04637     VAR_006011  p.Asp281Glu    US       rs1057519984   Sporadic cancers
+TP53      P04637     VAR_006012  p.Asp281Gly    US       rs587781525    A brain tumor with no family history
+TP53      P04637     VAR_006013  p.Asp281His    US       rs764146326    Sporadic cancers
+TP53      P04637     VAR_006014  p.Asp281Val    US       rs587781525    A familial cancer not matching LFS
+TP53      P04637     VAR_006015  p.Arg282Leu    US       rs730882008    Sporadic cancers
+TP53      P04637     VAR_006016  p.Arg282Trp    LP/P     rs28934574     Li-Fraumeni syndrome (LFS) [MIM:151623]
+TP53      P04637     VAR_006017  p.Arg283Cys    LP/P     rs149633775    Li-Fraumeni syndrome (LFS) [MIM:151623]
+TP53      P04637     VAR_006018  p.Arg283Gly    US       -              Sporadic cancers
+TP53      P04637     VAR_006019  p.Arg283His    US       rs371409680    A brain tumor with no family history
+TP53      P04637     VAR_006020  p.Arg283Pro    US       -              Sporadic cancers
+TP53      P04637     VAR_006021  p.Thr284Ala    US       -              Sporadic cancers
+TP53      P04637     VAR_006022  p.Thr284Pro    US       rs1204379654   Sporadic cancers
+TP53      P04637     VAR_006023  p.Glu285Lys    US       rs112431538    Sporadic cancers
+TP53      P04637     VAR_006024  p.Glu285Gln    LP/P     -              Li-Fraumeni syndrome (LFS) [MIM:151623]
+TP53      P04637     VAR_006025  p.Glu285Val    US       rs121912667    Sporadic cancers
+TP53      P04637     VAR_006026  p.Glu286Ala    LP/P     rs1057519985   Li-Fraumeni syndrome (LFS) [MIM:151623]
+TP53      P04637     VAR_006027  p.Glu286Asp    US       -              Sporadic cancers
+TP53      P04637     VAR_006028  p.Glu286Gly    US       rs1057519985   Sporadic cancers
+TP53      P04637     VAR_006029  p.Glu286Lys    US       rs786201059    Sporadic cancers
+TP53      P04637     VAR_006030  p.Glu286Gln    US       rs786201059    Sporadic cancers
+TP53      P04637     VAR_006031  p.His296Pro    US       -              A sporadic cancer
+TP53      P04637     VAR_006032  p.Pro300Arg    US       -              A sporadic cancer
+TP53      P04637     VAR_006033  p.Pro301Leu    US       rs1555525067   Sporadic cancers
+TP53      P04637     VAR_006034  p.Gly302Glu    US       rs1060501202   Sporadic cancers
+TP53      P04637     VAR_006035  p.Gly302Val    US       -              A sporadic cancer
+TP53      P04637     VAR_006036  p.Arg306Gln    US       rs1048095040   Sporadic cancers
+TP53      P04637     VAR_006037  p.Ala307Thr    US       -              Sporadic cancers
+TP53      P04637     VAR_006038  p.Pro309Ser    LP/P     rs1555525012   Li-Fraumeni syndrome (LFS) [MIM:151623]
+TP53      P04637     VAR_006039  p.Gly325Val    LP/P     rs121912659    Li-Fraumeni syndrome (LFS) [MIM:151623]
+TP53      P04637     VAR_006040  p.Gly334Val    US       -              Sporadic cancers
+TP53      P04637     VAR_006041  p.Arg337Cys    LP/P     rs587782529    Li-Fraumeni syndrome (LFS) [MIM:151623]
+TP53      P04637     VAR_012977  p.Val157Ile    US       rs121912654    Sporadic cancers
+TP53      P04637     VAR_014632  p.Pro47Ser     LB/B     rs1800371      -
+TP53      P04637     VAR_015819  p.Lys292Ile    LP/P     rs121912663    Li-Fraumeni syndrome (LFS) [MIM:151623]
+TP53      P04637     VAR_017908  p.Ile254Asn    US       -              Sporadic cancers
+TP53      P04637     VAR_017909  p.Ile254Thr    US       -              Sporadic cancers
+TP53      P04637     VAR_022316  p.Glu339Lys    US       rs17882252     A sporadic cancer
+TP53      P04637     VAR_022317  p.Ser366Ala    US       rs17881470     A familial cancer not matching LFS
+TP53      P04637     VAR_033033  p.Phe113Val    US       rs587781642    Sporadic cancers
+TP53      P04637     VAR_033034  p.Ala138Val    US       rs750600586    Sporadic cancers
+TP53      P04637     VAR_033035  p.Tyr163Cys    LP/P     rs148924904    Li-Fraumeni syndrome (LFS) [MIM:151623]
+TP53      P04637     VAR_033036  p.Ser241Ala    US       rs1057520002   Sporadic cancers
+TP53      P04637     VAR_033037  p.Arg249Met    US       rs587782329    Sporadic cancers
+TP53      P04637     VAR_033038  p.Ile251Ser    US       rs730882027    Sporadic cancers
+TP53      P04637     VAR_033039  p.Asp259Tyr    US       -              Sporadic cancers
+TP53      P04637     VAR_035016  p.Arg337His    LP/P     rs121912664    Li-Fraumeni syndrome (LFS) [MIM:151623]
+TP53      P04637     VAR_036504  p.Phe134Leu    US       rs267605077    Sporadic cancers
+TP53      P04637     VAR_036505  p.Pro177Arg    US       rs751477326    Sporadic cancers
+TP53      P04637     VAR_036506  p.Arg213Pro    LP/P     rs587778720    Li-Fraumeni syndrome (LFS) [MIM:151623]
+TP53      P04637     VAR_036507  p.Arg267Trp    US       rs55832599     Sporadic cancers
+TP53      P04637     VAR_036508  p.Glu271Lys    US       rs1060501191   Sporadic cancers
+TP53      P04637     VAR_036509  p.Arg273Leu    LP/P     rs28934576     Li-Fraumeni syndrome (LFS) [MIM:151623]
+TP53      P04637     VAR_044020  p.Met246Leu    US       rs483352695    Sporadic cancers
+TP53      P04637     VAR_044543  p.Gln5His      US       -              A sporadic cancer
+TP53      P04637     VAR_044544  p.Ser6Leu      US       -              A sporadic cancer
+TP53      P04637     VAR_044545  p.Pro8Ser      US       -              A sporadic cancer
+TP53      P04637     VAR_044546  p.Val10Ile     US       rs535274413    A sporadic cancer
+TP53      P04637     VAR_044547  p.Glu11Lys     US       rs201382018    Sporadic cancers
+TP53      P04637     VAR_044548  p.Glu11Gln     US       rs201382018    Sporadic cancers
+TP53      P04637     VAR_044549  p.Ser15Arg     US       -              A sporadic cancer
+TP53      P04637     VAR_044550  p.Gln16Leu     US       -              A sporadic cancer
+TP53      P04637     VAR_044551  p.Glu17Asp     US       -              A sporadic cancer
+TP53      P04637     VAR_044552  p.Lys24Asn     US       -              A sporadic cancer
+TP53      P04637     VAR_044553  p.Glu28Ala     US       -              A sporadic cancer
+TP53      P04637     VAR_044554  p.Val31Ile     US       rs201753350    Sporadic cancers
+TP53      P04637     VAR_044555  p.Ser33Thr     US       -              A sporadic cancer
+TP53      P04637     VAR_044556  p.Pro34Leu     US       -              A sporadic cancer
+TP53      P04637     VAR_044557  p.Pro36Leu     US       rs587781866    A sporadic cancer
+TP53      P04637     VAR_044558  p.Ser37Pro     US       -              A sporadic cancer
+TP53      P04637     VAR_044559  p.Ser37Thr     US       -              A sporadic cancer
+TP53      P04637     VAR_044560  p.Ala39Pro     US       -              A sporadic cancer
+TP53      P04637     VAR_044561  p.Ala39Val     US       rs1353016807   A sporadic cancer
+TP53      P04637     VAR_044562  p.Asp42Tyr     US       -              A sporadic cancer
+TP53      P04637     VAR_044563  p.Met44Ile     US       rs1060501190   A sporadic cancer
+TP53      P04637     VAR_044564  p.Met44Thr     US       -              A sporadic cancer
+TP53      P04637     VAR_044565  p.Met44Val     US       -              A sporadic cancer
+TP53      P04637     VAR_044566  p.Leu45Met     US       -              A sporadic cancer
+TP53      P04637     VAR_044567  p.Ser46Phe     US       -              Sporadic cancers
+TP53      P04637     VAR_044568  p.Ser46Pro     US       rs876659630    Sporadic cancers
+TP53      P04637     VAR_044569  p.Pro47Leu     US       -              Sporadic cancers
+TP53      P04637     VAR_044570  p.Asp48Gly     US       -              A sporadic cancer
+TP53      P04637     VAR_044571  p.Asp49His     US       rs587780728    Sporadic cancers
+TP53      P04637     VAR_044572  p.Asp49Asn     US       rs587780728    A sporadic cancer
+TP53      P04637     VAR_044573  p.Asp49Tyr     US       -              Sporadic cancers
+TP53      P04637     VAR_044574  p.Gln52His     US       -              A sporadic cancer
+TP53      P04637     VAR_044575  p.Trp53Gly     US       -              A sporadic cancer
+TP53      P04637     VAR_044576  p.Phe54Leu     US       rs1555526742   A sporadic cancer
+TP53      P04637     VAR_044577  p.Phe54Tyr     US       -              A sporadic cancer
+TP53      P04637     VAR_044578  p.Glu56Lys     US       -              Sporadic cancers
+TP53      P04637     VAR_044579  p.Glu56Val     US       -              A sporadic cancer
+TP53      P04637     VAR_044580  p.Pro58Gln     US       -              A sporadic cancer
+TP53      P04637     VAR_044581  p.Pro58Thr     US       -              A sporadic cancer
+TP53      P04637     VAR_044582  p.Gly59Cys     US       rs1237722021   Sporadic cancers
+TP53      P04637     VAR_044583  p.Gly59Asp     US       -              Sporadic cancers
+TP53      P04637     VAR_044584  p.Pro60Leu     US       -              Sporadic cancers
+TP53      P04637     VAR_044585  p.Pro60Gln     US       -              A sporadic cancer
+TP53      P04637     VAR_044586  p.Asp61Gly     US       rs1460793472   Sporadic cancers
+TP53      P04637     VAR_044587  p.Asp61Asn     US       -              Sporadic cancers
+TP53      P04637     VAR_044588  p.Glu62Asp     US       -              A sporadic cancer
+TP53      P04637     VAR_044589  p.Ala63Thr     US       rs876658902    A sporadic cancer
+TP53      P04637     VAR_044590  p.Ala63Val     US       rs372201428    A sporadic cancer
+TP53      P04637     VAR_044591  p.Arg65Thr     US       rs1060501210   A sporadic cancer
+TP53      P04637     VAR_044592  p.Met66Ile     US       rs1555526711   A sporadic cancer
+TP53      P04637     VAR_044593  p.Met66Arg     US       -              A sporadic cancer
+TP53      P04637     VAR_044594  p.Pro67Leu     US       -              Sporadic cancers
+TP53      P04637     VAR_044595  p.Pro67Arg     US       -              A sporadic cancer
+TP53      P04637     VAR_044596  p.Pro67Ser     US       -              Sporadic cancers
+TP53      P04637     VAR_044597  p.Glu68Gly     US       -              Sporadic cancers
+TP53      P04637     VAR_044598  p.Glu68Gln     US       -              A sporadic cancer
+TP53      P04637     VAR_044599  p.Ala69Asp     US       -              A sporadic cancer
+TP53      P04637     VAR_044600  p.Ala69Gly     US       rs756233241    Sporadic cancers
+TP53      P04637     VAR_044601  p.Ala69Thr     US       -              A sporadic cancer
+TP53      P04637     VAR_044602  p.Ala69Val     US       rs756233241    A sporadic cancer
+TP53      P04637     VAR_044603  p.Ala70Thr     US       -              A sporadic cancer
+TP53      P04637     VAR_044604  p.Pro71Thr     US       -              A sporadic cancer
+TP53      P04637     VAR_044605  p.Val73Glu     US       -              A sporadic cancer
+TP53      P04637     VAR_044606  p.Val73Leu     US       -              Sporadic cancers
+TP53      P04637     VAR_044607  p.Val73Met     US       rs587782423    Sporadic cancers
+TP53      P04637     VAR_044608  p.Ala74Thr     US       -              A sporadic cancer
+TP53      P04637     VAR_044609  p.Pro75Leu     US       -              Sporadic cancers
+TP53      P04637     VAR_044610  p.Pro75Arg     US       -              Sporadic cancers
+TP53      P04637     VAR_044611  p.Pro75Ser     US       -              A sporadic cancer
+TP53      P04637     VAR_044612  p.Ala76Gly     US       -              A sporadic cancer
+TP53      P04637     VAR_044613  p.Ala76Thr     US       -              A sporadic cancer
+TP53      P04637     VAR_044614  p.Pro77Ala     US       -              Sporadic cancers
+TP53      P04637     VAR_044615  p.Ala78Val     US       -              Sporadic cancers
+TP53      P04637     VAR_044616  p.Ala79Gly     US       -              A sporadic cancer
+TP53      P04637     VAR_044617  p.Ala79Val     US       -              Sporadic cancers
+TP53      P04637     VAR_044618  p.Pro80Leu     US       -              A sporadic cancer
+TP53      P04637     VAR_044619  p.Pro80Ser     US       rs1060501204   A sporadic cancer
+TP53      P04637     VAR_044620  p.Thr81Ile     US       -              Sporadic cancers
+TP53      P04637     VAR_044621  p.Pro82Leu     LP/P     rs534447939    Li-Fraumeni syndrome (LFS) [MIM:151623]
+TP53      P04637     VAR_044622  p.Pro82Ser     US       -              Sporadic cancers
+TP53      P04637     VAR_044623  p.Ala83Glu     US       rs201717599    A sporadic cancer
+TP53      P04637     VAR_044624  p.Ala83Val     US       rs201717599    Sporadic cancers
+TP53      P04637     VAR_044625  p.Ala84Gly     US       -              Sporadic cancers
+TP53      P04637     VAR_044626  p.Ala84Val     US       -              Sporadic cancers
+TP53      P04637     VAR_044627  p.Pro85Leu     US       -              Sporadic cancers
+TP53      P04637     VAR_044628  p.Pro85Ser     US       -              Sporadic cancers
+TP53      P04637     VAR_044629  p.Ala86Val     US       -              A sporadic cancer
+TP53      P04637     VAR_044630  p.Ala88Thr     US       -              A sporadic cancer
+TP53      P04637     VAR_044631  p.Ala88Val     US       rs1555526631   Sporadic cancers
+TP53      P04637     VAR_044632  p.Pro89Leu     US       rs730881994    Sporadic cancers
+TP53      P04637     VAR_044633  p.Pro89Ser     US       -              Sporadic cancers
+TP53      P04637     VAR_044634  p.Ser90Phe     US       rs1555526625   Sporadic cancers
+TP53      P04637     VAR_044635  p.Ser90Tyr     US       -              A sporadic cancer
+TP53      P04637     VAR_044636  p.Trp91Cys     US       -              A sporadic cancer
+TP53      P04637     VAR_044637  p.Pro92Ala     US       -              A sporadic cancer
+TP53      P04637     VAR_044638  p.Pro92Leu     US       rs1210700121   A sporadic cancer
+TP53      P04637     VAR_044639  p.Pro92Ser     US       -              A sporadic cancer
+TP53      P04637     VAR_044640  p.Leu93Met     US       -              A sporadic cancer
+TP53      P04637     VAR_044641  p.Leu93Pro     US       -              A sporadic cancer
+TP53      P04637     VAR_044642  p.Ser94Leu     US       -              Sporadic cancers
+TP53      P04637     VAR_044643  p.Ser95Phe     US       -              Sporadic cancers
+TP53      P04637     VAR_044644  p.Ser95Thr     US       -              A sporadic cancer
+TP53      P04637     VAR_044645  p.Ser96Cys     US       -              A sporadic cancer
+TP53      P04637     VAR_044646  p.Ser96Phe     US       -              Sporadic cancers
+TP53      P04637     VAR_044647  p.Ser96Pro     US       -              A sporadic cancer
+TP53      P04637     VAR_044648  p.Val97Ala     US       -              A sporadic cancer
+TP53      P04637     VAR_044649  p.Val97Phe     US       -              A sporadic cancer
+TP53      P04637     VAR_044650  p.Val97Ile     US       rs730882023    Familial cancer not matching LFS
+TP53      P04637     VAR_044651  p.Pro98Leu     US       rs1245723119   Sporadic cancers
+TP53      P04637     VAR_044652  p.Pro98Ser     US       -              Sporadic cancers
+TP53      P04637     VAR_044653  p.Ser99Phe     US       -              Sporadic cancers
+TP53      P04637     VAR_044654  p.Ser99Pro     US       -              A sporadic cancer
+TP53      P04637     VAR_044655  p.Gln100Arg    US       -              A sporadic cancer
+TP53      P04637     VAR_044656  p.Lys101Asn    US       rs878854069    A sporadic cancer
+TP53      P04637     VAR_044657  p.Lys101Arg    US       -              Sporadic cancers
+TP53      P04637     VAR_044658  p.Thr102Ile    US       rs786202717    Sporadic cancers
+TP53      P04637     VAR_044659  p.Gln104His    US       -              Sporadic cancers
+TP53      P04637     VAR_044660  p.Gln104Leu    US       -              A sporadic cancer
+TP53      P04637     VAR_044661  p.Gly105Cys    LP/P     -              Li-Fraumeni syndrome (LFS) [MIM:151623]
+TP53      P04637     VAR_044662  p.Gly105Asp    US       rs587781504    Sporadic cancers
+TP53      P04637     VAR_044663  p.Gly105Arg    US       rs1060501195   Sporadic cancers
+TP53      P04637     VAR_044664  p.Gly105Ser    US       rs1060501195   A sporadic cancer
+TP53      P04637     VAR_044665  p.Gly105Val    US       -              Sporadic cancers
+TP53      P04637     VAR_044666  p.Ser106Gly    US       -              A sporadic cancer
+TP53      P04637     VAR_044667  p.Ser106Arg    US       rs1555526581   A familial cancer not matching LFS
+TP53      P04637     VAR_044668  p.Tyr107Cys    US       rs587782447    A sporadic cancer
+TP53      P04637     VAR_044669  p.Tyr107Asp    US       -              Sporadic cancers
+TP53      P04637     VAR_044670  p.Tyr107His    US       rs368771578    A sporadic cancer
+TP53      P04637     VAR_044671  p.Gly108Asp    US       -              A sporadic cancer
+TP53      P04637     VAR_044672  p.Gly108Ser    US       rs587782461    Sporadic cancers
+TP53      P04637     VAR_044673  p.Phe109Cys    US       -              Sporadic cancers
+TP53      P04637     VAR_044674  p.Phe109Leu    US       -              A sporadic cancer
+TP53      P04637     VAR_044675  p.Phe109Ser    US       rs1064796722   Sporadic cancers
+TP53      P04637     VAR_044676  p.Arg110Gly    US       -              A sporadic cancer
+TP53      P04637     VAR_044677  p.Arg110His    US       rs11540654     Sporadic cancers
+TP53      P04637     VAR_044678  p.Arg110Ser    US       rs587781371    A sporadic cancer
+TP53      P04637     VAR_044679  p.Leu111Met    US       -              A sporadic cancer
+TP53      P04637     VAR_044680  p.Leu111Pro    US       rs1057519997   Sporadic cancers
+TP53      P04637     VAR_044681  p.Leu111Gln    US       rs1057519997   Sporadic cancers
+TP53      P04637     VAR_044682  p.Leu111Arg    US       rs1057519997   Sporadic cancers
+TP53      P04637     VAR_044683  p.Gly112Asp    US       -              Sporadic cancers
+TP53      P04637     VAR_044684  p.Gly112Ser    US       rs1423803759   Sporadic cancers
+TP53      P04637     VAR_044685  p.Phe113Ile    US       -              A sporadic cancer
+TP53      P04637     VAR_044686  p.Phe113Leu    US       -              Sporadic cancers
+TP53      P04637     VAR_044687  p.Phe113Ser    US       -              Sporadic cancers
+TP53      P04637     VAR_044688  p.His115Tyr    US       -              Sporadic cancers
+TP53      P04637     VAR_044689  p.Ser116Cys    US       -              Sporadic cancers
+TP53      P04637     VAR_044690  p.Ser116Phe    US       -              A sporadic cancer
+TP53      P04637     VAR_044691  p.Ser116Pro    US       -              A sporadic cancer
+TP53      P04637     VAR_044692  p.Gly117Glu    US       rs755238756    Sporadic cancers
+TP53      P04637     VAR_044693  p.Gly117Arg    US       rs1555526518   Sporadic cancers
+TP53      P04637     VAR_044694  p.Thr118Ala    US       -              A sporadic cancer
+TP53      P04637     VAR_044695  p.Thr118Ile    US       rs1064794141   Sporadic cancers
+TP53      P04637     VAR_044696  p.Thr118Arg    US       -              A sporadic cancer
+TP53      P04637     VAR_044697  p.Ala119Asp    US       -              A sporadic cancer
+TP53      P04637     VAR_044698  p.Ala119Thr    US       -              A sporadic cancer
+TP53      P04637     VAR_044699  p.Lys120Glu    US       rs121912658    Sporadic cancers
+TP53      P04637     VAR_044700  p.Lys120Met    US       -              Sporadic cancers
+TP53      P04637     VAR_044701  p.Lys120Gln    US       rs121912658    A sporadic cancer
+TP53      P04637     VAR_044702  p.Lys120Arg    US       -              Sporadic cancers
+TP53      P04637     VAR_044703  p.Ser121Phe    US       -              Sporadic cancers
+TP53      P04637     VAR_044704  p.Val122Leu    US       -              A sporadic cancer
+TP53      P04637     VAR_044705  p.Thr123Ile    US       rs1555526486   A sporadic cancer
+TP53      P04637     VAR_044706  p.Thr123Asn    US       -              A sporadic cancer
+TP53      P04637     VAR_044707  p.Cys124Gly    US       rs730881997    A sporadic cancer
+TP53      P04637     VAR_044708  p.Cys124Arg    US       -              Sporadic cancers
+TP53      P04637     VAR_044709  p.Cys124Ser    US       rs730881997    Sporadic cancers
+TP53      P04637     VAR_044710  p.Cys124Trp    US       -              A sporadic cancer
+TP53      P04637     VAR_044711  p.Cys124Tyr    US       -              A sporadic cancer
+TP53      P04637     VAR_044712  p.Thr125Ala    US       -              A sporadic cancer
+TP53      P04637     VAR_044713  p.Thr125Lys    US       rs786201057    Sporadic cancers
+TP53      P04637     VAR_044714  p.Thr125Pro    US       rs1057520003   A sporadic cancer
+TP53      P04637     VAR_044715  p.Thr125Arg    US       rs786201057    Sporadic cancers
+TP53      P04637     VAR_044716  p.Tyr126Cys    US       rs1555526335   A familial cancer not matching LFS
+TP53      P04637     VAR_044717  p.Tyr126Phe    US       -              A sporadic cancer
+TP53      P04637     VAR_044718  p.Tyr126His    US       -              Sporadic cancers
+TP53      P04637     VAR_044719  p.Tyr126Ser    US       -              Sporadic cancers
+TP53      P04637     VAR_044720  p.Ser127Cys    US       rs730881999    A sporadic cancer
+TP53      P04637     VAR_044721  p.Ser127Pro    US       -              Sporadic cancers
+TP53      P04637     VAR_044722  p.Ser127Thr    US       -              Sporadic cancers
+TP53      P04637     VAR_044723  p.Ser127Tyr    US       -              Sporadic cancers
+TP53      P04637     VAR_044724  p.Pro128Ala    US       -              Sporadic cancers
+TP53      P04637     VAR_044725  p.Pro128Leu    US       -              Sporadic cancers
+TP53      P04637     VAR_044726  p.Pro128Arg    US       -              Sporadic cancers
+TP53      P04637     VAR_044727  p.Ala129Gly    US       -              A sporadic cancer
+TP53      P04637     VAR_044728  p.Ala129Thr    US       rs1438095083   Sporadic cancers
+TP53      P04637     VAR_044729  p.Ala129Val    US       rs137852792    Sporadic cancers
+TP53      P04637     VAR_044730  p.Leu130Phe    US       rs863224683    Sporadic cancers
+TP53      P04637     VAR_044731  p.Leu130His    US       -              Sporadic cancers
+TP53      P04637     VAR_044732  p.Leu130Ile    US       -              A sporadic cancer
+TP53      P04637     VAR_044733  p.Leu130Pro    US       rs1131691013   Sporadic cancers
+TP53      P04637     VAR_044734  p.Leu130Val    US       rs863224683    Sporadic cancers
+TP53      P04637     VAR_044735  p.Asn131Asp    US       -              A sporadic cancer
+TP53      P04637     VAR_044736  p.Asn131His    US       -              Sporadic cancers
+TP53      P04637     VAR_044737  p.Asn131Ile    US       rs1131691037   Sporadic cancers
+TP53      P04637     VAR_044738  p.Asn131Thr    US       -              A sporadic cancer
+TP53      P04637     VAR_044739  p.Asn131Tyr    US       rs587782160    Sporadic cancers
+TP53      P04637     VAR_044740  p.Lys132Glu    LP/P     rs747342068    Li-Fraumeni syndrome (LFS) [MIM:151623]
+TP53      P04637     VAR_044741  p.Lys132Asn    US       rs866775781    Sporadic cancers
+TP53      P04637     VAR_044742  p.Lys132Arg    US       rs1057519996   Sporadic cancers
+TP53      P04637     VAR_044743  p.Lys132Thr    US       rs1057519996   Sporadic cancers
+TP53      P04637     VAR_044744  p.Met133Ile    US       rs1064795139   Sporadic cancers
+TP53      P04637     VAR_044745  p.Met133Lys    US       -              Sporadic cancers
+TP53      P04637     VAR_044746  p.Met133Leu    US       -              Sporadic cancers
+TP53      P04637     VAR_044747  p.Met133Arg    LP/P     -              Li-Fraumeni syndrome (LFS) [MIM:151623]
+TP53      P04637     VAR_044748  p.Met133Val    US       rs1057280220   Sporadic cancers
+TP53      P04637     VAR_044749  p.Phe134Cys    US       rs780442292    Sporadic cancers
+TP53      P04637     VAR_044750  p.Phe134Ile    US       -              Sporadic cancers
+TP53      P04637     VAR_044751  p.Phe134Ser    US       -              Sporadic cancers
+TP53      P04637     VAR_044752  p.Phe134Val    US       -              Sporadic cancers
+TP53      P04637     VAR_044753  p.Cys135Gly    US       rs1057519975   Sporadic cancers
+TP53      P04637     VAR_044754  p.Cys135Arg    US       rs1057519975   Sporadic cancers
+TP53      P04637     VAR_044755  p.Cys135Trp    US       rs1057519976   Sporadic cancers
+TP53      P04637     VAR_044756  p.Cys135Tyr    US       rs587781991    Sporadic cancers
+TP53      P04637     VAR_044757  p.Gln136His    US       rs758781593    Sporadic cancers
+TP53      P04637     VAR_044758  p.Gln136Pro    US       -              Sporadic cancers
+TP53      P04637     VAR_044759  p.Gln136Arg    US       -              Sporadic cancers
+TP53      P04637     VAR_044760  p.Leu137Met    US       -              Sporadic cancers
+TP53      P04637     VAR_044761  p.Leu137Pro    US       -              Sporadic cancers
+TP53      P04637     VAR_044762  p.Leu137Val    US       -              Sporadic cancers
+TP53      P04637     VAR_044763  p.Ala138Asp    US       -              Sporadic cancers
+TP53      P04637     VAR_044764  p.Ala138Ser    LP/P     -              Li-Fraumeni syndrome (LFS) [MIM:151623]
+TP53      P04637     VAR_044765  p.Ala138Thr    US       -              Sporadic cancers
+TP53      P04637     VAR_044766  p.Lys139Glu    US       rs1212996409   Sporadic cancers
+TP53      P04637     VAR_044767  p.Lys139Gln    US       -              Sporadic cancers
+TP53      P04637     VAR_044768  p.Lys139Arg    US       -              Sporadic cancers
+TP53      P04637     VAR_044769  p.Lys139Thr    US       -              Sporadic cancers
+TP53      P04637     VAR_044770  p.Thr140Ala    US       -              Sporadic cancers
+TP53      P04637     VAR_044771  p.Thr140Ile    US       -              Sporadic cancers
+TP53      P04637     VAR_044772  p.Thr140Asn    US       rs786202561    A sporadic cancer
+TP53      P04637     VAR_044773  p.Thr140Pro    US       -              A sporadic cancer
+TP53      P04637     VAR_044774  p.Thr140Ser    US       -              Sporadic cancers
+TP53      P04637     VAR_044775  p.Cys141Arg    US       rs1057519978   Sporadic cancers
+TP53      P04637     VAR_044776  p.Cys141Ser    US       rs1057519978   Sporadic cancers
+TP53      P04637     VAR_044777  p.Cys141Trp    US       rs1057519977   Sporadic cancers
+TP53      P04637     VAR_044778  p.Pro142Ala    US       -              Sporadic cancers
+TP53      P04637     VAR_044779  p.Pro142His    US       -              Sporadic cancers
+TP53      P04637     VAR_044780  p.Pro142Leu    US       rs779196500    Sporadic cancers
+TP53      P04637     VAR_044781  p.Pro142Arg    US       -              A sporadic cancer
+TP53      P04637     VAR_044782  p.Pro142Ser    US       -              Sporadic cancers
+TP53      P04637     VAR_044783  p.Pro142Thr    US       -              Sporadic cancers
+TP53      P04637     VAR_044784  p.Val143Glu    US       -              Sporadic cancers
+TP53      P04637     VAR_044785  p.Val143Gly    US       rs1555526241   Sporadic cancers
+TP53      P04637     VAR_044786  p.Val143Leu    US       rs587782620    Sporadic cancers
+TP53      P04637     VAR_044787  p.Val143Met    US       rs587782620    Sporadic cancers
+TP53      P04637     VAR_044788  p.Gln144His    US       rs786201419    Sporadic cancers
+TP53      P04637     VAR_044789  p.Gln144Lys    US       -              Sporadic cancers
+TP53      P04637     VAR_044790  p.Gln144Leu    LP/P     rs786203071    Li-Fraumeni syndrome (LFS) [MIM:151623]
+TP53      P04637     VAR_044791  p.Gln144Arg    US       -              Sporadic cancers
+TP53      P04637     VAR_044792  p.Leu145Met    US       -              Sporadic cancers
+TP53      P04637     VAR_044793  p.Leu145Arg    US       -              Sporadic cancers
+TP53      P04637     VAR_044794  p.Leu145Val    US       -              Sporadic cancers
+TP53      P04637     VAR_044795  p.Trp146Cys    US       -              A sporadic cancer
+TP53      P04637     VAR_044796  p.Trp146Gly    US       rs786203064    Sporadic cancers
+TP53      P04637     VAR_044797  p.Trp146Leu    US       -              Sporadic cancers
+TP53      P04637     VAR_044798  p.Trp146Arg    US       -              Sporadic cancers
+TP53      P04637     VAR_044799  p.Trp146Ser    US       -              Sporadic cancers
+TP53      P04637     VAR_044800  p.Val147Ala    US       -              Sporadic cancers
+TP53      P04637     VAR_044801  p.Val147Glu    US       -              Sporadic cancers
+TP53      P04637     VAR_044802  p.Val147Phe    US       -              A sporadic cancer
+TP53      P04637     VAR_044803  p.Val147Ile    US       rs1555526226   Sporadic cancers
+TP53      P04637     VAR_044804  p.Asp148Ala    US       rs1046611742   A sporadic cancer
+TP53      P04637     VAR_044805  p.Asp148Glu    US       -              Sporadic cancers
+TP53      P04637     VAR_044806  p.Asp148Gly    US       -              A sporadic cancer
+TP53      P04637     VAR_044807  p.Asp148Asn    US       -              Sporadic cancers
+TP53      P04637     VAR_044808  p.Asp148Val    US       -              Sporadic cancers
+TP53      P04637     VAR_044809  p.Asp148Tyr    US       rs1131691007   Sporadic cancers
+TP53      P04637     VAR_044810  p.Ser149Phe    US       rs1555526214   Sporadic cancers
+TP53      P04637     VAR_044811  p.Ser149Thr    US       -              Sporadic cancers
+TP53      P04637     VAR_044812  p.Thr150Ala    US       -              A sporadic cancer
+TP53      P04637     VAR_044813  p.Thr150Ile    US       -              Sporadic cancers
+TP53      P04637     VAR_044814  p.Thr150Lys    US       -              Sporadic cancers
+TP53      P04637     VAR_044815  p.Thr150Asn    US       -              A sporadic cancer
+TP53      P04637     VAR_044816  p.Thr150Pro    US       -              A sporadic cancer
+TP53      P04637     VAR_044817  p.Thr150Arg    US       -              A sporadic cancer
+TP53      P04637     VAR_044818  p.Pro151His    US       rs1057520000   Sporadic cancers
+TP53      P04637     VAR_044819  p.Pro151Leu    US       -              Sporadic cancers
+TP53      P04637     VAR_044820  p.Pro151Arg    US       rs1057520000   Sporadic cancers
+TP53      P04637     VAR_044821  p.Pro152Ala    US       -              Sporadic cancers
+TP53      P04637     VAR_044822  p.Pro152Gln    US       -              Sporadic cancers
+TP53      P04637     VAR_044823  p.Pro152Arg    US       -              Sporadic cancers
+TP53      P04637     VAR_044824  p.Pro152Thr    US       -              Sporadic cancers
+TP53      P04637     VAR_044825  p.Pro153Ala    US       -              Sporadic cancers
+TP53      P04637     VAR_044826  p.Pro153His    US       -              A sporadic cancer
+TP53      P04637     VAR_044827  p.Pro153Leu    US       -              Sporadic cancers
+TP53      P04637     VAR_044828  p.Pro153Arg    US       -              A sporadic cancer
+TP53      P04637     VAR_044829  p.Pro153Ser    US       rs1064795860   Sporadic cancers
+TP53      P04637     VAR_044830  p.Gly154Ala    US       -              Sporadic cancers
+TP53      P04637     VAR_044831  p.Gly154Cys    US       -              A sporadic cancer
+TP53      P04637     VAR_044832  p.Gly154Asp    US       rs762846821    Sporadic cancers
+TP53      P04637     VAR_044833  p.Gly154Ser    US       rs137852789    Sporadic cancers
+TP53      P04637     VAR_044834  p.Thr155Ile    US       -              Sporadic cancers
+TP53      P04637     VAR_044835  p.Thr155Met    US       -              A sporadic cancer
+TP53      P04637     VAR_044836  p.Thr155Asn    LP/P     rs786202752    Li-Fraumeni syndrome (LFS) [MIM:151623]
+TP53      P04637     VAR_044837  p.Thr155Pro    US       -              Sporadic cancers
+TP53      P04637     VAR_044838  p.Thr155Ser    US       rs786202752    Sporadic cancers
+TP53      P04637     VAR_044839  p.Arg156Cys    US       rs563378859    Sporadic cancers
+TP53      P04637     VAR_044840  p.Arg156Gly    US       -              Sporadic cancers
+TP53      P04637     VAR_044841  p.Arg156His    LP/P     rs371524413    Li-Fraumeni syndrome (LFS) [MIM:151623]
+TP53      P04637     VAR_044842  p.Arg156Leu    US       -              Sporadic cancers
+TP53      P04637     VAR_044843  p.Arg156Ser    US       -              Sporadic cancers
+TP53      P04637     VAR_044844  p.Val157Ala    US       rs1131691023   Sporadic cancers
+TP53      P04637     VAR_044845  p.Val157Gly    US       -              Sporadic cancers
+TP53      P04637     VAR_044846  p.Val157Leu    US       -              Sporadic cancers
+TP53      P04637     VAR_044847  p.Arg158Leu    US       -              Sporadic cancers
+TP53      P04637     VAR_044848  p.Arg158Pro    US       rs587782144    Sporadic cancers
+TP53      P04637     VAR_044849  p.Arg158Gln    US       -              A sporadic cancer
+TP53      P04637     VAR_044850  p.Arg158Ser    US       -              Sporadic cancers
+TP53      P04637     VAR_044851  p.Ala159Asp    US       -              Sporadic cancers
+TP53      P04637     VAR_044852  p.Ala159Gly    US       -              Sporadic cancers
+TP53      P04637     VAR_044853  p.Ala159Pro    US       rs730882000    Sporadic cancers
+TP53      P04637     VAR_044854  p.Ala159Ser    US       -              Sporadic cancers
+TP53      P04637     VAR_044855  p.Ala159Thr    US       rs730882000    Sporadic cancers
+TP53      P04637     VAR_044856  p.Ala159Val    US       rs1555526131   Sporadic cancers
+TP53      P04637     VAR_044857  p.Met160Lys    US       -              Sporadic cancers
+TP53      P04637     VAR_044858  p.Met160Thr    US       -              A sporadic cancer
+TP53      P04637     VAR_044859  p.Met160Val    US       rs377274728    Sporadic cancers
+TP53      P04637     VAR_044860  p.Ala161Asp    US       rs1064795691   Sporadic cancers
+TP53      P04637     VAR_044861  p.Ala161Gly    US       -              Sporadic cancers
+TP53      P04637     VAR_044862  p.Ala161Pro    US       -              Sporadic cancers
+TP53      P04637     VAR_044863  p.Ala161Thr    US       rs193920817    Sporadic cancers
+TP53      P04637     VAR_044864  p.Ala161Val    US       -              Sporadic cancers
+TP53      P04637     VAR_044865  p.Ile162Phe    US       -              Sporadic cancers
+TP53      P04637     VAR_044866  p.Ile162Met    US       -              Sporadic cancers
+TP53      P04637     VAR_044867  p.Ile162Asn    US       -              A breast cancer with no family history
+TP53      P04637     VAR_044868  p.Ile162Thr    US       -              Sporadic cancers
+TP53      P04637     VAR_044869  p.Tyr163Asp    US       rs786203436    Sporadic cancers
+TP53      P04637     VAR_044870  p.Tyr163Phe    US       -              A sporadic cancer
+TP53      P04637     VAR_044871  p.Tyr163Asn    US       rs786203436    Sporadic cancers
+TP53      P04637     VAR_044872  p.Tyr163Ser    US       -              Sporadic cancers
+TP53      P04637     VAR_044873  p.Lys164Glu    US       rs879254249    Sporadic cancers
+TP53      P04637     VAR_044874  p.Lys164Met    US       -              Sporadic cancers
+TP53      P04637     VAR_044875  p.Lys164Arg    US       -              Sporadic cancers
+TP53      P04637     VAR_044876  p.Lys164Thr    US       -              Sporadic cancers
+TP53      P04637     VAR_044877  p.Gln165Glu    US       -              Sporadic cancers
+TP53      P04637     VAR_044878  p.Gln165His    US       -              A sporadic cancer
+TP53      P04637     VAR_044879  p.Gln165Pro    US       -              Sporadic cancers
+TP53      P04637     VAR_044880  p.Ser166Ala    US       -              Sporadic cancers
+TP53      P04637     VAR_044881  p.Ser166Gly    US       -              A sporadic cancer
+TP53      P04637     VAR_044882  p.Ser166Pro    US       -              Sporadic cancers
+TP53      P04637     VAR_044883  p.Ser166Thr    US       -              Sporadic cancers
+TP53      P04637     VAR_044884  p.Gln167His    US       -              Sporadic cancers
+TP53      P04637     VAR_044885  p.Gln167Lys    LP/P     -              Li-Fraumeni syndrome (LFS) [MIM:151623]
+TP53      P04637     VAR_044886  p.Gln167Leu    US       -              Sporadic cancers
+TP53      P04637     VAR_044887  p.Gln167Arg    US       -              Sporadic cancers
+TP53      P04637     VAR_044888  p.His168Asp    US       -              Sporadic cancers
+TP53      P04637     VAR_044889  p.His168Leu    US       -              Sporadic cancers
+TP53      P04637     VAR_044890  p.His168Asn    US       -              Sporadic cancers
+TP53      P04637     VAR_044891  p.His168Pro    US       -              Sporadic cancers
+TP53      P04637     VAR_044892  p.His168Gln    US       -              Sporadic cancers
+TP53      P04637     VAR_044893  p.His168Tyr    US       -              Sporadic cancers
+TP53      P04637     VAR_044894  p.Met169Lys    US       -              Sporadic cancers
+TP53      P04637     VAR_044895  p.Met169Val    US       -              Sporadic cancers
+TP53      P04637     VAR_044896  p.Thr170Ala    US       rs587780729    Sporadic cancers
+TP53      P04637     VAR_044897  p.Thr170Lys    US       -              A sporadic cancer
+TP53      P04637     VAR_044898  p.Thr170Pro    US       -              A sporadic cancer
+TP53      P04637     VAR_044899  p.Glu171Ala    US       -              A sporadic cancer
+TP53      P04637     VAR_044900  p.Glu171Asp    US       -              Sporadic cancers
+TP53      P04637     VAR_044901  p.Glu171Gly    US       -              Sporadic cancers
+TP53      P04637     VAR_044902  p.Glu171Lys    US       rs587781845    Sporadic cancers
+TP53      P04637     VAR_044903  p.Glu171Gln    US       -              A sporadic cancer
+TP53      P04637     VAR_044904  p.Glu171Val    US       -              Sporadic cancers
+TP53      P04637     VAR_044905  p.Val172Asp    US       -              Sporadic cancers
+TP53      P04637     VAR_044906  p.Val172Phe    LP/P     rs1131691043   Li-Fraumeni syndrome (LFS) [MIM:151623]
+TP53      P04637     VAR_044907  p.Val172Gly    US       rs1131691021   Sporadic cancers
+TP53      P04637     VAR_044908  p.Val172Ile    US       -              Sporadic cancers
+TP53      P04637     VAR_044909  p.Val173Ala    US       rs1057519747   Sporadic cancers
+TP53      P04637     VAR_044910  p.Val173Gly    US       rs1057519747   Sporadic cancers
+TP53      P04637     VAR_044911  p.Arg174Gly    LP/P     rs864622115    Li-Fraumeni syndrome (LFS) [MIM:151623]
+TP53      P04637     VAR_044912  p.Arg174Met    US       -              Sporadic cancers
+TP53      P04637     VAR_044913  p.Arg174Ser    US       -              Sporadic cancers
+TP53      P04637     VAR_044914  p.Arg174Thr    US       -              A sporadic cancer
+TP53      P04637     VAR_044915  p.Arg174Trp    US       -              Sporadic cancers
+TP53      P04637     VAR_044916  p.Arg175Gln    US       -              A sporadic cancer
+TP53      P04637     VAR_044917  p.Arg175Ser    US       -              Sporadic cancers
+TP53      P04637     VAR_044918  p.Cys176Gly    US       -              Sporadic cancers
+TP53      P04637     VAR_044919  p.Cys176Arg    US       -              Sporadic cancers
+TP53      P04637     VAR_044920  p.Cys176Ser    US       rs967461896    Sporadic cancers
+TP53      P04637     VAR_044921  p.Cys176Tyr    US       rs786202962    Sporadic cancers
+TP53      P04637     VAR_044922  p.Pro177Ala    US       -              A sporadic cancer
+TP53      P04637     VAR_044923  p.Pro177His    US       -              Sporadic cancers
+TP53      P04637     VAR_044924  p.Pro177Ser    US       rs147002414    Sporadic cancers
+TP53      P04637     VAR_044925  p.Pro177Thr    US       -              A sporadic cancer
+TP53      P04637     VAR_044926  p.His178Asp    US       -              Sporadic cancers
+TP53      P04637     VAR_044927  p.His178Leu    US       -              A sporadic cancer
+TP53      P04637     VAR_044928  p.His178Asn    US       rs1064795203   Sporadic cancers
+TP53      P04637     VAR_044929  p.His178Pro    US       rs1555526004   Sporadic cancers
+TP53      P04637     VAR_044930  p.His178Gln    US       -              Sporadic cancers
+TP53      P04637     VAR_044931  p.His178Arg    US       -              Sporadic cancers
+TP53      P04637     VAR_044932  p.His178Tyr    US       -              Sporadic cancers
+TP53      P04637     VAR_044933  p.His179Asp    US       rs587780070    Sporadic cancers
+TP53      P04637     VAR_044934  p.His179Leu    US       rs1057519991   Sporadic cancers
+TP53      P04637     VAR_044935  p.His179Asn    US       rs587780070    Sporadic cancers
+TP53      P04637     VAR_044936  p.His179Pro    US       rs1057519991   Sporadic cancers
+TP53      P04637     VAR_044937  p.His179Gln    US       rs876660821    Sporadic cancers
+TP53      P04637     VAR_044938  p.His179Arg    US       rs1057519991   Sporadic cancers
+TP53      P04637     VAR_044939  p.His179Tyr    LP/P     rs587780070    Li-Fraumeni syndrome (LFS) [MIM:151623]
+TP53      P04637     VAR_044940  p.Glu180Ala    US       -              A sporadic cancer
+TP53      P04637     VAR_044941  p.Glu180Asp    US       -              Sporadic cancers
+TP53      P04637     VAR_044942  p.Glu180Gly    US       -              A sporadic cancer
+TP53      P04637     VAR_044943  p.Glu180Lys    LP/P     rs879253911    Li-Fraumeni syndrome (LFS) [MIM:151623]
+TP53      P04637     VAR_044944  p.Glu180Gln    US       -              Sporadic cancers
+TP53      P04637     VAR_044945  p.Glu180Val    US       -              A sporadic cancer
+TP53      P04637     VAR_044946  p.Arg181Cys    LP/P     rs587782596    Li-Fraumeni syndrome (LFS) [MIM:151623]
+TP53      P04637     VAR_044947  p.Arg181Gly    US       -              Sporadic cancers
+TP53      P04637     VAR_044948  p.Arg181His    LP/P     rs397514495    Li-Fraumeni syndrome (LFS) [MIM:151623]
+TP53      P04637     VAR_044949  p.Arg181Pro    US       -              A familial cancer not matching LFS
+TP53      P04637     VAR_044950  p.Arg181Ser    US       rs587782596    Sporadic cancers
+TP53      P04637     VAR_044951  p.Cys182Arg    US       -              Sporadic cancers
+TP53      P04637     VAR_044952  p.Cys182Tyr    US       -              Sporadic cancers
+TP53      P04637     VAR_044953  p.Ser183Leu    US       rs1555525970   Sporadic cancers
+TP53      P04637     VAR_044954  p.Ser183Pro    US       -              Sporadic cancers
+TP53      P04637     VAR_044955  p.Asp184Gly    US       rs1060501209   Sporadic cancers
+TP53      P04637     VAR_044956  p.Asp184His    US       -              Sporadic cancers
+TP53      P04637     VAR_044957  p.Asp184Val    US       -              Sporadic cancers
+TP53      P04637     VAR_044958  p.Ser185Cys    US       -              A sporadic cancer
+TP53      P04637     VAR_044959  p.Ser185Gly    US       -              Sporadic cancers
+TP53      P04637     VAR_044960  p.Ser185Ile    US       -              Sporadic cancers
+TP53      P04637     VAR_044961  p.Ser185Asn    US       rs150607408    A sporadic cancer
+TP53      P04637     VAR_044962  p.Ser185Arg    US       -              Sporadic cancers
+TP53      P04637     VAR_044963  p.Ser185Thr    US       -              A sporadic cancer
+TP53      P04637     VAR_044964  p.Asp186Glu    US       rs375275361    A sporadic cancer
+TP53      P04637     VAR_044965  p.Asp186Gly    US       -              Sporadic cancers
+TP53      P04637     VAR_044966  p.Asp186His    US       -              Sporadic cancers
+TP53      P04637     VAR_044967  p.Asp186Asn    US       rs1060501206   Sporadic cancers
+TP53      P04637     VAR_044968  p.Asp186Val    US       -              Sporadic cancers
+TP53      P04637     VAR_044969  p.Gly187Asp    US       -              Sporadic cancers
+TP53      P04637     VAR_044970  p.Gly187Arg    US       -              Sporadic cancers
+TP53      P04637     VAR_044971  p.Gly187Val    US       -              Sporadic cancers
+TP53      P04637     VAR_044972  p.Leu188Pro    US       rs1199893366   A sporadic cancer
+TP53      P04637     VAR_044973  p.Leu188Val    US       -              Sporadic cancers
+TP53      P04637     VAR_044974  p.Ala189Asp    US       -              A sporadic cancer
+TP53      P04637     VAR_044975  p.Ala189Gly    US       -              Sporadic cancers
+TP53      P04637     VAR_044976  p.Ala189Ser    US       rs1555525921   A sporadic cancer
+TP53      P04637     VAR_044977  p.Ala189Thr    US       -              Sporadic cancers
+TP53      P04637     VAR_044978  p.Ala189Val    US       rs121912665    A familial cancer not matching LFS
+TP53      P04637     VAR_044979  p.Pro190Ala    US       -              Sporadic cancers
+TP53      P04637     VAR_044980  p.Pro190His    US       -              A sporadic cancer
+TP53      P04637     VAR_044981  p.Pro190Arg    US       rs876660825    Sporadic cancers
+TP53      P04637     VAR_044982  p.Pro190Ser    US       -              Sporadic cancers
+TP53      P04637     VAR_044983  p.Pro190Thr    US       rs876660254    Sporadic cancers
+TP53      P04637     VAR_044984  p.Pro191His    US       rs587778718    Sporadic cancers
+TP53      P04637     VAR_044985  p.Pro191Leu    US       rs587778718    Sporadic cancers
+TP53      P04637     VAR_044986  p.Pro191Arg    US       rs587778718    Sporadic cancers
+TP53      P04637     VAR_044987  p.Pro191Ser    US       rs868590738    Sporadic cancers
+TP53      P04637     VAR_044988  p.Gln192His    US       -              Sporadic cancers
+TP53      P04637     VAR_044989  p.Gln192Lys    US       -              A sporadic cancer
+TP53      P04637     VAR_044990  p.Gln192Leu    US       -              Sporadic cancers
+TP53      P04637     VAR_044991  p.Gln192Pro    US       -              Sporadic cancers
+TP53      P04637     VAR_044992  p.His193Leu    US       rs786201838    Sporadic cancers
+TP53      P04637     VAR_044993  p.His193Asn    US       rs876658468    Sporadic cancers
+TP53      P04637     VAR_044994  p.His193Pro    US       rs786201838    Sporadic cancers
+TP53      P04637     VAR_044995  p.His193Gln    US       -              Sporadic cancers
+TP53      P04637     VAR_044996  p.His193Tyr    US       rs876658468    Sporadic cancers
+TP53      P04637     VAR_044997  p.Leu194Phe    US       rs587780071    Sporadic cancers
+TP53      P04637     VAR_044998  p.Leu194His    US       rs1057519998   Sporadic cancers
+TP53      P04637     VAR_044999  p.Leu194Ile    US       -              Sporadic cancers
+TP53      P04637     VAR_045000  p.Leu194Val    US       -              Sporadic cancers
+TP53      P04637     VAR_045001  p.Ile195Phe    US       rs942158624    Sporadic cancers
+TP53      P04637     VAR_045002  p.Ile195Asn    US       rs760043106    Sporadic cancers
+TP53      P04637     VAR_045003  p.Ile195Ser    US       rs760043106    Sporadic cancers
+TP53      P04637     VAR_045004  p.Ile195Val    US       -              A sporadic cancer
+TP53      P04637     VAR_045005  p.Arg196Gly    US       rs397516435    Sporadic cancers
+TP53      P04637     VAR_045006  p.Arg196Leu    US       rs483352697    Sporadic cancers
+TP53      P04637     VAR_045007  p.Arg196Pro    LP/P     rs483352697    Li-Fraumeni syndrome (LFS) [MIM:151623]
+TP53      P04637     VAR_045008  p.Arg196Gln    US       rs483352697    Sporadic cancers
+TP53      P04637     VAR_045009  p.Arg196Ser    US       -              A sporadic cancer
+TP53      P04637     VAR_045010  p.Val197Glu    US       -              A familial cancer not matching LFS
+TP53      P04637     VAR_045011  p.Val197Gly    US       -              Sporadic cancers
+TP53      P04637     VAR_045012  p.Val197Leu    US       rs786204041    Sporadic cancers
+TP53      P04637     VAR_045013  p.Val197Met    LP/P     rs786204041    Li-Fraumeni syndrome (LFS) [MIM:151623]
+TP53      P04637     VAR_045014  p.Glu198Asp    US       -              A sporadic cancer
+TP53      P04637     VAR_045015  p.Glu198Gly    US       -              Sporadic cancers
+TP53      P04637     VAR_045016  p.Glu198Gln    US       -              Sporadic cancers
+TP53      P04637     VAR_045017  p.Glu198Val    US       -              A sporadic cancer
+TP53      P04637     VAR_045018  p.Gly199Ala    US       -              A sporadic cancer
+TP53      P04637     VAR_045019  p.Gly199Glu    US       -              Sporadic cancers
+TP53      P04637     VAR_045020  p.Gly199Arg    US       -              Sporadic cancers
+TP53      P04637     VAR_045021  p.Gly199Val    US       rs1555525857   Sporadic cancers
+TP53      P04637     VAR_045022  p.Asn200Asp    US       -              Sporadic cancers
+TP53      P04637     VAR_045023  p.Asn200Ile    US       -              Sporadic cancers
+TP53      P04637     VAR_045024  p.Asn200Lys    US       -              A sporadic cancer
+TP53      P04637     VAR_045025  p.Asn200Ser    US       -              Sporadic cancers
+TP53      P04637     VAR_045026  p.Asn200Thr    US       -              A sporadic cancer
+TP53      P04637     VAR_045027  p.Leu201Phe    US       rs730882024    Sporadic cancers
+TP53      P04637     VAR_045028  p.Leu201Pro    US       -              A sporadic cancer
+TP53      P04637     VAR_045029  p.Leu201Ser    US       -              A sporadic cancer
+TP53      P04637     VAR_045030  p.Arg202Cys    US       rs587780072    Sporadic cancers
+TP53      P04637     VAR_045031  p.Arg202Gly    US       rs587780072    Sporadic cancers
+TP53      P04637     VAR_045032  p.Arg202His    US       rs587778719    Sporadic cancers
+TP53      P04637     VAR_045033  p.Arg202Leu    US       rs587778719    Sporadic cancers
+TP53      P04637     VAR_045034  p.Arg202Pro    US       -              Sporadic cancers
+TP53      P04637     VAR_045035  p.Arg202Ser    US       -              Sporadic cancers
+TP53      P04637     VAR_045036  p.Val203Ala    US       -              Sporadic cancers
+TP53      P04637     VAR_045037  p.Val203Glu    US       -              Sporadic cancers
+TP53      P04637     VAR_045038  p.Val203Leu    US       -              Sporadic cancers
+TP53      P04637     VAR_045039  p.Val203Met    US       rs730882003    Sporadic cancers
+TP53      P04637     VAR_045040  p.Glu204Ala    US       -              Sporadic cancers
+TP53      P04637     VAR_045041  p.Glu204Asp    US       -              Sporadic cancers
+TP53      P04637     VAR_045042  p.Glu204Gly    US       rs1260903787   Sporadic cancers
+TP53      P04637     VAR_045043  p.Glu204Lys    US       -              Sporadic cancers
+TP53      P04637     VAR_045044  p.Glu204Gln    US       -              A sporadic cancer
+TP53      P04637     VAR_045045  p.Glu204Val    US       -              A sporadic cancer
+TP53      P04637     VAR_045046  p.Tyr205His    US       rs1057520008   Sporadic cancers
+TP53      P04637     VAR_045047  p.Tyr205Asn    US       rs1057520008   Sporadic cancers
+TP53      P04637     VAR_045048  p.Tyr205Ser    US       rs1057520007   Sporadic cancers
+TP53      P04637     VAR_045049  p.Leu206Phe    US       -              A sporadic cancer
+TP53      P04637     VAR_045050  p.Leu206Met    US       -              A sporadic cancer
+TP53      P04637     VAR_045051  p.Asp207Glu    US       -              Sporadic cancers
+TP53      P04637     VAR_045052  p.Asp207Gly    US       -              Sporadic cancers
+TP53      P04637     VAR_045053  p.Asp207His    US       -              Sporadic cancers
+TP53      P04637     VAR_045054  p.Asp207Asn    US       rs923100890    Sporadic cancers
+TP53      P04637     VAR_045055  p.Asp207Val    US       -              A sporadic cancer
+TP53      P04637     VAR_045056  p.Asp207Tyr    US       -              A sporadic cancer
+TP53      P04637     VAR_045057  p.Asp208Glu    US       -              Sporadic cancers
+TP53      P04637     VAR_045058  p.Asp208Gly    US       -              Sporadic cancers
+TP53      P04637     VAR_045059  p.Asp208His    US       -              A sporadic cancer
+TP53      P04637     VAR_045060  p.Asp208Asn    US       -              Sporadic cancers
+TP53      P04637     VAR_045061  p.Asp208Val    US       rs1464727668   Sporadic cancers
+TP53      P04637     VAR_045062  p.Asp208Tyr    US       -              A sporadic cancer
+TP53      P04637     VAR_045063  p.Arg209Ile    US       -              Sporadic cancers
+TP53      P04637     VAR_045064  p.Arg209Lys    US       -              Sporadic cancers
+TP53      P04637     VAR_045065  p.Arg209Ser    US       -              A sporadic cancer
+TP53      P04637     VAR_045066  p.Arg209Thr    US       -              Sporadic cancers
+TP53      P04637     VAR_045067  p.Asn210Asp    US       -              Sporadic cancers
+TP53      P04637     VAR_045068  p.Asn210His    US       -              Sporadic cancers
+TP53      P04637     VAR_045069  p.Asn210Ile    US       -              A sporadic cancer
+TP53      P04637     VAR_045070  p.Asn210Lys    US       -              A sporadic cancer
+TP53      P04637     VAR_045071  p.Asn210Ser    US       -              Sporadic cancers
+TP53      P04637     VAR_045072  p.Asn210Thr    US       -              A sporadic cancer
+TP53      P04637     VAR_045073  p.Asn210Tyr    US       rs1060501200   A familial cancer not matching LFS
+TP53      P04637     VAR_045074  p.Thr211Ala    US       rs1060501198   Sporadic cancers
+TP53      P04637     VAR_045075  p.Thr211Ile    US       -              Sporadic cancers
+TP53      P04637     VAR_045076  p.Thr211Asn    US       -              Sporadic cancers
+TP53      P04637     VAR_045077  p.Thr211Pro    US       -              A sporadic cancer
+TP53      P04637     VAR_045078  p.Thr211Ser    US       -              Sporadic cancers
+TP53      P04637     VAR_045079  p.Phe212Ile    US       rs1064795766   Sporadic cancers
+TP53      P04637     VAR_045080  p.Phe212Leu    US       -              Sporadic cancers
+TP53      P04637     VAR_045081  p.Phe212Ser    US       -              Sporadic cancers
+TP53      P04637     VAR_045082  p.Phe212Val    US       -              A sporadic cancer
+TP53      P04637     VAR_045083  p.Phe212Tyr    US       -              Sporadic cancers
+TP53      P04637     VAR_045084  p.Arg213Gly    US       rs397516436    Sporadic cancers
+TP53      P04637     VAR_045085  p.Arg213Leu    US       rs587778720    Sporadic cancers
+TP53      P04637     VAR_045086  p.Arg213Trp    US       -              Sporadic cancers
+TP53      P04637     VAR_045087  p.His214Asp    US       -              Sporadic cancers
+TP53      P04637     VAR_045088  p.His214Pro    US       rs1057519992   A sporadic cancer
+TP53      P04637     VAR_045089  p.His214Arg    US       rs1057519992   Sporadic cancers
+TP53      P04637     VAR_045090  p.His214Tyr    US       -              Sporadic cancers
+TP53      P04637     VAR_045091  p.Ser215Cys    US       -              Sporadic cancers
+TP53      P04637     VAR_045092  p.Ser215Gly    US       rs886039484    Sporadic cancers
+TP53      P04637     VAR_045093  p.Ser215Ile    US       rs587782177    Sporadic cancers
+TP53      P04637     VAR_045094  p.Ser215Asn    US       rs587782177    Sporadic cancers
+TP53      P04637     VAR_045095  p.Ser215Arg    US       rs1057520001   Sporadic cancers
+TP53      P04637     VAR_045096  p.Ser215Thr    US       rs587782177    Sporadic cancers
+TP53      P04637     VAR_045097  p.Val216Ala    US       -              Sporadic cancers
+TP53      P04637     VAR_045098  p.Val216Glu    US       rs1057520004   Sporadic cancers
+TP53      P04637     VAR_045099  p.Val216Gly    US       rs1057520004   Sporadic cancers
+TP53      P04637     VAR_045100  p.Val216Leu    US       rs730882025    Sporadic cancers
+TP53      P04637     VAR_045101  p.Val217Ala    US       -              Sporadic cancers
+TP53      P04637     VAR_045102  p.Val217Glu    US       -              Sporadic cancers
+TP53      P04637     VAR_045103  p.Val217Gly    US       -              Sporadic cancers
+TP53      P04637     VAR_045104  p.Val217Ile    US       -              A sporadic cancer
+TP53      P04637     VAR_045105  p.Val217Leu    US       -              Sporadic cancers
+TP53      P04637     VAR_045106  p.Val218Ala    US       -              Sporadic cancers
+TP53      P04637     VAR_045107  p.Val218Glu    US       -              Sporadic cancers
+TP53      P04637     VAR_045108  p.Val218Gly    US       rs1555525743   Sporadic cancers
+TP53      P04637     VAR_045109  p.Val218Leu    US       -              Sporadic cancers
+TP53      P04637     VAR_045110  p.Val218Met    US       rs878854072    Sporadic cancers
+TP53      P04637     VAR_045111  p.Pro219His    US       -              A sporadic cancer
+TP53      P04637     VAR_045112  p.Pro219Leu    US       rs1420675064   Sporadic cancers
+TP53      P04637     VAR_045113  p.Pro219Arg    US       -              A sporadic cancer
+TP53      P04637     VAR_045114  p.Pro219Ser    US       rs879253894    A familial cancer not matching LFS
+TP53      P04637     VAR_045115  p.Pro219Thr    US       -              Sporadic cancers
+TP53      P04637     VAR_045116  p.Tyr220Asp    US       rs530941076    Sporadic cancers
+TP53      P04637     VAR_045117  p.Tyr220Phe    US       -              A sporadic cancer
+TP53      P04637     VAR_045118  p.Tyr220Asn    US       rs530941076    Sporadic cancers
+TP53      P04637     VAR_045119  p.Glu221Ala    US       -              Sporadic cancers
+TP53      P04637     VAR_045120  p.Glu221Asp    US       -              Sporadic cancers
+TP53      P04637     VAR_045121  p.Glu221Gly    US       -              Sporadic cancers
+TP53      P04637     VAR_045122  p.Glu221Lys    US       rs786201592    Sporadic cancers
+TP53      P04637     VAR_045123  p.Glu221Gln    US       -              Sporadic cancers
+TP53      P04637     VAR_045124  p.Pro222Ala    US       -              A sporadic cancer
+TP53      P04637     VAR_045125  p.Pro222Leu    US       rs146340390    Sporadic cancers
+TP53      P04637     VAR_045126  p.Pro222Gln    US       -              Sporadic cancers
+TP53      P04637     VAR_045127  p.Pro222Arg    US       -              A sporadic cancer
+TP53      P04637     VAR_045128  p.Pro222Ser    US       rs1060501203   Sporadic cancers
+TP53      P04637     VAR_045129  p.Pro222Thr    US       -              Sporadic cancers
+TP53      P04637     VAR_045130  p.Pro223His    US       rs138983188    Sporadic cancers
+TP53      P04637     VAR_045131  p.Pro223Leu    US       rs138983188    Sporadic cancers
+TP53      P04637     VAR_045132  p.Pro223Arg    US       -              A sporadic cancer
+TP53      P04637     VAR_045133  p.Pro223Ser    US       -              A sporadic cancer
+TP53      P04637     VAR_045134  p.Pro223Thr    US       -              A sporadic cancer
+TP53      P04637     VAR_045135  p.Glu224Asp    US       rs267605076    Sporadic cancers
+TP53      P04637     VAR_045136  p.Glu224Gly    US       -              Sporadic cancers
+TP53      P04637     VAR_045137  p.Glu224Lys    US       rs1555525707   Sporadic cancers
+TP53      P04637     VAR_045138  p.Glu224Val    US       -              A sporadic cancer
+TP53      P04637     VAR_045139  p.Val225Ala    US       -              Sporadic cancers
+TP53      P04637     VAR_045140  p.Val225Asp    US       -              A sporadic cancer
+TP53      P04637     VAR_045141  p.Val225Phe    US       -              Sporadic cancers
+TP53      P04637     VAR_045142  p.Val225Gly    US       -              A sporadic cancer
+TP53      P04637     VAR_045143  p.Val225Ile    US       -              Sporadic cancers
+TP53      P04637     VAR_045144  p.Val225Leu    US       rs746504075    A sporadic cancer
+TP53      P04637     VAR_045145  p.Gly226Ala    US       -              Sporadic cancers
+TP53      P04637     VAR_045146  p.Gly226Ser    US       -              Sporadic cancers
+TP53      P04637     VAR_045147  p.Gly226Val    US       rs970212462    Sporadic cancers
+TP53      P04637     VAR_045148  p.Ser227Cys    US       -              Sporadic cancers
+TP53      P04637     VAR_045149  p.Ser227Phe    US       -              Sporadic cancers
+TP53      P04637     VAR_045150  p.Ser227Pro    US       -              A sporadic cancer
+TP53      P04637     VAR_045151  p.Ser227Thr    LP/P     -              Li-Fraumeni syndrome (LFS) [MIM:151623]
+TP53      P04637     VAR_045152  p.Asp228Ala    US       -              Sporadic cancers
+TP53      P04637     VAR_045153  p.Asp228Gly    US       -              Sporadic cancers
+TP53      P04637     VAR_045154  p.Asp228His    US       -              Sporadic cancers
+TP53      P04637     VAR_045155  p.Asp228Asn    US       -              Sporadic cancers
+TP53      P04637     VAR_045156  p.Asp228Val    US       -              Sporadic cancers
+TP53      P04637     VAR_045157  p.Asp228Tyr    US       -              Sporadic cancers
+TP53      P04637     VAR_045158  p.Cys229Gly    US       -              A sporadic cancer
+TP53      P04637     VAR_045159  p.Cys229Arg    US       rs1064794312   Sporadic cancers
+TP53      P04637     VAR_045160  p.Cys229Ser    US       -              Sporadic cancers
+TP53      P04637     VAR_045161  p.Cys229Tyr    US       rs1064793603   Sporadic cancers
+TP53      P04637     VAR_045162  p.Thr230Ala    US       -              Sporadic cancers
+TP53      P04637     VAR_045163  p.Thr230Asn    US       -              Sporadic cancers
+TP53      P04637     VAR_045164  p.Thr230Pro    US       -              Sporadic cancers
+TP53      P04637     VAR_045165  p.Thr230Ser    US       -              Sporadic cancers
+TP53      P04637     VAR_045166  p.Thr231Ala    US       -              Sporadic cancers
+TP53      P04637     VAR_045167  p.Thr231Ile    US       rs1555525564   Sporadic cancers
+TP53      P04637     VAR_045168  p.Thr231Asn    US       -              Sporadic cancers
+TP53      P04637     VAR_045169  p.Thr231Ser    US       -              Sporadic cancers
+TP53      P04637     VAR_045170  p.Ile232Phe    US       -              Sporadic cancers
+TP53      P04637     VAR_045171  p.Ile232Leu    US       rs1555525562   Sporadic cancers
+TP53      P04637     VAR_045172  p.Ile232Asn    US       -              Sporadic cancers
+TP53      P04637     VAR_045173  p.Ile232Ser    US       -              Sporadic cancers
+TP53      P04637     VAR_045174  p.Ile232Val    US       -              Sporadic cancers
+TP53      P04637     VAR_045175  p.His233Asp    LP/P     -              Li-Fraumeni syndrome (LFS) [MIM:151623]
+TP53      P04637     VAR_045176  p.His233Leu    US       -              Sporadic cancers
+TP53      P04637     VAR_045177  p.His233Pro    US       -              A sporadic cancer
+TP53      P04637     VAR_045178  p.His233Gln    US       -              Sporadic cancers
+TP53      P04637     VAR_045179  p.His233Tyr    US       -              Sporadic cancers
+TP53      P04637     VAR_045180  p.Tyr234Asp    US       rs864622237    Sporadic cancers
+TP53      P04637     VAR_045181  p.Tyr234Phe    US       -              A sporadic cancer
+TP53      P04637     VAR_045182  p.Tyr234Asn    US       rs864622237    Sporadic cancers
+TP53      P04637     VAR_045183  p.Tyr234Ser    US       rs587780073    Sporadic cancers
+TP53      P04637     VAR_045184  p.Asn235His    US       -              A sporadic cancer
+TP53      P04637     VAR_045185  p.Asn235Ile    US       rs144340710    Sporadic cancers
+TP53      P04637     VAR_045186  p.Asn235Ser    LP/P     rs144340710    Li-Fraumeni syndrome (LFS) [MIM:151623]
+TP53      P04637     VAR_045187  p.Asn235Thr    US       -              Sporadic cancers
+TP53      P04637     VAR_045188  p.Asn235Tyr    US       rs786204145    Sporadic cancers
+TP53      P04637     VAR_045189  p.Tyr236Cys    LP/P     rs730882026    Li-Fraumeni syndrome (LFS) [MIM:151623]
+TP53      P04637     VAR_045190  p.Tyr236Asp    US       rs587782289    Sporadic cancers
+TP53      P04637     VAR_045191  p.Tyr236Phe    US       -              A sporadic cancer
+TP53      P04637     VAR_045192  p.Tyr236His    US       rs587782289    Sporadic cancers
+TP53      P04637     VAR_045193  p.Tyr236Asn    US       rs587782289    Sporadic cancers
+TP53      P04637     VAR_045194  p.Tyr236Ser    US       rs730882026    Sporadic cancers
+TP53      P04637     VAR_045195  p.Met237Lys    US       rs765848205    Sporadic cancers
+TP53      P04637     VAR_045196  p.Met237Leu    US       -              Sporadic cancers
+TP53      P04637     VAR_045197  p.Met237Arg    US       rs765848205    Sporadic cancers
+TP53      P04637     VAR_045198  p.Met237Thr    US       -              Sporadic cancers
+TP53      P04637     VAR_045199  p.Met237Val    US       rs730882004    Sporadic cancers
+TP53      P04637     VAR_045200  p.Cys238Gly    LP/P     rs1057519981   Li-Fraumeni syndrome (LFS) [MIM:151623]
+TP53      P04637     VAR_045201  p.Cys238Arg    US       rs1057519981   Sporadic cancers
+TP53      P04637     VAR_045202  p.Cys238Ser    LP/P     rs730882005    Li-Fraumeni syndrome (LFS) [MIM:151623]
+TP53      P04637     VAR_045203  p.Cys238Trp    US       rs193920789    Sporadic cancers
+TP53      P04637     VAR_045204  p.Asn239Asp    US       rs876660807    Sporadic cancers
+TP53      P04637     VAR_045205  p.Asn239His    US       -              A sporadic cancer
+TP53      P04637     VAR_045206  p.Asn239Ile    US       -              A sporadic cancer
+TP53      P04637     VAR_045207  p.Asn239Lys    US       rs1057522275   Sporadic cancers
+TP53      P04637     VAR_045208  p.Asn239Ser    US       rs1057519999   Sporadic cancers
+TP53      P04637     VAR_045209  p.Asn239Thr    US       rs1057519999   Sporadic cancers
+TP53      P04637     VAR_045210  p.Asn239Tyr    US       -              Sporadic cancers
+TP53      P04637     VAR_045211  p.Ser240Cys    US       -              Sporadic cancers
+TP53      P04637     VAR_045212  p.Ser240Gly    US       -              Sporadic cancers
+TP53      P04637     VAR_045213  p.Ser240Asn    US       -              Sporadic cancers
+TP53      P04637     VAR_045214  p.Ser240Pro    US       -              A sporadic cancer
+TP53      P04637     VAR_045215  p.Ser240Arg    US       -              Sporadic cancers
+TP53      P04637     VAR_045216  p.Ser240Thr    US       -              Sporadic cancers
+TP53      P04637     VAR_045217  p.Ser241Cys    US       rs28934573     Sporadic cancers
+TP53      P04637     VAR_045218  p.Ser241Pro    US       rs1057520002   Sporadic cancers
+TP53      P04637     VAR_045219  p.Ser241Tyr    US       rs28934573     Sporadic cancers
+TP53      P04637     VAR_045220  p.Cys242Gly    US       rs1057519982   Sporadic cancers
+TP53      P04637     VAR_045221  p.Cys242Arg    US       -              Sporadic cancers
+TP53      P04637     VAR_045222  p.Cys242Ser    US       rs121912655    Sporadic cancers
+TP53      P04637     VAR_045223  p.Cys242Trp    US       rs375874539    Sporadic cancers
+TP53      P04637     VAR_045224  p.Cys242Tyr    US       rs121912655    A familial cancer not matching LFS
+TP53      P04637     VAR_045225  p.Met243Ile    US       -              Sporadic cancers
+TP53      P04637     VAR_045226  p.Met243Lys    US       -              Sporadic cancers
+TP53      P04637     VAR_045227  p.Met243Leu    US       rs786203117    Sporadic cancers
+TP53      P04637     VAR_045228  p.Met243Arg    US       -              Sporadic cancers
+TP53      P04637     VAR_045229  p.Met243Thr    US       rs730882006    Sporadic cancers
+TP53      P04637     VAR_045230  p.Met243Val    US       rs786203117    Sporadic cancers
+TP53      P04637     VAR_045231  p.Gly244Cys    US       rs1057519989   Sporadic cancers
+TP53      P04637     VAR_045232  p.Gly244Asp    LP/P     rs1057517983   Li-Fraumeni syndrome (LFS) [MIM:151623]
+TP53      P04637     VAR_045233  p.Gly244Glu    US       -              A sporadic cancer
+TP53      P04637     VAR_045234  p.Gly244Arg    US       rs1057519989   Sporadic cancers
+TP53      P04637     VAR_045235  p.Gly244Ser    US       rs1057519989   Sporadic cancers
+TP53      P04637     VAR_045236  p.Gly244Val    LP/P     rs985033810    Li-Fraumeni syndrome (LFS) [MIM:151623]
+TP53      P04637     VAR_045237  p.Gly245Glu    US       -              A sporadic cancer
+TP53      P04637     VAR_045238  p.Gly245Arg    US       rs28934575     Sporadic cancers
+TP53      P04637     VAR_045239  p.Met246Ile    US       rs1019340046   Sporadic cancers
+TP53      P04637     VAR_045240  p.Met246Lys    US       -              Sporadic cancers
+TP53      P04637     VAR_045241  p.Asn247Asp    US       rs1452189221   Sporadic cancers
+TP53      P04637     VAR_045242  p.Asn247Lys    US       -              Sporadic cancers
+TP53      P04637     VAR_045243  p.Asn247Ser    US       rs786201762    Sporadic cancers
+TP53      P04637     VAR_045244  p.Asn247Tyr    US       -              Sporadic cancers
+TP53      P04637     VAR_045245  p.Arg248Cys    US       -              A sporadic cancer
+TP53      P04637     VAR_045246  p.Arg248Pro    US       rs11540652     Sporadic cancers
+TP53      P04637     VAR_045247  p.Arg249Ile    US       -              A sporadic cancer
+TP53      P04637     VAR_045248  p.Arg249Lys    US       rs587782329    Sporadic cancers
+TP53      P04637     VAR_045249  p.Arg249Thr    US       rs587782329    Sporadic cancers
+TP53      P04637     VAR_045250  p.Arg249Trp    US       rs587782082    Sporadic cancers
+TP53      P04637     VAR_045251  p.Pro250Ala    US       -              Sporadic cancers
+TP53      P04637     VAR_045252  p.Pro250His    US       -              Sporadic cancers
+TP53      P04637     VAR_045253  p.Pro250Gln    US       -              Sporadic cancers
+TP53      P04637     VAR_045254  p.Pro250Ser    US       -              Sporadic cancers
+TP53      P04637     VAR_045255  p.Pro250Thr    US       -              Sporadic cancers
+TP53      P04637     VAR_045256  p.Ile251Phe    US       -              Sporadic cancers
+TP53      P04637     VAR_045257  p.Ile251Leu    US       rs730882007    Sporadic cancers
+TP53      P04637     VAR_045258  p.Ile251Met    LP/P     rs878854074    Li-Fraumeni syndrome (LFS) [MIM:151623]
+TP53      P04637     VAR_045259  p.Ile251Thr    US       -              Sporadic cancers
+TP53      P04637     VAR_045260  p.Ile251Val    US       -              Sporadic cancers
+TP53      P04637     VAR_045261  p.Leu252Phe    US       -              Sporadic cancers
+TP53      P04637     VAR_045262  p.Leu252His    US       -              A sporadic cancer
+TP53      P04637     VAR_045263  p.Leu252Ile    US       -              Sporadic cancers
+TP53      P04637     VAR_045264  p.Leu252Val    US       -              A sporadic cancer
+TP53      P04637     VAR_045265  p.Thr253Ala    US       -              Sporadic cancers
+TP53      P04637     VAR_045266  p.Thr253Ile    US       -              Sporadic cancers
+TP53      P04637     VAR_045267  p.Thr253Asn    US       rs1555525465   Sporadic cancers
+TP53      P04637     VAR_045268  p.Thr253Ser    US       -              Sporadic cancers
+TP53      P04637     VAR_045269  p.Ile254Phe    US       -              A sporadic cancer
+TP53      P04637     VAR_045270  p.Ile254Leu    US       -              A sporadic cancer
+TP53      P04637     VAR_045271  p.Ile254Met    US       -              A sporadic cancer
+TP53      P04637     VAR_045272  p.Ile254Ser    US       rs1330865474   Sporadic cancers
+TP53      P04637     VAR_045273  p.Ile254Val    US       rs746601313    Sporadic cancers
+TP53      P04637     VAR_045274  p.Ile255Phe    US       rs1057519995   Sporadic cancers
+TP53      P04637     VAR_045275  p.Ile255Met    US       -              Sporadic cancers
+TP53      P04637     VAR_045276  p.Ile255Asn    US       rs876659675    Sporadic cancers
+TP53      P04637     VAR_045277  p.Ile255Ser    US       rs876659675    Sporadic cancers
+TP53      P04637     VAR_045278  p.Ile255Thr    US       rs876659675    Sporadic cancers
+TP53      P04637     VAR_045279  p.Ile255Val    US       -              Sporadic cancers
+TP53      P04637     VAR_045280  p.Thr256Ile    US       -              A brain tumor with no family history
+TP53      P04637     VAR_045281  p.Thr256Lys    US       -              Sporadic cancers
+TP53      P04637     VAR_045282  p.Thr256Pro    US       -              Sporadic cancers
+TP53      P04637     VAR_045283  p.Thr256Ser    US       -              Sporadic cancers
+TP53      P04637     VAR_045284  p.Leu257Gln    LP/P     rs28934577     Li-Fraumeni syndrome (LFS) [MIM:151623]
+TP53      P04637     VAR_045285  p.Leu257Arg    US       rs28934577     Sporadic cancers
+TP53      P04637     VAR_045286  p.Leu257Val    US       -              Sporadic cancers
+TP53      P04637     VAR_045287  p.Glu258Ala    US       -              Sporadic cancers
+TP53      P04637     VAR_045288  p.Glu258Gly    US       rs1060501201   Sporadic cancers
+TP53      P04637     VAR_045289  p.Glu258Gln    US       -              Sporadic cancers
+TP53      P04637     VAR_045290  p.Glu258Val    US       -              Sporadic cancers
+TP53      P04637     VAR_045291  p.Asp259Glu    US       -              Sporadic cancers
+TP53      P04637     VAR_045292  p.Asp259Gly    US       rs745425759    Sporadic cancers
+TP53      P04637     VAR_045293  p.Asp259His    US       -              Sporadic cancers
+TP53      P04637     VAR_045294  p.Asp259Asn    US       -              Sporadic cancers
+TP53      P04637     VAR_045295  p.Asp259Val    US       -              Sporadic cancers
+TP53      P04637     VAR_045296  p.Ser260Ala    US       -              Sporadic cancers
+TP53      P04637     VAR_045297  p.Ser260Cys    US       -              Sporadic cancers
+TP53      P04637     VAR_045298  p.Ser260Phe    US       -              Sporadic cancers
+TP53      P04637     VAR_045299  p.Ser260Pro    US       -              Sporadic cancers
+TP53      P04637     VAR_045300  p.Ser260Thr    US       -              A sporadic cancer
+TP53      P04637     VAR_045301  p.Ser260Tyr    US       rs876658916    Sporadic cancers
+TP53      P04637     VAR_045302  p.Ser261Cys    US       -              A sporadic cancer
+TP53      P04637     VAR_045303  p.Ser261Gly    US       -              Sporadic cancers
+TP53      P04637     VAR_045304  p.Ser261Ile    US       -              Sporadic cancers
+TP53      P04637     VAR_045305  p.Ser261Asn    US       -              A sporadic cancer
+TP53      P04637     VAR_045306  p.Ser261Arg    US       -              Sporadic cancers
+TP53      P04637     VAR_045307  p.Gly262Cys    US       rs200579969    A sporadic cancer
+TP53      P04637     VAR_045308  p.Gly262Ser    US       rs200579969    Sporadic cancers
+TP53      P04637     VAR_045309  p.Gly262Val    US       rs1131691025   Sporadic cancers
+TP53      P04637     VAR_045310  p.Asn263Asp    US       rs72661119     Sporadic cancers
+TP53      P04637     VAR_045311  p.Asn263His    US       -              Sporadic cancers
+TP53      P04637     VAR_045312  p.Asn263Ile    US       -              Sporadic cancers
+TP53      P04637     VAR_045313  p.Asn263Lys    US       -              A sporadic cancer
+TP53      P04637     VAR_045314  p.Asn263Ser    US       -              A sporadic cancer
+TP53      P04637     VAR_045315  p.Leu264Ile    US       -              Sporadic cancers
+TP53      P04637     VAR_045316  p.Leu264Pro    US       rs1555525353   A sporadic cancer
+TP53      P04637     VAR_045317  p.Leu264Gln    US       -              A sporadic cancer
+TP53      P04637     VAR_045318  p.Leu264Arg    US       -              Sporadic cancers
+TP53      P04637     VAR_045319  p.Leu264Val    US       -              A sporadic cancer
+TP53      P04637     VAR_045320  p.Leu265Met    US       -              Sporadic cancers
+TP53      P04637     VAR_045321  p.Leu265Pro    LP/P     rs879253942    Li-Fraumeni syndrome (LFS) [MIM:151623]
+TP53      P04637     VAR_045322  p.Leu265Gln    US       -              Sporadic cancers
+TP53      P04637     VAR_045323  p.Gly266Ala    US       -              Sporadic cancers
+TP53      P04637     VAR_045324  p.Gly266Glu    US       rs193920774    Sporadic cancers
+TP53      P04637     VAR_045325  p.Gly266Arg    US       rs1057519990   Sporadic cancers
+TP53      P04637     VAR_045326  p.Gly266Val    US       rs193920774    Sporadic cancers
+TP53      P04637     VAR_045327  p.Arg267Gly    US       -              Sporadic cancers
+TP53      P04637     VAR_045328  p.Arg267His    US       -              A sporadic cancer
+TP53      P04637     VAR_045329  p.Arg267Pro    US       rs587780075    Sporadic cancers
+TP53      P04637     VAR_045330  p.Arg267Gln    LP/P     rs587780075    Li-Fraumeni syndrome (LFS) [MIM:151623]
+TP53      P04637     VAR_045331  p.Asn268His    US       -              Sporadic cancers
+TP53      P04637     VAR_045332  p.Asn268Ile    US       -              Sporadic cancers
+TP53      P04637     VAR_045333  p.Asn268Lys    US       -              A sporadic cancer
+TP53      P04637     VAR_045334  p.Asn268Ser    US       -              Sporadic cancers
+TP53      P04637     VAR_045335  p.Asn268Tyr    US       -              A sporadic cancer
+TP53      P04637     VAR_045336  p.Ser269Cys    US       -              Sporadic cancers
+TP53      P04637     VAR_045337  p.Ser269Gly    US       -              Sporadic cancers
+TP53      P04637     VAR_045338  p.Ser269Asn    US       -              Sporadic cancers
+TP53      P04637     VAR_045339  p.Ser269Arg    US       -              Sporadic cancers
+TP53      P04637     VAR_045340  p.Ser269Thr    US       -              A sporadic cancer
+TP53      P04637     VAR_045341  p.Phe270Cys    US       rs1057519986   Sporadic cancers
+TP53      P04637     VAR_045342  p.Phe270Ile    US       rs1057519988   Sporadic cancers
+TP53      P04637     VAR_045343  p.Phe270Leu    US       rs1057519987   Sporadic cancers
+TP53      P04637     VAR_045344  p.Phe270Ser    US       rs1057519986   Sporadic cancers
+TP53      P04637     VAR_045345  p.Phe270Val    US       rs1057519988   Sporadic cancers
+TP53      P04637     VAR_045346  p.Phe270Tyr    US       -              Sporadic cancers
+TP53      P04637     VAR_045347  p.Glu271Ala    US       -              Sporadic cancers
+TP53      P04637     VAR_045348  p.Glu271Asp    US       -              Sporadic cancers
+TP53      P04637     VAR_045349  p.Glu271Gly    US       -              Sporadic cancers
+TP53      P04637     VAR_045350  p.Glu271Gln    US       -              Sporadic cancers
+TP53      P04637     VAR_045351  p.Val272Ala    US       -              A familial cancer not matching LFS
+TP53      P04637     VAR_045352  p.Val272Glu    US       rs876660333    Sporadic cancers
+TP53      P04637     VAR_045353  p.Val272Gly    US       rs876660333    Sporadic cancers
+TP53      P04637     VAR_045354  p.Val272Met    US       rs121912657    Sporadic cancers
+TP53      P04637     VAR_045355  p.Arg273Pro    US       rs28934576     Sporadic cancers
+TP53      P04637     VAR_045356  p.Arg273Gln    US       -              Sporadic cancers
+TP53      P04637     VAR_045357  p.Arg273Ser    US       rs121913343    A familial cancer not matching LFS
+TP53      P04637     VAR_045358  p.Val274Ala    US       rs1057520006   Sporadic cancers
+TP53      P04637     VAR_045359  p.Val274Asp    US       rs1057520006   Sporadic cancers
+TP53      P04637     VAR_045360  p.Val274Ile    US       -              Sporadic cancers
+TP53      P04637     VAR_045361  p.Val274Leu    US       rs1057520005   Sporadic cancers
+TP53      P04637     VAR_045362  p.Cys275Phe    US       rs863224451    Sporadic cancers
+TP53      P04637     VAR_045363  p.Cys275Gly    US       -              Sporadic cancers
+TP53      P04637     VAR_045364  p.Cys275Arg    US       rs1057519983   Sporadic cancers
+TP53      P04637     VAR_045365  p.Cys275Ser    US       rs863224451    Sporadic cancers
+TP53      P04637     VAR_045366  p.Ala276Asp    US       rs786202082    Sporadic cancers
+TP53      P04637     VAR_045367  p.Ala276Gly    US       rs786202082    Sporadic cancers
+TP53      P04637     VAR_045368  p.Ala276Pro    US       rs1131691029   Sporadic cancers
+TP53      P04637     VAR_045369  p.Ala276Ser    US       -              Sporadic cancers
+TP53      P04637     VAR_045370  p.Ala276Thr    US       -              Sporadic cancers
+TP53      P04637     VAR_045371  p.Ala276Val    US       -              Sporadic cancers
+TP53      P04637     VAR_045372  p.Cys277Phe    US       rs763098116    Sporadic cancers
+TP53      P04637     VAR_045373  p.Cys277Arg    US       rs1064795369   Sporadic cancers
+TP53      P04637     VAR_045374  p.Cys277Ser    US       -              Sporadic cancers
+TP53      P04637     VAR_045375  p.Cys277Tyr    US       rs763098116    An osteosarcoma with no family history
+TP53      P04637     VAR_045376  p.Pro278Arg    US       rs876659802    Sporadic cancers
+TP53      P04637     VAR_045377  p.Gly279Arg    US       rs1555525248   Sporadic cancers
+TP53      P04637     VAR_045378  p.Gly279Val    US       -              Sporadic cancers
+TP53      P04637     VAR_045379  p.Gly279Trp    US       -              Sporadic cancers
+TP53      P04637     VAR_045380  p.Arg280Gly    US       rs753660142    Sporadic cancers
+TP53      P04637     VAR_045381  p.Arg280Pro    US       -              A sporadic cancer
+TP53      P04637     VAR_045382  p.Arg280Ser    US       -              Sporadic cancers
+TP53      P04637     VAR_045383  p.Asp281Tyr    US       rs764146326    Sporadic cancers
+TP53      P04637     VAR_045384  p.Arg282Gly    LP/P     rs28934574     Li-Fraumeni syndrome (LFS) [MIM:151623]
+TP53      P04637     VAR_045385  p.Arg282His    US       -              A sporadic cancer
+TP53      P04637     VAR_045386  p.Arg282Pro    US       rs730882008    Sporadic cancers
+TP53      P04637     VAR_045387  p.Arg282Gln    US       rs730882008    A familial cancer not matching LFS
+TP53      P04637     VAR_045388  p.Arg283Leu    US       -              Sporadic cancers
+TP53      P04637     VAR_045389  p.Arg283Ser    US       rs149633775    A sporadic cancer
+TP53      P04637     VAR_045390  p.Thr284Ile    US       rs863224685    Sporadic cancers
+TP53      P04637     VAR_045391  p.Thr284Lys    US       -              Sporadic cancers
+TP53      P04637     VAR_045392  p.Glu285Ala    US       -              A sporadic cancer
+TP53      P04637     VAR_045393  p.Glu285Asp    US       -              Sporadic cancers
+TP53      P04637     VAR_045394  p.Glu285Gly    US       -              Sporadic cancers
+TP53      P04637     VAR_045395  p.Glu286Val    US       rs1057519985   Sporadic cancers
+TP53      P04637     VAR_045396  p.Glu287Asp    US       rs748891343    Sporadic cancers
+TP53      P04637     VAR_045397  p.Glu287Gly    US       -              Sporadic cancers
+TP53      P04637     VAR_045398  p.Glu287Lys    US       rs587782006    Sporadic cancers
+TP53      P04637     VAR_045399  p.Glu287Val    US       -              Sporadic cancers
+TP53      P04637     VAR_045400  p.Asn288Asp    US       -              A sporadic cancer
+TP53      P04637     VAR_045401  p.Asn288Lys    US       -              Sporadic cancers
+TP53      P04637     VAR_045402  p.Asn288Ser    US       -              Sporadic cancers
+TP53      P04637     VAR_045403  p.Asn288Thr    US       -              Sporadic cancers
+TP53      P04637     VAR_045404  p.Asn288Tyr    US       -              Sporadic cancers
+TP53      P04637     VAR_045405  p.Leu289Phe    US       -              Sporadic cancers
+TP53      P04637     VAR_045406  p.Leu289His    US       -              Sporadic cancers
+TP53      P04637     VAR_045407  p.Leu289Pro    US       -              Sporadic cancers
+TP53      P04637     VAR_045408  p.Leu289Arg    US       -              A sporadic cancer
+TP53      P04637     VAR_045409  p.Leu289Val    US       rs1555525154   Sporadic cancers
+TP53      P04637     VAR_045410  p.Arg290Cys    US       rs770374782    Sporadic cancers
+TP53      P04637     VAR_045411  p.Arg290His    LP/P     rs55819519     Li-Fraumeni syndrome (LFS) [MIM:151623]
+TP53      P04637     VAR_045412  p.Arg290Leu    LP/P     -              Li-Fraumeni syndrome (LFS) [MIM:151623]
+TP53      P04637     VAR_045413  p.Lys291Glu    US       rs1555525126   Sporadic cancers
+TP53      P04637     VAR_045414  p.Lys291Met    US       -              Sporadic cancers
+TP53      P04637     VAR_045415  p.Lys291Asn    US       rs372613518    Sporadic cancers
+TP53      P04637     VAR_045416  p.Lys291Arg    US       rs781490101    Sporadic cancers
+TP53      P04637     VAR_045417  p.Lys291Thr    US       -              Sporadic cancers
+TP53      P04637     VAR_045418  p.Lys292Glu    US       -              Sporadic cancers
+TP53      P04637     VAR_045419  p.Lys292Asn    US       -              Sporadic cancers
+TP53      P04637     VAR_045420  p.Lys292Gln    US       -              A sporadic cancer
+TP53      P04637     VAR_045421  p.Lys292Arg    US       rs121912663    Sporadic cancers
+TP53      P04637     VAR_045422  p.Lys292Thr    US       -              Sporadic cancers
+TP53      P04637     VAR_045423  p.Gly293Ala    US       -              A sporadic cancer
+TP53      P04637     VAR_045424  p.Gly293Arg    US       rs587780076    Sporadic cancers
+TP53      P04637     VAR_045425  p.Gly293Val    US       -              Sporadic cancers
+TP53      P04637     VAR_045426  p.Gly293Trp    US       rs587780076    A brain tumor with no family history
+TP53      P04637     VAR_045427  p.Glu294Ala    US       -              A sporadic cancer
+TP53      P04637     VAR_045428  p.Glu294Asp    US       rs1305324490   Sporadic cancers
+TP53      P04637     VAR_045429  p.Glu294Gly    US       -              Sporadic cancers
+TP53      P04637     VAR_045430  p.Glu294Gln    US       -              Sporadic cancers
+TP53      P04637     VAR_045431  p.Glu294Val    US       -              Sporadic cancers
+TP53      P04637     VAR_045432  p.Pro295His    US       -              A sporadic cancer
+TP53      P04637     VAR_045433  p.Pro295Leu    US       rs751713111    Sporadic cancers
+TP53      P04637     VAR_045434  p.Pro295Arg    US       rs751713111    A sporadic cancer
+TP53      P04637     VAR_045435  p.Pro295Ser    US       rs1131691006   Sporadic cancers
+TP53      P04637     VAR_045436  p.His296Asp    US       -              Sporadic cancers
+TP53      P04637     VAR_045437  p.His296Asn    US       -              Sporadic cancers
+TP53      P04637     VAR_045438  p.His296Gln    US       -              Sporadic cancers
+TP53      P04637     VAR_045439  p.His296Arg    US       rs483352696    A sporadic cancer
+TP53      P04637     VAR_045440  p.His296Tyr    US       rs672601296    Sporadic cancers
+TP53      P04637     VAR_045441  p.His297Asp    US       -              A sporadic cancer
+TP53      P04637     VAR_045442  p.His297Asn    US       -              A sporadic cancer
+TP53      P04637     VAR_045443  p.His297Pro    US       -              Sporadic cancers
+TP53      P04637     VAR_045444  p.His297Arg    US       rs876659477    Sporadic cancers
+TP53      P04637     VAR_045445  p.His297Tyr    US       -              Sporadic cancers
+TP53      P04637     VAR_045446  p.Glu298Ala    US       -              A sporadic cancer
+TP53      P04637     VAR_045447  p.Glu298Asp    US       -              Sporadic cancers
+TP53      P04637     VAR_045448  p.Glu298Lys    US       rs201744589    Sporadic cancers
+TP53      P04637     VAR_045449  p.Glu298Gln    US       rs201744589    Sporadic cancers
+TP53      P04637     VAR_045450  p.Glu298Val    US       -              Sporadic cancers
+TP53      P04637     VAR_045451  p.Leu299Pro    US       -              Sporadic cancers
+TP53      P04637     VAR_045452  p.Leu299Gln    US       -              Sporadic cancers
+TP53      P04637     VAR_045453  p.Leu299Arg    US       -              A sporadic cancer
+TP53      P04637     VAR_045454  p.Leu299Val    US       -              A sporadic cancer
+TP53      P04637     VAR_045455  p.Pro300Ala    US       -              Sporadic cancers
+TP53      P04637     VAR_045456  p.Pro300Leu    US       rs909643864    Sporadic cancers
+TP53      P04637     VAR_045457  p.Pro300Ser    US       -              Sporadic cancers
+TP53      P04637     VAR_045458  p.Pro301Ala    US       -              Sporadic cancers
+TP53      P04637     VAR_045459  p.Pro301Gln    US       -              Sporadic cancers
+TP53      P04637     VAR_045460  p.Pro301Ser    US       -              Sporadic cancers
+TP53      P04637     VAR_045461  p.Gly302Ala    US       -              A sporadic cancer
+TP53      P04637     VAR_045462  p.Gly302Arg    US       rs863224686    A sporadic cancer
+TP53      P04637     VAR_045463  p.Ser303Cys    US       -              Sporadic cancers
+TP53      P04637     VAR_045464  p.Ser303Ile    US       -              Sporadic cancers
+TP53      P04637     VAR_045465  p.Ser303Asn    US       rs876658714    Sporadic cancers
+TP53      P04637     VAR_045466  p.Ser303Thr    US       -              Sporadic cancers
+TP53      P04637     VAR_045467  p.Thr304Ala    US       rs587782654    Sporadic cancers
+TP53      P04637     VAR_045468  p.Thr304Ile    US       -              Sporadic cancers
+TP53      P04637     VAR_045469  p.Thr304Asn    US       -              A sporadic cancer
+TP53      P04637     VAR_045470  p.Lys305Glu    US       -              A sporadic cancer
+TP53      P04637     VAR_045471  p.Lys305Met    US       -              A familial cancer not matching LFS
+TP53      P04637     VAR_045472  p.Lys305Asn    US       -              Sporadic cancers
+TP53      P04637     VAR_045473  p.Lys305Arg    US       -              Sporadic cancers
+TP53      P04637     VAR_045474  p.Lys305Thr    US       -              A sporadic cancer
+TP53      P04637     VAR_045475  p.Arg306Pro    LP/P     -              Li-Fraumeni syndrome (LFS) [MIM:151623]
+TP53      P04637     VAR_045476  p.Ala307Pro    US       -              A sporadic cancer
+TP53      P04637     VAR_045477  p.Ala307Ser    US       -              Sporadic cancers
+TP53      P04637     VAR_045478  p.Leu308Met    US       -              Sporadic cancers
+TP53      P04637     VAR_045479  p.Leu308Val    US       -              A sporadic cancer
+TP53      P04637     VAR_045480  p.Pro309Arg    US       -              A sporadic cancer
+TP53      P04637     VAR_045481  p.Asn310Ile    US       -              A sporadic cancer
+TP53      P04637     VAR_045482  p.Asn310Thr    US       -              Sporadic cancers
+TP53      P04637     VAR_045483  p.Asn311His    US       rs1555525007   Sporadic cancers
+TP53      P04637     VAR_045484  p.Asn311Lys    US       -              A sporadic cancer
+TP53      P04637     VAR_045485  p.Asn311Ser    US       rs56184981     A sporadic cancer
+TP53      P04637     VAR_045486  p.Asn311Thr    US       rs56184981     Sporadic cancers
+TP53      P04637     VAR_045487  p.Thr312Ile    US       -              Sporadic cancers
+TP53      P04637     VAR_045488  p.Thr312Ser    US       rs145151284    Sporadic cancers
+TP53      P04637     VAR_045489  p.Ser313Cys    US       -              A sporadic cancer
+TP53      P04637     VAR_045490  p.Ser313Ile    US       -              A sporadic cancer
+TP53      P04637     VAR_045491  p.Ser313Asn    US       -              A sporadic cancer
+TP53      P04637     VAR_045492  p.Ser313Arg    US       rs1367492395   A sporadic cancer
+TP53      P04637     VAR_045493  p.Ser314Phe    US       rs751440465    A sporadic cancer
+TP53      P04637     VAR_045494  p.Ser315Cys    US       -              A sporadic cancer
+TP53      P04637     VAR_045495  p.Ser315Phe    US       -              A sporadic cancer
+TP53      P04637     VAR_045496  p.Ser315Pro    US       -              A sporadic cancer
+TP53      P04637     VAR_045497  p.Pro316Leu    US       rs1555524979   A sporadic cancer
+TP53      P04637     VAR_045498  p.Pro316Thr    US       rs772773208    A sporadic cancer
+TP53      P04637     VAR_045499  p.Gln317His    US       rs1060501199   A kidney cancer with no family history
+TP53      P04637     VAR_045500  p.Gln317Lys    US       rs764735889    Sporadic cancers
+TP53      P04637     VAR_045501  p.Gln317Pro    US       -              A sporadic cancer
+TP53      P04637     VAR_045502  p.Gln317Arg    US       rs1159579789   Sporadic cancers
+TP53      P04637     VAR_045503  p.Pro318Leu    US       rs1555524975   Sporadic cancers
+TP53      P04637     VAR_045504  p.Lys319Glu    US       -              Sporadic cancers
+TP53      P04637     VAR_045505  p.Lys319Asn    US       -              A sporadic cancer
+TP53      P04637     VAR_045506  p.Lys319Arg    US       -              A sporadic cancer
+TP53      P04637     VAR_045507  p.Lys320Asn    US       -              Sporadic cancers
+TP53      P04637     VAR_045508  p.Lys321Glu    US       -              Kidney cancer
+TP53      P04637     VAR_045509  p.Lys321Arg    US       -              A sporadic cancer
+TP53      P04637     VAR_045510  p.Pro322Leu    US       -              Sporadic cancers
+TP53      P04637     VAR_045511  p.Pro322Arg    US       -              Sporadic cancers
+TP53      P04637     VAR_045512  p.Leu323Met    US       -              A sporadic cancer
+TP53      P04637     VAR_045513  p.Leu323Pro    US       -              A sporadic cancer
+TP53      P04637     VAR_045514  p.Leu323Arg    US       -              A sporadic cancer
+TP53      P04637     VAR_045515  p.Asp324Glu    US       -              Sporadic cancers
+TP53      P04637     VAR_045516  p.Asp324Tyr    US       -              A sporadic cancer
+TP53      P04637     VAR_045517  p.Gly325Ala    US       -              A sporadic cancer
+TP53      P04637     VAR_045518  p.Gly325Glu    US       -              Sporadic cancers
+TP53      P04637     VAR_045519  p.Glu326Gly    US       -              A sporadic cancer
+TP53      P04637     VAR_045520  p.Tyr327His    US       -              A sporadic cancer
+TP53      P04637     VAR_045521  p.Tyr327Ser    US       -              A sporadic cancer
+TP53      P04637     VAR_045522  p.Phe328Leu    US       -              A sporadic cancer
+TP53      P04637     VAR_045523  p.Phe328Ser    US       -              Sporadic cancers
+TP53      P04637     VAR_045524  p.Phe328Val    US       -              A sporadic cancer
+TP53      P04637     VAR_045525  p.Thr329Ile    US       rs969930693    A sporadic cancer
+TP53      P04637     VAR_045526  p.Thr329Ser    US       -              A sporadic cancer
+TP53      P04637     VAR_045527  p.Leu330His    US       -              Sporadic cancers
+TP53      P04637     VAR_045528  p.Leu330Arg    US       -              Sporadic cancers
+TP53      P04637     VAR_045529  p.Gln331His    US       rs11575996     Sporadic cancers
+TP53      P04637     VAR_045530  p.Gln331Pro    US       -              Sporadic cancers
+TP53      P04637     VAR_045531  p.Gln331Arg    US       rs1064795056   Sporadic cancers
+TP53      P04637     VAR_045532  p.Ile332Val    US       -              A sporadic cancer
+TP53      P04637     VAR_045533  p.Gly334Trp    US       rs730882028    A sporadic cancer
+TP53      P04637     VAR_045534  p.Arg335Gly    US       -              A sporadic cancer
+TP53      P04637     VAR_045535  p.Arg335His    US       rs771939956    A sporadic cancer
+TP53      P04637     VAR_045536  p.Arg335Leu    US       -              A sporadic cancer
+TP53      P04637     VAR_045537  p.Arg337Leu    US       rs121912664    Sporadic cancers
+TP53      P04637     VAR_045538  p.Arg337Pro    US       rs121912664    Sporadic cancers
+TP53      P04637     VAR_045539  p.Phe338Ile    US       -              A sporadic cancer
+TP53      P04637     VAR_045540  p.Phe338Leu    US       rs150293825    A sporadic cancer
+TP53      P04637     VAR_045541  p.Glu339Gln    US       rs17882252     A sporadic cancer
+TP53      P04637     VAR_045542  p.Phe341Cys    US       -              Sporadic cancers
+TP53      P04637     VAR_045543  p.Arg342Leu    US       -              A sporadic cancer
+TP53      P04637     VAR_045544  p.Arg342Pro    US       rs375338359    Sporadic cancers
+TP53      P04637     VAR_045545  p.Glu343Gly    US       -              Sporadic cancers
+TP53      P04637     VAR_045546  p.Leu344Pro    LP/P     rs121912662    Li-Fraumeni syndrome (LFS) [MIM:151623]
+TP53      P04637     VAR_045547  p.Leu344Arg    US       -              A sporadic cancer
+TP53      P04637     VAR_045548  p.Glu346Ala    US       -              A sporadic cancer
+TP53      P04637     VAR_045549  p.Ala347Gly    US       -              A sporadic cancer
+TP53      P04637     VAR_045550  p.Ala347Thr    US       -              Sporadic cancers
+TP53      P04637     VAR_045551  p.Leu348Phe    US       -              A sporadic cancer
+TP53      P04637     VAR_045552  p.Leu348Ser    US       -              A sporadic cancer
+TP53      P04637     VAR_045553  p.Glu349Asp    US       -              A sporadic cancer
+TP53      P04637     VAR_045554  p.Asp352His    US       -              A sporadic cancer
+TP53      P04637     VAR_045555  p.Ala353Thr    US       -              A sporadic cancer
+TP53      P04637     VAR_045556  p.Gln354Glu    US       -              A sporadic cancer
+TP53      P04637     VAR_045557  p.Gln354Lys    US       rs755394212    A sporadic cancer
+TP53      P04637     VAR_045558  p.Gly356Ala    US       -              A sporadic cancer
+TP53      P04637     VAR_045559  p.Gly356Trp    US       -              A sporadic cancer
+TP53      P04637     VAR_045560  p.Glu358Asp    US       -              A sporadic cancer
+TP53      P04637     VAR_045561  p.Glu358Lys    US       rs587782237    A sporadic cancer
+TP53      P04637     VAR_045562  p.Gly360Ala    LB/B     rs35993958     -
+TP53      P04637     VAR_045563  p.Gly360Val    US       rs35993958     A sporadic cancer
+TP53      P04637     VAR_045564  p.Arg363Lys    US       rs876660285    A sporadic cancer
+TP53      P04637     VAR_045565  p.Ala364Pro    US       -              A sporadic cancer
+TP53      P04637     VAR_045566  p.Ala364Thr    US       -              A sporadic cancer
+TP53      P04637     VAR_045567  p.Ala364Val    US       -              A sporadic cancer
+TP53      P04637     VAR_045568  p.His365Tyr    US       rs267605075    A familial cancer not matching LFS
+TP53      P04637     VAR_045569  p.Lys370Gln    US       -              A sporadic cancer
+TP53      P04637     VAR_045570  p.Ser376Ala    US       -              A sporadic cancer
+TP53      P04637     VAR_045571  p.Ser376Thr    US       -              A sporadic cancer
+TP53      P04637     VAR_045572  p.Arg379His    US       rs863224682    Sporadic cancers
+TP53      P04637     VAR_045573  p.Phe385Leu    US       rs1555524094   A sporadic cancer
+TP53      P04637     VAR_045574  p.Gly389Trp    US       rs587783064    A sporadic cancer
+TP53      P04637     VAR_045575  p.Ser392Leu    US       -              A sporadic cancer
+TP53      P04637     VAR_045783  p.Gly59Asn     US       -              A sporadic cancer
+TP53      P04637     VAR_045784  p.Pro72Cys     US       rs730882014    Sporadic cancers
+TP53      P04637     VAR_045785  p.Pro72Gly     US       -              Sporadic cancers
+TP53      P04637     VAR_045786  p.Pro72His     US       rs1042522      Sporadic cancers
+TP53      P04637     VAR_045787  p.Pro72Leu     US       -              A sporadic cancer
+TP53      P04637     VAR_045788  p.Phe113Gly    US       -              A sporadic cancer
+TP53      P04637     VAR_045789  p.Tyr126Gly    US       -              A sporadic cancer
+TP53      P04637     VAR_045790  p.Lys132Leu    US       -              A sporadic cancer
+TP53      P04637     VAR_045791  p.Lys132Trp    US       -              A sporadic cancer
+TP53      P04637     VAR_045792  p.Cys135Thr    US       -              A sporadic cancer
+TP53      P04637     VAR_045793  p.Cys141Ala    US       -              A sporadic cancer
+TP53      P04637     VAR_045794  p.Pro142Phe    US       -              Sporadic cancers
+TP53      P04637     VAR_045795  p.Pro153Phe    US       -              A sporadic cancer
+TP53      P04637     VAR_045796  p.Gly154Ile    US       -              Sporadic cancers
+TP53      P04637     VAR_045797  p.Arg158Phe    US       -              A sporadic cancer
+TP53      P04637     VAR_045798  p.Arg158Tyr    US       -              A sporadic cancer
+TP53      P04637     VAR_045799  p.Ala159Phe    US       rs730882022    A sporadic cancer
+TP53      P04637     VAR_045800  p.Ala161Phe    US       -              A sporadic cancer
+TP53      P04637     VAR_045801  p.His168Val    US       -              A sporadic cancer
+TP53      P04637     VAR_045802  p.Val173Trp    US       -              A sporadic cancer
+TP53      P04637     VAR_045803  p.Pro177Phe    US       -              Sporadic cancers
+TP53      P04637     VAR_045804  p.Pro177Ile    US       -              A sporadic cancer
+TP53      P04637     VAR_045805  p.Gly187Asn    US       -              A sporadic cancer
+TP53      P04637     VAR_045806  p.Ile195Tyr    US       -              A sporadic cancer
+TP53      P04637     VAR_045807  p.Asn200Pro    US       -              A sporadic cancer
+TP53      P04637     VAR_045808  p.Val203Trp    US       -              A sporadic cancer
+TP53      P04637     VAR_045809  p.Asp208Ile    US       -              A sporadic cancer
+TP53      P04637     VAR_045810  p.Ser215Lys    US       -              Sporadic cancers
+TP53      P04637     VAR_045811  p.Val216Trp    US       -              A sporadic cancer
+TP53      P04637     VAR_045812  p.Pro219Cys    US       -              A sporadic cancer
+TP53      P04637     VAR_045844  p.Gly226Asn    US       -              A sporadic cancer
+TP53      P04637     VAR_045845  p.Asp228Pro    US       -              A sporadic cancer
+TP53      P04637     VAR_045846  p.Cys229Asn    US       -              A sporadic cancer
+TP53      P04637     VAR_045847  p.Tyr234Lys    US       -              A sporadic cancer
+TP53      P04637     VAR_045848  p.Tyr234Gln    US       -              A sporadic cancer
+TP53      P04637     VAR_045849  p.Asn235Met    US       -              A sporadic cancer
+TP53      P04637     VAR_045850  p.Cys238His    US       -              A sporadic cancer
+TP53      P04637     VAR_045851  p.Gly245Phe    US       -              Sporadic cancers
+TP53      P04637     VAR_045852  p.Gly245His    US       -              A sporadic cancer
+TP53      P04637     VAR_045853  p.Gly245Leu    US       -              Sporadic cancers
+TP53      P04637     VAR_045854  p.Gly245Asn    US       -              Sporadic cancers
+TP53      P04637     VAR_045855  p.Asn247Phe    US       -              A sporadic cancer
+TP53      P04637     VAR_045856  p.Arg249Asn    US       -              A sporadic cancer
+TP53      P04637     VAR_045857  p.Pro250Phe    US       -              Sporadic cancers
+TP53      P04637     VAR_045858  p.Pro250Asn    US       -              Sporadic cancers
+TP53      P04637     VAR_045859  p.Ile254Asp    US       -              Sporadic cancers
+TP53      P04637     VAR_045860  p.Glu258Leu    US       -              A sporadic cancer
+TP53      P04637     VAR_045861  p.Asp259Pro    US       -              A sporadic cancer
+TP53      P04637     VAR_045862  p.Asp259Ser    US       -              A sporadic cancer
+TP53      P04637     VAR_045863  p.Gly262His    US       -              A sporadic cancer
+TP53      P04637     VAR_045864  p.Asn268Phe    US       -              A sporadic cancer
+TP53      P04637     VAR_045865  p.Glu271Pro    US       -              A sporadic cancer
+TP53      P04637     VAR_045866  p.Glu271Arg    US       -              A sporadic cancer
+TP53      P04637     VAR_045867  p.Arg273Asn    US       -              A sporadic cancer
+TP53      P04637     VAR_045868  p.Arg273Tyr    US       -              A sporadic cancer
+TP53      P04637     VAR_045869  p.Pro278Phe    US       -              Sporadic cancers
+TP53      P04637     VAR_045870  p.Asp281Arg    US       -              A sporadic cancer
+TP53      P04637     VAR_045871  p.Glu286Leu    US       -              A sporadic cancer
+TP53      P04637     VAR_045872  p.Lys292Gly    US       -              A sporadic cancer
+TP53      P04637     VAR_045873  p.His296Cys    US       -              Sporadic cancers
+TP53      P04637     VAR_045874  p.Leu323Gly    US       -              A sporadic cancer
+TP53      P04637     VAR_045875  p.Asp324Ser    US       -              A sporadic cancer
+TP53      P04637     VAR_047169  p.Asp184Asn    US       rs72661117     Sporadic cancers
+TP53      P04637     VAR_047172  p.Ile195Leu    US       -              A sporadic cancer
+TP53      P04637     VAR_047175  p.Tyr205Phe    US       rs1057520007   Sporadic cancers
+TP53      P04637     VAR_047177  p.His214Gln    US       rs587781386    Sporadic cancers
+TP53      P04637     VAR_047178  p.Val217Met    LB/B     rs35163653     -
+TP53      P04637     VAR_047179  p.Pro223Ala    US       -              A sporadic cancer
+TP53      P04637     VAR_047180  p.Gly226Asp    US       -              Sporadic cancers
+TP53      P04637     VAR_047181  p.His233Arg    US       rs879254233    Sporadic cancers
+TP53      P04637     VAR_047182  p.Asn235Asp    US       -              An adrenocortical carcinoma with no family history
+TP53      P04637     VAR_047183  p.Ser241Thr    LP/P     -              Li-Fraumeni syndrome (LFS) [MIM:151623]
+TP53      P04637     VAR_047186  p.Gly244Ala    US       rs985033810    Sporadic cancers
+TP53      P04637     VAR_047189  p.Asn247Thr    US       -              Sporadic cancers
+TP53      P04637     VAR_047192  p.Pro250Leu    US       rs1064794311   Sporadic cancers
+TP53      P04637     VAR_047193  p.Thr253Pro    US       -              Sporadic cancers
+TP53      P04637     VAR_047194  p.Asp259Ala    US       -              A sporadic cancer
+TP53      P04637     VAR_047196  p.Gly262Asp    US       -              Sporadic cancers
+TP53      P04637     VAR_047197  p.Leu265Arg    US       -              Sporadic cancers
+TP53      P04637     VAR_047198  p.Ser269Ile    US       -              A sporadic cancer
+TP53      P04637     VAR_047199  p.Glu271Val    US       -              An osteosarcoma with no family history
+TP53      P04637     VAR_047200  p.Val274Gly    US       rs1057520006   Sporadic cancers
+TP53      P04637     VAR_047201  p.Cys277Trp    US       -              Sporadic cancers
+TP53      P04637     VAR_047202  p.Asp281Asn    LP/P     rs764146326    Li-Fraumeni syndrome (LFS) [MIM:151623]
+TP53      P04637     VAR_047204  p.Glu287Ala    US       -              A sporadic cancer
+TP53      P04637     VAR_047205  p.Lys291Gln    US       -              Sporadic cancers
+TP53      P04637     VAR_047206  p.Glu294Lys    US       -              Sporadic cancers
+TP53      P04637     VAR_047207  p.His296Leu    US       -              Sporadic cancers
+TP53      P04637     VAR_047208  p.Pro301Thr    US       -              A sporadic cancer
+TP53      P04637     VAR_047209  p.Thr304Ser    US       -              A sporadic cancer
+TP53      P04637     VAR_047210  p.Gln317Leu    US       -              A sporadic cancer
+TP53      P04637     VAR_047211  p.Leu323Val    US       rs1432281680   A sporadic cancer
+TP53      P04637     VAR_047212  p.Leu330Pro    US       -              A sporadic cancer
+TP53      P04637     VAR_047213  p.Arg342Gln    US       rs375338359    Sporadic cancers
+TP53      P04637     VAR_047214  p.Gln354Arg    US       rs752142489    Sporadic cancers
+TP53      P04637     VAR_047215  p.His365Arg    US       -              A sporadic cancer
