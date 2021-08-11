@@ -26,8 +26,6 @@
 <http://rdf.biogateway.eu/reg2targ/prot!9606/P04637--prot!9606/P04637#htri> <http://www.w3.org/2004/02/skos/core#relatedMatch> <http://purl.obolibrary.org/obo/MI_2247> .
 <http://rdf.biogateway.eu/reg2targ/prot!9606/P04637--prot!9606/P04637#htri> <http://semanticscience.org/resource/SIO_000772> <http://identifiers.org/pubmed/15908423> .
 <http://rdf.biogateway.eu/reg2targ/prot!9606/P04637--prot!9606/P04637#htri> <http://schema.org/evidenceLevel> "High" .
-<http://www.w3.org/1999/02/22-rdf-syntax-ns#Statement> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#Class> .
-<http://www.w3.org/1999/02/22-rdf-syntax-ns#Statement> <http://www.w3.org/2004/02/skos/core#prefLabel> "Triple" .
 <http://purl.obolibrary.org/obo/RO_0002429> <http://www.w3.org/2000/01/rdf-schema#subPropertyOf> <http://www.w3.org/2002/07/owl#ObjectProperty> .
 <http://purl.obolibrary.org/obo/RO_0002429> <http://www.w3.org/2004/02/skos/core#prefLabel> "involved in positive regulation of" .
 <http://purl.obolibrary.org/obo/RO_0002430> <http://www.w3.org/2000/01/rdf-schema#subPropertyOf> <http://www.w3.org/2002/07/owl#ObjectProperty> .
@@ -50,3 +48,5 @@
 <http://www.w3.org/2004/02/skos/core#prefLabel> <http://www.w3.org/2004/02/skos/core#prefLabel> "has name" .
 <http://schema.org/evidenceLevel> <http://www.w3.org/2000/01/rdf-schema#subPropertyOf> <http://www.w3.org/2002/07/owl#AnnotationProperty> .
 <http://schema.org/evidenceLevel> <http://www.w3.org/2004/02/skos/core#prefLabel> "has evidence level" .
+<http://www.w3.org/1999/02/22-rdf-syntax-ns#Statement> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#Class> .
+<http://www.w3.org/1999/02/22-rdf-syntax-ns#Statement> <http://www.w3.org/2004/02/skos/core#prefLabel> "Triple" .

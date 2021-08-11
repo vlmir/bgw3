@@ -18,13 +18,13 @@
 <http://www.w3.org/1999/02/22-rdf-syntax-ns#value> <http://www.w3.org/2004/02/skos/core#prefLabel> "has value" .
 <http://www.w3.org/1999/02/22-rdf-syntax-ns#Statement> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#Class> .
 <http://www.w3.org/1999/02/22-rdf-syntax-ns#Statement> <http://www.w3.org/2004/02/skos/core#prefLabel> "Triple" .
-<http://rdf.biogateway.eu/graph/tfac2gene> <http://semanticscience.org/resource/SIO_000253> <http://www.lbbc.ibb.unesp.br/htri> .
 <http://rdf.biogateway.eu/graph/tfac2gene> <http://semanticscience.org/resource/SIO_000253> <http://signor.uniroma2.it> .
 <http://rdf.biogateway.eu/graph/tfac2gene> <http://semanticscience.org/resource/SIO_000253> <http://www.tfacts.org> .
 <http://rdf.biogateway.eu/graph/tfac2gene> <http://semanticscience.org/resource/SIO_000253> <http://www.grnpedia.org/trrust/> .
 <http://rdf.biogateway.eu/graph/tfac2gene> <http://semanticscience.org/resource/SIO_000253> <https://www.fuxmanlab.com> .
 <http://rdf.biogateway.eu/graph/tfac2gene> <http://semanticscience.org/resource/SIO_000253> <http://www.thua45.cn/geredb> .
 <http://rdf.biogateway.eu/graph/tfac2gene> <http://semanticscience.org/resource/SIO_000253> <http://www.extri.org> .
+<http://rdf.biogateway.eu/graph/tfac2gene> <http://semanticscience.org/resource/SIO_000253> <http://www.lbbc.ibb.unesp.br/htri> .
 <http://rdf.biogateway.eu/tfac-gene/hgncsymb!TP53--hgncsymb!TP53> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#Class> .
 <http://rdf.biogateway.eu/tfac-gene/hgncsymb!TP53--hgncsymb!TP53> <http://www.w3.org/2000/01/rdf-schema#subClassOf> <http://www.w3.org/1999/02/22-rdf-syntax-ns#Statement> .
 <http://rdf.biogateway.eu/tfac-gene/hgncsymb!TP53--hgncsymb!TP53> <http://www.w3.org/2004/02/skos/core#prefLabel> "TP53--TP53" .

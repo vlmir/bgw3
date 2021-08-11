@@ -236,7 +236,7 @@ func Test_UpVar(t *testing.T) {
 	wpth := pth + "export/"
 	arg3 := make(util.Set3D)
 	arg3.Add("TP53", "bgwg", "9606/TP53")
-	arg1, _ := parse.UpVar(pth+"parse/test.var")
+	arg1, _ := parse.UpVar(pth+"parse/P04637.var")
 	arg4 := wpth + "gene2phen/9606.nt"
 	t2s := []tt{
 		{arg1, arg3, arg4, 11},
