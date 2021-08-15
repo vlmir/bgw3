@@ -1,6 +1,8 @@
 package parse
 
 import (
+	"encoding/csv"
+	"io"
 	"bufio"
 	"errors"
 	"fmt"
@@ -23,6 +25,47 @@ func checkID(id string, filter util.Set3D, counter util.Set1D) (out int) {
 		}
 	}
 	return out
+}
+
+// Sig2up() parses mapping file provided by Signor and returns a map structure
+func Sig2up(sigmap util.Set3D, pths []string) error {
+	for _, pth := range pths {
+
+	// Open the file
+	csvfile, err := os.Open(pth)
+	if err != nil {
+		log.Fatalln("Couldn't open the csv file", err)
+	}
+
+	// Parse the file
+	r := csv.NewReader(csvfile)
+	//r := csv.NewReader(bufio.NewReader(csvfile))
+	r.Comma = ';'
+	r.Comment = '#'
+
+	// Iterate through the records
+	for {
+		// Read each record from csv
+		rec, err := r.Read()
+		if err == io.EOF {
+			break
+		}
+		if err != nil {
+			log.Fatal(err)
+		}
+		//rec[2] = strings.Replace(rec[2], ", ", "", -1)
+		if len(rec[2]) == 0 {continue}
+		list := strings.Split(rec[2], ", ")
+		//sigmap[rec[0]] = list
+		sigmap.Add(rec[0], "lbl", rec[1])
+		for _, item := range(list){
+			id := strings.TrimSpace(item)
+			if len(id) == 0 {continue}
+			sigmap.Add(rec[0], "ids", id)
+		}
+	}
+	}
+	return nil
 }
 
 // used only in orthosolo()
@@ -652,7 +695,7 @@ func UpVar(rpth string, filters ...util.Set3D) (duos util.Set3D, err error) {
 			fmt.Printf("%s\n", msg)
 			continue
 		} // normally should never happen
-		// remuving the trailing ']':
+		// removing the trailing ']':
 		oriR := strings.TrimSuffix(bits[1], "]")
 		idR := fmt.Sprintf("%s%s%s", nsR, "!", oriR)
 		if idR == "" {

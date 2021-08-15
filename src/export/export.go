@@ -1311,7 +1311,7 @@ func Gene2phen(duos, gsym2bgw util.Set3D, wpth string) (int, error) {
 	} // duoid
 	msg := ""
 	if cntD == 0 {
-		msg = fmt.Sprintf("export.Gene2phen(): NoDuos")
+		msg = fmt.Sprintf("export.Prot2phen(): NoDuos") // sic!
 		panic(errors.New(msg))
 	}
 	msg = fmt.Sprintf("export.Gene2phen(): Pairs: added: %d dropped: %d", cntD, len(duos)-cntD)
@@ -1780,7 +1780,8 @@ func Ortho(duos, upac2bgw util.Set3D, wpth string) (int, error) {
 	msg := ""
 	if cntD == 0 {
 		msg = fmt.Sprintf("export.Ortho(): NoDuos")
-		panic(errors.New(msg))
+		//panic(errors.New(msg))
+		log.Printf("%s", msg)
 	} // ultimately probable for very distant species
 	msg = fmt.Sprintf("export.Ortho(): Pairs: added: %d dropped: %d", cntD, len(duos)-cntD)
 	log.Println(msg)

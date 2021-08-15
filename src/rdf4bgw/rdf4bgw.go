@@ -61,6 +61,7 @@ func rgr2trg(datdir, bgwdir string, txn2prm util.Set2D) (util.Set2D, error) {
 		"reg2targ",
 	}
 	for src, _ := range rdf.Uris4tftg {
+		// define keys and vals for parsing
 		var vals []bgw.Column
 		var keys []bgw.Column
 		ext := ""
@@ -72,29 +73,35 @@ func rgr2trg(datdir, bgwdir string, txn2prm util.Set2D) (util.Set2D, error) {
 			keys, vals = bgw.TftgParseConf()
 			ext = ".f2g"
 		}
+
 		for taxid := range txn2prm {
 			if taxid != "9606" {
 				continue
 			} // for now
-			var d4b bgw.Dat4bridge
+			var d4b bgw.Dat4bridge // one source, one taxon
 			d4b.New()
 			if src == "signor" {
 				rpth = fmt.Sprintf("%s%s%s%s%s", datdir, src, "/", taxid, ext)
 			} else {
 				rpth = fmt.Sprintf("%s%s%s%s%s", datdir, src, "/", src, ext)
 			}
+			log.Println(rpth)
 			err := parse.Tab2struct(rpth, keys, vals, &d4b)
-			if err != nil {
-				log.Println(err)
-				continue
-			}
+				if err != nil {
+					log.Printf("%s%s", "parse.Sig2up: ", err)
+					continue // sic!
+				}
+			// d4b is now loaded with data
 			xmap := bgw.NewXmap()
 			subdir := "xmap/"
 			ext := ".json"
 			rpthx := fmt.Sprintf("%s%s%s%s", bgwdir, subdir, taxid, ext) // read BGW map json
 			err = xmap.Unmarshal(rpthx)
 			util.CheckE(err)
+
 			if src == "signor" {
+				// generating map signor-id -> entitity-ids
+				/*
 				keys = []bgw.Column{
 					{0, "|", 0, "", 0, ""},
 				}
@@ -104,12 +111,19 @@ func rgr2trg(datdir, bgwdir string, txn2prm util.Set2D) (util.Set2D, error) {
 				}
 				rpth = fmt.Sprintf("%s%s%s%s%s", datdir, src, "/", taxid, ".map")
 				sigmap, err := parse.Tab2set3D(rpth, keys, vals)
-				util.CheckE(err)
-				/*
-					if err != nil {
-						panic(err)
-					}
 				*/
+
+				sigmap := make(util.Set3D)
+				rdir := fmt.Sprintf("%s%s%s", datdir, src, "/")
+				smpths := []string{
+					rdir + taxid + ".csv-c",
+					rdir + taxid + ".csv-pf",
+				}
+				err := parse.Sig2up(sigmap, smpths)
+				if err != nil {
+					log.Printf("%s%s", "parse.Sig2up: ", err)
+					continue // sic!
+				}
 				xmap.Signor = sigmap
 			}
 
@@ -230,7 +244,7 @@ func gene2phen(datdir, bgwdir string, txn2prm util.Set2D) (int, error) {
 		util.CheckE(err)
 		gsym2bgw := xmap.Lblg
 		/////////////////////////////////////////////////////////////////////////////
-		//duos, err := parse.UpVar(rpth, gsym2bgw)
+		//duos, err := parse.UpVar(rpth, gsym2bgw) // the second arg is optional
 		duos, err := parse.UpVar(rpth)
 		if err != nil {
 			msg := fmt.Sprintf("rdf4bgw.go:main.gene2phen():%s: %s", err, txid)
@@ -308,7 +322,7 @@ func prot2prot(datdir, bgwdir string, txn2prm util.Set2D) (int, error) {
 	for _, txid := range txn2prm.Keys() {
 		log.Println("\n\tprot2prot for:", txid)
 		subdir := "intact/"
-		ext := ".mit"
+		ext := ".mi25"
 		rpth := fmt.Sprintf("%s%s%s%s", datdir, subdir, txid, ext) // read IntAct tsv
 		subdir = "prot2prot/"
 		ext = ".nt"

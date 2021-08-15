@@ -1,3 +1,5 @@
+<http://semanticscience.org/resource/SIO_010043> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#Class> .
+<http://semanticscience.org/resource/SIO_010043> <http://www.w3.org/2004/02/skos/core#prefLabel> "Protein" .
 <http://purl.obolibrary.org/obo/BFO_0000052> <http://www.w3.org/2000/01/rdf-schema#subPropertyOf> <http://www.w3.org/2002/07/owl#ObjectProperty> .
 <http://purl.obolibrary.org/obo/BFO_0000052> <http://www.w3.org/2004/02/skos/core#prefLabel> "inheres in" .
 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2000/01/rdf-schema#subPropertyOf> <http://www.w3.org/2002/07/owl#ObjectProperty> .
@@ -22,8 +24,6 @@
 <http://www.w3.org/2004/02/skos/core#prefLabel> <http://www.w3.org/2004/02/skos/core#prefLabel> "has name" .
 <http://www.w3.org/2004/02/skos/core#altLabel> <http://www.w3.org/2000/01/rdf-schema#subPropertyOf> <http://www.w3.org/2002/07/owl#AnnotationProperty> .
 <http://www.w3.org/2004/02/skos/core#altLabel> <http://www.w3.org/2004/02/skos/core#prefLabel> "has synonym" .
-<http://semanticscience.org/resource/SIO_010043> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#Class> .
-<http://semanticscience.org/resource/SIO_010043> <http://www.w3.org/2004/02/skos/core#prefLabel> "Protein" .
 <http://rdf.biogateway.eu/graph/prot> <http://semanticscience.org/resource/SIO_000253> <http://uniprot.org/uniprot/> .
 <http://rdf.biogateway.eu/prot/> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#Class> .
 <http://rdf.biogateway.eu/prot/> <http://www.w3.org/2004/02/skos/core#definition> "Set of translation products in Biogateway" .

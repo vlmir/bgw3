@@ -1,3 +1,11 @@
+<http://www.w3.org/2004/02/skos/core#definition> <http://www.w3.org/2000/01/rdf-schema#subPropertyOf> <http://www.w3.org/2002/07/owl#AnnotationProperty> .
+<http://www.w3.org/2004/02/skos/core#definition> <http://www.w3.org/2004/02/skos/core#prefLabel> "has definition" .
+<http://www.w3.org/2004/02/skos/core#prefLabel> <http://www.w3.org/2000/01/rdf-schema#subPropertyOf> <http://www.w3.org/2002/07/owl#AnnotationProperty> .
+<http://www.w3.org/2004/02/skos/core#prefLabel> <http://www.w3.org/2004/02/skos/core#prefLabel> "has name" .
+<http://www.w3.org/2004/02/skos/core#altLabel> <http://www.w3.org/2000/01/rdf-schema#subPropertyOf> <http://www.w3.org/2002/07/owl#AnnotationProperty> .
+<http://www.w3.org/2004/02/skos/core#altLabel> <http://www.w3.org/2004/02/skos/core#prefLabel> "has synonym" .
+<http://semanticscience.org/resource/SIO_010035> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#Class> .
+<http://semanticscience.org/resource/SIO_010035> <http://www.w3.org/2004/02/skos/core#prefLabel> "Gene" .
 <http://semanticscience.org/resource/SIO_010078> <http://www.w3.org/2000/01/rdf-schema#subPropertyOf> <http://www.w3.org/2002/07/owl#ObjectProperty> .
 <http://semanticscience.org/resource/SIO_010078> <http://www.w3.org/2004/02/skos/core#prefLabel> "encodes" .
 <http://purl.obolibrary.org/obo/BFO_0000052> <http://www.w3.org/2000/01/rdf-schema#subPropertyOf> <http://www.w3.org/2002/07/owl#ObjectProperty> .
@@ -12,14 +20,6 @@
 <http://semanticscience.org/resource/SIO_000253> <http://www.w3.org/2004/02/skos/core#prefLabel> "has source" .
 <http://www.w3.org/2000/01/rdf-schema#subClassOf> <http://www.w3.org/2000/01/rdf-schema#subPropertyOf> <http://www.w3.org/2002/07/owl#ObjectProperty> .
 <http://www.w3.org/2000/01/rdf-schema#subClassOf> <http://www.w3.org/2004/02/skos/core#prefLabel> "is subclass of" .
-<http://www.w3.org/2004/02/skos/core#definition> <http://www.w3.org/2000/01/rdf-schema#subPropertyOf> <http://www.w3.org/2002/07/owl#AnnotationProperty> .
-<http://www.w3.org/2004/02/skos/core#definition> <http://www.w3.org/2004/02/skos/core#prefLabel> "has definition" .
-<http://www.w3.org/2004/02/skos/core#prefLabel> <http://www.w3.org/2000/01/rdf-schema#subPropertyOf> <http://www.w3.org/2002/07/owl#AnnotationProperty> .
-<http://www.w3.org/2004/02/skos/core#prefLabel> <http://www.w3.org/2004/02/skos/core#prefLabel> "has name" .
-<http://www.w3.org/2004/02/skos/core#altLabel> <http://www.w3.org/2000/01/rdf-schema#subPropertyOf> <http://www.w3.org/2002/07/owl#AnnotationProperty> .
-<http://www.w3.org/2004/02/skos/core#altLabel> <http://www.w3.org/2004/02/skos/core#prefLabel> "has synonym" .
-<http://semanticscience.org/resource/SIO_010035> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#Class> .
-<http://semanticscience.org/resource/SIO_010035> <http://www.w3.org/2004/02/skos/core#prefLabel> "Gene" .
 <http://rdf.biogateway.eu/graph/gene> <http://semanticscience.org/resource/SIO_000253> <http://uniprot.org/uniprot/> .
 <http://rdf.biogateway.eu/gene/> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#Class> .
 <http://rdf.biogateway.eu/gene/> <http://www.w3.org/2004/02/skos/core#definition> "Set of genes in Biogateway" .

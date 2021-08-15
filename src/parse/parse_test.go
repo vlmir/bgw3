@@ -1,10 +1,44 @@
 package parse
 
 import (
+	"log"
+	"time"
 	"github.com/vlmir/bgw3/src/bgw"
 	"github.com/vlmir/bgw3/src/util"
 	"testing"
 )
+
+func Test_Sig2up(t *testing.T) {
+	mystart := time.Now()
+	type tt struct {
+		arg1 util.Set3D
+		arg2 []string
+		val1 error
+	}
+
+	mp := make(util.Set3D)
+	mps := [...]util.Set3D{mp}
+	pth := "../../tdata/"
+	subdir := "parse/"
+	dpth := pth + subdir
+	ss0 := []string{dpth+"sig-c.head3", dpth+"sig-pf.head3"}
+	sss := [...][]string{ss0}
+
+	tts := []tt{
+		{mps[0], sss[0], nil},
+	}
+	for i, tt := range tts {
+		err := Sig2up(tt.arg1, tt.arg2)
+		if err != tt.val1 {
+			t.Error(
+				"For test", i+1, ": ",
+				"\n\twant", tt.val1,
+				"\n\thave", err,
+			)
+		}
+	}
+	log.Println("Done with Rwget in", time.Since(mystart))
+}
 
 func Test_Tab2struct(t *testing.T) {
 	type tt struct {
@@ -263,7 +297,7 @@ func Test_OrthoDuo(t *testing.T) {
 	}
 	arg4[0].Add("9606", "ortho")
 	arg4[0].Add("10090", "ortho")
-	val1[0] = 1
+	val1[0] = 2
 	for i := 0; i < n; i++ {
 		out, _ := OrthoDuo(arg1, arg2, arg3, arg4[i], arg5)
 		if len(out) != val1[i] {

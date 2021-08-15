@@ -29,8 +29,8 @@ var Upkeys = map[string]string{
 }
 
 var Orthokeys = map[string]string{
-	"KO": "keggortho",
-	// "OrthoDB": "orthodb",
+	// "KO": "keggortho",
+	"OrthoDB": "orthodb",
 }
 
 type Dat4bridge struct {

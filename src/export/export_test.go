@@ -113,6 +113,8 @@ func TestRgr2trg(t *testing.T) {
 	xmap.Upac.Add("P04637", "bgwp", "9606/P04637")
 	xmap.Upac.Add("Q01081", "bgwp", "9606/Q01081")
 	// exporting
+	src := "signor"
+	/*
 	keys = []bgw.Column{
 		{0, "|", 0, "", 0, ""},
 	}
@@ -120,8 +122,13 @@ func TestRgr2trg(t *testing.T) {
 		{1, "|", 0, "|", 1, "lbl"},
 		{2, "|", 0, "|", 1, "ids"},
 	}
-	src := "signor"
 	sigmap, _ := parse.Tab2set3D(pth+src+"/9606.map", keys, vals)
+	*/
+	sigmap := make(util.Set3D)
+	subdir := "parse/"
+	dpth := pth + subdir
+	ss0 := []string{dpth+"sig-c.head3", dpth+"sig-pf.head3"}
+	parse.Sig2up(sigmap, ss0)
 	xmap.Signor = sigmap
 	d4b.Src = src
 	d4b.Taxid = "9606"
@@ -129,11 +136,11 @@ func TestRgr2trg(t *testing.T) {
 	arg02 := &xmap
 	arg03 := pth + "export/"
 	tts := []tt{
-		{arg01, arg02, arg03, 4},
+		{arg01, arg02, arg03, 2}, // Cnts == 4 with the previous test data
 	}
 	pdck := "preg2targ"
 	for i, tt := range tts {
-		_ = Rgr2trg(tt.arg1, tt.arg2, tt.arg3)
+		Rgr2trg(tt.arg1, tt.arg2, tt.arg3)
 		cnts := d4b.Cnts
 		if cnts[pdck][src] != tt.val1 {
 			t.Error(
@@ -144,6 +151,7 @@ func TestRgr2trg(t *testing.T) {
 		}
 	}
 }
+
 func TestTfac2gene(t *testing.T) {
 	type tt struct {
 		arg1 *bgw.Dat4bridge
