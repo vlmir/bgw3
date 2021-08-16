@@ -1,0 +1,31 @@
+<http://www.w3.org/2002/07/owl#versionInfo> <http://www.w3.org/2000/01/rdf-schema#subPropertyOf> <http://www.w3.org/2002/07/owl#AnnotationProperty> .
+<http://www.w3.org/2002/07/owl#versionInfo> <http://www.w3.org/2004/02/skos/core#prefLabel> "current version" .
+<http://www.w3.org/2004/02/skos/core#definition> <http://www.w3.org/2000/01/rdf-schema#subPropertyOf> <http://www.w3.org/2002/07/owl#AnnotationProperty> .
+<http://www.w3.org/2004/02/skos/core#definition> <http://www.w3.org/2004/02/skos/core#prefLabel> "has definition" .
+<http://www.w3.org/2004/02/skos/core#prefLabel> <http://www.w3.org/2000/01/rdf-schema#subPropertyOf> <http://www.w3.org/2002/07/owl#AnnotationProperty> .
+<http://www.w3.org/2004/02/skos/core#prefLabel> <http://www.w3.org/2004/02/skos/core#prefLabel> "has name" .
+<http://purl.obolibrary.org/obo/RO_0002331> <http://www.w3.org/2000/01/rdf-schema#subPropertyOf> <http://www.w3.org/2002/07/owl#ObjectProperty> .
+<http://purl.obolibrary.org/obo/RO_0002331> <http://www.w3.org/2004/02/skos/core#prefLabel> "involved in" .
+<http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2000/01/rdf-schema#subPropertyOf> <http://www.w3.org/2002/07/owl#ObjectProperty> .
+<http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2004/02/skos/core#prefLabel> "is instance of" .
+<http://schema.org/evidenceOrigin> <http://www.w3.org/2000/01/rdf-schema#subPropertyOf> <http://www.w3.org/2002/07/owl#ObjectProperty> .
+<http://schema.org/evidenceOrigin> <http://www.w3.org/2004/02/skos/core#prefLabel> "has evidence origin" .
+<http://semanticscience.org/resource/SIO_000253> <http://www.w3.org/2000/01/rdf-schema#subPropertyOf> <http://www.w3.org/2002/07/owl#ObjectProperty> .
+<http://semanticscience.org/resource/SIO_000253> <http://www.w3.org/2004/02/skos/core#prefLabel> "has source" .
+<http://www.w3.org/2000/01/rdf-schema#subClassOf> <http://www.w3.org/2000/01/rdf-schema#subPropertyOf> <http://www.w3.org/2002/07/owl#ObjectProperty> .
+<http://www.w3.org/2000/01/rdf-schema#subClassOf> <http://www.w3.org/2004/02/skos/core#prefLabel> "is subclass of" .
+<http://www.w3.org/1999/02/22-rdf-syntax-ns#Statement> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#Class> .
+<http://www.w3.org/1999/02/22-rdf-syntax-ns#Statement> <http://www.w3.org/2004/02/skos/core#prefLabel> "Triple" .
+<http://rdf.biogateway.eu/graph/gene2phen> <http://semanticscience.org/resource/SIO_000253> <http://uniprot.org/uniprot/> .
+<http://rdf.biogateway.eu/graph/gene2phen> <http://schema.org/evidenceOrigin> <ftp://ftp.uniprot.org/pub/databases/uniprot/current_release/knowledgebase/variants/humsavar.txt> .
+<http://rdf.biogateway.eu/gene-phen/hgncsymb!TP53--omim!151623> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#Class> .
+<http://rdf.biogateway.eu/gene-phen/hgncsymb!TP53--omim!151623> <http://www.w3.org/2000/01/rdf-schema#subClassOf> <http://www.w3.org/1999/02/22-rdf-syntax-ns#Statement> .
+<http://rdf.biogateway.eu/gene-phen/hgncsymb!TP53--omim!151623> <http://www.w3.org/2004/02/skos/core#prefLabel> "TP53--151623" .
+<http://rdf.biogateway.eu/gene-phen/hgncsymb!TP53--omim!151623> <http://www.w3.org/2004/02/skos/core#definition> "Association between gene TP53 and disease [Li-Fraumeni syndrome (LFS) ]" .
+<http://rdf.biogateway.eu/gene-phen/hgncsymb!TP53--omim!151623> <http://www.w3.org/1999/02/22-rdf-syntax-ns#predicate> <http://purl.obolibrary.org/obo/RO_0002331> .
+<http://rdf.biogateway.eu/gene-phen/hgncsymb!TP53--omim!151623> <http://www.w3.org/1999/02/22-rdf-syntax-ns#subject> <http://rdf.biogateway.eu/gene/9606/TP53> .
+<http://rdf.biogateway.eu/gene/9606/TP53> <http://purl.obolibrary.org/obo/RO_0002331> <http://purl.bioontology.org/ontology/OMIM/151623> .
+<http://rdf.biogateway.eu/gene-phen/hgncsymb!TP53--omim!151623> <http://www.w3.org/1999/02/22-rdf-syntax-ns#object> <http://purl.bioontology.org/ontology/OMIM/151623> .
+<http://rdf.biogateway.eu/gene-phen/hgncsymb!TP53--omim!151623#uniprot> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://rdf.biogateway.eu/gene-phen/hgncsymb!TP53--omim!151623> .
+<http://rdf.biogateway.eu/gene-phen/hgncsymb!TP53--omim!151623#uniprot> <http://semanticscience.org/resource/SIO_000253> <http://uniprot.org/uniprot/> .
+<http://rdf.biogateway.eu/gene-phen/hgncsymb!TP53--omim!151623#uniprot> <http://schema.org/evidenceOrigin> <http://uniprot.org/uniprot/P04637> .

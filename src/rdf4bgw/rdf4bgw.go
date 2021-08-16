@@ -144,6 +144,7 @@ func rgr2trg(datdir, bgwdir string, txn2prm util.Set2D) (util.Set2D, error) {
 	return cnts, nil
 }
 
+/*
 func tfac2gene(datdir, bgwdir string, txn2prm util.Set2D) (int, error) {
 	keys := []bgw.Column{
 		{0, ":", 0, "--", 0, ""},
@@ -221,6 +222,7 @@ func tfac2gene(datdir, bgwdir string, txn2prm util.Set2D) (int, error) {
 	} //txid
 	return nln, nil
 } //tfac2gene
+*/
 
 func gene2phen(datdir, bgwdir string, txn2prm util.Set2D) (int, error) {
 	nln := 0

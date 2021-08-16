@@ -19,7 +19,7 @@ func Test_Sig2up(t *testing.T) {
 	mp := make(util.Set3D)
 	mps := [...]util.Set3D{mp}
 	pth := "../../tdata/"
-	subdir := "parse/"
+	subdir := "signor/"
 	dpth := pth + subdir
 	ss0 := []string{dpth+"sig-c.head3", dpth+"sig-pf.head3"}
 	sss := [...][]string{ss0}
@@ -37,7 +37,7 @@ func Test_Sig2up(t *testing.T) {
 			)
 		}
 	}
-	log.Println("Done with Rwget in", time.Since(mystart))
+	log.Println("Done with Sig2up() in", time.Since(mystart))
 }
 
 func Test_Tab2struct(t *testing.T) {
@@ -63,8 +63,8 @@ func Test_Tab2struct(t *testing.T) {
 	arg4 := &d4b
 	pth := "../../tdata/"
 	tts := []tt{
-		{pth + "parse/test.mit", arg2_1, arg3_1, arg4, 2},
-		{pth + "parse/test.f2g", arg2_2, arg3_2, arg4, 5},
+		{pth + "intact/test.mit", arg2_1, arg3_1, arg4, 2},
+		{pth + "tfacts/test.f2g", arg2_2, arg3_2, arg4, 5},
 		{pth + "signor/9606.mi28", arg2_3, arg3_3, arg4, 12},
 	}
 	keys := []string{
@@ -102,8 +102,8 @@ func Test_Tab2set3D(t *testing.T) {
 	arg2_2, arg3_2 := bgw.TftgParseConf()
 	pth := "../../tdata/"
 	tts := []tt{
-		{pth + "parse/test.mit", arg2_1, arg3_1, 2},
-		{pth + "parse/test.f2g", arg2_2, arg3_2, 5},
+		{pth + "intact/test.mit", arg2_1, arg3_1, 2},
+		{pth + "tfacts/test.f2g", arg2_2, arg3_2, 5},
 	}
 	keys := []string{
 		"P04637--P04637",
@@ -204,7 +204,7 @@ func Test_UpVar(t *testing.T) {
 	pth := "../../tdata/"
 	upvar := make(util.Set3D)
 	upvars := []tt{
-		{pth + "parse/P04637.var", upvar, 1},
+		{pth + "uniprot/P04637.var", upvar, 1},
 	}
 	for i, tt := range upvars {
 		tt.arg2.Add("TP53", "test", "t")
@@ -228,7 +228,7 @@ func Test_MiTab(t *testing.T) {
 	pth := "../../tdata/"
 	mit := make(util.Set3D)
 	mits := []tt{
-		{pth + "parse/test.mit", mit, 1},
+		{pth + "intact/test.mit", mit, 1},
 	}
 	for i, tt := range mits {
 		tt.arg2.Add("P04637", "test", "t")
@@ -254,7 +254,7 @@ func Test_Gaf(t *testing.T) {
 	pth := "../../tdata/"
 	var set = make(util.Set3D)
 	var gafs = []tt{
-		{pth + "parse/test.gaf", set, 150, 17, 39},
+		{pth + "goa/test.gaf", set, 150, 17, 39},
 	}
 	for i, tt := range gafs {
 		tt.arg2.Add("P04637", "test", "t")

@@ -186,7 +186,9 @@ func Capita(rdfmap util.SliceSet) (string, int) {
 	var plU string
 	var sb strings.Builder
 	nln := 0
-	for group, urikeys := range rdfmap {
+	groups := rdfmap.Keys() // sorted
+	for _, group := range(groups) {
+		urikeys := rdfmap[group]
 		switch {
 		case group == "Prns":
 			dic = Prns

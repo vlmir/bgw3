@@ -31,17 +31,6 @@ func StripParQuots(s string) string {
 	s = s[1 : l-1]
 	return s
 }
-
-func counter(s []string, c util.Set2D, a, d, v string) (l int) {
-	l = len(s)
-	if l == 0 {
-		c.Add(d, v)
-	} else {
-		c.Add(a, v)
-	}
-	return l
-}
-
 func Index(vs []string, t string) int {
 	for i, v := range vs {
 		if v == t {
@@ -65,6 +54,18 @@ func Shared(slA, slB []string) []string {
 		}
 	}
 	return s
+}
+
+// TODO move the functions above to 'util'
+
+func counter(s []string, c util.Set2D, a, d, v string) (l int) {
+	l = len(s)
+	if l == 0 {
+		c.Add(d, v)
+	} else {
+		c.Add(a, v)
+	}
+	return l
 }
 
 func Rgr2trg(d *bgw.Dat4bridge, x *bgw.Xmap, wdir string) error {
@@ -355,6 +356,7 @@ func Rgr2trg(d *bgw.Dat4bridge, x *bgw.Xmap, wdir string) error {
 // 1. number of lines written to the output RDF file
 // 2. error
 //func Tfac2gene(dat4txn util.Set4D, upac2bgw, lblg2bgw util.Set3D, wpth string) (int, error) {
+/*
 func Tfac2gene(dat4txn util.Set4D, xmap bgw.Xmap, wpth string) (int, error) {
 	// TODO re-implement to reduce redundancy
 	nss := rdf.Nss // BGW URI name spaces
@@ -413,13 +415,6 @@ func Tfac2gene(dat4txn util.Set4D, xmap bgw.Xmap, wpth string) (int, error) {
 	cntD := 0
 	pfxL := "hgncsymb"
 	pfxR := "hgncsymb"
-	/*
-		for _, src := range dat4txn.Keys() {
-			duos := dat4txn[src]
-			if len(duos) == 0 {
-				continue
-			}
-	*/
 	for _, uri := range rdf.Uris4tftg {
 		srcU := rdf.FormU(uri)
 		sb.WriteString(rdf.FormT(graphU, ourUs["sth2src"], srcU))
@@ -580,12 +575,6 @@ func Tfac2gene(dat4txn util.Set4D, xmap bgw.Xmap, wpth string) (int, error) {
 		msg := fmt.Sprintf("export.Tfac2gene(): NotInBgw: prot: %s", prot)
 		fmt.Printf("%s\n", msg)
 	} // 20200531: 11
-	/*
-		for gene, _ := range cnt["dropG"] {
-			msg := fmt.Sprintf("export.Tfac2gene(): NotInBgw: gene: %s", gene)
-			fmt.Printf("%s\n", msg)
-		} // 20200531: 412, ~9/10th non-protein coding genes
-	*/
 	msg = fmt.Sprintf("export.Tfac2gene(): Prots: added: %d dropped: %d", len(cnt["addP"]), len(cnt["dropP"]))
 	log.Println(msg)
 	msg = fmt.Sprintf("export.Tfac2gene(): Genes: added: %d dropped: %d", len(cnt["addG"]), len(cnt["dropG"]))
@@ -596,6 +585,7 @@ func Tfac2gene(dat4txn util.Set4D, xmap bgw.Xmap, wpth string) (int, error) {
 	}
 	return nln, nil
 } // Tfac2gene
+*/
 
 // GeneProt wrtes RDF files for genes (graph 'gene') and proteins (graph 'prot')
 // Arguments:
