@@ -210,7 +210,6 @@ func Rgr2trg(d *bgw.Dat4bridge, x *bgw.Xmap, wdir string) error {
 		if src != "signor" {
 			oriAids = duo["uniprot"].Keys()
 			oriBids = duo["ncbig"].Keys()     // NCBI GeneID, single
-			oriBids = append(oriBids, oriBid) // if NCNI ID does not map to BGW
 		}
 
 		for _, pdck := range pdcks {
@@ -218,30 +217,30 @@ func Rgr2trg(d *bgw.Dat4bridge, x *bgw.Xmap, wdir string) error {
 			var sb strings.Builder
 			//sb.WriteString(rdf.FormT(graphU, ourUs["sth2src"], srcU))
 
-			for _, oriAid := range oriAids {
+			for _, Aid := range oriAids {
 				// Note: typeA and rypeB habe been re-sret to 'protine'!
 				entAid := ""
 				entBid := ""
 				entAns := ""
 				entBns := ""
 				if typeA == "MI:0326" {
-					bgwAids = xmap.Upac[oriAid]["bgwp"].Keys()
+					bgwAids = xmap.Upac[Aid]["bgwp"].Keys()
 					if len(bgwAids) == 0 {
 						continue
 					}
 					entAid = bgwAids[0] // assuming 1:1
 					entAns = nss["prot"]
 				}
-				for _, oriBid := range oriBids {
+				for _, Bid := range oriBids {
 					if typeB == "MI:0326" {
-						bgwBids = xmap.Upac[oriBid]["bgwp"].Keys()
+						bgwBids = xmap.Upac[Bid]["bgwp"].Keys()
 						if len(bgwBids) == 0 {
 							continue
 						}
 						entBid = bgwBids[0] // assuming 1:1
 						entBns = nss["prot"]
 					} else if typeB == "gene" {
-						// bgwBids = xmap.Ncbig[oriBid]["bgwg"].Keys() // BGW genes!
+						 bgwBids = xmap.Ncbig[Bid]["bgwg"].Keys() // BGW genes!
 						if len(bgwBids) == 0 {
 							bgwBids = xmap.Lblg[oriBid]["bgwg"].Keys()
 						}

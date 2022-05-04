@@ -98,9 +98,13 @@ func TestRgr2trg(t *testing.T) {
 	pth := "../../tdata/"
 	// parsing
 	keys, vals := bgw.SignorParseConf()
-	var d4b bgw.Dat4bridge
-	d4b.New()
-	_ = parse.Tab2struct(pth+"signor/9606.mi28", keys, vals, &d4b)
+	var d4b0 bgw.Dat4bridge
+	d4b0.New()
+	_ = parse.Tab2struct(pth+"signor/9606.mi28", keys, vals, &d4b0)
+	keys, vals = bgw.TftgParseConf()
+	var d4b1 bgw.Dat4bridge
+	d4b1.New()
+	_ = parse.Tab2struct(pth+"tfacts/test.f2g", keys, vals, &d4b1)
 	xmap := bgw.NewXmap()
 	xmap.Upac.Add("P27361", "bgwp", "9606/P27361")
 	xmap.Upac.Add("P48431", "bgwp", "9606/P48431")
@@ -112,41 +116,36 @@ func TestRgr2trg(t *testing.T) {
 	xmap.Upac.Add("P24385", "bgwp", "9606/P24385")
 	xmap.Upac.Add("P04637", "bgwp", "9606/P04637")
 	xmap.Upac.Add("Q01081", "bgwp", "9606/Q01081")
-	// exporting
-	src := "signor"
-	/*
-	keys = []bgw.Column{
-		{0, "|", 0, "", 0, ""},
-	}
-	vals = []bgw.Column{
-		{1, "|", 0, "|", 1, "lbl"},
-		{2, "|", 0, "|", 1, "ids"},
-	}
-	sigmap, _ := parse.Tab2set3D(pth+src+"/9606.map", keys, vals)
-	*/
+	// for tfacts
+	xmap.Upac.Add("P01100", "bgwp", "9606/P01100")
+	xmap.Ncbig.Add("4322", "bgwg", "9606/MMP13")
+	xmap.Bgwg.Add("9606/MMP13", "bgwp", "9606/P01100")
+	/// exporting
+	srcs := []string{"signor", "tfacts"}
+
+	// for Signor complexes and protein families
 	sigmap := make(util.Set3D)
 	subdir := "signor/"
 	dpth := pth + subdir
 	ss0 := []string{dpth+"sig-c.head3", dpth+"sig-pf.head3"}
 	parse.Sig2up(sigmap, ss0)
 	xmap.Signor = sigmap
-	d4b.Src = src
-	d4b.Taxid = "9606"
-	arg01 := &d4b
-	arg02 := &xmap
-	arg03 := pth + "bgw/export/"
+	
 	tts := []tt{
-		{arg01, arg02, arg03, 2}, // Cnts == 4 with the previous test data
+		{&d4b0, &xmap, pth+"bgw/export/", 2}, // Cnts == 4 with the previous test data
+		{&d4b1, &xmap, pth+"bgw/export/", 1},
 	}
 	pdck := "preg2targ"
 	for i, tt := range tts {
+		(*tt.arg1).Src = srcs[i]
+		(*tt.arg1).Taxid = "9606"
 		Rgr2trg(tt.arg1, tt.arg2, tt.arg3)
-		cnts := d4b.Cnts
-		if cnts[pdck][src] != tt.val1 {
+		cnts := (*tt.arg1).Cnts
+		if cnts[pdck][srcs[i]] != tt.val1 {
 			t.Error(
-				"For test", i+1, ": ", tt.arg2, tt.arg3,
+				"For test", i+1, ": ", 
 				"\n\twant", tt.val1,
-				"\n\thave", cnts[pdck][src],
+				"\n\thave", cnts[pdck][srcs[i]],
 			)
 		}
 	}
@@ -165,7 +164,7 @@ func TestTfac2gene(t *testing.T) {
 	keys, vals := bgw.TftgParseConf()
 	var d4b bgw.Dat4bridge
 	d4b.New()
-	_ = parse.Tab2struct(pth+"tfacts/tfacts.f2g", keys, vals, &d4b)
+	// _ = parse.Tab2struct(pth+"tfacts/tfacts.f2g", keys, vals, &d4b)
 	xmap := bgw.NewXmap()
 	xmap.Upac.Add("P04637", "bgwp", "9606/P04637")
 	xmap.Lblg.Add("TP53", "bgwg", "9606/TP53")

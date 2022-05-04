@@ -54,34 +54,6 @@
 <http://rdf.biogateway.eu/preg2targ/prot!9606/P04637--prot!9606/P04637#tfacts> <http://www.w3.org/2004/02/skos/core#relatedMatch> <http://purl.obolibrary.org/obo/MI_2247> .
 <http://rdf.biogateway.eu/preg2targ/prot!9606/P04637--prot!9606/P04637#tfacts> <http://semanticscience.org/resource/SIO_000772> <http://identifiers.org/pubmed/16144844> .
 <http://rdf.biogateway.eu/preg2targ/prot!9606/P04637--prot!9606/P04637#tfacts> <http://schema.org/evidenceLevel> "High" .
-<http://rdf.biogateway.eu/preg2targ/prot!9606/P04637--prot!9606/FOOFOO> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#Class> .
-<http://rdf.biogateway.eu/preg2targ/prot!9606/P04637--prot!9606/FOOFOO> <http://www.w3.org/2000/01/rdf-schema#subClassOf> <http://www.w3.org/1999/02/22-rdf-syntax-ns#Statement> .
-<http://rdf.biogateway.eu/preg2targ/prot!9606/P04637--prot!9606/FOOFOO> <http://www.w3.org/2004/02/skos/core#prefLabel> "involved in positive regulation of" .
-<http://rdf.biogateway.eu/preg2targ/prot!9606/P04637--prot!9606/FOOFOO> <http://www.w3.org/2004/02/skos/core#definition> "9606/P04637 involved in positive regulation of 9606/FOOFOO" .
-<http://rdf.biogateway.eu/preg2targ/prot!9606/P04637--prot!9606/FOOFOO> <http://www.w3.org/1999/02/22-rdf-syntax-ns#predicate> <http://purl.obolibrary.org/obo/RO_0002429> .
-<http://rdf.biogateway.eu/preg2targ/prot!9606/P04637--prot!9606/FOOFOO> <http://www.w3.org/1999/02/22-rdf-syntax-ns#subject> <http://rdf.biogateway.eu/prot/9606/P04637> .
-<http://rdf.biogateway.eu/preg2targ/prot!9606/P04637--prot!9606/FOOFOO> <http://www.w3.org/1999/02/22-rdf-syntax-ns#object> <http://rdf.biogateway.eu/prot/9606/FOOFOO> .
-<http://rdf.biogateway.eu/prot/9606/P04637> <http://purl.obolibrary.org/obo/RO_0002429> <http://rdf.biogateway.eu/prot/9606/FOOFOO> .
-<http://rdf.biogateway.eu/preg2targ/prot!9606/P04637--prot!9606/FOOFOO#tfacts> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://rdf.biogateway.eu/preg2targ/prot!9606/P04637--prot!9606/FOOFOO> .
-<http://rdf.biogateway.eu/preg2targ/prot!9606/P04637--prot!9606/FOOFOO#tfacts> <http://www.w3.org/2004/02/skos/core#prefLabel> "tfacts" .
-<http://rdf.biogateway.eu/preg2targ/prot!9606/P04637--prot!9606/FOOFOO#tfacts> <http://semanticscience.org/resource/SIO_000253> <http://www.tfacts.org> .
-<http://rdf.biogateway.eu/preg2targ/prot!9606/P04637--prot!9606/FOOFOO#tfacts> <http://www.w3.org/2004/02/skos/core#relatedMatch> <http://purl.obolibrary.org/obo/MI_2247> .
-<http://rdf.biogateway.eu/preg2targ/prot!9606/P04637--prot!9606/FOOFOO#tfacts> <http://semanticscience.org/resource/SIO_000772> <http://identifiers.org/pubmed/16144844> .
-<http://rdf.biogateway.eu/preg2targ/prot!9606/P04637--prot!9606/FOOFOO#tfacts> <http://schema.org/evidenceLevel> "High" .
-<http://rdf.biogateway.eu/preg2targ/prot!9606/P04637--prot!9606/P04637> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#Class> .
-<http://rdf.biogateway.eu/preg2targ/prot!9606/P04637--prot!9606/P04637> <http://www.w3.org/2000/01/rdf-schema#subClassOf> <http://www.w3.org/1999/02/22-rdf-syntax-ns#Statement> .
-<http://rdf.biogateway.eu/preg2targ/prot!9606/P04637--prot!9606/P04637> <http://www.w3.org/2004/02/skos/core#prefLabel> "involved in positive regulation of" .
-<http://rdf.biogateway.eu/preg2targ/prot!9606/P04637--prot!9606/P04637> <http://www.w3.org/2004/02/skos/core#definition> "9606/P04637 involved in positive regulation of 9606/P04637" .
-<http://rdf.biogateway.eu/preg2targ/prot!9606/P04637--prot!9606/P04637> <http://www.w3.org/1999/02/22-rdf-syntax-ns#predicate> <http://purl.obolibrary.org/obo/RO_0002429> .
-<http://rdf.biogateway.eu/preg2targ/prot!9606/P04637--prot!9606/P04637> <http://www.w3.org/1999/02/22-rdf-syntax-ns#subject> <http://rdf.biogateway.eu/prot/9606/P04637> .
-<http://rdf.biogateway.eu/preg2targ/prot!9606/P04637--prot!9606/P04637> <http://www.w3.org/1999/02/22-rdf-syntax-ns#object> <http://rdf.biogateway.eu/prot/9606/P04637> .
-<http://rdf.biogateway.eu/prot/9606/P04637> <http://purl.obolibrary.org/obo/RO_0002429> <http://rdf.biogateway.eu/prot/9606/P04637> .
-<http://rdf.biogateway.eu/preg2targ/prot!9606/P04637--prot!9606/P04637#tfacts> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://rdf.biogateway.eu/preg2targ/prot!9606/P04637--prot!9606/P04637> .
-<http://rdf.biogateway.eu/preg2targ/prot!9606/P04637--prot!9606/P04637#tfacts> <http://www.w3.org/2004/02/skos/core#prefLabel> "tfacts" .
-<http://rdf.biogateway.eu/preg2targ/prot!9606/P04637--prot!9606/P04637#tfacts> <http://semanticscience.org/resource/SIO_000253> <http://www.tfacts.org> .
-<http://rdf.biogateway.eu/preg2targ/prot!9606/P04637--prot!9606/P04637#tfacts> <http://www.w3.org/2004/02/skos/core#relatedMatch> <http://purl.obolibrary.org/obo/MI_2247> .
-<http://rdf.biogateway.eu/preg2targ/prot!9606/P04637--prot!9606/P04637#tfacts> <http://semanticscience.org/resource/SIO_000772> <http://identifiers.org/pubmed/16144844> .
-<http://rdf.biogateway.eu/preg2targ/prot!9606/P04637--prot!9606/P04637#tfacts> <http://schema.org/evidenceLevel> "High" .
 <http://www.w3.org/2004/02/skos/core#definition> <http://www.w3.org/2000/01/rdf-schema#subPropertyOf> <http://www.w3.org/2002/07/owl#AnnotationProperty> .
 <http://www.w3.org/2004/02/skos/core#definition> <http://www.w3.org/2004/02/skos/core#prefLabel> "has definition" .
 <http://www.w3.org/2004/02/skos/core#prefLabel> <http://www.w3.org/2000/01/rdf-schema#subPropertyOf> <http://www.w3.org/2002/07/owl#AnnotationProperty> .

@@ -14,6 +14,7 @@ func Test_Init(t *testing.T) {
 	if err := os.RemoveAll(dpth); err != nil {
 		log.Println(err)
 	}
+	// NB: the leading '0' is necessary !
 	if err := os.MkdirAll(filepath.Join(dpth, "uniprot/"), 0755); err != nil {
 		log.Println(err)
 	}
@@ -295,3 +296,12 @@ func Test_Rwget(t *testing.T) {
 	}
 	log.Println("Done with Rwget in", time.Since(mystart))
 }
+
+func Test_Cleanup(t *testing.T) {
+	pth := "../../tdata/"
+	dpth := filepath.Join(pth, "dat4bgw/")
+	if err := os.RemoveAll(dpth); err != nil {
+		log.Println(err)
+	}
+}
+

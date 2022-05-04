@@ -47,18 +47,19 @@ var Nss = map[string]string{
 
 //"orthodb": "https://www.orthodb.org/?query=", // accepts IDs from UP idmapping
 
+// Object Properties
 var Opys = util.SliceSet{
 	"sub2cls":   {"rdfs", "subClassOf", "is subclass of"},
 	"sub2ppy":   {"rdfs", "subPropertyOf", "is subproperty of"},
 	"sth2evd":   {"sio", "SIO_000772", "has evidence"},               // PubMed only: ALL
-	"sth2ori":   {"schema", "evidenceOrigin", "has evidence origin"}, // DATA sources; ALL; e.g. bgwp 2 upca
+	"sth2ori":   {"schema", "evidenceOrigin", "has evidence origin"}, // DATA sources; ALL; e.g. bgwp -> upca
 	"sth2src":   {"sio", "SIO_000253", "has source", "has source is a relation between an entity and another entity from which it stems from."},
 	"sth2eqv":   {"owl", "sameAs", "is equivalent to"},
 	"sth2clm":   {"skos", "closeMatch", "has close match"},
 	"sth2rlm":   {"skos", "relatedMatch", "has related match"},
 	"sub2set":   {"obo", "BFO_0000050", "is part of"},
-	"gn2txn":    {"obo", "BFO_0000052", "inheres in"},
-	"gp2txn":    {"obo", "BFO_0000052", "inheres in"},
+	"gn2txn":    {"obo", "RO_0000052", "characteristic of"},
+	"gp2txn":    {"obo", "RO_0000052", "characteristic of"},
 	"mbr2lst":   {"schema", "memberOf", "is member of"},
 	"ins2cls":   {"rdf", "type", "is instance of"},
 	"gn2phn":    {"obo", "RO_0002331", "involved in"},
@@ -76,6 +77,14 @@ var Opys = util.SliceSet{
 	// not used yet SIO_000208"
 	// "evd4sth": {"sio", "SIO_000208", "is supporting evidence for"},
 }
+
+// Datatype Properties
+var Dpys = util.SliceSet{
+	"gi2^":	{"obo", "OGI_1000004", "start point of interval"},
+	"gi2#":	{"obo", "OGI_1000003", "end point of interval"},
+}
+
+// Annotation Properties
 var Apys = util.SliceSet{
 	"sth2vrs": {"owl", "versionInfo", "current version"},
 	"sth2lbl": {"skos", "prefLabel", "has name"},
@@ -84,11 +93,12 @@ var Apys = util.SliceSet{
 	"sth2syn": {"skos", "altLabel", "has synonym"},               // in gene prot
 	"evd2lvl": {"schema", "evidenceLevel", "has evidence level"}, // prot tfac2gene prot2prot
 	// only in bridges
-	"sth2val": {"rdf", "value", "has value"}, // only tfac2gene (positive|negative)
+	// "sth2val": {"rdf", "value", "has value"}, // only tfac2gene (positive|negative)
 	//"sth2cmt": {"rdfs", "comment", "has comment"}, // gene2phen?
 	// to be used
 	"sth2id": {"skos", "notation", "has notation"}, // TODO
 }
+// Parental classes
 var Prns = util.SliceSet{
 	"cls": {"rdfs", "Class", "class"},
 	//"opy": {"rdfs", "ObjectProperty", "object property"},
@@ -98,6 +108,7 @@ var Prns = util.SliceSet{
 	"tlp": {"sio", "SIO_010043", "Protein"},
 	"gn":  {"sio", "SIO_010035", "Gene"},
 	// "chr": {"obo", "GO_0005694", "Chromosome"},
+	"chr": {"obo", "SO_0000340", "Chromosome"},
 	// "gom": {"obo", "SO_0001026", "Genome"},
 }
 

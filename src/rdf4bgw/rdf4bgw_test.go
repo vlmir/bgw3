@@ -57,12 +57,12 @@ func Test_rgr2trg(t *testing.T) {
 	arg3[0] = make(util.Set2D)
 	arg3[0].Add("9606", "testprome")
 	tts := []tt{
-		{pth, xpth, arg3[0], 6},
+		{pth, xpth, arg3[0], 4},
 	}
 	pdck := "preg2targ"
 	src := "tfacts"
 	for i, tt := range tts {
-		cnts, _ := rgr2trg(tt.arg1, tt.arg2, tt.arg3)
+		cnts, _ := rgr2trg(tt.arg1, tt.arg2, tt.arg3) // process ALL files in src dir
 		if cnts[pdck][src] != tt.val {
 			t.Error(
 				"For test", i+1, ": ", tt.arg1, tt.arg2, tt.arg3,

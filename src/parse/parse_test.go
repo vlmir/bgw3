@@ -48,24 +48,24 @@ func Test_Tab2struct(t *testing.T) {
 		arg4 *bgw.Dat4bridge
 		val  int
 	}
-	arg2_1 := []bgw.Column{
+	keys0 := []bgw.Column{
 		{0, ":", 1, "--", 0, ""},
 		{1, ":", 1, "--", 0, ""},
 	}
-	arg3_1 := []bgw.Column{
+	vals0 := []bgw.Column{
 		{6, "|", 1, "\"", 1, "mtd"},
 		{8, "|", 1, ":", -1, "pubmed"},
 	}
-	arg2_2, arg3_2 := bgw.TftgParseConf()
-	arg2_3, arg3_3 := bgw.SignorParseConf()
+	keys1, vals1 := bgw.TftgParseConf()
+	keys2, vals2 := bgw.SignorParseConf()
 	var d4b bgw.Dat4bridge
 	d4b.New()
 	arg4 := &d4b
 	pth := "../../tdata/"
 	tts := []tt{
-		{pth + "intact/test.mit", arg2_1, arg3_1, arg4, 2},
-		{pth + "tfacts/test.f2g", arg2_2, arg3_2, arg4, 5},
-		{pth + "signor/9606.mi28", arg2_3, arg3_3, arg4, 12},
+		{pth + "intact/test.mit", keys0, vals0, arg4, 2},
+		{pth + "tfacts/test.f2g", keys1, vals1, arg4, 5},
+		{pth + "signor/9606.mi28", keys2, vals2, arg4, 12},
 	}
 	keys := []string{
 		"P04637--P04637",

@@ -6,8 +6,8 @@
 <http://www.w3.org/2004/02/skos/core#prefLabel> <http://www.w3.org/2004/02/skos/core#prefLabel> "has name" .
 <http://www.w3.org/2004/02/skos/core#altLabel> <http://www.w3.org/2000/01/rdf-schema#subPropertyOf> <http://www.w3.org/2002/07/owl#AnnotationProperty> .
 <http://www.w3.org/2004/02/skos/core#altLabel> <http://www.w3.org/2004/02/skos/core#prefLabel> "has synonym" .
-<http://purl.obolibrary.org/obo/BFO_0000052> <http://www.w3.org/2000/01/rdf-schema#subPropertyOf> <http://www.w3.org/2002/07/owl#ObjectProperty> .
-<http://purl.obolibrary.org/obo/BFO_0000052> <http://www.w3.org/2004/02/skos/core#prefLabel> "inheres in" .
+<http://purl.obolibrary.org/obo/RO_0000052> <http://www.w3.org/2000/01/rdf-schema#subPropertyOf> <http://www.w3.org/2002/07/owl#ObjectProperty> .
+<http://purl.obolibrary.org/obo/RO_0000052> <http://www.w3.org/2004/02/skos/core#prefLabel> "characteristic of" .
 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2000/01/rdf-schema#subPropertyOf> <http://www.w3.org/2002/07/owl#ObjectProperty> .
 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2004/02/skos/core#prefLabel> "is instance of" .
 <http://www.w3.org/2002/07/owl#sameAs> <http://www.w3.org/2000/01/rdf-schema#subPropertyOf> <http://www.w3.org/2002/07/owl#ObjectProperty> .
@@ -48,7 +48,7 @@
 <http://rdf.biogateway.eu/prot/9606/FOOFOO> <http://www.w3.org/2000/01/rdf-schema#subClassOf> <http://rdf.biogateway.eu/prot/9606/chr-17> .
 <http://rdf.biogateway.eu/prot/9606/FOOFOO> <http://www.w3.org/2000/01/rdf-schema#subClassOf> <http://rdf.biogateway.eu/prot/9606/chr-Z> .
 <http://rdf.biogateway.eu/prot/9606/FOOFOO> <http://www.w3.org/2000/01/rdf-schema#subClassOf> <http://semanticscience.org/resource/SIO_010043> .
-<http://rdf.biogateway.eu/prot/9606/FOOFOO> <http://purl.obolibrary.org/obo/BFO_0000052> <http://purl.obolibrary.org/obo/NCBITaxon_9606> .
+<http://rdf.biogateway.eu/prot/9606/FOOFOO> <http://purl.obolibrary.org/obo/RO_0000052> <http://purl.obolibrary.org/obo/NCBITaxon_9606> .
 <http://rdf.biogateway.eu/prot/9606/FOOFOO> <http://www.w3.org/2002/07/owl#sameAs> <http://uniprot.org/uniprot/FOOFOO> .
 <http://rdf.biogateway.eu/prot/9606/FOOFOO> <http://www.w3.org/2004/02/skos/core#definition> "Cellular tumor antigen p53" .
 <http://rdf.biogateway.eu/prot/9606/FOOFOO> <http://www.w3.org/2004/02/skos/core#prefLabel> "P53_GHOST" .
@@ -63,7 +63,7 @@
 <http://rdf.biogateway.eu/prot/9606/P04637> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#Class> .
 <http://rdf.biogateway.eu/prot/9606/P04637> <http://www.w3.org/2000/01/rdf-schema#subClassOf> <http://rdf.biogateway.eu/prot/9606/chr-17> .
 <http://rdf.biogateway.eu/prot/9606/P04637> <http://www.w3.org/2000/01/rdf-schema#subClassOf> <http://semanticscience.org/resource/SIO_010043> .
-<http://rdf.biogateway.eu/prot/9606/P04637> <http://purl.obolibrary.org/obo/BFO_0000052> <http://purl.obolibrary.org/obo/NCBITaxon_9606> .
+<http://rdf.biogateway.eu/prot/9606/P04637> <http://purl.obolibrary.org/obo/RO_0000052> <http://purl.obolibrary.org/obo/NCBITaxon_9606> .
 <http://rdf.biogateway.eu/prot/9606/P04637> <http://www.w3.org/2002/07/owl#sameAs> <http://uniprot.org/uniprot/P04637> .
 <http://rdf.biogateway.eu/prot/9606/P04637> <http://www.w3.org/2004/02/skos/core#definition> "Cellular tumor antigen p53" .
 <http://rdf.biogateway.eu/prot/9606/P04637> <http://www.w3.org/2004/02/skos/core#prefLabel> "P53_HUMAN" .
@@ -88,7 +88,7 @@
 <http://rdf.biogateway.eu/prot/9606/Q01081> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#Class> .
 <http://rdf.biogateway.eu/prot/9606/Q01081> <http://www.w3.org/2000/01/rdf-schema#subClassOf> <http://rdf.biogateway.eu/prot/9606/chr-21> .
 <http://rdf.biogateway.eu/prot/9606/Q01081> <http://www.w3.org/2000/01/rdf-schema#subClassOf> <http://semanticscience.org/resource/SIO_010043> .
-<http://rdf.biogateway.eu/prot/9606/Q01081> <http://purl.obolibrary.org/obo/BFO_0000052> <http://purl.obolibrary.org/obo/NCBITaxon_9606> .
+<http://rdf.biogateway.eu/prot/9606/Q01081> <http://purl.obolibrary.org/obo/RO_0000052> <http://purl.obolibrary.org/obo/NCBITaxon_9606> .
 <http://rdf.biogateway.eu/prot/9606/Q01081> <http://www.w3.org/2002/07/owl#sameAs> <http://uniprot.org/uniprot/Q01081> .
 <http://rdf.biogateway.eu/prot/9606/Q01081> <http://www.w3.org/2004/02/skos/core#definition> "Splicing factor U2AF 35 kDa subunit" .
 <http://rdf.biogateway.eu/prot/9606/Q01081> <http://www.w3.org/2004/02/skos/core#prefLabel> "U2AF1_HUMAN" .
