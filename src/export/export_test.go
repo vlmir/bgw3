@@ -20,7 +20,7 @@ func Test_GeneProt(t *testing.T) {
 		val2 int
 	}
 	pth := "../../tdata/"
-	wpth := pth + "bgw/export/"
+	wpth := pth + "OUT/export/"
 	var idmkeys = map[string]string{
 		"Ensembl_PRO":   "ensprotein",
 		"Ensembl":       "ensgene",
@@ -132,8 +132,8 @@ func TestRgr2trg(t *testing.T) {
 	xmap.Signor = sigmap
 	
 	tts := []tt{
-		{&d4b0, &xmap, pth+"bgw/export/", 2}, // Cnts == 4 with the previous test data
-		{&d4b1, &xmap, pth+"bgw/export/", 1},
+		{&d4b0, &xmap, pth+"OUT/export/", 2}, // Cnts == 4 with the previous test data
+		{&d4b1, &xmap, pth+"OUT/export/", 1},
 	}
 	pdck := "preg2targ"
 	for i, tt := range tts {
@@ -177,7 +177,7 @@ func TestTfac2gene(t *testing.T) {
 	d4b.Taxid = "9606"
 	arg01 := &d4b
 	arg02 := &xmap
-	arg03 := pth + "bgw/export/"
+	arg03 := pth + "OUT/export/"
 	tts := []tt{
 		{arg01, arg02, arg03, 2},
 	}
@@ -203,7 +203,7 @@ func Test_Tfac2gene(t *testing.T) {
 		val1 int
 	}
 	pth := "../../tdata/"
-	wpth := pth + "bgw/export/"
+	wpth := pth + "OUT/export/"
 	arg01 := make(util.Set4D)
 	arg01.Add("TP53--TP53", "uniprot", "P04637", "tfacts")
 	arg01.Add("TP53--TP53", "ncbigene", "7157", "tfacts")
@@ -242,7 +242,7 @@ func Test_UpVar(t *testing.T) {
 		val1 int
 	}
 	pth := "../../tdata/"
-	wpth := pth + "bgw/export/"
+	wpth := pth + "OUT/export/"
 	arg3 := make(util.Set3D)
 	arg3.Add("TP53", "bgwg", "9606/TP53")
 	arg1, _ := parse.UpVar(pth+"uniprot/P04637.var")
@@ -274,7 +274,7 @@ func Test_MiTab(t *testing.T) {
 	}
 
 	pth := "../../tdata/"
-	wpth := pth + "bgw/export/"
+	wpth := pth + "OUT/export/"
 	arg2 := make(util.Set3D)
 	arg2.Add("P04637", "bgwp", "9606/P04637")
 	arg1, _ := parse.MiTab(pth+"intact/test.mit", arg2)
@@ -305,7 +305,7 @@ func Test_Prot2go(t *testing.T) {
 		val1 int
 	}
 	pth := "../../tdata/"
-	wpth := pth + "bgw/export/"
+	wpth := pth + "OUT/export/"
 	arg2 := make(util.Set3D)
 	arg2.Add("P04637", "bgwp", "9606/P04637")
 	bps, ccs, mfs, _ := parse.Gaf(pth+"goa/test.gaf", arg2)
@@ -338,7 +338,7 @@ func Test_Ortho(t *testing.T) {
 		val1 int
 	}
 	pth := "../../tdata/"
-	wpth := pth + "bgw/export/"
+	wpth := pth + "OUT/export/"
 	arg1 := make(util.Set3D)
 	arg2 := make(util.Set3D)
 	arg1.Add("uniprot!P02340--uniprot!P04637", "KO", "K04451")

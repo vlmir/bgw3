@@ -67,7 +67,7 @@ func Test_Unmarshal(t *testing.T) {
 		val1 int
 	}
 	tts := []tt{
-		{pth + "bgw/export/xmap/9606.json", 7},
+		{pth + "OUT/export/xmap/9606.json", 7},
 	}
 	for i, tt := range tts {
 		xmap := NewXmap()

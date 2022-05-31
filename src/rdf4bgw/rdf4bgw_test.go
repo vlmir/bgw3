@@ -15,7 +15,7 @@ func Test_geneprot(t *testing.T) {
 	}
 
 	pth := "../../tdata/"
-	xpth := pth + "bgw/rdf4bgw/"
+	xpth := pth + "OUT/rdf4bgw/"
 	var arg3 [5]util.Set2D // txmap
 	arg3[0] = make(util.Set2D)
 	arg3[0].Add("9606", "UP000005640")
@@ -52,7 +52,7 @@ func Test_rgr2trg(t *testing.T) {
 		val  int
 	}
 	pth := "../../tdata/"
-	xpth := pth + "bgw/rdf4bgw/"
+	xpth := pth + "OUT/rdf4bgw/"
 	var arg3 [5]util.Set2D // txmap
 	arg3[0] = make(util.Set2D)
 	arg3[0].Add("9606", "testprome")
@@ -83,7 +83,7 @@ func Test_tfac2gene(t *testing.T) {
 	}
 
 	pth := "../../tdata/"
-	xpth := pth + "bgw/rdf4bgw/"
+	xpth := pth + "OUT/rdf4bgw/"
 	var arg3 [5]util.Set2D // txmap
 	arg3[0] = make(util.Set2D)
 	arg3[0].Add("9606", "1")
@@ -113,7 +113,7 @@ func Test_ortho(t *testing.T) {
 		val1 int
 	}
 	pth := "../../tdata/"
-	xpth := pth + "bgw/rdf4bgw/"
+	xpth := pth + "OUT/rdf4bgw/"
 	var arg3 [5]util.Set2D // txmap
 	arg3[0] = make(util.Set2D)
 	arg3[0].Add("9606", "ortho")
