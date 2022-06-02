@@ -302,6 +302,7 @@ func Rgr2trg(d *bgw.Dat4bridge, x *bgw.Xmap, wdir string) error {
 							id = strings.Replace(id, ":", "_", 1)
 							sb.WriteString(rdf.FormT(insU, ourUs["sth2rlm"], rdf.CompU(nss["obo"], id)))
 						}
+						fmt.Println(duo)
 						// clean up of the mess in the data
 						for _, key := range duo["pubmed"].Keys() {
 							// https://programming-idioms.org/idiom/137/check-if-string-contains-only-digits/1739/go

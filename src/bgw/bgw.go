@@ -129,7 +129,7 @@ func TftgParseConf() ([]Column, []Column) {
 	vals := []Column{
 		{1, "|", 0, "|", 0, "uniprot"},
 		{2, "|", 0, "|", 0, "ncbig"},
-		{3, "|", 0, ";", 0, "pubmed"},
+		{3, "|", -1, ";", 0, "pubmed"},
 		{4, "|", 0, ";", 0, "score"},
 		{5, "|", 0, ";", 0, "mode"},
 	}

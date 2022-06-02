@@ -116,7 +116,7 @@ func Test_Tab2set3D(t *testing.T) {
 			t.Error(
 				"For test", i+1, ": ", tt.arg1, tt.arg2, tt.arg3,
 				"\n\twant", tt.val,
-				"\n\thave", len(out),
+				"\n\thave", len(out[keys[i]]),
 			)
 		}
 	}

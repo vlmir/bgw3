@@ -27,6 +27,31 @@ func checkID(id string, filter util.Set3D, counter util.Set1D) (out int) {
 	return out
 }
 
+// addSubFields() splits a value in a tab-delimited file on the delimiter 
+// specified in bgw.Column and adds the values to util.Set3D
+func addSubFields( pval, pk string, v bgw.Column, out util.Set3D, ) {
+	// Dlm2: secondary delimiter
+	svals := strings.Split(pval, v.Dlm2)
+	ind2 := v.Ind2
+	sk := v.Key // secondary key explicitely specified
+	for i, sval := range svals {
+		if ind2 >= 0 && i != ind2 {
+			continue
+		}
+		sval = strings.TrimSpace(svals[i])
+		if len(sval) == 0 {
+			continue
+		}
+		// db:id
+		if v.Ind3 == -1 {
+			if strings.TrimSpace(svals[0]) != sk {
+				continue
+			}
+		}
+		out.Add(pk, sk, sval)
+	}
+}
+
 // Sig2up() parses mapping file provided by Signor and returns a map structure
 func Sig2up(sigmap util.Set3D, pths []string) error {
 	for _, pth := range pths {
@@ -168,24 +193,12 @@ func Tab2struct(rpth string, keys, vals []bgw.Column, p *bgw.Dat4bridge) (err er
 			// Dlm1: primary delimiter for multiple values
 			// there is at least one value, may contain secondary delimiters
 			for _, pval := range strings.Split(cell, v.Dlm1) {
-				// Dlm2: secondary delimiter
 				// subfields
-				svals := strings.Split(pval, v.Dlm2)
-				sval := strings.TrimSpace(svals[v.Ind2])
-				if len(sval) == 0 {
-					continue
-				}
-				sk := v.Key // secondary key explicitely specified
-				// db:id
-				if v.Ind3 == -1 {
-					if strings.TrimSpace(svals[0]) != sk {
-						continue
-					}
-				}
-				duos.Add(pk, sk, sval)
+				addSubFields(pval, pk, v, duos)
 			}
 		} // one field
 	} // one line
+	fmt.Println(duos)
 	if len(duos) == 0 {
 		msg := fmt.Sprintf("parse.Tab2set3D():%s: NoData", rpth)
 		return errors.New(msg)
@@ -193,7 +206,7 @@ func Tab2struct(rpth string, keys, vals []bgw.Column, p *bgw.Dat4bridge) (err er
 	d4b.Duos = duos
 	*p = d4b
 	return nil
-} // Tab2set3D()
+} // Tab2struct()
 
 // Tab2set3D is a generic parser for tab-delimeted files with sub-fields (up to 2 levels)
 // Tab2set3D converts tabular data into a map keyed on an arbitrary combination of fields
@@ -274,21 +287,7 @@ func Tab2set3D(rpth string, keys, vals []bgw.Column) (out util.Set3D, err error)
 			// Dlm1: primary delimiter for multiple values
 			// there is at least one value, may contain secondary delimiters
 			for _, pval := range strings.Split(cell, v.Dlm1) {
-				// Dlm2: secondary delimiter
-				// subfields
-				svals := strings.Split(pval, v.Dlm2)
-				sval := strings.TrimSpace(svals[v.Ind2])
-				if len(sval) == 0 {
-					continue
-				}
-				sk := v.Key // secondary key explicitely specified
-				// db:id
-				if v.Ind3 == -1 {
-					if strings.TrimSpace(svals[0]) != sk {
-						continue
-					}
-				}
-				out.Add(pk, sk, sval)
+				addSubFields(pval, pk, v, out)
 			}
 		} // one field
 	} // one line
