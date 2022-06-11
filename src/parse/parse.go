@@ -1,13 +1,13 @@
 package parse
 
 import (
-	"encoding/csv"
-	"io"
 	"bufio"
+	"encoding/csv"
 	"errors"
 	"fmt"
 	"github.com/vlmir/bgw3/src/bgw"
 	"github.com/vlmir/bgw3/src/util"
+	"io"
 	"log"
 	"os"
 	"strings"
@@ -27,9 +27,9 @@ func checkID(id string, filter util.Set3D, counter util.Set1D) (out int) {
 	return out
 }
 
-// addSubFields() splits a value in a tab-delimited file on the delimiter 
+// addSubFields() splits a value in a tab-delimited file on the delimiter
 // specified in bgw.Column and adds the values to util.Set3D
-func addSubFields( pval, pk string, v bgw.Column, out util.Set3D, ) {
+func addSubFields(pval, pk string, v bgw.Column, out util.Set3D) {
 	// Dlm2: secondary delimiter
 	svals := strings.Split(pval, v.Dlm2)
 	ind2 := v.Ind2
@@ -56,39 +56,43 @@ func addSubFields( pval, pk string, v bgw.Column, out util.Set3D, ) {
 func Sig2up(sigmap util.Set3D, pths []string) error {
 	for _, pth := range pths {
 
-	// Open the file
-	csvfile, err := os.Open(pth)
-	if err != nil {
-		log.Fatalln("Couldn't open the csv file", err)
-	}
-
-	// Parse the file
-	r := csv.NewReader(csvfile)
-	//r := csv.NewReader(bufio.NewReader(csvfile))
-	r.Comma = ';'
-	r.Comment = '#'
-
-	// Iterate through the records
-	for {
-		// Read each record from csv
-		rec, err := r.Read()
-		if err == io.EOF {
-			break
-		}
+		// Open the file
+		csvfile, err := os.Open(pth)
 		if err != nil {
-			log.Fatal(err)
+			log.Fatalln("Couldn't open the csv file", err)
 		}
-		//rec[2] = strings.Replace(rec[2], ", ", "", -1)
-		if len(rec[2]) == 0 {continue}
-		list := strings.Split(rec[2], ", ")
-		//sigmap[rec[0]] = list
-		sigmap.Add(rec[0], "lbl", rec[1])
-		for _, item := range(list){
-			id := strings.TrimSpace(item)
-			if len(id) == 0 {continue}
-			sigmap.Add(rec[0], "ids", id)
+
+		// Parse the file
+		r := csv.NewReader(csvfile)
+		//r := csv.NewReader(bufio.NewReader(csvfile))
+		r.Comma = ';'
+		r.Comment = '#'
+
+		// Iterate through the records
+		for {
+			// Read each record from csv
+			rec, err := r.Read()
+			if err == io.EOF {
+				break
+			}
+			if err != nil {
+				log.Fatal(err)
+			}
+			//rec[2] = strings.Replace(rec[2], ", ", "", -1)
+			if len(rec[2]) == 0 {
+				continue
+			}
+			list := strings.Split(rec[2], ", ")
+			//sigmap[rec[0]] = list
+			sigmap.Add(rec[0], "lbl", rec[1])
+			for _, item := range list {
+				id := strings.TrimSpace(item)
+				if len(id) == 0 {
+					continue
+				}
+				sigmap.Add(rec[0], "ids", id)
+			}
 		}
-	}
 	}
 	return nil
 }
@@ -198,7 +202,6 @@ func Tab2struct(rpth string, keys, vals []bgw.Column, p *bgw.Dat4bridge) (err er
 			}
 		} // one field
 	} // one line
-	fmt.Println(duos)
 	if len(duos) == 0 {
 		msg := fmt.Sprintf("parse.Tab2set3D():%s: NoData", rpth)
 		return errors.New(msg)
@@ -664,7 +667,7 @@ func UpVar(rpth string, filters ...util.Set3D) (duos util.Set3D, err error) {
 			continue
 		} // skipping lines with '-' in the last field SIC!
 		if strings.TrimSpace(line[48:56]) != "Disease" {
-		//	continue // Disease => LP/P; seems superfluous anyway
+			//	continue // Disease => LP/P; seems superfluous anyway
 		}
 		upca := strings.TrimSpace(line[10:20])
 		symG := strings.TrimSpace(line[0:9])

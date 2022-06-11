@@ -57,7 +57,7 @@ func Test_rgr2trg(t *testing.T) {
 	arg3[0] = make(util.Set2D)
 	arg3[0].Add("9606", "testprome")
 	tts := []tt{
-		{pth, xpth, arg3[0], 4},
+		{pth, xpth, arg3[0], 2}, // Rgr2trg(): 4, Tfac2gene(): 2
 	}
 	pdck := "preg2targ"
 	src := "tfacts"
@@ -72,38 +72,6 @@ func Test_rgr2trg(t *testing.T) {
 		}
 	}
 }
-
-/*
-func Test_tfac2gene(t *testing.T) {
-	type tt struct {
-		arg1 string
-		arg2 string
-		arg3 util.Set2D
-		val  int
-	}
-
-	pth := "../../tdata/"
-	xpth := pth + "OUT/rdf4bgw/"
-	var arg3 [5]util.Set2D // txmap
-	arg3[0] = make(util.Set2D)
-	arg3[0].Add("9606", "1")
-	tts := []tt{
-		// {pth, xpth, arg3[0], arg4[0], 41},
-		{pth, xpth, arg3[0], 22},
-	}
-
-	for i, tt := range tts {
-		n, _ := tfac2gene(tt.arg1, tt.arg2, tt.arg3)
-		if n != tt.val {
-			t.Error(
-				"For test", i+1, ": ", tt.arg1, tt.arg2, tt.arg3,
-				"\n\twant", tt.val,
-				"\n\thave", n,
-			)
-		}
-	}
-}
-*/
 
 func Test_ortho(t *testing.T) {
 	type tt struct {

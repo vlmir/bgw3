@@ -45,7 +45,6 @@ func (m Set2D) Add(key0, key1 string) {
 	mm[key1]++
 }
 
-
 func (m SliceSet) Keys() []string {
 	// extracting map keys
 	//keys := make([]string, 0, len(m))

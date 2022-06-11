@@ -1,11 +1,11 @@
 package parse
 
 import (
-	"log"
-	"time"
 	"github.com/vlmir/bgw3/src/bgw"
 	"github.com/vlmir/bgw3/src/util"
+	"log"
 	"testing"
+	"time"
 )
 
 func Test_Sig2up(t *testing.T) {
@@ -21,7 +21,7 @@ func Test_Sig2up(t *testing.T) {
 	pth := "../../tdata/"
 	subdir := "signor/"
 	dpth := pth + subdir
-	ss0 := []string{dpth+"sig-c.head3", dpth+"sig-pf.head3"}
+	ss0 := []string{dpth + "sig-c.head3", dpth + "sig-pf.head3"}
 	sss := [...][]string{ss0}
 
 	tts := []tt{

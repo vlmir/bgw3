@@ -80,8 +80,8 @@ var Opys = util.SliceSet{
 
 // Datatype Properties
 var Dpys = util.SliceSet{
-	"gi2^":	{"obo", "OGI_1000004", "start point of interval"},
-	"gi2#":	{"obo", "OGI_1000003", "end point of interval"},
+	"gi2^": {"obo", "OGI_1000004", "start point of interval"},
+	"gi2#": {"obo", "OGI_1000003", "end point of interval"},
 }
 
 // Annotation Properties
@@ -98,6 +98,7 @@ var Apys = util.SliceSet{
 	// to be used
 	"sth2id": {"skos", "notation", "has notation"}, // TODO
 }
+
 // Parental classes
 var Prns = util.SliceSet{
 	"cls": {"rdfs", "Class", "class"},
@@ -198,7 +199,7 @@ func Capita(rdfmap util.SliceSet) (string, int) {
 	var sb strings.Builder
 	nln := 0
 	groups := rdfmap.Keys() // sorted
-	for _, group := range(groups) {
+	for _, group := range groups {
 		urikeys := rdfmap[group]
 		switch {
 		case group == "Prns":

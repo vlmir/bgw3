@@ -132,7 +132,7 @@ func saveOneIntact(txid string, datdir string) error {
 	wpth := fmt.Sprintf("%s%s%s%s", datdir, subdir, txid, ext)
 	// NB: HttpFile() tends to fail here with large files !
 	if err := WgetFile(uri, wpth); err != nil {
-	//if _, err := GetFile(uri, "Accept", "text", wpth); err != nil {
+		//if _, err := GetFile(uri, "Accept", "text", wpth); err != nil {
 		log.Println("saveOneIntact(): Warning: Failed to download data for:", txid, err)
 		return err
 	}
@@ -251,7 +251,7 @@ func saveAllOnto(datdir string) {
 		"sio":       "http://semanticscience.org/ontology/",
 		"ncbitaxon": "http://purl.obolibrary.org/obo/",
 		"ro":        "http://purl.obolibrary.org/obo/",
-		"bfo":        "http://purl.obolibrary.org/obo/",
+		"bfo":       "http://purl.obolibrary.org/obo/",
 		"mi":        "http://purl.obolibrary.org/obo/",
 		"go-basic":  "http://purl.obolibrary.org/obo/go/",
 	}

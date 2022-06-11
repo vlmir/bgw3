@@ -166,6 +166,7 @@ func Keys4rgrs() util.SliceSet {
 		"reg2targ",
 		"ins2cls",
 		"sth2src",
+		"gp2bp",
 		"sth2rlm",
 		"sub2cls",
 		"sth2evd",

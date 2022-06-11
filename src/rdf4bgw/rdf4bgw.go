@@ -87,10 +87,10 @@ func rgr2trg(datdir, bgwdir string, txn2prm util.Set2D) (util.Set2D, error) {
 			}
 			log.Println(rpth)
 			err := parse.Tab2struct(rpth, keys, vals, &d4b)
-				if err != nil {
-					log.Printf("%s%s", "parse.Sig2up: ", err)
-					continue // sic!
-				}
+			if err != nil {
+				log.Printf("%s%s", "parse.Sig2up: ", err)
+				continue // sic!
+			}
 			// d4b is now loaded with data
 			xmap := bgw.NewXmap()
 			subdir := "xmap/"
@@ -102,15 +102,15 @@ func rgr2trg(datdir, bgwdir string, txn2prm util.Set2D) (util.Set2D, error) {
 			if src == "signor" {
 				// generating map signor-id -> entitity-ids
 				/*
-				keys = []bgw.Column{
-					{0, "|", 0, "", 0, ""},
-				}
-				vals = []bgw.Column{
-					{1, "|", 0, "|", 1, "lbl"},
-					{2, "|", 0, "|", 1, "ids"},
-				}
-				rpth = fmt.Sprintf("%s%s%s%s%s", datdir, src, "/", taxid, ".map")
-				sigmap, err := parse.Tab2set3D(rpth, keys, vals)
+					keys = []bgw.Column{
+						{0, "|", 0, "", 0, ""},
+					}
+					vals = []bgw.Column{
+						{1, "|", 0, "|", 1, "lbl"},
+						{2, "|", 0, "|", 1, "ids"},
+					}
+					rpth = fmt.Sprintf("%s%s%s%s%s", datdir, src, "/", taxid, ".map")
+					sigmap, err := parse.Tab2set3D(rpth, keys, vals)
 				*/
 
 				sigmap := make(util.Set3D)
@@ -129,7 +129,8 @@ func rgr2trg(datdir, bgwdir string, txn2prm util.Set2D) (util.Set2D, error) {
 
 			d4b.Src = src
 			d4b.Taxid = taxid
-			err = export.Rgr2trg(&d4b, &xmap, bgwdir)
+			// err = export.Rgr2trg(&d4b, &xmap, bgwdir)
+			err = export.Tfac2gene(&d4b, &xmap, bgwdir)
 			if err != nil {
 				//panic(err)
 				log.Println(err)
@@ -142,87 +143,7 @@ func rgr2trg(datdir, bgwdir string, txn2prm util.Set2D) (util.Set2D, error) {
 		}
 	}
 	return cnts, nil
-}
-
-/*
-func tfac2gene(datdir, bgwdir string, txn2prm util.Set2D) (int, error) {
-	keys := []bgw.Column{
-		{0, ":", 0, "--", 0, ""},
-		{0, ":", 1, "--", 0, ""},
-	}
-	vals := []bgw.Column{
-		{1, "|", 0, "|", 0, "uniprot"},
-		{2, "|", 0, "|", 0, "ncbigene"},
-		{3, "|", 0, ";", 0, "pubmed"},
-		{4, "|", 0, ";", 0, "confidence"},
-		{5, "|", 0, ";", 0, "mode"},
-	}
-	graph := "tfac2gene"
-	wdir := fmt.Sprintf("%s%s/", bgwdir, graph)
-	nln := 0
-	for txid := range txn2prm {
-		if txid != "9606" {
-			continue
-		} // for now
-		log.Println("\n\ttfac2gene for:", txid)
-		subdir := "tftg/"
-		rdir := fmt.Sprintf("%s%s%s/", datdir, subdir, txid)
-		ext := ".nt"
-		wpth := fmt.Sprintf("%s%s%s", wdir, txid, ext)
-		subdir = "xmap/"
-		ext = ".json"
-		rpthx := fmt.Sprintf("%s%s%s%s", bgwdir, subdir, txid, ext) // read BGW map json
-		dat4txn := make(util.Set4D)
-		xmap := bgw.NewXmap()
-		err := xmap.Unmarshal(rpthx)
-		util.CheckE(err)
-		//upac2bgw := xmap.Upac
-		//gene2bgw := xmap.Lblg
-		//gene2bgw := xmap.Ncbig
-		for src, _ := range rdf.Uris4tftg {
-			ext := ".f2g"
-			rpth := fmt.Sprintf("%s%s%s", rdir, src, ext)
-			duos, err := parse.Tab2set3D(rpth, keys, vals)
-			if err != nil {
-				msg := fmt.Sprintf("rdf4bgw.go:main.tfac2gene():%s: %s", err, src)
-				log.Println(msg)
-				continue // SIC!
-			}
-			if len(duos) == 0 {
-				msg := fmt.Sprintf("rdf4bgw.go:main.tfac2gene():%s: NoDataFor: %s", txid, src)
-				log.Println(msg)
-				continue
-			}
-			for duoid, duo := range duos {
-				// dat4txn[duoid] = make(util.Set3D)
-				// dat4txn[duoid][src] = make(util.Set2D)
-				for key, vals := range duo {
-					for val, _ := range vals {
-						if key == "uniprot" || key == "ncbigene" {
-							dat4txn.Add(duoid, key, val, src)
-						} else {
-							dat4txn.Add(duoid, src, key, val)
-						}
-					}
-				}
-				// dat4txn[duoid][src] = duo
-			}
-		} //src
-		if len(dat4txn) == 0 {
-			msg := fmt.Sprintf("rdf4bgw.go:main.tfac2gene():%s: NoData", txid)
-			panic(errors.New(msg))
-		} // all sorces failed
-		n, err := export.Tfac2gene(dat4txn, xmap, wpth)
-		if err != nil {
-			msg := fmt.Sprintf("rdf4bgw.go:main.tfac2gene():%s: %s", err, txid)
-			log.Println(msg)
-			continue
-		}
-		nln += n
-	} //txid
-	return nln, nil
-} //tfac2gene
-*/
+} // rgr2trg
 
 func gene2phen(datdir, bgwdir string, txn2prm util.Set2D) (int, error) {
 	nln := 0
