@@ -269,3 +269,46 @@ func CheckE(e error) {
 		panic(e)
 	}
 }
+
+func StripParQuots(s string) string {
+	l := len(s)
+	s = s[1 : l-1]
+	return s
+}
+func Index(vs []string, t string) int {
+	for i, v := range vs {
+		if v == t {
+			return i
+		}
+	}
+	return -1
+}
+
+func Includes(vs []string, t string) bool {
+	return Index(vs, t) >= 0
+}
+
+func Shared(slA, slB []string) []string {
+	s := make([]string, 0)
+	for _, strA := range slA {
+		for _, strB := range slB {
+			if strA == strB {
+				s = append(s, strA)
+			}
+		}
+	}
+	return s
+}
+
+// write a test
+func IsDigital(s string) bool {
+	// https://programming-idioms.org/idiom/137/check-if-string-contains-only-digits/1739/go
+	b := true
+	for _, c := range s {
+		if c < '0' || c > '9' {
+			b = false
+			break
+		}
+	}
+	return b
+}

@@ -127,13 +127,13 @@ func TestRgr2trg(t *testing.T) {
 	sigmap := make(util.Set3D)
 	subdir := "signor/"
 	dpth := pth + subdir
-	ss0 := []string{dpth+"sig-c.head3", dpth+"sig-pf.head3"}
+	ss0 := []string{dpth + "sig-c.head3", dpth + "sig-pf.head3"}
 	parse.Sig2up(sigmap, ss0)
 	xmap.Signor = sigmap
 
 	tts := []tt{
-		{&d4b0, &xmap, pth+"OUT/export/", 2}, // Cnts == 4 with the previous test data
-		{&d4b1, &xmap, pth+"OUT/export/", 1},
+		{&d4b0, &xmap, pth + "OUT/export/", 2}, // Cnts == 4 with the previous test data
+		{&d4b1, &xmap, pth + "OUT/export/", 1},
 	}
 	pdck := "preg2targ"
 	for i, tt := range tts {
