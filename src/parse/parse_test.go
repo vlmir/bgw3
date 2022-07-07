@@ -64,7 +64,7 @@ func Test_Tab2struct(t *testing.T) {
 	pth := "../../tdata/"
 	tts := []tt{
 		{pth + "intact/test.mit", keys0, vals0, arg4, 2},
-		{pth + "tfacts/test.f2g", keys1, vals1, arg4, 5},
+		{pth + "static/tfacts/test.f2g", keys1, vals1, arg4, 5},
 		{pth + "signor/9606.mi28", keys2, vals2, arg4, 12},
 	}
 	keys := []string{
@@ -103,7 +103,7 @@ func Test_Tab2set3D(t *testing.T) {
 	pth := "../../tdata/"
 	tts := []tt{
 		{pth + "intact/test.mit", arg2_1, arg3_1, 2},
-		{pth + "tfacts/test.f2g", arg2_2, arg3_2, 5},
+		{pth + "static/tfacts/test.f2g", arg2_2, arg3_2, 5},
 	}
 	keys := []string{
 		"P04637--P04637",

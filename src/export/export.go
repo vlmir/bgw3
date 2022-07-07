@@ -67,7 +67,6 @@ func Tfac2gene(d *bgw.Dat4bridge, x *bgw.Xmap, wdir string) error {
 		u2t: fmt.Sprintf("%s%s/%s-%s.nt", wdir, u2t, src, taxid),
 	}
 
-	// TODO use os.Create() in all export functions
 	fh4p, err := os.Create(wpths[p2t])
 	util.CheckE(err)
 	defer fh4p.Close()
@@ -131,8 +130,7 @@ func Tfac2gene(d *bgw.Dat4bridge, x *bgw.Xmap, wdir string) error {
 			if len(util.Shared(mytypes, typeBs)) == 0 {
 				continue
 			}
-			// skipping pairs with ambiguous entyty types
-			// TODO see if this happens, fix if needed
+			// skipping pairs with ambiguous entyty types - never happens
 			if len(typeAs) > 1 {
 				fmt.Printf("%s%s %s %s", "export.Tfac2gene(): multiple entity A types, skipping: ", src, duoid, typeAs)
 				continue

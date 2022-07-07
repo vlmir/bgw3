@@ -83,7 +83,7 @@ func rgr2trg(datdir, bgwdir string, txn2prm util.Set2D) (util.Set2D, error) {
 			if src == "signor" {
 				rpth = fmt.Sprintf("%s%s%s%s%s", datdir, src, "/", taxid, ext)
 			} else {
-				rpth = fmt.Sprintf("%s%s%s%s%s", datdir, src, "/", src, ext)
+				rpth = fmt.Sprintf("%s%s%s%s%s%s", datdir, "static/", src, "/", src, ext)
 			}
 			log.Println(rpth)
 			err := parse.Tab2struct(rpth, keys, vals, &d4b)
@@ -216,19 +216,19 @@ func prot2go(datdir, bgwdir string, txn2prm util.Set2D, fx string) (int, error) 
 			log.Println(msg)
 		}
 		/////////////////////////////////////////////////////////////////////////////
-		xpth := ""
+		wpth := ""
 		ext := ".nt"
 		subdir = "prot2bp/"
-		xpth = fmt.Sprintf("%s%s%s%s", bgwdir, subdir, txid, ext) // write goa nt
-		ntp, err := export.Prot2go(bps, upac2bgw, xpth)
+		wpth = fmt.Sprintf("%s%s%s%s", bgwdir, subdir, txid, ext) // write goa nt
+		ntp, err := export.Prot2go(bps, upac2bgw, wpth)
 		util.CheckE(err)
 		subdir = "prot2cc/"
-		xpth = fmt.Sprintf("%s%s%s%s", bgwdir, subdir, txid, ext) // write goa nt
-		ntc, err := export.Prot2go(ccs, upac2bgw, xpth)
+		wpth = fmt.Sprintf("%s%s%s%s", bgwdir, subdir, txid, ext) // write goa nt
+		ntc, err := export.Prot2go(ccs, upac2bgw, wpth)
 		util.CheckE(err)
 		subdir = "prot2mf/"
-		xpth = fmt.Sprintf("%s%s%s%s", bgwdir, subdir, txid, ext) // write goa nt
-		ntf, err := export.Prot2go(mfs, upac2bgw, xpth)
+		wpth = fmt.Sprintf("%s%s%s%s", bgwdir, subdir, txid, ext) // write goa nt
+		ntf, err := export.Prot2go(mfs, upac2bgw, wpth)
 		util.CheckE(err)
 		nts := ntp + ntc + ntf
 		if nts == 0 {
@@ -315,8 +315,8 @@ func ortho(datdir, bgwdir string, txn2prm util.Set2D) (int, error) {
 			subdir = "ortho/"
 			ext = ".nt"
 			file := fmt.Sprintf("%s%s%s%s", txidL, "-", txidR, ext)
-			xpth := fmt.Sprintf("%s%s%s", bgwdir, subdir, file)
-			nts, err := export.Ortho(duos, up2bgw, xpth)
+			wpth := fmt.Sprintf("%s%s%s", bgwdir, subdir, file)
+			nts, err := export.Ortho(duos, up2bgw, wpth)
 			if err != nil {
 				msg := fmt.Sprintf("rdf4bgw.go:main.ortho():%s:%v", err, txids)
 				log.Println(msg)

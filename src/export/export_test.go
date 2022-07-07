@@ -104,7 +104,7 @@ func TestRgr2trg(t *testing.T) {
 	keys, vals = bgw.TftgParseConf()
 	var d4b1 bgw.Dat4bridge
 	d4b1.New()
-	_ = parse.Tab2struct(pth+"tfacts/test.f2g", keys, vals, &d4b1)
+	_ = parse.Tab2struct(pth+"static/tfacts/test.f2g", keys, vals, &d4b1)
 	xmap := bgw.NewXmap()
 	xmap.Upac.Add("P27361", "bgwp", "9606/P27361")
 	xmap.Upac.Add("P48431", "bgwp", "9606/P48431")
@@ -167,7 +167,7 @@ func TestTfac2gene(t *testing.T) {
 	keys, vals = bgw.TftgParseConf()
 	var d4b1 bgw.Dat4bridge
 	d4b1.New()
-	_ = parse.Tab2struct(pth+"tfacts/test.f2g", keys, vals, &d4b1)
+	_ = parse.Tab2struct(pth+"static/tfacts/test.f2g", keys, vals, &d4b1)
 	xmap := bgw.NewXmap()
 	xmap.Upac.Add("P27361", "bgwp", "9606/P27361")
 	xmap.Upac.Add("P48431", "bgwp", "9606/P48431")

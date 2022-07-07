@@ -15,14 +15,14 @@ func Test_geneprot(t *testing.T) {
 	}
 
 	pth := "../../tdata/"
-	xpth := pth + "OUT/rdf4bgw/"
+	wpth := pth + "OUT/rdf4bgw/"
 	var arg3 [5]util.Set2D // txmap
 	arg3[0] = make(util.Set2D)
 	arg3[0].Add("9606", "UP000005640")
 	//arg3[0].Add("7227", "UP000000803")
 	tts := []tt{
-		//		{pth, xpth, arg3[0], 35, 76},
-		{pth, xpth, arg3[0], 50, 68},
+		//		{pth, wpth, arg3[0], 35, 76},
+		{pth, wpth, arg3[0], 50, 68},
 	}
 
 	for i, tt := range tts {
@@ -52,12 +52,12 @@ func Test_rgr2trg(t *testing.T) {
 		val  int
 	}
 	pth := "../../tdata/"
-	xpth := pth + "OUT/rdf4bgw/"
+	wpth := pth + "OUT/rdf4bgw/"
 	var arg3 [5]util.Set2D // txmap
 	arg3[0] = make(util.Set2D)
 	arg3[0].Add("9606", "testprome")
 	tts := []tt{
-		{pth, xpth, arg3[0], 2}, // Rgr2trg(): 4, Tfac2gene(): 2
+		{pth, wpth, arg3[0], 2}, // Rgr2trg(): 4, Tfac2gene(): 2
 	}
 	pdck := "preg2targ"
 	src := "tfacts"
@@ -81,13 +81,13 @@ func Test_ortho(t *testing.T) {
 		val1 int
 	}
 	pth := "../../tdata/"
-	xpth := pth + "OUT/rdf4bgw/"
+	wpth := pth + "OUT/rdf4bgw/"
 	var arg3 [5]util.Set2D // txmap
 	arg3[0] = make(util.Set2D)
 	arg3[0].Add("9606", "ortho")
 	arg3[0].Add("10090", "ortho")
 	tts := []tt{
-		{pth, xpth, arg3[0], 12},
+		{pth, wpth, arg3[0], 12},
 	}
 	for i, tt := range tts {
 		n, _ := ortho(tt.arg1, tt.arg2, tt.arg3)
