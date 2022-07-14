@@ -56,9 +56,9 @@ func geneprot(datdir, bgwdir string, txn2prm util.Set2D) (ntg, ntp int, err erro
 func rgr2trg(datdir, bgwdir string, txn2prm util.Set2D) (util.Set2D, error) {
 	cnts := make(util.Set2D)
 	var pdcks = []string{
-		"preg2targ",
-		"nreg2targ",
-		"reg2targ",
+		"reg2ptarg",
+		"reg2ntarg",
+		"reg2utarg",
 	}
 	for src, _ := range rdf.Uris4tftg {
 		// define keys and vals for parsing

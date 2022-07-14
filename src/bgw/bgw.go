@@ -161,9 +161,9 @@ func SignorParseConf() ([]Column, []Column) {
 func Keys4rgrs() util.SliceSet {
 	keys := make(util.SliceSet)
 	keys["Opys"] = []string{
-		"preg2targ",
-		"nreg2targ",
-		"reg2targ",
+		"reg2ptarg",
+		"reg2ntarg",
+		"reg2utarg",
 		"ins2cls",
 		"sth2src",
 		"gp2bp",

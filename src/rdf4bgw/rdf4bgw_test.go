@@ -59,7 +59,7 @@ func Test_rgr2trg(t *testing.T) {
 	tts := []tt{
 		{pth, wpth, arg3[0], 2}, // Rgr2trg(): 4, Tfac2gene(): 2
 	}
-	pdck := "preg2targ"
+	pdck := "reg2ptarg"
 	src := "tfacts"
 	for i, tt := range tts {
 		cnts, _ := rgr2trg(tt.arg1, tt.arg2, tt.arg3) // process ALL files in src dir

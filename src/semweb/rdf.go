@@ -69,9 +69,9 @@ var Opys = util.SliceSet{
 	"gn2gp":     {"sio", "SIO_010078", "encodes"},
 	"tlp2tlp":   {"obo", "RO_0002436", "molecularly interacts with"},
 	"rgr2trg":   {"obo", "RO_0002428", "involved in regulation of"},
-	"reg2targ":  {"obo", "RO_0002428", "involved in regulation of"},
-	"preg2targ": {"obo", "RO_0002429", "involved in positive regulation of"},
-	"nreg2targ": {"obo", "RO_0002430", "involved in negative regulation of"},
+	"reg2utarg":  {"obo", "RO_0002428", "involved in regulation of"},
+	"reg2ptarg": {"obo", "RO_0002429", "involved in positive regulation of"},
+	"reg2ntarg": {"obo", "RO_0002430", "involved in negative regulation of"},
 	"sth2mtd":   {"rdfs", "isDefinedBy", "is defined by"},
 	"orl2orl":   {"sio", "SIO_000558", "is orthologous to"},
 	// not used yet SIO_000208"

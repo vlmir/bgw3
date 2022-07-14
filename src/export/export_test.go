@@ -135,7 +135,7 @@ func TestRgr2trg(t *testing.T) {
 		{&d4b0, &xmap, pth + "OUT/export/", 2}, // Cnts == 4 with the previous test data
 		{&d4b1, &xmap, pth + "OUT/export/", 1},
 	}
-	pdck := "preg2targ"
+	pdck := "reg2ptarg"
 	for i, tt := range tts {
 		(*tt.arg1).Src = srcs[i]
 		(*tt.arg1).Taxid = "9606"
@@ -199,7 +199,7 @@ func TestTfac2gene(t *testing.T) {
 		{&d4b0, &xmap, pth + "OUT/export/", 1},
 		{&d4b1, &xmap, pth + "OUT/export/", 1},
 	}
-	pdck := "preg2targ"
+	pdck := "reg2ptarg"
 	for i, tt := range tts {
 		(*tt.arg1).Src = srcs[i]
 		(*tt.arg1).Taxid = "9606"

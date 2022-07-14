@@ -44,9 +44,9 @@ func Tfac2gene(d *bgw.Dat4bridge, x *bgw.Xmap, wdir string) error {
 	src := d4b.Src
 	taxid := d4b.Taxid
 	cnts := d4b.Cnts // Set2D
-	p2t := "preg2targ"
-	n2t := "nreg2targ"
-	u2t := "reg2targ"
+	p2t := "reg2ptarg"
+	n2t := "reg2ntarg"
+	u2t := "reg2utarg"
 	// trrust: Activation|Repression|Unknown
 	// cytreg: Activation|Repression
 	// geredb: positive|negative|unknown
@@ -304,9 +304,9 @@ func Rgr2trg(d *bgw.Dat4bridge, x *bgw.Xmap, wdir string) error {
 	src := d4b.Src
 	taxid := d4b.Taxid
 	cnts := d4b.Cnts // Set2D
-	p2t := "preg2targ"
-	n2t := "nreg2targ"
-	u2t := "reg2targ"
+	p2t := "reg2ptarg"
+	n2t := "reg2ntarg"
+	u2t := "reg2utarg"
 	// trrust: Activation|Repression|Unknown
 	// cytreg: Activation|Repression
 	// geredb: positive|negative|unknown

@@ -171,7 +171,7 @@ func Tab2struct(rpth string, keys, vals []bgw.Column, p *bgw.Dat4bridge) (err er
 		}
 		cells := strings.Split(line, "\t") // fields
 		if len(cells) < maxind+1 {
-			msg := fmt.Sprintf("%s:%d: TooFewtFields", rpth, ln)
+			msg := fmt.Sprintf("%s:%d: TooFetFields", rpth, ln)
 			panic(errors.New(msg))
 		}
 		/// primary key
@@ -264,7 +264,7 @@ func Tab2set3D(rpth string, keys, vals []bgw.Column) (out util.Set3D, err error)
 		}
 		cells := strings.Split(line, "\t") // fields
 		if len(cells) < maxind+1 {
-			msg := fmt.Sprintf("%s:%d: TooFewtFields", rpth, ln)
+			msg := fmt.Sprintf("%s:%d: TooFewFields", rpth, ln)
 			panic(errors.New(msg))
 		}
 		/// primary key
