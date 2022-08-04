@@ -392,7 +392,7 @@ func main() {
 			panic(err)
 		}
 
-		saveAllUniprot(datdir, txnmap)
+//		saveAllUniprot(datdir, txnmap)
 		log.Println("Done with UniProt in", time.Since(start))
 	}
 
