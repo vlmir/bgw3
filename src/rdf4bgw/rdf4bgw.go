@@ -116,8 +116,10 @@ func rgr2trg(datdir, bgwdir string, txn2prm util.Set2D) (util.Set2D, error) {
 				sigmap := make(util.Set3D)
 				rdir := fmt.Sprintf("%s%s%s", datdir, src, "/")
 				smpths := []string{
-					rdir + taxid + ".csv-c",
-					rdir + taxid + ".csv-pf",
+					//rdir + taxid + ".csv-c",
+					rdir +"complexes.map",
+					//rdir + taxid + ".csv-pf",
+					rdir + "families.map",
 				}
 				err := parse.Sig2up(sigmap, smpths)
 				if err != nil {

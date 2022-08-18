@@ -23,7 +23,8 @@ def get_batch(batch_url):
         batch_url = get_next_link(response.headers)
 
 taxid = sys.argv[1]
-url = 'https://rest.uniprot.org/uniprotkb/search?fields=accession%2Cid%2Cprotein_name%2Corganism_name%2Cgene_primary%2Cgene_synonym%2Cxref_proteomes%2Clit_pubmed_id%2Cannotation_score&format=tsv&query=%28taxonomy_id%3A' + taxid + '%29&size=500'
+#url = 'https://rest.uniprot.org/uniprotkb/search?fields=accession%2Cid%2Cprotein_name%2Corganism_name%2Corganism_id%2Cgene_primary%2Cgene_synonym%2Cxref_proteomes%2Clit_pubmed_id%2Cannotation_score&format=tsv&query=%28taxonomy_id%3A' + taxid + '%29&size=500'
+url = 'https://rest.uniprot.org/uniprotkb/search?fields=accession%2Cid%2Cgene_primary%2Cgene_synonym%2Corganism_name%2Corganism_id%2Cprotein_name%2Cxref_proteomes%2Clit_pubmed_id%2Cannotation_score&format=tsv&query=%28taxonomy_id%3A' + taxid + '%29&size=500'
 wpth = taxid + '.upt'
 progress = 0
 with open(wpth, 'w') as f:
@@ -34,4 +35,4 @@ with open(wpth, 'w') as f:
         for line in lines[1:]:
             print(line, file=f)
         progress += len(lines[1:])
-        print(f'{progress} / {total}')
+        #print(f'{progress} / {total}')

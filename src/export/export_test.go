@@ -127,7 +127,7 @@ func TestRgr2trg(t *testing.T) {
 	sigmap := make(util.Set3D)
 	subdir := "signor/"
 	dpth := pth + subdir
-	ss0 := []string{dpth + "sig-c.head3", dpth + "sig-pf.head3"}
+	ss0 := []string{dpth + "complexes.map", dpth + "families.map"}
 	parse.Sig2up(sigmap, ss0)
 	xmap.Signor = sigmap
 
@@ -191,7 +191,7 @@ func TestTfac2gene(t *testing.T) {
 	sigmap := make(util.Set3D)
 	subdir := "signor/"
 	dpth := pth + subdir
-	ss0 := []string{dpth + "sig-c.head3", dpth + "sig-pf.head3"}
+	ss0 := []string{dpth + "complexes.map", dpth + "families.map"}
 	parse.Sig2up(sigmap, ss0)
 	xmap.Signor = sigmap
 

@@ -13,13 +13,13 @@ var Nss = map[string]string{
 	"owl":       "http://www.w3.org/2002/07/owl#",
 	"skos":      "http://www.w3.org/2004/02/skos/core#",
 	"schema":    "http://schema.org/",
+	"biolink":    "https://w3id.org/biolink/vocab/", // TODO implement
 	"obo":       "http://purl.obolibrary.org/obo/",
 	"sio":       "http://semanticscience.org/resource/", // resolvable (2014-09-29)
 	"uniprot":   "http://uniprot.org/uniprot/",          // accepts both UPID and UPAC
 	"uniprotkb": "http://uniprot.org/uniprot/",          // accepts both UPID and UPAC
 	"uniparc":   "http://uniprot.org/uniparc/",
 	"ncbigene":  "http://identifiers.org/ncbigene/",
-	// 	"ncbitx":    "http://purl.bioontology.org/ontology/NCBITAXON/",
 	"ncbitx":      "http://purl.obolibrary.org/obo/NCBITaxon_",
 	"refseq":      "http://identifiers.org/refseq/",
 	"keggortho":   "http://identifiers.org/kegg.orthology/",
@@ -35,14 +35,9 @@ var Nss = map[string]string{
 	"ensfungi":    "https://fungi.ensembl.org/id/",
 	"ensmetazoa":  "https://metazoa.ensembl.org/id/",
 	"ensprotists": "https://protists.ensembl.org/id/",
-	// "go":          "http://purl.obolibrary.org/obo/GO_",
 	"bgw":  "http://rdf.biogateway.eu/",
 	"gene": "http://rdf.biogateway.eu/gene/",
 	"prot": "http://rdf.biogateway.eu/prot/",
-	// "tsf_gn":    "http://rdf.biogateway.eu/prot-gene/", // for TF-TG
-	// "up_up":     "http://rdf.biogateway.eu/prot-prot/",
-	// "up_obo":    "http://rdf.biogateway.eu/prot-obo/",
-	// "up_mim":    "http://rdf.biogateway.eu/prot-omim/",
 }
 
 //"orthodb": "https://www.orthodb.org/?query=", // accepts IDs from UP idmapping
@@ -54,12 +49,14 @@ var Opys = util.SliceSet{
 	"sth2evd":   {"sio", "SIO_000772", "has evidence"},               // PubMed only: ALL
 	"sth2ori":   {"schema", "evidenceOrigin", "has evidence origin"}, // DATA sources; ALL; e.g. bgwp -> upca
 	"sth2src":   {"sio", "SIO_000253", "has source", "has source is a relation between an entity and another entity from which it stems from."},
+	//"sth2src":   {"biolink", "provided_by", "is provided by"}, // e.g. UniProt TODO
 	"sth2eqv":   {"owl", "sameAs", "is equivalent to"},
 	"sth2clm":   {"skos", "closeMatch", "has close match"},
 	"sth2rlm":   {"skos", "relatedMatch", "has related match"},
 	"sub2set":   {"obo", "BFO_0000050", "is part of"},
 	"gn2txn":    {"obo", "RO_0000052", "characteristic of"},
 	"gp2txn":    {"obo", "RO_0000052", "characteristic of"},
+	//"be2txn":	{"biolink", "in_taxon", "is characteristic of taxon"} // for any biological entity TODO
 	"mbr2lst":   {"schema", "memberOf", "is member of"},
 	"ins2cls":   {"rdf", "type", "is instance of"},
 	"gn2phn":    {"obo", "RO_0002331", "involved in"},
@@ -67,6 +64,7 @@ var Opys = util.SliceSet{
 	"gp2cc":     {"obo", "BFO_0000050", "is part of", "cellular_component"},
 	"gp2mf":     {"obo", "RO_0002327", "enables", "molecular_function"},
 	"gn2gp":     {"sio", "SIO_010078", "encodes"},
+	//"gn2gp":     {"biolink", "has_gene_product", "has gene product"}, // TODO
 	"tlp2tlp":   {"obo", "RO_0002436", "molecularly interacts with"},
 	"rgr2trg":   {"obo", "RO_0002428", "involved in regulation of"},
 	"reg2utarg":  {"obo", "RO_0002428", "involved in regulation of"},

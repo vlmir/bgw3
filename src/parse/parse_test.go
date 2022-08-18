@@ -21,7 +21,7 @@ func Test_Sig2up(t *testing.T) {
 	pth := "../../tdata/"
 	subdir := "signor/"
 	dpth := pth + subdir
-	ss0 := []string{dpth + "sig-c.head3", dpth + "sig-pf.head3"}
+	ss0 := []string{dpth + "complexes.map", dpth + "families.map"}
 	sss := [...][]string{ss0}
 
 	tts := []tt{
