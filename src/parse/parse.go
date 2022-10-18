@@ -171,8 +171,10 @@ func Tab2struct(rpth string, keys, vals []bgw.Column, p *bgw.Dat4bridge) (err er
 		}
 		cells := strings.Split(line, "\t") // fields
 		if len(cells) < maxind+1 {
-			msg := fmt.Sprintf("%s:%d: TooFetFields", rpth, ln)
-			panic(errors.New(msg))
+			msg := fmt.Sprintf("%s:%d: TooFetFields: want %d have %d", rpth, ln, maxind+1, len(cells))
+			//panic(errors.New(msg))
+			log.Println(msg)
+			continue
 		}
 		/// primary key
 		var pk string // the primary key to be used in the output map

@@ -66,13 +66,8 @@ func rgr2trg(datdir, bgwdir string, txn2prm util.Set2D) (util.Set2D, error) {
 		var keys []bgw.Column
 		ext := ""
 		rpth := ""
-		if src == "signor" {
-			keys, vals = bgw.SignorParseConf()
-			ext = ".mi28"
-		} else {
 			keys, vals = bgw.TftgParseConf()
 			ext = ".f2g"
-		}
 
 		for taxid := range txn2prm {
 			if taxid != "9606" {
@@ -80,18 +75,15 @@ func rgr2trg(datdir, bgwdir string, txn2prm util.Set2D) (util.Set2D, error) {
 			} // for now
 			var d4b bgw.Dat4bridge // one source, one taxon
 			d4b.New()
-			if src == "signor" {
-				rpth = fmt.Sprintf("%s%s%s%s%s", datdir, src, "/", taxid, ext)
-			} else {
-				rpth = fmt.Sprintf("%s%s%s%s%s%s", datdir, "static/", src, "/", src, ext)
-			}
+				rpth = fmt.Sprintf("%s%s%s%s%s%s", datdir, "static/", src, "/", taxid, ext)
 			log.Println(rpth)
 			err := parse.Tab2struct(rpth, keys, vals, &d4b)
 			if err != nil {
-				log.Printf("%s%s", "parse.Sig2up: ", err)
+				log.Printf("%s%s", "parse.Tab2struct: ", err)
 				continue // sic!
 			}
 			// d4b is now loaded with data
+			//fmt.Println(d4b)
 			xmap := bgw.NewXmap()
 			subdir := "xmap/"
 			ext := ".json"
@@ -99,35 +91,7 @@ func rgr2trg(datdir, bgwdir string, txn2prm util.Set2D) (util.Set2D, error) {
 			err = xmap.Unmarshal(rpthx)
 			util.CheckE(err)
 
-			if src == "signor" {
-				// generating map signor-id -> entitity-ids
-				/*
-					keys = []bgw.Column{
-						{0, "|", 0, "", 0, ""},
-					}
-					vals = []bgw.Column{
-						{1, "|", 0, "|", 1, "lbl"},
-						{2, "|", 0, "|", 1, "ids"},
-					}
-					rpth = fmt.Sprintf("%s%s%s%s%s", datdir, src, "/", taxid, ".map")
-					sigmap, err := parse.Tab2set3D(rpth, keys, vals)
-				*/
-
-				sigmap := make(util.Set3D)
-				rdir := fmt.Sprintf("%s%s%s", datdir, src, "/")
-				smpths := []string{
-					//rdir + taxid + ".csv-c",
-					rdir +"complexes.map",
-					//rdir + taxid + ".csv-pf",
-					rdir + "families.map",
-				}
-				err := parse.Sig2up(sigmap, smpths)
-				if err != nil {
-					log.Printf("%s%s", "parse.Sig2up: ", err)
-					continue // sic!
-				}
-				xmap.Signor = sigmap
-			}
+			//fmt.Println("XMAP:", xmap)
 
 			d4b.Src = src
 			d4b.Taxid = taxid

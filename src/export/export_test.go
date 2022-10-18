@@ -88,7 +88,7 @@ func Test_GeneProt(t *testing.T) {
 	}
 }
 
-func TestRgr2trg(t *testing.T) {
+func Test_Tfac2gene(t *testing.T) {
 	type tt struct {
 		arg1 *bgw.Dat4bridge
 		arg2 *bgw.Xmap
@@ -97,106 +97,26 @@ func TestRgr2trg(t *testing.T) {
 	}
 	pth := "../../tdata/"
 	// parsing
-	keys, vals := bgw.SignorParseConf()
 	var d4b0 bgw.Dat4bridge
 	d4b0.New()
-	_ = parse.Tab2struct(pth+"signor/9606.mi28", keys, vals, &d4b0)
-	keys, vals = bgw.TftgParseConf()
+	keys, vals := bgw.TftgParseConf()
+	_ = parse.Tab2struct(pth+"static/tfacts/9606.f2g", keys, vals, &d4b0)
 	var d4b1 bgw.Dat4bridge
 	d4b1.New()
-	_ = parse.Tab2struct(pth+"static/tfacts/test.f2g", keys, vals, &d4b1)
-	xmap := bgw.NewXmap()
-	xmap.Upac.Add("P27361", "bgwp", "9606/P27361")
-	xmap.Upac.Add("P48431", "bgwp", "9606/P48431")
-	xmap.Upac.Add("Q9BTC0", "bgwp", "9606/Q9BTC0")
-	xmap.Upac.Add("P08648", "bgwp", "9606/P08648")
-	xmap.Upac.Add("P10275", "bgwp", "9606/P10275")
-	xmap.Upac.Add("P19838", "bgwp", "9606/P19838")
-	xmap.Upac.Add("Q04206", "bgwp", "9606/Q04206")
-	xmap.Upac.Add("P24385", "bgwp", "9606/P24385")
-	xmap.Upac.Add("P04637", "bgwp", "9606/P04637")
-	xmap.Upac.Add("Q01081", "bgwp", "9606/Q01081")
-	// for tfacts
-	xmap.Upac.Add("P01100", "bgwp", "9606/P01100")
-	xmap.Ncbig.Add("4322", "bgwg", "9606/MMP13")
-	xmap.Bgwg.Add("9606/MMP13", "bgwp", "9606/P01100")
-	/// exporting
-	srcs := []string{"signor", "tfacts"}
-
-	// for Signor complexes and protein families
-	sigmap := make(util.Set3D)
-	subdir := "signor/"
-	dpth := pth + subdir
-	ss0 := []string{dpth + "complexes.map", dpth + "families.map"}
-	parse.Sig2up(sigmap, ss0)
-	xmap.Signor = sigmap
-
-	tts := []tt{
-		{&d4b0, &xmap, pth + "OUT/export/", 2}, // Cnts == 4 with the previous test data
-		{&d4b1, &xmap, pth + "OUT/export/", 1},
-	}
-	pdck := "reg2ptarg"
-	for i, tt := range tts {
-		(*tt.arg1).Src = srcs[i]
-		(*tt.arg1).Taxid = "9606"
-		Rgr2trg(tt.arg1, tt.arg2, tt.arg3)
-		cnts := (*tt.arg1).Cnts
-		if cnts[pdck][srcs[i]] != tt.val1 {
-			t.Error(
-				"For test", i+1, ": ",
-				"\n\twant", tt.val1,
-				"\n\thave", cnts[pdck][srcs[i]],
-			)
-		}
-	}
-}
-
-func TestTfac2gene(t *testing.T) {
-	type tt struct {
-		arg1 *bgw.Dat4bridge
-		arg2 *bgw.Xmap
-		arg3 string
-		val1 int
-	}
-	pth := "../../tdata/"
-	// parsing
-	keys, vals := bgw.SignorParseConf()
-	var d4b0 bgw.Dat4bridge
-	d4b0.New()
-	_ = parse.Tab2struct(pth+"signor/9606.mi28", keys, vals, &d4b0)
 	keys, vals = bgw.TftgParseConf()
-	var d4b1 bgw.Dat4bridge
-	d4b1.New()
-	_ = parse.Tab2struct(pth+"static/tfacts/test.f2g", keys, vals, &d4b1)
+	_ = parse.Tab2struct(pth+"static/ntnu/9606.f2g", keys, vals, &d4b1)
 	xmap := bgw.NewXmap()
-	xmap.Upac.Add("P27361", "bgwp", "9606/P27361")
-	xmap.Upac.Add("P48431", "bgwp", "9606/P48431")
-	xmap.Upac.Add("Q9BTC0", "bgwp", "9606/Q9BTC0")
-	xmap.Upac.Add("P08648", "bgwp", "9606/P08648")
-	xmap.Bgwp.Add("9606/P08648", "bgwg", "9606/GENEX")
-	xmap.Upac.Add("P10275", "bgwp", "9606/P10275")
-	xmap.Upac.Add("P19838", "bgwp", "9606/P19838")
-	xmap.Upac.Add("Q04206", "bgwp", "9606/Q04206")
-	xmap.Upac.Add("P24385", "bgwp", "9606/P24385")
-	xmap.Upac.Add("P04637", "bgwp", "9606/P04637")
-	xmap.Upac.Add("Q01081", "bgwp", "9606/Q01081")
-	// for tfacts
 	xmap.Upac.Add("P01100", "bgwp", "9606/P01100")
+	xmap.Upac.Add("P04637", "bgwp", "9606/P04637")
 	xmap.Ncbig.Add("4322", "bgwg", "9606/MMP13")
+	xmap.Ncbig.Add("7157", "bgwg", "9606/TP53")
 	xmap.Bgwg.Add("9606/MMP13", "bgwp", "9606/P01100")
+	xmap.Bgwg.Add("9606/TP53", "bgwp", "9606/P04637")
 	/// exporting
-	srcs := []string{"signor", "tfacts"}
-
-	// for Signor complexes and protein families
-	sigmap := make(util.Set3D)
-	subdir := "signor/"
-	dpth := pth + subdir
-	ss0 := []string{dpth + "complexes.map", dpth + "families.map"}
-	parse.Sig2up(sigmap, ss0)
-	xmap.Signor = sigmap
+	srcs := []string{"tfacts", "ntnu"}
 
 	tts := []tt{
-		{&d4b0, &xmap, pth + "OUT/export/", 1},
+		{&d4b0, &xmap, pth + "OUT/export/", 2},
 		{&d4b1, &xmap, pth + "OUT/export/", 1},
 	}
 	pdck := "reg2ptarg"
@@ -258,7 +178,7 @@ func Test_MiTab(t *testing.T) {
 	wpth := pth + "OUT/export/"
 	arg2 := make(util.Set3D)
 	arg2.Add("P04637", "bgwp", "9606/P04637")
-	arg1, _ := parse.MiTab(pth+"intact/test.mit", arg2)
+	arg1, _ := parse.MiTab(pth+"intact/9606.mit", arg2)
 	arg3 := wpth + "prot2prot/9606.nt"
 	tts := []tt{
 		{arg1, arg2, arg3, 73},
@@ -289,7 +209,7 @@ func Test_Prot2go(t *testing.T) {
 	wpth := pth + "OUT/export/"
 	arg2 := make(util.Set3D)
 	arg2.Add("P04637", "bgwp", "9606/P04637")
-	bps, ccs, mfs, _ := parse.Gaf(pth+"goa/test.gaf", arg2)
+	bps, ccs, mfs, _ := parse.Gaf(pth+"goa/9606.gaf", arg2)
 	out := [3]string{"prot2bp/9606.nt", "prot2cc/9606.nt", "prot2mf/9606.nt"}
 	tts := []tt{
 		{bps, arg2, wpth + out[0], 1961},

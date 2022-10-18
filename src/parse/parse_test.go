@@ -63,8 +63,8 @@ func Test_Tab2struct(t *testing.T) {
 	arg4 := &d4b
 	pth := "../../tdata/"
 	tts := []tt{
-		{pth + "intact/test.mit", keys0, vals0, arg4, 2},
-		{pth + "static/tfacts/test.f2g", keys1, vals1, arg4, 5},
+		{pth + "intact/9606.mit", keys0, vals0, arg4, 2},
+		{pth + "static/tfacts/9606.f2g", keys1, vals1, arg4, 5},
 		{pth + "signor/9606.mi28", keys2, vals2, arg4, 12},
 	}
 	keys := []string{
@@ -102,8 +102,8 @@ func Test_Tab2set3D(t *testing.T) {
 	arg2_2, arg3_2 := bgw.TftgParseConf()
 	pth := "../../tdata/"
 	tts := []tt{
-		{pth + "intact/test.mit", arg2_1, arg3_1, 2},
-		{pth + "static/tfacts/test.f2g", arg2_2, arg3_2, 5},
+		{pth + "intact/9606.mit", arg2_1, arg3_1, 2},
+		{pth + "static/tfacts/9606.f2g", arg2_2, arg3_2, 5},
 	}
 	keys := []string{
 		"P04637--P04637",
@@ -228,7 +228,7 @@ func Test_MiTab(t *testing.T) {
 	pth := "../../tdata/"
 	mit := make(util.Set3D)
 	mits := []tt{
-		{pth + "intact/test.mit", mit, 1},
+		{pth + "intact/9606.mit", mit, 1},
 	}
 	for i, tt := range mits {
 		tt.arg2.Add("P04637", "test", "t")
@@ -254,7 +254,7 @@ func Test_Gaf(t *testing.T) {
 	pth := "../../tdata/"
 	var set = make(util.Set3D)
 	var gafs = []tt{
-		{pth + "goa/test.gaf", set, 150, 17, 39},
+		{pth + "goa/9606.gaf", set, 150, 17, 39},
 	}
 	for i, tt := range gafs {
 		tt.arg2.Add("P04637", "test", "t")

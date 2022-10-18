@@ -38,9 +38,10 @@ func subset(pthR, pthW string, inds [5]int) error {
 			fmt.Printf(msg, m, n, cells[0], pthR)
 			continue
 		}
-		subline := cells[0]
+		subline := cells[0] // pair ID, e.g. MYC:TERT
+		// adding sorce specific fields
 		for _, i := range inds {
-			if i == 0 {
+			if i == 0 { // the value not provided by the source
 				subline = strings.Join([]string{subline, ""}, "\t")
 			} else {
 				subline = strings.Join([]string{subline, cells[i-1]}, "\t")
@@ -55,23 +56,27 @@ func subset(pthR, pthW string, inds [5]int) error {
 	return nil
 }
 
+// columns
+// 1: TF IDs, 2: TG IDs 3: PUBMED IDs 4: evidence scores 5: modes
+// Note: currently a single TG in the whole data set
 var src2ind = map[string][5]int{
 	"cytreg": {2, 3, 33, 0, 32},
 	"extri":  {2, 3, 5, 4, 0},
 	"geredb": {2, 3, 37, 0, 36},
-	"goa":    {2, 3, 0, 0, 21},
+	//"goa":    {2, 3, 0, 0, 21}, // no PUBMED refs
 	"htri":   {2, 3, 9, 10, 0},
 	"intact": {2, 3, 23, 0, 0},
+	"ntnu": {2, 3, 40, 0, 39},
 	"signor": {2, 3, 28, 0, 27},
 	"tfacts": {2, 3, 18, 19, 15},
 	"trrust": {2, 3, 13, 0, 12},
 }
 
 func main() {
-	datdir := "/home/mironov/data/bgw/tftg/9606/"
+	datdir := os.Args[1] // location of source specific files (with a trailing slash)
 	for src, inds := range src2ind {
-		pthR := fmt.Sprintf("%s%s.tsv", datdir, src)
-		pthW := fmt.Sprintf("%s%s.f2g", datdir, src)
+		pthR := fmt.Sprintf("%s%s/9606.ori", datdir, src)
+		pthW := fmt.Sprintf("%s%s/9606.f2g", datdir, src)
 		err := subset(pthR, pthW, inds)
 		check(err)
 	}
