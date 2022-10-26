@@ -119,7 +119,7 @@ func saveOneUniprot(txid string, datdir string) error {
 	wpth := fmt.Sprintf("%s%s%s%s", datdir, subdir, txid, ext)
 	//if err := HttpFile(uri, wpth); err != nil {
 	if _, err := GetFile(uri, "Accept", "text", wpth); err != nil {
-	//if err := WgetFile(uri, wpth); err != nil {
+		//if err := WgetFile(uri, wpth); err != nil {
 		log.Println("saveOneUniprot(): Warning: Failed to download data for:", txid, err)
 		return err
 	}
@@ -392,7 +392,7 @@ func main() {
 			panic(err)
 		}
 
-//		saveAllUniprot(datdir, txnmap)
+		//		saveAllUniprot(datdir, txnmap)
 		log.Println("Done with UniProt in", time.Since(start))
 	}
 

@@ -66,7 +66,7 @@ var src2ind = map[string][5]int{
 	//"goa":    {2, 3, 0, 0, 21}, // no PUBMED refs
 	"htri":   {2, 3, 9, 10, 0},
 	"intact": {2, 3, 23, 0, 0},
-	"ntnu": {2, 3, 40, 0, 39},
+	"ntnu":   {2, 3, 40, 0, 39},
 	"signor": {2, 3, 28, 0, 27},
 	"tfacts": {2, 3, 18, 19, 15},
 	"trrust": {2, 3, 13, 0, 12},

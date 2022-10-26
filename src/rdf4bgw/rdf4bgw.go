@@ -66,8 +66,8 @@ func rgr2trg(datdir, bgwdir string, txn2prm util.Set2D) (util.Set2D, error) {
 		var keys []bgw.Column
 		ext := ""
 		rpth := ""
-			keys, vals = bgw.TftgParseConf()
-			ext = ".f2g"
+		keys, vals = bgw.TftgParseConf()
+		ext = ".f2g"
 
 		for taxid := range txn2prm {
 			if taxid != "9606" {
@@ -75,7 +75,7 @@ func rgr2trg(datdir, bgwdir string, txn2prm util.Set2D) (util.Set2D, error) {
 			} // for now
 			var d4b bgw.Dat4bridge // one source, one taxon
 			d4b.New()
-				rpth = fmt.Sprintf("%s%s%s%s%s%s", datdir, "static/", src, "/", taxid, ext)
+			rpth = fmt.Sprintf("%s%s%s%s%s%s", datdir, "static/", src, "/", taxid, ext)
 			log.Println(rpth)
 			err := parse.Tab2struct(rpth, keys, vals, &d4b)
 			if err != nil {

@@ -179,9 +179,9 @@ func Tfac2gene(d *bgw.Dat4bridge, x *bgw.Xmap, wdir string) error {
 					}
 					sb.WriteString(rdf.FormT(insU, ourUs["sth2lbl"], rdf.FormL(inslbl)))
 					sb.WriteString(rdf.FormT(insU, ourUs["sth2src"], srcU))
-						id := "MI:2247"
-						id = strings.Replace(id, ":", "_", 1)
-						sb.WriteString(rdf.FormT(insU, ourUs["gp2bp"], rdf.CompU(nss["obo"], id)))
+					id := "MI:2247"
+					id = strings.Replace(id, ":", "_", 1)
+					sb.WriteString(rdf.FormT(insU, ourUs["gp2bp"], rdf.CompU(nss["obo"], id)))
 					for _, id := range duo["reglevelid"].Keys() {
 						id = strings.Replace(id, ":", "_", 1)
 						sb.WriteString(rdf.FormT(insU, ourUs["gp2bp"], rdf.CompU(nss["obo"], id)))

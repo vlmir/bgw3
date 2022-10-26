@@ -8,18 +8,18 @@ import (
 )
 
 var Nss = map[string]string{
-	"rdf":       "http://www.w3.org/1999/02/22-rdf-syntax-ns#",
-	"rdfs":      "http://www.w3.org/2000/01/rdf-schema#",
-	"owl":       "http://www.w3.org/2002/07/owl#",
-	"skos":      "http://www.w3.org/2004/02/skos/core#",
-	"schema":    "http://schema.org/",
-	"biolink":    "https://w3id.org/biolink/vocab/", // TODO implement
-	"obo":       "http://purl.obolibrary.org/obo/",
-	"sio":       "http://semanticscience.org/resource/", // resolvable (2014-09-29)
-	"uniprot":   "http://uniprot.org/uniprot/",          // accepts both UPID and UPAC
-	"uniprotkb": "http://uniprot.org/uniprot/",          // accepts both UPID and UPAC
-	"uniparc":   "http://uniprot.org/uniparc/",
-	"ncbigene":  "http://identifiers.org/ncbigene/",
+	"rdf":         "http://www.w3.org/1999/02/22-rdf-syntax-ns#",
+	"rdfs":        "http://www.w3.org/2000/01/rdf-schema#",
+	"owl":         "http://www.w3.org/2002/07/owl#",
+	"skos":        "http://www.w3.org/2004/02/skos/core#",
+	"schema":      "http://schema.org/",
+	"biolink":     "https://w3id.org/biolink/vocab/", // TODO implement
+	"obo":         "http://purl.obolibrary.org/obo/",
+	"sio":         "http://semanticscience.org/resource/", // resolvable (2014-09-29)
+	"uniprot":     "http://uniprot.org/uniprot/",          // accepts both UPID and UPAC
+	"uniprotkb":   "http://uniprot.org/uniprot/",          // accepts both UPID and UPAC
+	"uniparc":     "http://uniprot.org/uniparc/",
+	"ncbigene":    "http://identifiers.org/ncbigene/",
 	"ncbitx":      "http://purl.obolibrary.org/obo/NCBITaxon_",
 	"refseq":      "http://identifiers.org/refseq/",
 	"keggortho":   "http://identifiers.org/kegg.orthology/",
@@ -35,39 +35,39 @@ var Nss = map[string]string{
 	"ensfungi":    "https://fungi.ensembl.org/id/",
 	"ensmetazoa":  "https://metazoa.ensembl.org/id/",
 	"ensprotists": "https://protists.ensembl.org/id/",
-	"bgw":  "http://rdf.biogateway.eu/",
-	"gene": "http://rdf.biogateway.eu/gene/",
-	"prot": "http://rdf.biogateway.eu/prot/",
+	"bgw":         "http://rdf.biogateway.eu/",
+	"gene":        "http://rdf.biogateway.eu/gene/",
+	"prot":        "http://rdf.biogateway.eu/prot/",
 }
 
 //"orthodb": "https://www.orthodb.org/?query=", // accepts IDs from UP idmapping
 
 // Object Properties
 var Opys = util.SliceSet{
-	"sub2cls":   {"rdfs", "subClassOf", "is subclass of"},
-	"sub2ppy":   {"rdfs", "subPropertyOf", "is subproperty of"},
-	"sth2evd":   {"sio", "SIO_000772", "has evidence"},               // PubMed only: ALL
-	"sth2ori":   {"schema", "evidenceOrigin", "has evidence origin"}, // DATA sources; ALL; e.g. bgwp -> upca
-	"sth2src":   {"sio", "SIO_000253", "has source", "has source is a relation between an entity and another entity from which it stems from."},
+	"sub2cls": {"rdfs", "subClassOf", "is subclass of"},
+	"sub2ppy": {"rdfs", "subPropertyOf", "is subproperty of"},
+	"sth2evd": {"sio", "SIO_000772", "has evidence"},               // PubMed only: ALL
+	"sth2ori": {"schema", "evidenceOrigin", "has evidence origin"}, // DATA sources; ALL; e.g. bgwp -> upca
+	"sth2src": {"sio", "SIO_000253", "has source", "has source is a relation between an entity and another entity from which it stems from."},
 	//"sth2src":   {"biolink", "provided_by", "is provided by"}, // e.g. UniProt TODO
-	"sth2eqv":   {"owl", "sameAs", "is equivalent to"},
-	"sth2clm":   {"skos", "closeMatch", "has close match"},
-	"sth2rlm":   {"skos", "relatedMatch", "has related match"},
-	"sub2set":   {"obo", "BFO_0000050", "is part of"},
-	"gn2txn":    {"obo", "RO_0000052", "characteristic of"},
-	"gp2txn":    {"obo", "RO_0000052", "characteristic of"},
+	"sth2eqv": {"owl", "sameAs", "is equivalent to"},
+	"sth2clm": {"skos", "closeMatch", "has close match"},
+	"sth2rlm": {"skos", "relatedMatch", "has related match"},
+	"sub2set": {"obo", "BFO_0000050", "is part of"},
+	"gn2txn":  {"obo", "RO_0000052", "characteristic of"},
+	"gp2txn":  {"obo", "RO_0000052", "characteristic of"},
 	//"be2txn":	{"biolink", "in_taxon", "is characteristic of taxon"} // for any biological entity TODO
-	"mbr2lst":   {"schema", "memberOf", "is member of"},
-	"ins2cls":   {"rdf", "type", "is instance of"},
-	"gn2phn":    {"obo", "RO_0002331", "involved in"},
-	"gp2bp":     {"obo", "RO_0002331", "involved in", "biological_process"},
-	"gp2cc":     {"obo", "BFO_0000050", "is part of", "cellular_component"},
-	"gp2mf":     {"obo", "RO_0002327", "enables", "molecular_function"},
-	"gn2gp":     {"sio", "SIO_010078", "encodes"},
+	"mbr2lst": {"schema", "memberOf", "is member of"},
+	"ins2cls": {"rdf", "type", "is instance of"},
+	"gn2phn":  {"obo", "RO_0002331", "involved in"},
+	"gp2bp":   {"obo", "RO_0002331", "involved in", "biological_process"},
+	"gp2cc":   {"obo", "BFO_0000050", "is part of", "cellular_component"},
+	"gp2mf":   {"obo", "RO_0002327", "enables", "molecular_function"},
+	"gn2gp":   {"sio", "SIO_010078", "encodes"},
 	//"gn2gp":     {"biolink", "has_gene_product", "has gene product"}, // TODO
-	"tlp2tlp":   {"obo", "RO_0002436", "molecularly interacts with"},
+	"tlp2tlp": {"obo", "RO_0002436", "molecularly interacts with"},
 	//"rgr2trg":   {"obo", "RO_0002428", "involved in regulation of"}, // not used TODO to be confirmed
-	"reg2utarg":  {"obo", "RO_0002428", "involved in regulation of"},
+	"reg2utarg": {"obo", "RO_0002428", "involved in regulation of"},
 	"reg2ptarg": {"obo", "RO_0002429", "involved in positive regulation of"},
 	"reg2ntarg": {"obo", "RO_0002430", "involved in negative regulation of"},
 	"sth2mtd":   {"rdfs", "isDefinedBy", "is defined by"},
@@ -115,7 +115,7 @@ var Uris4tftg = map[string]string{
 	"extri":  "http://www.extri.org",
 	"htri":   "http://www.lbbc.ibb.unesp.br/htri",
 	"intact": "https://www.ebi.ac.uk/intact/interactomes",
-	"ntnu": "NTNU",
+	"ntnu":   "NTNU",
 	"signor": "http://signor.uniroma2.it",
 	"tfacts": "http://www.tfacts.org",
 	"trrust": "http://www.grnpedia.org/trrust/",
