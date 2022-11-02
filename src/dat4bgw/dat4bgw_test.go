@@ -24,6 +24,9 @@ func Test_Init(t *testing.T) {
 	if err := os.MkdirAll(filepath.Join(dpth, "intact/"), 0755); err != nil {
 		log.Println(err)
 	}
+	if err := os.MkdirAll(filepath.Join(dpth, "signor/"), 0755); err != nil {
+		log.Println(err)
+	}
 }
 
 /*
@@ -53,6 +56,32 @@ func Test_getOneUniprot(t *testing.T) {
 		}
 	}
 	log.Println("Done with saveOneUniprot in", time.Since(mystart))
+}
+
+func Test_getOneSignor(t *testing.T) {
+	mystart := time.Now()
+	type tt struct {
+		arg1 string
+		arg2 string
+		val1 error
+	}
+	pth := "../../tdata/"
+	txids := [...]string{"9606"}
+	datdirs := [...]string{ pth + "dat4bgw/"}
+	tts := []tt{
+		{txids[0], datdirs[0], nil},
+	}
+	for i, tt := range tts {
+		err := saveOneSignor(tt.arg1, tt.arg2)
+		if err != tt.val1 {
+			t.Error(
+				"For test", i+1, ": ",
+				"\n\twant", tt.val1,
+				"\n\thave", err,
+			)
+		}
+	}
+	log.Println("Done with saveOneSignor in", time.Since(mystart))
 }
 
 func Test_getOneIntact(t *testing.T) {

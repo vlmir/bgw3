@@ -499,8 +499,8 @@ func UpTab(rpth string, upac2xrf util.Set3D, txn2prm util.Set2D) (out bgw.Dat4rd
 		if len(chrs) > 1 {
 			// happens in all the 25 taxa; 10230 in 367110
 			multiProtChrom[upca]++
-			msg := fmt.Sprintf("parse.UpTab():%s:%s: MultiChrom: %d %v", txid, upca, len(chrs), chrs)
-			fmt.Printf("%s\n", msg)
+			// msg := fmt.Sprintf("parse.UpTab():%s:%s: MultiChrom: %d %v", txid, upca, len(chrs), chrs)
+			// fmt.Printf("%s\n", msg)
 		}
 		// Primary Gene Names separated by "; ":
 		// empty strings for many entries
@@ -536,17 +536,17 @@ func UpTab(rpth string, upac2xrf util.Set3D, txn2prm util.Set2D) (out bgw.Dat4rd
 				} // replacing GeneNames with UnoProtID
 			*/
 			multiGene[upca]++
-			msg := fmt.Sprintf("parse.UpTab():%s:%s: MultiGene: %d %v", txid, upca, len(gnms), gnms)
-			fmt.Printf("%s\n", msg)
+			// msg := fmt.Sprintf("parse.UpTab():%s:%s: MultiGene: %d %v", txid, upca, len(gnms), gnms)
+			// fmt.Printf("%s\n", msg)
 		}
 		if len(chrs) > 1 && len(gnms) == 1 {
-			msg := fmt.Sprintf("parse.UpTab():%s:%s: OneGeneMultiChrom: %s %v", txid, upca, gnms[0], chrs)
-			fmt.Printf("%s\n", msg)
+			// msg := fmt.Sprintf("parse.UpTab():%s:%s: OneGeneMultiChrom: %s %v", txid, upca, gnms[0], chrs)
+			// fmt.Printf("%s\n", msg)
 		}
 		if len(chrs) > 1 && len(gnms) > 1 {
 			//v34 chrs = []string{"multi"}
-			msg := fmt.Sprintf("parse.UpTab():%s:%s: MultiGeneMultiChrom: %d %v", txid, upca, len(gnms), chrs)
-			fmt.Printf("%s\n", msg)
+			// msg := fmt.Sprintf("parse.UpTab():%s:%s: MultiGeneMultiChrom: %d %v", txid, upca, len(gnms), chrs)
+			// fmt.Printf("%s\n", msg)
 		}
 		for i, gnm := range gnms {
 			allGs.Add(gnm, "upca", upca)

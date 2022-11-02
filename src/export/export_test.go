@@ -88,6 +88,65 @@ func Test_GeneProt(t *testing.T) {
 	}
 }
 
+func TestRgr2trg(t *testing.T) {
+	type tt struct {
+		arg1 *bgw.Dat4bridge
+		arg2 *bgw.Xmap
+		arg3 string
+		val1 int
+	}
+	pth := "../../tdata/"
+	// parsing
+	keys, vals := bgw.SignorParseConf()
+	var d4b0 bgw.Dat4bridge
+	d4b0.New()
+	_ = parse.Tab2struct(pth+"signor/9606.mi28", keys, vals, &d4b0)
+	keys, vals = bgw.TftgParseConf()
+	var d4b1 bgw.Dat4bridge
+	d4b1.New()
+	_ = parse.Tab2struct(pth+"static/tfacts/9606.f2g", keys, vals, &d4b1)
+	xmap := bgw.NewXmap()
+	xmap.Upac.Add("P27361", "bgwp", "9606/P27361")
+	xmap.Upac.Add("P48431", "bgwp", "9606/P48431")
+	xmap.Upac.Add("Q9BTC0", "bgwp", "9606/Q9BTC0")
+	xmap.Upac.Add("P08648", "bgwp", "9606/P08648")
+	xmap.Bgwp.Add("9606/P08648", "bgwg", "9606/GENEX")
+	xmap.Upac.Add("P10275", "bgwp", "9606/P10275")
+	xmap.Upac.Add("P19838", "bgwp", "9606/P19838")
+	xmap.Upac.Add("Q04206", "bgwp", "9606/Q04206")
+	xmap.Upac.Add("P24385", "bgwp", "9606/P24385")
+	xmap.Upac.Add("P04637", "bgwp", "9606/P04637")
+	xmap.Upac.Add("Q01081", "bgwp", "9606/Q01081")
+	/// exporting
+	srcs := []string{"signor",}
+
+	// for Signor complexes and protein families
+	sigmap := make(util.Set3D)
+	subdir := "signor/"
+	dpth := pth + subdir
+	ss0 := []string{dpth + "complexes.map", dpth + "families.map"}
+	parse.Sig2up(sigmap, ss0)
+	xmap.Signor = sigmap
+
+	tts := []tt{
+		{&d4b0, &xmap, pth + "OUT/export/", 2},
+	}
+	pdck := "reg2ptarg"
+	for i, tt := range tts {
+		(*tt.arg1).Src = srcs[i]
+		(*tt.arg1).Taxid = "9606"
+		Rgr2trg(tt.arg1, tt.arg2, tt.arg3)
+		cnts := (*tt.arg1).Cnts
+		if cnts[pdck][srcs[i]] != tt.val1 {
+			t.Error(
+				"For test", i+1, ": ",
+				"\n\twant", tt.val1,
+				"\n\thave", cnts[pdck][srcs[i]],
+			)
+		}
+	}
+}
+
 func Test_Tfac2gene(t *testing.T) {
 	type tt struct {
 		arg1 *bgw.Dat4bridge

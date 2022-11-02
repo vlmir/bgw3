@@ -66,7 +66,6 @@ var Opys = util.SliceSet{
 	"gn2gp":   {"sio", "SIO_010078", "encodes"},
 	//"gn2gp":     {"biolink", "has_gene_product", "has gene product"}, // TODO
 	"tlp2tlp": {"obo", "RO_0002436", "molecularly interacts with"},
-	//"rgr2trg":   {"obo", "RO_0002428", "involved in regulation of"}, // not used TODO to be confirmed
 	"reg2utarg": {"obo", "RO_0002428", "involved in regulation of"},
 	"reg2ptarg": {"obo", "RO_0002429", "involved in positive regulation of"},
 	"reg2ntarg": {"obo", "RO_0002430", "involved in negative regulation of"},
@@ -109,6 +108,10 @@ var Prns = util.SliceSet{
 	// "chr": {"obo", "GO_0005694", "Chromosome"},
 	"chr": {"obo", "SO_0000340", "Chromosome"},
 	// "gom": {"obo", "SO_0001026", "Genome"},
+}
+
+var Uris4rgrtrg = map[string]string{
+	"signor": "http://signor.uniroma2.it",
 }
 
 var Uris4tftg = map[string]string{

@@ -119,8 +119,34 @@ func saveOneUniprot(txid string, datdir string) error {
 	wpth := fmt.Sprintf("%s%s%s%s", datdir, subdir, txid, ext)
 	//if err := HttpFile(uri, wpth); err != nil {
 	if _, err := GetFile(uri, "Accept", "text", wpth); err != nil {
-		//if err := WgetFile(uri, wpth); err != nil {
 		log.Println("saveOneUniprot(): Warning: Failed to download data for:", txid, err)
+		return err
+	}
+	return nil
+}
+
+
+// TODO to be tested
+func saveOneSignor(txid string, datdir string) error {
+	subdir := "signor/"
+	ext := ".mi28"
+	uri := "https://signor.uniroma2.it/getData.php?type=causalTab"
+	wpth := fmt.Sprintf("%s%s%s%s", datdir, subdir, txid, ext)
+	if err := WgetFile(uri, wpth); err != nil {
+		log.Println("saveOneSignor(): Warning: Failed to download data for:", txid, err)
+		return err
+	}
+	ext = ".map"
+	uri = "https://signor.uniroma2.it/getPathwayData.php?relations"
+	wpth = fmt.Sprintf("%s%s%s%s%s", datdir, subdir, "pathway-rels-", txid, ext)
+	if err := WgetFile(uri, wpth); err != nil {
+		log.Println("saveOneSignor(): Warning: Failed to download pathway relations for:", txid, err)
+		return err
+	}
+	uri = "https://signor.uniroma2.it/getPathwayData.php?description"
+	wpth = fmt.Sprintf("%s%s%s%s%s", datdir, subdir, "pathway-descs-", txid, ext)
+	if err := WgetFile(uri, wpth); err != nil {
+		log.Println("saveOneSignor(): Warning: Failed to download pathway descriptions for:", txid, err)
 		return err
 	}
 	return nil
@@ -268,44 +294,6 @@ func saveAllOnto(datdir string) {
 	}
 }
 
-// not used
-//func x1tftg(pthR, pthW string, cols [5]int) error {
-//	fhR, err := os.Open(pthR)
-//	check(err)
-//	defer fhR.Close()
-//	fhW, err := os.Create(pthW)
-//	check(err)
-//	defer fhW.Close()
-//	scanner := bufio.NewScanner(fhR)
-//	for scanner.Scan() { // by default scans for '\n'
-//		line := scanner.Text()
-//		if len(line) == 0 {
-//			continue
-//		}
-//		if string(line[0]) == "#" {
-//			continue
-//		}
-//		cells := strings.Split(line, "\t")
-//		n := len(cells)
-//		m := 37
-//		if n < m {
-//			msg := "Want at least: %d cells, have: %d for: %s in %s"
-//			fmt.Printf(msg, m, n, cells[0], pthR)
-//			continue
-//		}
-//		nl := cells[0]
-//		for _, i := range cols {
-//			if i == 0 {
-//				nl = strings.Join([]string{nl, ""}, "\t")
-//			} else {
-//				nl = strings.Join([]string{nl, cells[i-1]}, "\t")
-//			}
-//		}
-//		fhW.WriteString(fmt.Sprintf("%s\n", nl))
-//	}
-//	return nil
-//}
-
 func main() {
 	aP := flag.Bool("a", false, "download [a]ll") // should not normally be used
 	oP := flag.Bool("o", false, "download [o]ntologies")
@@ -314,6 +302,7 @@ func main() {
 	MP := flag.Bool("M", false, "dont't download ID [m]appings")
 	iP := flag.Bool("i", false, "download molecular [i]ntaraction data")
 	uP := flag.Bool("u", false, "download [u]niprot data")
+	sP := flag.Bool("s", false, "download [s]ignor data")
 	gP := flag.Bool("g", false, "download [g]ene ontology annotations")
 	tP := flag.String("t", "./taxa.tls", "selected [t]axa")
 	var cnt int
@@ -339,6 +328,12 @@ func main() {
 		// Done with ontos in 54m5.856446087s - What's that ???
 		saveAllOnto(datdir)
 		log.Println("Done with ontos in", time.Since(start))
+	}
+
+	if *aP || *sP {
+		start := time.Now()
+		saveOneSignor("9606", datdir)
+		log.Println("Done with Signor in", time.Since(start))
 	}
 
 	txnmap, err := util.MakeMap(pthx, 0, 1, ".")
