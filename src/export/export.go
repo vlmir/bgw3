@@ -132,18 +132,15 @@ func Tfac2gene(d *bgw.Dat4bridge, x *bgw.Xmap, wdir string) error {
 		}
 
 		//  assigning predicate depending of  the direction of regulation
-		var pdcks []string // all predicate keys for one duoid
+		pdcks := []string{u2t} // all predicate keys for one duoid, u2t first
 		for _, onemod := range duo["mode"].Keys() {
 			// keys for predicates
 			for _, pdck := range modes[src][onemod].Keys() {
 				pdcks = append(pdcks, pdck)
 			}
 		} // onemod
-		// undefined direction
-		if len(pdcks) == 0 {
-			pdcks = append(pdcks, u2t)
-		}
 
+		prnU := ""
 		for _, pdck := range pdcks {
 			stmns := fmt.Sprintf("%s%s/", nss["bgw"], pdck)
 			var sb strings.Builder
@@ -157,6 +154,11 @@ func Tfac2gene(d *bgw.Dat4bridge, x *bgw.Xmap, wdir string) error {
 					entBU := rdf.CompU(entBns, entBid)
 					sb.WriteString(rdf.FormT(stmU, ourUs["ins2cls"], rdf.CompU(nss["owl"], "Class")))
 					sb.WriteString(rdf.FormT(stmU, ourUs["sub2cls"], ourUs["stm"]))
+					if pdck == u2t {
+						prnU = stmU
+					} else {
+						sb.WriteString(rdf.FormT(stmU, ourUs["sub2cls"], prnU))
+					}
 					stmlbl := rdf.Opys[pdck][2]
 					sb.WriteString(rdf.FormT(stmU, ourUs["sth2lbl"], rdf.FormL(stmlbl)))
 					stmdfn := fmt.Sprintf("%s %s %s", entAid, stmlbl, entBid)
