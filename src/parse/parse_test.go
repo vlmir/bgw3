@@ -65,7 +65,7 @@ func Test_Tab2struct(t *testing.T) {
 	tts := []tt{
 		{pth + "intact/9606.mit", keys0, vals0, arg4, 2},
 		{pth + "static/tfacts/9606.f2g", keys1, vals1, arg4, 5},
-		{pth + "signor/9606.mi28", keys2, vals2, arg4, 12},
+		{pth + "signor/9606.mi28", keys2, vals2, arg4, 15},
 	}
 	keys := []string{
 		"P04637--P04637",

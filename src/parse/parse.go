@@ -36,13 +36,14 @@ func addSubFields(pval, pk string, v bgw.Column, out util.Set3D) {
 	sk := v.Key // secondary key explicitely specified
 	for i, sval := range svals {
 		if ind2 >= 0 && i != ind2 {
-			continue
+			continue // only one subfield is used
 		}
 		sval = strings.TrimSpace(svals[i])
 		if len(sval) == 0 {
 			continue
 		}
 		// db:id
+		// skipping dbs other that specified in v.Key
 		if v.Ind3 == -1 {
 			if strings.TrimSpace(svals[0]) != sk {
 				continue
@@ -52,7 +53,7 @@ func addSubFields(pval, pk string, v bgw.Column, out util.Set3D) {
 	}
 }
 
-// Sig2up() parses mapping file provided by Signor and returns a map structure
+// Sig2up() parses mapping files provided by Signor and returns a map structure
 func Sig2up(sigmap util.Set3D, pths []string) error {
 	for _, pth := range pths {
 
@@ -64,7 +65,6 @@ func Sig2up(sigmap util.Set3D, pths []string) error {
 
 		// Parse the file
 		r := csv.NewReader(csvfile)
-		//r := csv.NewReader(bufio.NewReader(csvfile))
 		r.Comma = ';'
 		r.Comment = '#'
 
@@ -78,12 +78,13 @@ func Sig2up(sigmap util.Set3D, pths []string) error {
 			if err != nil {
 				log.Fatal(err)
 			}
-			//rec[2] = strings.Replace(rec[2], ", ", "", -1)
+			//rec[2] = strings.Replace(rec[2], ", ", "", -1) ??
 			if len(rec[2]) == 0 {
-				continue
+				continue // no entities
 			}
+			// list of individual protein entities
 			list := strings.Split(rec[2], ", ")
-			//sigmap[rec[0]] = list
+			// Signor ids and names
 			sigmap.Add(rec[0], "lbl", rec[1])
 			for _, item := range list {
 				id := strings.TrimSpace(item)
@@ -126,9 +127,20 @@ func Idmap(rpth string, srcs map[string]string, i1, i2, i3 int) (util.Set3D, err
 	return out, nil
 }
 
+// val.Ind1 - column index
+// val.Dlm1 - primary separator of multiple values
+// val.Dlm2 - secondary separator of multiple values
+// val.Ind2 - the index of the value to use after splitting on Dlm2, if < 0 all values
+// val.Key - the string to be used as the seondary key in the output maps
+// val.Ind3 - integer used for conntroleing the output
+// if Ind3 == -1 val.Key is used for filteering the values
 func Tab2struct(rpth string, keys, vals []bgw.Column, p *bgw.Dat4bridge) (err error) {
+	// the value in val.Ind1 is split by val.Dlm1, ALL subfilds are processed by addSubFields()
+	// if Ind2 < 0 all subfields are used, otherwise only the one in val.Ind2
+	// if Ind3 == -1 subfields are filtered by val.Key
 	d4b := *p
 	maxind := 0
+	// finding the  maximal index in keys+vlals
 	for _, one := range keys {
 		n := one.Ind1
 		if n > maxind {
@@ -150,7 +162,7 @@ func Tab2struct(rpth string, keys, vals []bgw.Column, p *bgw.Dat4bridge) (err er
 		}
 	}
 
-	duos := d4b.Duos
+	duos := d4b.Duos // to be filled with data
 	fh, err := os.Open(rpth)
 	// util.CheckE(err)
 	if err != nil {
@@ -161,6 +173,7 @@ func Tab2struct(rpth string, keys, vals []bgw.Column, p *bgw.Dat4bridge) (err er
 	ln := 0 // current line number
 	for scanner.Scan() {
 		// by default scans for '\n'
+		// TODO generalize, consider using csv.NewReader as in Sig2up()
 		line := scanner.Text()
 		ln++
 		if len(line) == 0 {
@@ -270,6 +283,7 @@ func Tab2set3D(rpth string, keys, vals []bgw.Column) (out util.Set3D, err error)
 			panic(errors.New(msg))
 		}
 		/// primary key
+		// TODO check for empty strings !!!
 		var pk string // the primary key to be used in the output map
 		for i, k := range keys {
 			// i: index, k: bgw.Column
@@ -285,7 +299,7 @@ func Tab2set3D(rpth string, keys, vals []bgw.Column) (out util.Set3D, err error)
 		/// values
 		for _, v := range vals {
 			// v: bgw.Column; specify fields to be extracted
-			cell := strings.TrimSpace(cells[v.Ind1])
+			cell := strings.TrimSpace(cells[v.Ind1]) // value of the selected column
 			if (cell == "") || (cell == "-") {
 				continue
 			}

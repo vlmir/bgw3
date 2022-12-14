@@ -59,7 +59,7 @@ func Test_rgr2trg(t *testing.T) {
 	tts := []tt{
 		{pth, wpth, arg3[0], 1},
 	}
-	pdck := "reg2ntarg" // sic! positive interactions eliminated due to xmap
+	pdck := "reg2ntrg" // sic! positive interactions eliminated due to xmap
 	src := "signor"
 	for i, tt := range tts {
 		cnts, _ := rgr2trg(tt.arg1, tt.arg2, tt.arg3) // process ALL files in src dir
@@ -88,7 +88,7 @@ func Test_tfac2gene(t *testing.T) {
 	tts := []tt{
 		{pth, wpth, arg3[0], 2},
 	}
-	pdck := "reg2ptarg"
+	pdck := "reg2ptrg"
 	src := "tfacts"
 	for i, tt := range tts {
 		cnts, _ := tfac2gene(tt.arg1, tt.arg2, tt.arg3) // process ALL files in src dir

@@ -88,6 +88,57 @@ func Test_GeneProt(t *testing.T) {
 	}
 }
 
+
+func TestSigPways(t *testing.T) {
+	type tt struct {
+		arg1 *bgw.Dat4bridge
+		arg2 *bgw.Xmap
+		arg3 string
+		val1 int
+	}
+	pth := "../../tdata/"
+	// parsing
+	keys, vals := bgw.SigPwaysParseConf()
+	var d4b0 bgw.Dat4bridge
+	d4b0.New()
+	_ = parse.Tab2struct(pth+"signor/sigpcrels.tsv", keys, vals, &d4b0)
+	xmap := bgw.NewXmap()
+	xmap.Upac.Add("O15393", "bgwp", "9606/O15393")
+	xmap.Upac.Add("P14210", "bgwp", "9606/P14210")
+	xmap.Upac.Add("P08581", "bgwp", "9606/P08581")
+	xmap.Upac.Add("P10275", "bgwp", "9606/P10275")
+	xmap.Upac.Add("P31749", "bgwp", "9606/P31749") // PF24
+	xmap.Upac.Add("P31751", "bgwp", "9606/P31751") // PF24
+	/// exporting
+	srcs := []string{"signor",}
+
+	// for Signor complexes and protein families
+	sigmap := make(util.Set3D)
+	subdir := "signor/"
+	dpth := pth + subdir
+	ss0 := []string{dpth + "complexes.map", dpth + "families.map"}
+	parse.Sig2up(sigmap, ss0)
+	xmap.Signor = sigmap
+
+	tts := []tt{
+		{&d4b0, &xmap, pth + "OUT/export/", 5}, // 3 if filtered by the host
+	}
+	pdck := "reg2utrg"
+	for i, tt := range tts {
+		(*tt.arg1).Src = srcs[i]
+		(*tt.arg1).Taxid = "9606"
+		SigPways(tt.arg1, tt.arg2, tt.arg3)
+		cnts := (*tt.arg1).Cnts
+		if cnts[pdck][srcs[i]] != tt.val1 {
+			t.Error(
+				"For test", i+1, ": ",
+				"\n\twant", tt.val1,
+				"\n\thave", cnts[pdck][srcs[i]],
+			)
+		}
+	}
+} // TestSigPways
+
 func TestRgr2trg(t *testing.T) {
 	type tt struct {
 		arg1 *bgw.Dat4bridge
@@ -101,11 +152,7 @@ func TestRgr2trg(t *testing.T) {
 	var d4b0 bgw.Dat4bridge
 	d4b0.New()
 	_ = parse.Tab2struct(pth+"signor/9606.mi28", keys, vals, &d4b0)
-	keys, vals = bgw.TftgParseConf()
-	var d4b1 bgw.Dat4bridge
-	d4b1.New()
-	_ = parse.Tab2struct(pth+"static/tfacts/9606.f2g", keys, vals, &d4b1)
-	xmap := bgw.NewXmap()
+	xmap := bgw.NewXmap() //TODO see which entries are really necessary
 	xmap.Upac.Add("P27361", "bgwp", "9606/P27361")
 	xmap.Upac.Add("P48431", "bgwp", "9606/P48431")
 	xmap.Upac.Add("Q9BTC0", "bgwp", "9606/Q9BTC0")
@@ -131,7 +178,7 @@ func TestRgr2trg(t *testing.T) {
 	tts := []tt{
 		{&d4b0, &xmap, pth + "OUT/export/", 2},
 	}
-	pdck := "reg2ptarg"
+	pdck := "reg2ptrg"
 	for i, tt := range tts {
 		(*tt.arg1).Src = srcs[i]
 		(*tt.arg1).Taxid = "9606"
@@ -145,7 +192,7 @@ func TestRgr2trg(t *testing.T) {
 			)
 		}
 	}
-}
+} // TestRgr2trg
 
 func Test_Tfac2gene(t *testing.T) {
 	type tt struct {
@@ -178,7 +225,7 @@ func Test_Tfac2gene(t *testing.T) {
 		{&d4b0, &xmap, pth + "OUT/export/", 2},
 		{&d4b1, &xmap, pth + "OUT/export/", 1},
 	}
-	pdck := "reg2ptarg"
+	pdck := "reg2ptrg"
 	for i, tt := range tts {
 		(*tt.arg1).Src = srcs[i]
 		(*tt.arg1).Taxid = "9606"

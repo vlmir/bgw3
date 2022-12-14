@@ -138,22 +138,53 @@ func TftgParseConf() ([]Column, []Column) {
 
 func SignorParseConf() ([]Column, []Column) {
 	keys := []Column{
+		// {13, "|", 0, "", 0, ""}, // signor-id, unique for each line, single value
 		{0, "|", 0, "--", 0, ""},
 		{1, "|", 0, "--", 0, ""},
 	}
 	vals := []Column{
-		{8, "|", 1, ":", -1, "pubmed"},
-		{11, "|", 1, "\"", 1, "typeABid"},
-		{11, "|", 2, "\"", 1, "typeABlbl"},
-		{14, "|", 1, ":", 1, "score"},
-		{20, "|", 1, "\"", 1, "typeAid"},
-		{20, "|", 2, "\"", 1, "typeAlbl"},
-		{21, "|", 1, "\"", 1, "typeBid"},
-		{21, "|", 2, "\"", 1, "typeBlbl"},
-		{44, "|", 1, "\"", 1, "reglevelid"},
-		{44, "|", 2, "\"", 1, "reglevellbl"},
-		{45, "|", 1, "\"", 1, "stmid"},
-		{45, "|", 2, "\"", 1, "mode"},
+		{0, "|", 1, ":", 0, "Aid"}, // single value
+		{1, "|", 1, ":", 0, "Bid"}, // single value
+		{8, "|", 1, ":", -1, "pubmed"}, // filtering by "pubmed"
+		{11, "|", 1, "\"", 0, "typeABid"},
+		{11, "|", 2, "\"", 0, "typeABlbl"},
+		{13, "|", 1, ":", 0, "sigid"}, // single value, unique for each line
+		{14, "|", 1, ":", 0, "score"},
+		{20, "|", 1, "\"", 0, "typeAid"},
+		{20, "|", 2, "\"", 0, "typeAlbl"},
+		{21, "|", 1, "\"", 0, "typeBid"},
+		{21, "|", 2, "\"", 0, "typeBlbl"},
+		{44, "|", 1, "\"", 0, "reglevelid"},
+		{44, "|", 2, "\"", 0, "reglevellbl"},
+		{45, "|", 1, "\"", 0, "modeid"},
+		{45, "|", 2, "\"", 0, "modelbl"},
+	}
+	return keys, vals
+}
+
+func SigPwaysParseConf() ([]Column, []Column) {
+	// "|" is not used at all
+	keys := []Column{
+		{5, "|", 0, "--", 0, ""}, // Aid
+		{10, "|", 0, "--", 0, ""}, // Bid
+	}
+	vals := []Column{
+		{0, ";", 0, "|", 0, "pwayid"},
+		{1, ";", 0, "|", 0, "pwaylbl"},
+		{2, ";", 0, "|", 0, "Albl"},
+		{4, ";", 0, "|", 0, "typeAlbl"},
+		{5, ";", 0, "|", 0, "Aid"},
+		{7, ";", 0, "|", 0, "Blbl"},
+		{9, ";", 0, "|", 0, "typeBlbl"},
+		{10, ";", 0, "|", 0, "Bid"},
+		{12, ";", 0, "|", 0, "modelbl"},
+		{16, ";", 0, "|", 0, "taxid"}, // the host
+		{17, ";", 0, "|", 0, "cellid"},
+		{18, ";", 0, "|", 0, "tissueid"},
+		{25, ";", 0, "|", 0, "pubmed"},
+		{26, ";", 0, "|", 0, "isdirect"}, // "t" or "f"
+		{30, ";", 0, "|", 0, "sigid"}, // interaction id
+		{31, ";", 0, "|", 0, "score"},
 	}
 	return keys, vals
 }
@@ -161,15 +192,19 @@ func SignorParseConf() ([]Column, []Column) {
 func Keys4rgrs() util.SliceSet {
 	keys := make(util.SliceSet)
 	keys["Opys"] = []string{
-		"reg2ptarg",
-		"reg2ntarg",
-		"reg2utarg",
+		"reg2ptrg",
+		"reg2ntrg",
+		"reg2utrg",
+		"reg2dtrg",
+		"reg2itrg",
 		"ins2cls",
 		"sth2src",
 		"gp2bp",
 		"sth2rlm",
 		"sub2cls",
 		"sth2evd",
+		"pcs2loc",
+		"step2pway",
 	}
 	keys["Apys"] = []string{
 		"sth2dfn",

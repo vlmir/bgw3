@@ -35,12 +35,13 @@ var Nss = map[string]string{
 	"ensfungi":    "https://fungi.ensembl.org/id/",
 	"ensmetazoa":  "https://metazoa.ensembl.org/id/",
 	"ensprotists": "https://protists.ensembl.org/id/",
+	"sigpway":	"https://signor.uniroma2.it/getPathwayData.php?pathway=",
 	"bgw":         "http://rdf.biogateway.eu/",
 	"gene":        "http://rdf.biogateway.eu/gene/",
 	"prot":        "http://rdf.biogateway.eu/prot/",
 }
 
-//"orthodb": "https://www.orthodb.org/?query=", // accepts IDs from UP idmapping
+//"orthodb": "https://www.orthodb.org/?query=", // accepts IDs from UP idmapping TODO
 
 // Object Properties
 var Opys = util.SliceSet{
@@ -66,11 +67,15 @@ var Opys = util.SliceSet{
 	"gn2gp":   {"sio", "SIO_010078", "encodes"},
 	//"gn2gp":     {"biolink", "has_gene_product", "has gene product"}, // TODO
 	"tlp2tlp": {"obo", "RO_0002436", "molecularly interacts with"},
-	"reg2utarg": {"obo", "RO_0002428", "involved in regulation of"},
-	"reg2ptarg": {"obo", "RO_0002429", "involved in positive regulation of"},
-	"reg2ntarg": {"obo", "RO_0002430", "involved in negative regulation of"},
+	"reg2utrg": {"obo", "RO_0002428", "involved in regulation of"},
+	"reg2ptrg": {"obo", "RO_0002429", "involved in positive regulation of"},
+	"reg2ntrg": {"obo", "RO_0002430", "involved in negative regulation of"},
 	"sth2mtd":   {"rdfs", "isDefinedBy", "is defined by"},
 	"orl2orl":   {"sio", "SIO_000558", "is orthologous to"},
+	"pcs2loc":	{"obo", "BFO_0000066", "occurs in"},
+	"step2pway":   {"obo", "BFO_0000050", "is part of", "cellular_component"},
+	"reg2dtrg":	{"obo", "RO_0002578", "directly regulates"},
+	"reg2itrg":	{"obo", "RO_0012012", "indirectly regulates"},
 	// not used yet SIO_000208"
 	// "evd4sth": {"sio", "SIO_000208", "is supporting evidence for"},
 }

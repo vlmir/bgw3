@@ -53,13 +53,89 @@ func geneprot(datdir, bgwdir string, txn2prm util.Set2D) (ntg, ntp int, err erro
 	return ntg, ntp, nil
 } // geneprot()
 
-func rgr2trg(datdir, bgwdir string, txn2prm util.Set2D) (util.Set2D, error) {
-	log.Println("\n\trgr2trg for:", "all")
+func reg2pway(datdir, bgwdir string, txn2prm util.Set2D) (util.Set2D, error) {
+	log.Println("\n\reg2pway for:", "all")
 	cnts := make(util.Set2D)
 	var pdcks = []string{
-		"reg2ptarg",
-		"reg2ntarg",
-		"reg2utarg",
+		"reg2ptrg",
+		"reg2ntrg",
+		"reg2utrg",
+	}
+	for src, _ := range rdf.Uris4rgrtrg {
+		// define keys and vals for parsing
+		var vals []bgw.Column
+		var keys []bgw.Column
+		ext := ""
+		rpth := ""
+		if src == "signor" {
+			keys, vals = bgw.SigPwaysParseConf()
+			ext = ".tsv"
+		}
+
+		for taxid := range txn2prm {
+			if taxid != "9606" {
+				continue
+			} // for now
+			var d4b bgw.Dat4bridge // one source, one taxon
+			d4b.New()
+			if src == "signor" {
+				rpth = fmt.Sprintf("%s%s%s%s%s", datdir, src, "/", "pathways", ext)
+			}
+			log.Println("Rdf4bgw.reg2pway(): processing", rpth)
+			err := parse.Tab2struct(rpth, keys, vals, &d4b)
+			if err != nil {
+				log.Printf("%s%s", "reg2pway:parse.Tab2struct: ", err)
+				continue // sic!
+			}
+			// d4b is now loaded with data
+			xmap := bgw.NewXmap()
+			subdir := "xmap/"
+			ext := ".json"
+			rpthx := fmt.Sprintf("%s%s%s%s", bgwdir, subdir, taxid, ext) // read BGW map json
+			err = xmap.Unmarshal(rpthx)
+			util.CheckE(err)
+
+			if src == "signor" {
+				// generating map signor-id -> entitity-ids
+
+				sigmap := make(util.Set3D)
+				rdir := fmt.Sprintf("%s%s%s", datdir, src, "/")
+				smpths := []string{
+					rdir +"complexes.map",
+					rdir + "families.map",
+				}
+				err := parse.Sig2up(sigmap, smpths)
+				if err != nil {
+					log.Printf("%s%s", "parse.Sig2up: ", err)
+					continue // sic!
+				}
+				xmap.Signor = sigmap
+			}
+
+			d4b.Src = src
+			d4b.Taxid = taxid
+			err = export.SigPways(&d4b, &xmap, bgwdir)
+			if err != nil {
+				//panic(err)
+				log.Println(err)
+				continue
+			}
+			for _, pdck := range pdcks {
+				cnts.Add(pdck, src)
+				cnts[pdck][src] = d4b.Cnts[pdck][src]
+			}
+		}
+	}
+	return cnts, nil
+} // reg2pway
+
+func rgr2trg(datdir, bgwdir string, txn2prm util.Set2D) (util.Set2D, error) {
+	log.Println("\n\tegr2trg for:", "all")
+	cnts := make(util.Set2D)
+	var pdcks = []string{
+		"reg2ptrg",
+		"reg2ntrg",
+		"reg2utrg",
 	}
 	for src, _ := range rdf.Uris4rgrtrg {
 		// define keys and vals for parsing
@@ -133,9 +209,9 @@ func tfac2gene(datdir, bgwdir string, txn2prm util.Set2D) (util.Set2D, error) {
 	log.Println("\n\ttfac2gene for:", "all")
 	cnts := make(util.Set2D)
 	var pdcks = []string{
-		"reg2ptarg",
-		"reg2ntarg",
-		"reg2utarg",
+		"reg2ptrg",
+		"reg2ntrg",
+		"reg2utrg",
 	}
 	for src, _ := range rdf.Uris4tftg {
 		// define keys and vals for parsing
