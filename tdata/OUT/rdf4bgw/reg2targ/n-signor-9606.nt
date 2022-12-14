@@ -1,5 +1,6 @@
 <http://rdf.biogateway.eu/reg2ntrg/prot!9606/Q01081--prot!9606/P04637> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#Class> .
 <http://rdf.biogateway.eu/reg2ntrg/prot!9606/Q01081--prot!9606/P04637> <http://www.w3.org/2000/01/rdf-schema#subClassOf> <http://www.w3.org/1999/02/22-rdf-syntax-ns#Statement> .
+<http://rdf.biogateway.eu/reg2ntrg/prot!9606/Q01081--prot!9606/P04637> <http://www.w3.org/2000/01/rdf-schema#subClassOf> <http://rdf.biogateway.eu/reg2utrg/prot!9606/Q01081--prot!9606/P04637> .
 <http://rdf.biogateway.eu/reg2ntrg/prot!9606/Q01081--prot!9606/P04637> <http://www.w3.org/2004/02/skos/core#prefLabel> "involved in negative regulation of" .
 <http://rdf.biogateway.eu/reg2ntrg/prot!9606/Q01081--prot!9606/P04637> <http://www.w3.org/2004/02/skos/core#definition> "9606/Q01081 involved in negative regulation of 9606/P04637" .
 <http://rdf.biogateway.eu/reg2ntrg/prot!9606/Q01081--prot!9606/P04637> <http://www.w3.org/1999/02/22-rdf-syntax-ns#predicate> <http://purl.obolibrary.org/obo/RO_0002430> .

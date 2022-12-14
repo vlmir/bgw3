@@ -194,11 +194,13 @@ func Tab2struct(rpth string, keys, vals []bgw.Column, p *bgw.Dat4bridge) (err er
 		for i, k := range keys {
 			// i: index, k: bgw.Column
 			items := strings.Split(cells[k.Ind1], k.Dlm1) // sub-fields
-			if i == 0 {                                   // is this really necessary?
-				pk = strings.TrimSpace(items[k.Ind2])
+			spk := strings.TrimSpace(items[k.Ind2])
+			util.CheckStrings(spk)
+			if i == 0 {
+				pk = spk
 			} else {
 				// joining on Dlm2
-				pk = fmt.Sprintf("%s%s%s", pk, k.Dlm2, strings.TrimSpace(items[k.Ind2]))
+				pk = fmt.Sprintf("%s%s%s", pk, k.Dlm2, spk)
 			}
 		} // the order of componenets in the key is deterministic, no variation from call to call
 		util.CheckStrings(pk)
@@ -288,11 +290,13 @@ func Tab2set3D(rpth string, keys, vals []bgw.Column) (out util.Set3D, err error)
 		for i, k := range keys {
 			// i: index, k: bgw.Column
 			items := strings.Split(cells[k.Ind1], k.Dlm1) // sub-fields
-			if i == 0 {                                   // is this really necessary?
-				pk = strings.TrimSpace(items[k.Ind2])
+			spk := strings.TrimSpace(items[k.Ind2])
+			util.CheckStrings(spk)
+			if i == 0 {
+				pk = spk
 			} else {
 				// joining on Dlm2
-				pk = fmt.Sprintf("%s%s%s", pk, k.Dlm2, strings.TrimSpace(items[k.Ind2]))
+				pk = fmt.Sprintf("%s%s%s", pk, k.Dlm2, spk)
 			}
 		} // the order of componenets in the key is deterministic, no variation from call to call
 		util.CheckStrings(pk)
