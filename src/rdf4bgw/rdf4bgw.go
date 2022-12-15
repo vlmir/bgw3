@@ -101,7 +101,7 @@ func reg2pway(datdir, bgwdir string, txn2prm util.Set2D) (util.Set2D, error) {
 				sigmap := make(util.Set3D)
 				rdir := fmt.Sprintf("%s%s%s", datdir, src, "/")
 				smpths := []string{
-					rdir +"complexes.map",
+					rdir + "complexes.map",
 					rdir + "families.map",
 				}
 				err := parse.Sig2up(sigmap, smpths)
@@ -130,7 +130,7 @@ func reg2pway(datdir, bgwdir string, txn2prm util.Set2D) (util.Set2D, error) {
 } // reg2pway
 
 func rgr2trg(datdir, bgwdir string, txn2prm util.Set2D) (util.Set2D, error) {
-	log.Println("\n\tegr2trg for:", "all")
+	log.Println("\n\trgr2trg for:", "all")
 	cnts := make(util.Set2D)
 	var pdcks = []string{
 		"reg2ptrg",
@@ -177,7 +177,7 @@ func rgr2trg(datdir, bgwdir string, txn2prm util.Set2D) (util.Set2D, error) {
 				sigmap := make(util.Set3D)
 				rdir := fmt.Sprintf("%s%s%s", datdir, src, "/")
 				smpths := []string{
-					rdir +"complexes.map",
+					rdir + "complexes.map",
 					rdir + "families.map",
 				}
 				err := parse.Sig2up(sigmap, smpths)
@@ -242,7 +242,6 @@ func tfac2gene(datdir, bgwdir string, txn2prm util.Set2D) (util.Set2D, error) {
 			rpthx := fmt.Sprintf("%s%s%s%s", bgwdir, subdir, taxid, ext) // read BGW map json
 			err = xmap.Unmarshal(rpthx)
 			util.CheckE(err)
-
 
 			d4b.Src = src
 			d4b.Taxid = taxid
@@ -397,7 +396,7 @@ func prot2prot(datdir, bgwdir string, txn2prm util.Set2D) (int, error) {
 	return nlt, nil
 } // prot2prot()
 
-/////////////////////////////////////////////////////////////////////////////
+// ///////////////////////////////////////////////////////////////////////////
 func ortho(datdir, bgwdir string, txn2prm util.Set2D) (int, error) {
 	log.Println("\n\tortho for:", "all")
 	idmkeys := bgw.Orthokeys
@@ -448,7 +447,7 @@ func ortho(datdir, bgwdir string, txn2prm util.Set2D) (int, error) {
 	return nln, nil
 } // end of orhto
 
-////////////////////////////////////////////////////////////////////////////
+// //////////////////////////////////////////////////////////////////////////
 func main() {
 	start := time.Now()
 	aP := flag.Bool("a", false, "export [a]ll")
@@ -531,11 +530,14 @@ func main() {
 	}
 	if *aP || *rP {
 		mystart := time.Now()
-		tfac2gene(datdir, bgwdir, txn2prm)
+		// tfac2gene(datdir, bgwdir, txn2prm)
 		log.Println("Done with tfac2gene in", time.Since(mystart))
 		mystart = time.Now()
 		rgr2trg(datdir, bgwdir, txn2prm)
 		log.Println("Done with rgr2trg in", time.Since(mystart))
+		mystart = time.Now()
+		reg2pway(datdir, bgwdir, txn2prm)
+		log.Println("Done with reg2pway in", time.Since(mystart))
 	}
 	if *aP || *oP {
 		mystart := time.Now()
