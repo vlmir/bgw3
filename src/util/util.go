@@ -154,7 +154,7 @@ func (s SliceSet) Add(key, value string) {
 	s[key] = append(s[key], value)
 }
 
-//not used
+// not used
 func (s SliceSet) Peek(key string) (string, bool) {
 	slice, ok := s[key]
 	if !ok || len(slice) == 0 {

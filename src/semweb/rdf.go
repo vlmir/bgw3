@@ -15,7 +15,7 @@ var Nss = map[string]string{
 	"schema":      "http://schema.org/",
 	"biolink":     "https://w3id.org/biolink/vocab/", // TODO implement
 	"obo":         "http://purl.obolibrary.org/obo/",
-	"sio":         "http://semanticscience.org/resource/", // resolvable (2014-09-29)
+	"sio":         "http://semanticscience.org/resource/",
 	"uniprot":     "http://uniprot.org/uniprot/",          // accepts both UPID and UPAC
 	"uniprotkb":   "http://uniprot.org/uniprot/",          // accepts both UPID and UPAC
 	"uniparc":     "http://uniprot.org/uniparc/",
@@ -35,7 +35,7 @@ var Nss = map[string]string{
 	"ensfungi":    "https://fungi.ensembl.org/id/",
 	"ensmetazoa":  "https://metazoa.ensembl.org/id/",
 	"ensprotists": "https://protists.ensembl.org/id/",
-	"sigpway":	"https://signor.uniroma2.it/getPathwayData.php?pathway=",
+	"sigpway":     "https://signor.uniroma2.it/getPathwayData.php?pathway=",
 	"bgw":         "http://rdf.biogateway.eu/",
 	"gene":        "http://rdf.biogateway.eu/gene/",
 	"prot":        "http://rdf.biogateway.eu/prot/",
@@ -66,16 +66,16 @@ var Opys = util.SliceSet{
 	"gp2mf":   {"obo", "RO_0002327", "enables", "molecular_function"},
 	"gn2gp":   {"sio", "SIO_010078", "encodes"},
 	//"gn2gp":     {"biolink", "has_gene_product", "has gene product"}, // TODO
-	"tlp2tlp": {"obo", "RO_0002436", "molecularly interacts with"},
-	"reg2utrg": {"obo", "RO_0002428", "involved in regulation of"},
-	"reg2ptrg": {"obo", "RO_0002429", "involved in positive regulation of"},
-	"reg2ntrg": {"obo", "RO_0002430", "involved in negative regulation of"},
+	"tlp2tlp":   {"obo", "RO_0002436", "molecularly interacts with"},
+	"reg2utrg":  {"obo", "RO_0002428", "involved in regulation of"},
+	"reg2ptrg":  {"obo", "RO_0002429", "involved in positive regulation of"},
+	"reg2ntrg":  {"obo", "RO_0002430", "involved in negative regulation of"},
 	"sth2mtd":   {"rdfs", "isDefinedBy", "is defined by"},
 	"orl2orl":   {"sio", "SIO_000558", "is orthologous to"},
-	"pcs2loc":	{"obo", "BFO_0000066", "occurs in"},
-	"step2pway":   {"obo", "BFO_0000050", "is part of", "cellular_component"},
-	"reg2dtrg":	{"obo", "RO_0002578", "directly regulates"},
-	"reg2itrg":	{"obo", "RO_0012012", "indirectly regulates"},
+	"pcs2loc":   {"obo", "BFO_0000066", "occurs in"},
+	"step2pway": {"obo", "BFO_0000050", "is part of", "cellular_component"},
+	"reg2dtrg":  {"obo", "RO_0002578", "directly regulates"},
+	"reg2itrg":  {"obo", "RO_0012012", "indirectly regulates"},
 	// not used yet SIO_000208"
 	// "evd4sth": {"sio", "SIO_000208", "is supporting evidence for"},
 }

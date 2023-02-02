@@ -67,7 +67,7 @@ func Test_getOneSignor(t *testing.T) {
 	}
 	pth := "../../tdata/"
 	txids := [...]string{"9606"}
-	datdirs := [...]string{ pth + "dat4bgw/"}
+	datdirs := [...]string{pth + "dat4bgw/"}
 	tts := []tt{
 		{txids[0], datdirs[0], nil},
 	}

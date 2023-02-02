@@ -125,7 +125,6 @@ func saveOneUniprot(txid string, datdir string) error {
 	return nil
 }
 
-
 // TODO to be tested
 func saveOneSignor(txid string, datdir string) error {
 	subdir := "signor/"

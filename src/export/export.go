@@ -58,7 +58,7 @@ func Tfac2gene(d *bgw.Dat4bridge, x *bgw.Xmap, wdir string) error {
 	modes.Add("tfacts", "DOWN", n2t)
 	modes.Add("ntnu", "+", p2t)
 	modes.Add("ntnu", "-", n2t)
-	sdir :=  "tfac2gene"
+	sdir := "tfac2gene"
 	wpths := map[string]string{
 		p2t: fmt.Sprintf("%s%s/%s-%s-%s.nt", wdir, sdir, "p", src, taxid),
 		n2t: fmt.Sprintf("%s%s/%s-%s-%s.nt", wdir, sdir, "n", src, taxid),
@@ -233,7 +233,7 @@ func SigPways(d *bgw.Dat4bridge, x *bgw.Xmap, wdir string) error {
 	modes := make(util.Set3D)
 	modes.Add("signor", "up-regulates", p2t)
 	modes.Add("signor", "down-regulates", n2t)
-	sdir :=  "sigpways"
+	sdir := "sigpways"
 	wpths := map[string]string{
 		p2t: fmt.Sprintf("%s%s/%s-%s-%s.nt", wdir, sdir, "p", src, taxid),
 		n2t: fmt.Sprintf("%s%s/%s-%s-%s.nt", wdir, sdir, "n", src, taxid),
@@ -267,9 +267,9 @@ func SigPways(d *bgw.Dat4bridge, x *bgw.Xmap, wdir string) error {
 	}
 
 	duos := d4b.Duos
-	mytypes := []string{ "complex", "protein", "proteinfamily"} // for filetering
-	entAns := nss["prot"] // sic, never changes
-	entBns := nss["prot"] // sic, never changes
+	mytypes := []string{"complex", "protein", "proteinfamily"} // for filetering
+	entAns := nss["prot"]                                      // sic, never changes
+	entBns := nss["prot"]                                      // sic, never changes
 	for _, duoid := range duos.Keys() {
 		duo := duos[duoid]
 		// if duo["taxid"].Keys()[0] != taxid {continue} // filtering by host
@@ -278,46 +278,46 @@ func SigPways(d *bgw.Dat4bridge, x *bgw.Xmap, wdir string) error {
 
 		var allAids []string // UP ACs for one duoid
 		var allBids []string // UP ACs for one duoid
-			typeAs := duo["typeAlbl"].Keys()
-			typeBs := duo["typeBlbl"].Keys()
-			// currently 3 types for both A and B entities
-			// filtering by the type of entities
-			if len(util.Shared(mytypes, typeAs)) == 0 {
+		typeAs := duo["typeAlbl"].Keys()
+		typeBs := duo["typeBlbl"].Keys()
+		// currently 3 types for both A and B entities
+		// filtering by the type of entities
+		if len(util.Shared(mytypes, typeAs)) == 0 {
+			continue
+		}
+		if len(util.Shared(mytypes, typeBs)) == 0 {
+			continue
+		}
+		// skipping pairs with ambiguous entyty types - never happens
+		if len(typeAs) > 1 {
+			fmt.Printf("%s%s %s %s", "export.SigPways(): multiple entity A types, skipping: ", src, duoid, typeAs)
+			continue
+		}
+		if len(typeBs) > 1 {
+			fmt.Printf("%s%s %s %s", "export.SigPways(): multiple entity B types, skipping: ", src, duoid, typeBs)
+			continue
+		}
+		typeA := typeAs[0]
+		typeB := typeBs[0]
+		/// expanding families and complexes
+		if typeA == "complex" || typeA == "proteinfamily" {
+			allAids = xmap.Signor[oriAid]["ids"].Keys() // all UP accessions
+			if len(allAids) == 0 {
 				continue
 			}
-			if len(util.Shared(mytypes, typeBs)) == 0 {
+		}
+		if typeB == "complex" || typeB == "proteinfamily" {
+			allBids = xmap.Signor[oriBid]["ids"].Keys() // all UP accessions
+			if len(allBids) == 0 {
 				continue
 			}
-			// skipping pairs with ambiguous entyty types - never happens
-			if len(typeAs) > 1 {
-				fmt.Printf("%s%s %s %s", "export.SigPways(): multiple entity A types, skipping: ", src, duoid, typeAs)
-				continue
-			}
-			if len(typeBs) > 1 {
-				fmt.Printf("%s%s %s %s", "export.SigPways(): multiple entity B types, skipping: ", src, duoid, typeBs)
-				continue
-			}
-			typeA := typeAs[0]
-			typeB := typeBs[0]
-			/// expanding families and complexes
-			if typeA == "complex" || typeA == "proteinfamily" {
-				allAids = xmap.Signor[oriAid]["ids"].Keys() // all UP accessions
-				if len(allAids) == 0 {
-					continue
-				}
-			}
-			if typeB == "complex" || typeB == "proteinfamily" {
-				allBids = xmap.Signor[oriBid]["ids"].Keys() // all UP accessions
-				if len(allBids) == 0 {
-					continue
-				}
-			}
-			if typeA == "protein" {
-				allAids = append(allAids, oriAid)
-			}
-			if typeB == "protein" {
-				allBids = append(allBids, oriBid)
-			}
+		}
+		if typeA == "protein" {
+			allAids = append(allAids, oriAid)
+		}
+		if typeB == "protein" {
+			allBids = append(allBids, oriBid)
+		}
 		// now allAids allBids are all UP AC
 
 		// converting allAids to Bgwids
@@ -337,7 +337,7 @@ func SigPways(d *bgw.Dat4bridge, x *bgw.Xmap, wdir string) error {
 			if src == "signor" {
 				// mapping prots to genes
 				for _, bgwpBid := range xmap.Upac[oneBid]["bgwp"].Keys() {
-						bgwBids = append(bgwBids, bgwpBid)
+					bgwBids = append(bgwBids, bgwpBid)
 				}
 			}
 		}
@@ -348,7 +348,7 @@ func SigPways(d *bgw.Dat4bridge, x *bgw.Xmap, wdir string) error {
 		//  assigning predicate depending of  the direction of regulation
 		pdcks := []string{u2t} // all predicate keys for one duoid, u2t first
 		for _, onemod := range duo["modelbl"].Keys() {
-				onemod = strings.Split(onemod, " ")[0]
+			onemod = strings.Split(onemod, " ")[0]
 			// keys for predicates
 			for _, pdck := range modes[src][onemod].Keys() {
 				pdcks = append(pdcks, pdck)
@@ -451,7 +451,7 @@ func Rgr2trg(d *bgw.Dat4bridge, x *bgw.Xmap, wdir string) error {
 	modes := make(util.Set3D)
 	modes.Add("signor", "up-regulates", p2t)
 	modes.Add("signor", "down-regulates", n2t)
-	sdir :=  "reg2targ"
+	sdir := "reg2targ"
 	wpths := map[string]string{
 		p2t: fmt.Sprintf("%s%s/%s-%s-%s.nt", wdir, sdir, "p", src, taxid),
 		n2t: fmt.Sprintf("%s%s/%s-%s-%s.nt", wdir, sdir, "n", src, taxid),
@@ -485,73 +485,86 @@ func Rgr2trg(d *bgw.Dat4bridge, x *bgw.Xmap, wdir string) error {
 	}
 
 	duos := d4b.Duos
-	mytypes := []string{"MI:0314", "MI:1304", "MI:0326"} // for filetering
-	myRegTypes := []string{}                    // for filetering
-	entAns := nss["prot"] // sic, never changes
-	entBns := nss["prot"] // sic, never changes
+	// future extensions:
+	// psi-mi:"MI:0328"(small molecule)
+	// psi-mi:"MI:2258"(xenobiotic) # chemical?
+	mytypes := []string{"MI:0314", "MI:1304", "MI:0326", "MI:0328"} // for filetering
+	myRegTypes := []string{}                                        // for filetering
+	entAns := nss["prot"]                                           // sic, never changes
+	entBns := nss["prot"]                                           // sic, never changes
 	for _, duoid := range duos.Keys() {
 		duo := duos[duoid]
-		oriAB := strings.Split(duoid, "--")
-		oriAid := oriAB[0]
-		oriBid := oriAB[1]
-
-		// TODO should be done during parsing
-		if src == "signor" {
-			oriAid = strings.Split(oriAid, ":")[1]
-			oriBid = strings.Split(oriBid, ":")[1]
+		oriAid := duo["Aid"].Keys()[0] // justly assuming a single value
+		oriBid := duo["Bid"].Keys()[0] // justly assuming a single value
+		Abits := strings.Split(oriAid, "\"")
+		Bbits := strings.Split(oriBid, "\"")
+		// chemicals are in the 'else' clause
+		if len(Abits) == 1 {
+			bits := strings.Split(oriAid, ":")
+			oriAid = bits[1]
+			if bits[0] == "uniprotkb" {
+				oriAid = strings.Split(bits[1], "-")[0]
+			}
+		} else {
+			oriAid = strings.Replace(Abits[1], ":", "_", 1)
+		}
+		if len(Bbits) == 1 {
+			bits := strings.Split(oriBid, ":")
+			oriBid = bits[1]
+			if bits[0] == "uniprotkb" {
+				oriBid = strings.Split(bits[1], "-")[0]
+			}
+		} else {
+			oriBid = strings.Replace(Bbits[1], ":", "_", 1)
 		}
 		var allAids []string // UP ACs for one duoid
 		var allBids []string // UP ACs for one duoid
+		// filtering by the level of regulation
 		if len(myRegTypes) != 0 {
-			// retaining only 'transcriptional regulation':
 			if len(util.Shared(myRegTypes, duo["reglevelid"].Keys())) == 0 {
 				continue
 			}
 		}
-		if src == "signor" {
-			typeAs := duo["typeAid"].Keys()
-			typeBs := duo["typeBid"].Keys()
-			// currently 3 types for both A and B entities
-			// filtering by the type of entities
-			if len(util.Shared(mytypes, typeAs)) == 0 {
-				continue
-			}
-			if len(util.Shared(mytypes, typeBs)) == 0 {
-				continue
-			}
-			// skipping pairs with ambiguous entyty types - never happens
-			if len(typeAs) > 1 {
-				fmt.Printf("%s%s %s %s", "export.Rgr2trg(): multiple entity A types, skipping: ", src, duoid, typeAs)
-				continue
-			}
-			if len(typeBs) > 1 {
-				fmt.Printf("%s%s %s %s", "export.Rgr2trg(): multiple entity B types, skipping: ", src, duoid, typeBs)
-				continue
-			}
-			typeA := typeAs[0] // assuming a single vwlue
-			typeB := typeBs[0] // assuming a single value
-			/// expanding families and complexes
-			if typeA == "MI:0314" || typeA == "MI:1304" {
-				allAids = xmap.Signor[oriAid]["ids"].Keys() // all UP accessions
-				if len(allAids) == 0 {
-					continue
-				}
-			}
-			if typeB == "MI:0314" || typeB == "MI:1304" {
-				allBids = xmap.Signor[oriBid]["ids"].Keys()
-				if len(allBids) == 0 {
-					continue
-				}
-			}
-			// for type MI:0326 'protein' TODO see if this needed
+		typeAs := duo["typeAid"].Keys()
+		typeBs := duo["typeBid"].Keys()
+		// filtering by the type of entities
+		if len(util.Shared(mytypes, typeAs)) == 0 {
+			continue
+		}
+		if len(util.Shared(mytypes, typeBs)) == 0 {
+			continue
+		}
+		// skipping pairs with ambiguous entyty types - never happens
+		if len(typeAs) > 1 {
+			fmt.Printf("%s%s %s %s", "export.Rgr2trg(): multiple entity A types, skipping: ", src, duoid, typeAs)
+			continue
+		}
+		if len(typeBs) > 1 {
+			fmt.Printf("%s%s %s %s", "export.Rgr2trg(): multiple entity B types, skipping: ", src, duoid, typeBs)
+			continue
+		}
+		typeA := typeAs[0] // assuming a single vwlue
+		typeB := typeBs[0] // assuming a single value
+		/// expanding families and complexes
+		if typeA == "MI:0314" || typeA == "MI:1304" {
+			allAids = xmap.Signor[oriAid]["ids"].Keys() // all UP accessions
 			if len(allAids) == 0 {
-				allAids = append(allAids, oriAid)
-			}
-			if len(allBids) == 0 {
-				allBids = append(allBids, oriBid)
+				continue
 			}
 		}
-		// now allAids allBids are all UP AC
+		if typeB == "MI:0314" || typeB == "MI:1304" {
+			allBids = xmap.Signor[oriBid]["ids"].Keys()
+			if len(allBids) == 0 {
+				continue
+			}
+		}
+		// for chemicals? TODO confirm
+		if len(allAids) == 0 {
+			allAids = append(allAids, oriAid)
+		}
+		if len(allBids) == 0 {
+			allBids = append(allBids, oriBid)
+		}
 
 		// converting allAids to Bgwids
 		var bgwAids []string
@@ -567,11 +580,9 @@ func Rgr2trg(d *bgw.Dat4bridge, x *bgw.Xmap, wdir string) error {
 		// converting allBids to Bgwids
 		var bgwBids []string
 		for _, oneBid := range allBids {
-			if src == "signor" {
-				// mapping prots to genes
-				for _, bgwpBid := range xmap.Upac[oneBid]["bgwp"].Keys() {
-						bgwBids = append(bgwBids, bgwpBid)
-				}
+			// mapping prots to genes
+			for _, bgwpBid := range xmap.Upac[oneBid]["bgwp"].Keys() {
+				bgwBids = append(bgwBids, bgwpBid)
 			}
 		}
 		if len(bgwBids) == 0 {
@@ -581,10 +592,8 @@ func Rgr2trg(d *bgw.Dat4bridge, x *bgw.Xmap, wdir string) error {
 		//  assigning predicate depending of  the direction of regulation
 		pdcks := []string{u2t} // all predicate keys for one duoid, u2t first
 		for _, onemod := range duo["modelbl"].Keys() {
-			if src == "signor" {
-				onemod = util.StripParQuots(onemod)
-				onemod = strings.Split(onemod, " ")[0]
-			}
+			onemod = util.StripParQuots(onemod)
+			onemod = strings.Split(onemod, " ")[0]
 			// keys for predicates
 			for _, pdck := range modes[src][onemod].Keys() {
 				pdcks = append(pdcks, pdck)

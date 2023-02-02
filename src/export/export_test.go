@@ -9,6 +9,7 @@ import (
 
 // TODO use Test_Tfac2gene as a paradigm
 
+// this test MUST come before the other !!
 func Test_GeneProt(t *testing.T) {
 	// TODO implement properly without duplicating the tests
 	type tt struct {
@@ -88,7 +89,6 @@ func Test_GeneProt(t *testing.T) {
 	}
 }
 
-
 func TestSigPways(t *testing.T) {
 	type tt struct {
 		arg1 *bgw.Dat4bridge
@@ -110,7 +110,7 @@ func TestSigPways(t *testing.T) {
 	xmap.Upac.Add("P31749", "bgwp", "9606/P31749") // PF24
 	xmap.Upac.Add("P31751", "bgwp", "9606/P31751") // PF24
 	/// exporting
-	srcs := []string{"signor",}
+	srcs := []string{"signor"}
 
 	// for Signor complexes and protein families
 	sigmap := make(util.Set3D)
@@ -152,20 +152,17 @@ func TestRgr2trg(t *testing.T) {
 	var d4b0 bgw.Dat4bridge
 	d4b0.New()
 	_ = parse.Tab2struct(pth+"signor/9606.mi28", keys, vals, &d4b0)
-	xmap := bgw.NewXmap() //TODO see which entries are really necessary
+	xmap := bgw.NewXmap()
 	xmap.Upac.Add("P27361", "bgwp", "9606/P27361")
-	xmap.Upac.Add("P48431", "bgwp", "9606/P48431")
+	xmap.Upac.Add("P48431", "bgwp", "9606/P48431") // for testing isoforms
 	xmap.Upac.Add("Q9BTC0", "bgwp", "9606/Q9BTC0")
 	xmap.Upac.Add("P08648", "bgwp", "9606/P08648")
 	xmap.Bgwp.Add("9606/P08648", "bgwg", "9606/GENEX")
 	xmap.Upac.Add("P10275", "bgwp", "9606/P10275")
-	xmap.Upac.Add("P19838", "bgwp", "9606/P19838")
-	xmap.Upac.Add("Q04206", "bgwp", "9606/Q04206")
-	xmap.Upac.Add("P24385", "bgwp", "9606/P24385")
 	xmap.Upac.Add("P04637", "bgwp", "9606/P04637")
 	xmap.Upac.Add("Q01081", "bgwp", "9606/Q01081")
 	/// exporting
-	srcs := []string{"signor",}
+	srcs := []string{"signor"}
 
 	// for Signor complexes and protein families
 	sigmap := make(util.Set3D)

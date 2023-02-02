@@ -18,8 +18,8 @@ type Column struct {
 var CV = "3.3.0"
 
 var Upkeys = map[string]string{
-	//"Gene_Name":    "gnm",
-	//"Gene_Synonym": "gsnm",
+	"Gene_Name":    "gnm",
+	"Gene_Synonym": "gsnm",
 	"Ensembl":       "ensgene",
 	"Ensembl_PRO":   "ensprotein",
 	"EnsemblGenome": "ensom",
@@ -138,17 +138,16 @@ func TftgParseConf() ([]Column, []Column) {
 
 func SignorParseConf() ([]Column, []Column) {
 	keys := []Column{
-		// {13, "|", 0, "", 0, ""}, // signor-id, unique for each line, single value
 		{0, "|", 0, "--", 0, ""},
 		{1, "|", 0, "--", 0, ""},
 	}
 	vals := []Column{
-		{0, "|", 1, ":", 0, "Aid"}, // single value
-		{1, "|", 1, ":", 0, "Bid"}, // single value
+		{0, "|", 0, "|", 0, "Aid"},     // single value; Attn: diverse formats !!
+		{1, "|", 0, "|", 0, "Bid"},     // single value; Attn: diverse formats !!
 		{8, "|", 1, ":", -1, "pubmed"}, // filtering by "pubmed"
 		{11, "|", 1, "\"", 0, "typeABid"},
 		{11, "|", 2, "\"", 0, "typeABlbl"},
-		{13, "|", 1, ":", 0, "sigid"}, // single value, unique for each line
+		{13, "|", 1, ":", 0, "sigid"}, // single value, unique for each line, not accepted by API
 		{14, "|", 1, ":", 0, "score"},
 		{20, "|", 1, "\"", 0, "typeAid"},
 		{20, "|", 2, "\"", 0, "typeAlbl"},
@@ -165,7 +164,7 @@ func SignorParseConf() ([]Column, []Column) {
 func SigPwaysParseConf() ([]Column, []Column) {
 	// "|" is not used at all
 	keys := []Column{
-		{5, "|", 0, "--", 0, ""}, // Aid
+		{5, "|", 0, "--", 0, ""},  // Aid
 		{10, "|", 0, "--", 0, ""}, // Bid
 	}
 	vals := []Column{
@@ -183,7 +182,7 @@ func SigPwaysParseConf() ([]Column, []Column) {
 		{18, ";", 0, "|", 0, "tissueid"},
 		{25, ";", 0, "|", 0, "pubmed"},
 		{26, ";", 0, "|", 0, "isdirect"}, // "t" or "f"
-		{30, ";", 0, "|", 0, "sigid"}, // interaction id
+		{30, ";", 0, "|", 0, "sigid"},    // interaction id, not accepted by API
 		{31, ";", 0, "|", 0, "score"},
 	}
 	return keys, vals

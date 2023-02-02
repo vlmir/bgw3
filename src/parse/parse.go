@@ -119,6 +119,7 @@ func Idmap(rpth string, srcs map[string]string, i1, i2, i3 int) (util.Set3D, err
 		if !ok {
 			continue
 		} // filtering by srcs
+		// ALL proteomes 2022-12-14: no '"' anymore, 28 occurences of "''"
 		key1 := strings.Replace(cells[i1], "\"", "''", -1) // present e.g. in 44689
 		key2 := strings.Replace(cells[i2], "\"", "''", -1) // present e.g. in 44689
 		key3 := strings.Replace(cells[i3], "\"", "''", -1) // present e.g. in 44689
@@ -285,7 +286,6 @@ func Tab2set3D(rpth string, keys, vals []bgw.Column) (out util.Set3D, err error)
 			panic(errors.New(msg))
 		}
 		/// primary key
-		// TODO check for empty strings !!!
 		var pk string // the primary key to be used in the output map
 		for i, k := range keys {
 			// i: index, k: bgw.Column
@@ -363,7 +363,7 @@ func UpIdMap(rpth string, idmkeys map[string]string) (out util.Set3D, err error)
 			continue
 		} // filtering by idmkeys
 		upac := cells[0]
-		// TODO see if the replacement below is acceptable
+		// ALL proteomes 2022-12-14: no '"' anymore, 28 occurences of "''"
 		xrf := strings.Replace(cells[2], "\"", "''", -1) // present e.g. in 44689
 		out.Add(upac, key, xrf)
 		// TODO see how to get rid of this
@@ -375,12 +375,6 @@ func UpIdMap(rpth string, idmkeys map[string]string) (out util.Set3D, err error)
 	return out, nil
 }
 
-/*
-Fields: Dated!
-Entry   Entry name      Gene names  (primary )  Gene names  (synonym )  Organism        Organism IDProtein names   Proteomes       Annotation      PubMed ID
-Attn: gene Names space separated and some contain internal space - useless
-TODO contact UniProt
-*/
 /*
 9606:95744 entries no proteome
 Proteome examples other than empty (73928 entries):
@@ -397,7 +391,7 @@ UP000005640: Chromosome 1, UP000005640: Chromosome 17
 */
 // Entry   Entry name      Organism        Organism ID     Protein names   Proteomes       PubMed ID       Annotation
 func UpTab(rpth string, upac2xrf util.Set3D, txn2prm util.Set2D) (out bgw.Dat4rdf, err error) {
-	// Attn: the input file MUST hane no blank lines !!! TODO
+	// Attn: the input file MUST hane no blank lines ??
 	allPs := make(util.Set3D)
 	allTs := make(util.Set3D)
 	allGs := make(util.Set3D)
@@ -424,7 +418,7 @@ func UpTab(rpth string, upac2xrf util.Set3D, txn2prm util.Set2D) (out bgw.Dat4rd
 		if len(cells) < 10 {
 			msg := fmt.Sprintf("parse.UpTab():%s:line:%d: TooFewFields", rpth, ln)
 			panic(errors.New(msg))
-		}
+		} // blanc lines skipped as well
 		ln++
 		_, ok := upac2xrf[upca] // RefProt ACs
 		if !ok {
@@ -441,14 +435,14 @@ func UpTab(rpth string, upac2xrf util.Set3D, txn2prm util.Set2D) (out bgw.Dat4rd
 		/// Attn: multiple entries do occur due to diff in chromosomes !!
 		if len(cells[7]) == 0 {
 			panic("PrmChrEmpty") // never happens for Reference Proteoms
-		} // at least one apir RefProtID: ChromoID
+		} // at least one pair RefProtID: ChromoID
 		prmchrs := strings.Split(cells[7], ", ") // proteome: chromosome pairs
 		/// Processing all Proteome:Chromosome values
 		for _, prmchr := range prmchrs {
 			bits := strings.Split(prmchr, ": ") // proteome: chromosome
 			if bits[0] != prmid {
 				continue
-			} // only the reference proteom now
+			} // only the reference proteomes now
 			if len(bits) < 2 {
 				// happens in 367110 and 284812
 				// "Linkage Group I" "Linkage Group II" etc in 367110
@@ -462,7 +456,6 @@ func UpTab(rpth string, upac2xrf util.Set3D, txn2prm util.Set2D) (out bgw.Dat4rd
 				// alongside with
 				// Apicoplast A/B 20200531: 30
 				// UP000001450: Mitochondrion 20200531: 3
-				// TODO
 				continue // go to the next pair
 			}
 			chr := bits[1]
@@ -691,7 +684,6 @@ func UpVar(rpth string, filters ...util.Set3D) (duos util.Set3D, err error) {
 		}
 		upca := strings.TrimSpace(line[10:20])
 		symG := strings.TrimSpace(line[0:9])
-		//oriL := upca // TODO revert ?
 		oriL := symG
 		if len(filters) == 1 {
 			if out := checkID(oriL, filters[0], notInBgw); out != 0 {
@@ -699,7 +691,6 @@ func UpVar(rpth string, filters ...util.Set3D) (duos util.Set3D, err error) {
 			}
 		}
 		idL := fmt.Sprintf("%s%s%s", nsL, "!", oriL)
-		// TODO consider splitting on '[' and ']'
 		dfn := strings.TrimSpace(line[72:])
 		// only one definition per line
 		if dfn == "" {
@@ -865,6 +856,7 @@ enables
 involved_in
 is_active_in
 part_of
+
 	gpakeys := map[int][]string{
 		0: []string{"db", "|"},
 		1: []string{"acc", "|"},
