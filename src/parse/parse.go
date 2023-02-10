@@ -120,9 +120,9 @@ func Idmap(rpth string, srcs map[string]string, i1, i2, i3 int) (util.Set3D, err
 			continue
 		} // filtering by srcs
 		// ALL proteomes 2022-12-14: no '"' anymore, 28 occurences of "''"
-		key1 := strings.Replace(cells[i1], "\"", "''", -1) // present e.g. in 44689
-		key2 := strings.Replace(cells[i2], "\"", "''", -1) // present e.g. in 44689
-		key3 := strings.Replace(cells[i3], "\"", "''", -1) // present e.g. in 44689
+		key1 := strings.Replace(cells[i1], "\"", "`", -1) // was present in 44689
+		key2 := strings.Replace(cells[i2], "\"", "`", -1) // was present in 44689
+		key3 := strings.Replace(cells[i3], "\"", "`", -1) // was present in 44689
 		out.Add(key1, key2, key3)
 	}
 	return out, nil
@@ -345,10 +345,10 @@ func Basenames(rpth, dlm string) (set util.Set2D, err error) {
 */
 
 // UpIdMap filters a file of the form db1id\tdb2label\tdb2id by values of db2lablel
-func UpIdMap(rpth string, idmkeys map[string]string) (out util.Set3D, err error) {
-	// used one only in rdf4bgw.go pass out to parse.UpTab():
+func UpIdMap(rpth string, idmkeys map[string]string) (upac2xrf util.Set3D, err error) {
+	// used one only in rdf4bgw.go pass upac2xrf to parse.UpTab():
 	// needed for retrieving all iso-form accessions in export.GeneProt()!
-	out = make(util.Set3D)
+	upac2xrf = make(util.Set3D)
 	rfh, err := os.Open(rpth)
 	util.CheckE(err)
 	defer rfh.Close()
@@ -364,15 +364,17 @@ func UpIdMap(rpth string, idmkeys map[string]string) (out util.Set3D, err error)
 		} // filtering by idmkeys
 		upac := cells[0]
 		// ALL proteomes 2022-12-14: no '"' anymore, 28 occurences of "''"
-		xrf := strings.Replace(cells[2], "\"", "''", -1) // present e.g. in 44689
-		out.Add(upac, key, xrf)
+		xrf := strings.Replace(cells[2], "\"", "`", -1) // was present in 44689
+		upac2xrf.Add(upac, key, xrf)
+		// mapping canonical accesssion and isoforms
 		// TODO see how to get rid of this
 		bits := strings.Split(upac, "-")
 		if len(bits) == 2 {
-			out.Add(bits[0], "upac", upac)
-		} // only iso-forms added
+			upca := bits[0]
+			upac2xrf.Add(upca, "upac", upac)
+		} // only for iso-forms
 	}
-	return out, nil
+	return upac2xrf, nil
 }
 
 /*
@@ -544,7 +546,7 @@ func UpTab(rpth string, upac2xrf util.Set3D, txn2prm util.Set2D) (out bgw.Dat4rd
 			/*
 				for i, _ := range gnms {
 					gnms[i] = cells[1]
-				} // replacing GeneNames with UnoProtID
+				} // replacing GeneNames with UniProtID
 			*/
 			multiGene[upca]++
 			// msg := fmt.Sprintf("parse.UpTab():%s:%s: MultiGene: %d %v", txid, upca, len(gnms), gnms)

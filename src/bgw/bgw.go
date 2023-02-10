@@ -18,14 +18,17 @@ type Column struct {
 var CV = "3.3.0"
 
 var Upkeys = map[string]string{
+	"UniProtKB-ID":	"upid",
 	"Gene_Name":    "gnm",
 	"Gene_Synonym": "gsnm",
 	"Ensembl":       "ensgene",
-	"Ensembl_PRO":   "ensprotein",
+	"Ensembl_PRO":   "enspro",
 	"EnsemblGenome": "ensom",
+	"EnsemblGenome_PRO": "ensompro",
 	"GeneID":        "ncbigene",
 	"RefSeq":        "refseq",
 	"UniParc":       "uniparc",
+	"NCBI_TaxID":	"ncbitx",
 }
 
 var Orthokeys = map[string]string{

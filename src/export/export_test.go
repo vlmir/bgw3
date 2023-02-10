@@ -22,18 +22,10 @@ func Test_GeneProt(t *testing.T) {
 	}
 	pth := "../../tdata/"
 	wpth := pth + "OUT/export/"
-	var idmkeys = map[string]string{
-		"Ensembl_PRO":   "ensprotein",
-		"Ensembl":       "ensgene",
-		"EnsemblGenome": "ensom",
-		"GeneID":        "ncbigene",
-		"RefSeq":        "refseq",
-		"UniParc":       "uniparc",
-	}
 	txn2prm := make(util.Set2D)
 	txn2prm.Add("9606", "UP000005640")
 	txn2prm.Add("7227", "UP000000803")
-	upacs, _ := parse.UpIdMap(pth+"idmapping/UP000005640_9606.idmapping", idmkeys)
+	upacs, _ := parse.UpIdMap(pth+"idmapping/UP000005640_9606.idmapping", bgw.Upkeys)
 	arg01, _ := parse.UpTab(pth+"uniprot/9606.upt", upacs, txn2prm)
 	arg01.Upac = &upacs
 	arg02 := wpth + "gene/9606.nt"
@@ -60,7 +52,7 @@ func Test_GeneProt(t *testing.T) {
 			)
 		}
 	}
-	upacs, _ = parse.UpIdMap(pth+"idmapping/UP000000803_7227.idmapping", idmkeys)
+	upacs, _ = parse.UpIdMap(pth+"idmapping/UP000000803_7227.idmapping", bgw.Upkeys)
 	arg11, _ := parse.UpTab(pth+"uniprot/7227.upt", upacs, txn2prm)
 	arg11.Upac = &upacs
 	arg12 := wpth + "gene/7227.nt"
@@ -87,7 +79,49 @@ func Test_GeneProt(t *testing.T) {
 			)
 		}
 	}
-}
+} // Test_GeneProt()
+
+func Test_Gene(t *testing.T) {
+	// TODO implement properly without duplicating the tests
+	type tt struct {
+		arg1 util.Set3D
+		arg2 util.Set3D
+		arg3 string
+		arg4 bgw.Xmap
+		val1 int // number of gene names added
+		val2 int // number of gene synonyms added
+	}
+	var xmap bgw.Xmap
+	xmap.New()
+	pth := "../../tdata/"
+	wpth := pth + "OUT/export/"
+	arg01, _ := parse.Idmap(pth+"idmapping/UP000005640_9606.idmapping", bgw.Upkeys, 1, 2, 0)
+	arg02, _ := parse.Idmap(pth+"idmapping/UP000005640_9606.idmapping", bgw.Upkeys,0, 1, 2)
+	arg03 := wpth + "gene/9606.nt"
+	arg04 := xmap
+	tts := []tt{
+		{arg01, arg02, arg03, arg04, 4, 3},
+	}
+	for i, tt := range tts {
+		_ = Gene(tt.arg1, tt.arg2, tt.arg3, tt.arg4)
+		n := len(xmap.Lblg.Keys())
+		if n != tt.val1 {
+			t.Error(
+				"For test", i+1, ": ",
+				"\n\twant", tt.val1,
+				"\n\thave", n,
+			)
+		}
+		m := len(xmap.Syng.Keys())
+		if m != tt.val2 {
+			t.Error(
+				"For test", i+1, ": ",
+				"\n\twant", tt.val2,
+				"\n\thave", m,
+			)
+		}
+	}
+} // Test_Gene
 
 func TestSigPways(t *testing.T) {
 	type tt struct {

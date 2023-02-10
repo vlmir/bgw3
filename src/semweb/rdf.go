@@ -29,7 +29,7 @@ var Nss = map[string]string{
 	"goa":         "http://identifiers.org/goa/",
 	"pubmed":      "http://identifiers.org/pubmed/",
 	"signor":      "https://signor.uniroma2.it/relation_result.php?id=",
-	"ensprotein":  "http://identifiers.org/ensembl/",
+	"enspro":  "http://identifiers.org/ensembl/",
 	"ensgene":     "http://identifiers.org/ensembl/",
 	"ensplants":   "https://plants.ensembl.org/id/",
 	"ensfungi":    "https://fungi.ensembl.org/id/",

@@ -673,6 +673,155 @@ func Rgr2trg(d *bgw.Dat4bridge, x *bgw.Xmap, wdir string) error {
 	return nil
 } // Rgr2trg
 
+func Gene(xrf2upac, upac2xrf util.Set3D, wpthG string, xmap bgw.Xmap) (error){
+	upca2upac := make(util.Set2D)
+	allupacs := upac2xrf.Keys()
+	for _, upac := range(allupacs) {
+		bits := strings.Split(upac, "-")
+		if len(bits) == 2 {
+			upca := bits[0]
+			upca2upac.Add(upca, upac)
+		}
+	}
+
+	txid := xrf2upac["NCBI_TaxID"].Keys()[0]
+	nss := rdf.Nss // BGW URI name spaces
+	txnU := rdf.CompU(nss["ncbitx"], txid) // taxon URI
+	xkeys := []string{
+		"Ensembl",
+		"GeneID",
+	}
+	keys4g := make(util.SliceSet)
+	// keys of object properties ('gene' graph)
+	keys4g["Opys"] = []string{
+		"gn2gp",
+		"gn2txn",
+		"ins2cls",
+		// "mbr2lst",
+		"sth2clm",
+		"sth2ori",
+		"sth2src",
+		"sub2cls",
+	}
+	// keys of annotation properties ('gene' graph)
+	keys4g["Apys"] = []string{
+		"sth2dfn",
+		"sth2lbl",
+		"sth2syn",
+	}
+	// keys of parental classes ('gene' graph)
+	keys4g["Prns"] = []string{
+		"gn",
+	}
+	clsU := rdf.CompU(nss["owl"], "Class")
+	srcU := rdf.FormU(nss["uniprot"])
+	graphUg := "<http://rdf.biogateway.eu/graph/gene>"
+	dfn := "" // descriptor
+	lbl := "" // short label
+	/////////////////////////////////////////////////////////////////////////////
+	wfhG, err := os.Create(wpthG)
+	util.CheckE(err)
+	defer wfhG.Close()
+	// 'gene' graph ini
+	var sbG strings.Builder
+	gnUs := rdf.FmtURIs(keys4g) // URIs for 'gene' graph
+	header, _ := rdf.Capita(keys4g)
+	sbG.WriteString(header)
+	sbG.WriteString(rdf.FormT(graphUg, gnUs["sth2src"], srcU))
+	nsG := rdf.FormU(nss["gene"])
+	sbG.WriteString(rdf.FormT(nsG, gnUs["ins2cls"], clsU))
+	dfn = "Set of genes in Biogateway"
+	sbG.WriteString(rdf.FormT(nsG, gnUs["sth2dfn"], rdf.FormL(dfn)))
+	lbl = "gene"
+	sbG.WriteString(rdf.FormT(nsG, gnUs["sth2lbl"], rdf.FormL(lbl)))
+	// cnt := make(util.Set2D)
+	allGs := xrf2upac["Gene_Name"] // set oi util.Set2D
+	for _, lblG := range allGs.Keys() {
+		oneG, ok := allGs[lblG]
+		if !ok {
+			panic("Impossible!")
+		}
+		oneG.Check() // not empty
+		clsG := strings.Join([]string{txid, lblG}, "/")
+		clsGU := rdf.CompU(nss["gene"], clsG)
+		// canonical accessions for a gene, filtered by Reference Proteome in parse.UpTab:
+		// Note: gene names and synonyms are associated only with canonical accessions
+		upcas := oneG.Keys()
+		/*
+		for _, upca := range upcas {
+			xrfs, ok := upac2xrf[upca]
+			m := 1 // at least "uniparc" - SIC!
+			if l := len(xrfs); l < m {
+				// never happens
+				msg := fmt.Sprintf("export.GeneProt():%s:%s: NoXrefs", txid, upca)
+				panic(errors.New(msg))
+			} // 20200531: 4278 entries having only UnniParc refs
+		}
+		*/
+		sbG.WriteString(rdf.FormT(clsGU, gnUs["ins2cls"], clsU))
+		sbG.WriteString(rdf.FormT(clsGU, gnUs["sub2cls"], gnUs["gn"]))
+		sbG.WriteString(rdf.FormT(clsGU, gnUs["gn2txn"], txnU))
+		xmap.Lblg.Add(lblG, "bgwg", clsG)
+		xmap.Lblg.Add(clsG, "gnm", lblG)
+		xrfs4oneg := make(util.Set2D)
+		upids4oneg := make(util.Set2D)
+		gsnms4oneg := make(util.Set2D)
+		upacs4oneg := make(util.Set2D)
+		for _, upca := range upcas {
+			upacs := upca2upac[upca].Keys()
+			xrfs := upac2xrf[upca]
+			upids := xrfs["UniProtKB-ID"].Keys()
+			for _, upid := range(upids) {
+				upids4oneg.Add(upid, upca)
+			}
+			gsnms := xrfs["Gene_Synonym"].Keys()
+			for _, gsnm := range(gsnms) {
+				gsnms4oneg.Add(gsnm, upca)
+			}
+			clsPU := rdf.CompU(nss["uniprot"], upca)
+			clsGU := rdf.CompU(nss["gene"], clsG)
+			sbG.WriteString(rdf.FormT(clsGU, gnUs["gn2gp"], clsPU))
+			upacs4oneg.Add(upca, upca)
+			for _, upac := range(upacs) {
+				upacs4oneg.Add(upac, upca)
+			}
+		} // upca
+		dfn := fmt.Sprintf("gene %s/%s encoding %s", txid, lblG, upids4oneg.Keys())
+		sbG.WriteString(rdf.FormT(clsGU, gnUs["sth2dfn"], rdf.FormL(dfn)))
+		sbG.WriteString(rdf.FormT(clsGU, gnUs["sth2lbl"], rdf.FormL(lblG)))
+		for _, synG := range(gsnms4oneg.Keys()) {
+			if synG == lblG {
+				continue
+			}
+			sbG.WriteString(rdf.FormT(clsGU, gnUs["sth2syn"], rdf.FormL(synG)))
+			xmap.Syng.Add(synG, "bgwg", clsG)
+			xmap.Syng.Add(clsG, "syng", synG)
+		}
+		for _, upac := range(upacs4oneg.Keys()) {
+			xrfs := upac2xrf[upac]
+			for _, xkey := range(xkeys) {
+				for _, xrf := range(xrfs[xkey].Keys()) {
+					xrfs4oneg.Add(xkey, xrf)
+				}
+			}
+		}
+		for _, xkey := range xrfs4oneg.Keys() {
+			for _, xrf := range xrfs4oneg[xkey].Keys() {
+				xrfU := rdf.CompU(nss[bgw.Upkeys[xkey]], xrf)
+				sbG.WriteString(rdf.FormT(clsGU, gnUs["sth2clm"], xrfU))
+				insG := fmt.Sprintf("%s%s%s", clsG, "#", xrf)
+				insGU := rdf.CompU(nss["gene"], insG)
+				sbG.WriteString(rdf.FormT(insGU, gnUs["ins2cls"], clsGU))
+				lbl := fmt.Sprintf("%s#%s", xkey, xrf)
+				sbG.WriteString(rdf.FormT(insGU, gnUs["sth2lbl"], rdf.FormL(lbl)))
+			}
+		}
+	} // lblG
+	wfhG.Write([]byte(sbG.String()))
+	sbG.Reset()
+	return nil
+} // Gene()
+
 // GeneProt wrtes RDF files for genes (graph 'gene') and proteins (graph 'prot')
 // Arguments:
 // 1. data structure aggregating data from UniProt for a single taxon
@@ -894,7 +1043,8 @@ func GeneProt(dat4rdf bgw.Dat4rdf, wpthG, wpthP, wpthX string) (int, int, error)
 		oneG.Check() // not empty
 		clsG := strings.Join([]string{txid, lblG}, "/")
 		clsGU := rdf.CompU(nss["gene"], clsG)
-		// canonical accessions for a gene, filter by Reference Proteome in parse.UpTab:
+		// canonical accessions for a gene, filtered by Reference Proteome in parse.UpTab:
+		// Note: gene names and synonyms are associated only with canonical accessions
 		upcas := oneG["upca"].Keys()
 		if len(upcas) == 0 {
 			msg := fmt.Sprintf("export.GeneProt():%s:%s: NoUpcas", txid, lblG)
@@ -1191,14 +1341,14 @@ func GeneProt(dat4rdf bgw.Dat4rdf, wpthG, wpthP, wpthX string) (int, int, error)
 			xrfU := rdf.CompU(nss["uniparc"], xrf)
 			sbP.WriteString(rdf.FormT(insPU, gpUs["sth2clm"], xrfU))
 			nlnp++
-			for _, xrf = range upac2xrf[upac]["ensprotein"].Keys() {
-				enspU := rdf.CompU(nss["ensprotein"], xrf)
+			for _, xrf = range upac2xrf[upac]["enspro"].Keys() {
+				enspU := rdf.CompU(nss["enspro"], xrf)
 				sbP.WriteString(rdf.FormT(clsPU, gpUs["sth2clm"], enspU))
 				nlnp++
 				sbP.WriteString(rdf.FormT(insPU, gpUs["sth2clm"], enspU))
 				nlnp++
 				xmap.Ensp.Add(xrf, "bgwp", insP)
-				xmap.Bgwp.Add(insP, "ensprotein", xrf)
+				xmap.Bgwp.Add(insP, "enspro", xrf)
 			}
 			for _, xrf = range upac2xrf[upac]["refseq"].Keys() {
 				rfsqU := rdf.CompU(nss["refseq"], xrf)
