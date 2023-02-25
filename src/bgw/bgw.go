@@ -6,6 +6,41 @@ import (
 	"io/ioutil"
 )
 
+var CV = "3.3.0"
+
+var Ensomes = map[string]string{
+	"6239":   "ensmetazoa",
+	"7227":   "ensmetazoa",
+	"367110": "ensfungi",
+	"559292": "ensfungi",
+	"284812": "ensfungi",
+	"3702":   "ensplants",
+	"3055":   "ensplants",
+	"39947":  "ensplants",
+	"4577":   "ensplants",
+	"44689":  "ensprotists",
+	"36329":  "ensprotists",
+}
+
+var Upkeys = map[string]string{
+	"UniProtKB-ID":      "upid",
+	"Gene_Name":         "gnm",
+	"Gene_Synonym":      "gsnm",
+	"Ensembl":           "ensgene",
+	"Ensembl_PRO":       "enspro",
+	"EnsemblGenome":     "ensom",
+	// "EnsemblGenome_PRO": "ensompro", // transcripts...
+	"GeneID":            "ncbigene",
+	"RefSeq":            "refseq",
+	"UniParc":           "uniparc",
+	"NCBI_TaxID":        "ncbitx",
+}
+
+var Orthokeys = map[string]string{
+	// "KO": "keggortho",
+	"OrthoDB": "orthodb",
+}
+
 type Column struct {
 	Ind1 int
 	Dlm1 string
@@ -13,27 +48,6 @@ type Column struct {
 	Dlm2 string
 	Ind3 int
 	Key  string
-}
-
-var CV = "3.3.0"
-
-var Upkeys = map[string]string{
-	"UniProtKB-ID":	"upid",
-	"Gene_Name":    "gnm",
-	"Gene_Synonym": "gsnm",
-	"Ensembl":       "ensgene",
-	"Ensembl_PRO":   "enspro",
-	"EnsemblGenome": "ensom",
-	"EnsemblGenome_PRO": "ensompro",
-	"GeneID":        "ncbigene",
-	"RefSeq":        "refseq",
-	"UniParc":       "uniparc",
-	"NCBI_TaxID":	"ncbitx",
-}
-
-var Orthokeys = map[string]string{
-	// "KO": "keggortho",
-	"OrthoDB": "orthodb",
 }
 
 type Dat4bridge struct {
@@ -72,9 +86,12 @@ func (p *Dat4rdf) New() {
 }
 
 type Xmap struct {
+	// TODO use pointers like in Dat4rdf
 	Bgwg   util.Set3D
 	Bgwp   util.Set3D
 	Upac   util.Set3D
+	Lblp   util.Set3D
+	Synp   util.Set3D
 	Lblg   util.Set3D
 	Syng   util.Set3D
 	Ensg   util.Set3D
@@ -89,6 +106,8 @@ func (p *Xmap) New() {
 	xm.Bgwg = make(util.Set3D)
 	xm.Bgwp = make(util.Set3D)
 	xm.Upac = make(util.Set3D)
+	xm.Lblp = make(util.Set3D)
+	xm.Synp = make(util.Set3D)
 	xm.Lblg = make(util.Set3D)
 	xm.Syng = make(util.Set3D)
 	xm.Ensg = make(util.Set3D)
@@ -97,20 +116,6 @@ func (p *Xmap) New() {
 	xm.Rfsq = make(util.Set3D)
 	xm.Signor = make(util.Set3D)
 	*p = xm
-}
-
-// TODO to be eliminated
-func NewXmap() (xmap Xmap) {
-	xmap.Upac = make(util.Set3D)
-	xmap.Lblg = make(util.Set3D)
-	xmap.Syng = make(util.Set3D)
-	xmap.Bgwp = make(util.Set3D)
-	xmap.Bgwg = make(util.Set3D)
-	xmap.Ensg = make(util.Set3D)
-	xmap.Ncbig = make(util.Set3D)
-	xmap.Ensp = make(util.Set3D)
-	xmap.Rfsq = make(util.Set3D)
-	return xmap
 }
 
 func (xmap Xmap) Unmarshal(pthj string) error {
@@ -124,6 +129,28 @@ func (xmap Xmap) Unmarshal(pthj string) error {
 	}
 	return nil
 }
+
+func UpdatParseConf() ([]Column, []Column) {
+	keys := []Column{
+		{0, "; ", 0, "", 0, ""}, // UniProt canonical accessionbs from multiple proteomes
+	}
+	vals := []Column{
+		// {0, "; ", 0, "|", 0, "upca"}, // single value
+		{1, "; ", 0, "|", 0, "upid"}, // single value
+		// the next two fields should be avoided!
+		// {2, "; ", 0, "|", 0, "gnms"},// '; ' separated but some vals contain ';'!
+		// {3, "; ", 0, "|", 0, "gsnms"},// '; ' separated but some vals contain ';'!
+		{4, "; ", 0, "|", 0, "taxnm"}, // single value but 59 unique names !
+		{5, "; ", 0, "|", 0, "txid"}, // single value but 59 unique names !
+		{6, "!", 0, "; ", 0, "pdfns"}, // may contain '|', ';' etc, no '!'
+		// the next field may contain multiple proteomes per taxon!
+		// {7, "; ", -1, ": ", 0, "poms"}, // '; ' separated, 'pomeid: chrid'
+		{8, "; ", -1, "; ", 0, "pubmed"}, // '; ' separated
+		{9, "; ", 0, " ", 0, "score"},    // single value
+	}
+	return keys, vals
+} // UpdatParseConf()
+
 func TftgParseConf() ([]Column, []Column) {
 	keys := []Column{
 		{0, ":", 0, "--", 0, ""},
@@ -180,7 +207,7 @@ func SigPwaysParseConf() ([]Column, []Column) {
 		{9, ";", 0, "|", 0, "typeBlbl"},
 		{10, ";", 0, "|", 0, "Bid"},
 		{12, ";", 0, "|", 0, "modelbl"},
-		{16, ";", 0, "|", 0, "taxid"}, // the host
+		{16, ";", 0, "|", 0, "txid"}, // the host
 		{17, ";", 0, "|", 0, "cellid"},
 		{18, ";", 0, "|", 0, "tissueid"},
 		{25, ";", 0, "|", 0, "pubmed"},

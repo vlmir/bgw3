@@ -16,8 +16,8 @@ var Nss = map[string]string{
 	"biolink":     "https://w3id.org/biolink/vocab/", // TODO implement
 	"obo":         "http://purl.obolibrary.org/obo/",
 	"sio":         "http://semanticscience.org/resource/",
-	"uniprot":     "http://uniprot.org/uniprot/",          // accepts both UPID and UPAC
-	"uniprotkb":   "http://uniprot.org/uniprot/",          // accepts both UPID and UPAC
+	"uniprot":     "http://uniprot.org/uniprot/", // accepts both UPID and UPAC
+	"uniprotkb":   "http://uniprot.org/uniprot/", // accepts both UPID and UPAC
 	"uniparc":     "http://uniprot.org/uniparc/",
 	"ncbigene":    "http://identifiers.org/ncbigene/",
 	"ncbitx":      "http://purl.obolibrary.org/obo/NCBITaxon_",
@@ -29,7 +29,7 @@ var Nss = map[string]string{
 	"goa":         "http://identifiers.org/goa/",
 	"pubmed":      "http://identifiers.org/pubmed/",
 	"signor":      "https://signor.uniroma2.it/relation_result.php?id=",
-	"enspro":  "http://identifiers.org/ensembl/",
+	"enspro":      "http://identifiers.org/ensembl/",
 	"ensgene":     "http://identifiers.org/ensembl/",
 	"ensplants":   "https://plants.ensembl.org/id/",
 	"ensfungi":    "https://fungi.ensembl.org/id/",

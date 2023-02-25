@@ -1,6 +1,7 @@
 package main
 
 import (
+	"encoding/json"
 	"errors"
 	"flag"
 	"fmt"
@@ -10,12 +11,11 @@ import (
 	"github.com/vlmir/bgw3/src/semweb"
 	"github.com/vlmir/bgw3/src/util"
 	"log"
+	"os"
 	"time"
 )
 
-func geneprot(datdir, bgwdir string, txn2prm util.Set2D) (ntg, ntp int, err error) {
-	ntg = 0
-	ntp = 0
+func geneprot(datdir, bgwdir string, txn2prm util.Set2D) (err error) {
 	for _, txid := range txn2prm.Keys() {
 		log.Println("\n\tgeneprot for:", txid)
 		ext := ".upt"
@@ -35,22 +35,20 @@ func geneprot(datdir, bgwdir string, txn2prm util.Set2D) (ntg, ntp int, err erro
 		subdir = "xmap/"
 		wpthx := fmt.Sprintf("%s%s%s%s", bgwdir, subdir, txid, ext) // write BGW map json
 		/////////////////////////////////////////////////////////////////////////////
-		idmkeys := bgw.Upkeys
-		upac2xrf, err := parse.UpIdMap(rpthi, idmkeys)
+		var xmap bgw.Xmap
+		xmap.New()
+		err := export.Gene(rpthi, wpthg, &xmap)
 		util.CheckE(err)
-		/////////////////////////////////////////////////////////////////////////////
-		//rpthi = datdir + "intact.lst" // for filtering, TODO eliminate the hard coding
-		dat4rdf, err := parse.UpTab(rpthu, upac2xrf, txn2prm)
+		err = export.Prot(rpthu, rpthi, wpthp, &xmap)
 		util.CheckE(err)
-		/////////////////////////////////////////////////////////////////////////////
-		// passing pointers, seems slightly faster, at most by 10%
-		//dat4rdf.Upac = &upac2xrf
-		nlg, nlp, err := export.GeneProt(dat4rdf, wpthg, wpthp, wpthx)
+		// xmap export
+		wfhX, err := os.Create(wpthx)
 		util.CheckE(err)
-		ntg += nlg
-		ntp += nlp
+		j, err := json.MarshalIndent(&xmap, "", " ")
+		util.CheckE(err)
+		wfhX.Write(j)
 	}
-	return ntg, ntp, nil
+	return nil
 } // geneprot()
 
 func reg2pway(datdir, bgwdir string, txn2prm util.Set2D) (util.Set2D, error) {
@@ -72,8 +70,8 @@ func reg2pway(datdir, bgwdir string, txn2prm util.Set2D) (util.Set2D, error) {
 			ext = ".tsv"
 		}
 
-		for taxid := range txn2prm {
-			if taxid != "9606" {
+		for txid := range txn2prm {
+			if txid != "9606" {
 				continue
 			} // for now
 			var d4b bgw.Dat4bridge // one source, one taxon
@@ -88,10 +86,11 @@ func reg2pway(datdir, bgwdir string, txn2prm util.Set2D) (util.Set2D, error) {
 				continue // sic!
 			}
 			// d4b is now loaded with data
-			xmap := bgw.NewXmap()
+			var xmap bgw.Xmap
+			xmap.New()
 			subdir := "xmap/"
 			ext := ".json"
-			rpthx := fmt.Sprintf("%s%s%s%s", bgwdir, subdir, taxid, ext) // read BGW map json
+			rpthx := fmt.Sprintf("%s%s%s%s", bgwdir, subdir, txid, ext) // read BGW map json
 			err = xmap.Unmarshal(rpthx)
 			util.CheckE(err)
 
@@ -113,7 +112,7 @@ func reg2pway(datdir, bgwdir string, txn2prm util.Set2D) (util.Set2D, error) {
 			}
 
 			d4b.Src = src
-			d4b.Taxid = taxid
+			d4b.Taxid = txid
 			err = export.SigPways(&d4b, &xmap, bgwdir)
 			if err != nil {
 				//panic(err)
@@ -148,14 +147,14 @@ func rgr2trg(datdir, bgwdir string, txn2prm util.Set2D) (util.Set2D, error) {
 			ext = ".mi28"
 		}
 
-		for taxid := range txn2prm {
-			if taxid != "9606" {
+		for txid := range txn2prm {
+			if txid != "9606" {
 				continue
 			} // for now
 			var d4b bgw.Dat4bridge // one source, one taxon
 			d4b.New()
 			if src == "signor" {
-				rpth = fmt.Sprintf("%s%s%s%s%s", datdir, src, "/", taxid, ext)
+				rpth = fmt.Sprintf("%s%s%s%s%s", datdir, src, "/", txid, ext)
 			}
 			log.Println("Rdf4bgw.rgr2trg(): processing", rpth)
 			err := parse.Tab2struct(rpth, keys, vals, &d4b)
@@ -164,10 +163,11 @@ func rgr2trg(datdir, bgwdir string, txn2prm util.Set2D) (util.Set2D, error) {
 				continue // sic!
 			}
 			// d4b is now loaded with data
-			xmap := bgw.NewXmap()
+			var xmap bgw.Xmap
+			xmap.New()
 			subdir := "xmap/"
 			ext := ".json"
-			rpthx := fmt.Sprintf("%s%s%s%s", bgwdir, subdir, taxid, ext) // read BGW map json
+			rpthx := fmt.Sprintf("%s%s%s%s", bgwdir, subdir, txid, ext) // read BGW map json
 			err = xmap.Unmarshal(rpthx)
 			util.CheckE(err)
 
@@ -189,7 +189,7 @@ func rgr2trg(datdir, bgwdir string, txn2prm util.Set2D) (util.Set2D, error) {
 			}
 
 			d4b.Src = src
-			d4b.Taxid = taxid
+			d4b.Taxid = txid
 			err = export.Rgr2trg(&d4b, &xmap, bgwdir)
 			if err != nil {
 				//panic(err)
@@ -222,13 +222,13 @@ func tfac2gene(datdir, bgwdir string, txn2prm util.Set2D) (util.Set2D, error) {
 		keys, vals = bgw.TftgParseConf()
 		ext = ".f2g"
 
-		for taxid := range txn2prm {
-			if taxid != "9606" {
+		for txid := range txn2prm {
+			if txid != "9606" {
 				continue
 			} // for now
 			var d4b bgw.Dat4bridge // one source, one taxon
 			d4b.New()
-			rpth = fmt.Sprintf("%s%s%s%s%s%s", datdir, "static/", src, "/", taxid, ext)
+			rpth = fmt.Sprintf("%s%s%s%s%s%s", datdir, "static/", src, "/", txid, ext)
 			log.Println("Rdf4bgw.tfac2gene(): processing", rpth)
 			err := parse.Tab2struct(rpth, keys, vals, &d4b)
 			if err != nil {
@@ -236,15 +236,16 @@ func tfac2gene(datdir, bgwdir string, txn2prm util.Set2D) (util.Set2D, error) {
 				continue // sic!
 			}
 			// d4b is now loaded with data
-			xmap := bgw.NewXmap()
+			var xmap bgw.Xmap
+			xmap.New()
 			subdir := "xmap/"
 			ext := ".json"
-			rpthx := fmt.Sprintf("%s%s%s%s", bgwdir, subdir, taxid, ext) // read BGW map json
+			rpthx := fmt.Sprintf("%s%s%s%s", bgwdir, subdir, txid, ext) // read BGW map json
 			err = xmap.Unmarshal(rpthx)
 			util.CheckE(err)
 
 			d4b.Src = src
-			d4b.Taxid = taxid
+			d4b.Taxid = txid
 			// err = export.Rgr2trg(&d4b, &xmap, bgwdir)
 			err = export.Tfac2gene(&d4b, &xmap, bgwdir)
 			if err != nil {
@@ -279,7 +280,8 @@ func gene2phen(datdir, bgwdir string, txn2prm util.Set2D) (int, error) {
 		ext = ".json"
 		rpthx := fmt.Sprintf("%s%s%s%s", bgwdir, subdir, txid, ext) // read BGW map json
 		/////////////////////////////////////////////////////////////////////////////
-		xmap := bgw.NewXmap()
+		var xmap bgw.Xmap
+		xmap.New()
 		err := xmap.Unmarshal(rpthx)
 		util.CheckE(err)
 		gsym2bgw := xmap.Lblg
@@ -312,7 +314,8 @@ func prot2go(datdir, bgwdir string, txn2prm util.Set2D, fx string) (int, error) 
 		subdir = "xmap/"
 		rpthx := fmt.Sprintf("%s%s%s%s", bgwdir, subdir, txid, ".json") // read BGW map json
 		/////////////////////////////////////////////////////////////////////////////
-		xmap := bgw.NewXmap()
+		var xmap bgw.Xmap
+		xmap.New()
 		err := xmap.Unmarshal(rpthx)
 		util.CheckE(err)
 		upac2bgw := xmap.Upac
@@ -373,7 +376,8 @@ func prot2prot(datdir, bgwdir string, txn2prm util.Set2D) (int, error) {
 		ext = ".json"
 		rpthx := fmt.Sprintf("%s%s%s%s", bgwdir, subdir, txid, ext) // read BGW map json
 		/////////////////////////////////////////////////////////////////////////////
-		xmap := bgw.NewXmap()
+		var xmap bgw.Xmap
+		xmap.New()
 		err := xmap.Unmarshal(rpthx)
 		util.CheckE(err)
 		upac2bgw := xmap.Upac
@@ -419,7 +423,8 @@ func ortho(datdir, bgwdir string, txn2prm util.Set2D) (int, error) {
 			// building up2bgw for one pair of taxa
 			for _, txid := range txids {
 				rpthx := fmt.Sprintf("%s%s%s%s", bgwdir, subdir, txid, ext) // read BGW map json
-				xmap := bgw.NewXmap()
+				var xmap bgw.Xmap
+				xmap.New()
 				err := xmap.Unmarshal(rpthx)
 				util.CheckE(err)
 				upac2bgw := xmap.Upac
@@ -530,7 +535,7 @@ func main() {
 	}
 	if *aP || *rP {
 		mystart := time.Now()
-		// tfac2gene(datdir, bgwdir, txn2prm)
+		tfac2gene(datdir, bgwdir, txn2prm)
 		log.Println("Done with tfac2gene in", time.Since(mystart))
 		mystart = time.Now()
 		rgr2trg(datdir, bgwdir, txn2prm)

@@ -4,6 +4,28 @@ import (
 	"testing"
 )
 
+func Test_Set1D_Add(t *testing.T) {
+	type tt struct {
+		arg1 string
+		val1 int
+	}
+	tts := []tt{
+		{"key0", 1},
+	}
+	for i, tt := range tts {
+		set := make(Set1D)
+		set.Add(tt.arg1)
+		val1 := set[tt.arg1]
+		if val1 != tt.val1 {
+			t.Error(
+				"For test", i+1, ": ",
+				"\n\twant", tt.val1,
+				"\n\thave", val1,
+			)
+		}
+	}
+}
+
 func Test_Set1D_Keys(t *testing.T) {
 	type tt struct {
 		arg1 string

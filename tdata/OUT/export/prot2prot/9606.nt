@@ -26,10 +26,10 @@
 <http://rdf.biogateway.eu/prot-prot/uniprot!P04637--uniprot!P04637> <http://www.w3.org/2004/02/skos/core#prefLabel> "P04637--P04637" .
 <http://rdf.biogateway.eu/prot-prot/uniprot!P04637--uniprot!P04637> <http://www.w3.org/2004/02/skos/core#definition> "Pair of molecular interactors P04637 and P04637" .
 <http://rdf.biogateway.eu/prot-prot/uniprot!P04637--uniprot!P04637> <http://www.w3.org/1999/02/22-rdf-syntax-ns#predicate> <http://purl.obolibrary.org/obo/RO_0002436> .
-<http://rdf.biogateway.eu/prot-prot/uniprot!P04637--uniprot!P04637> <http://www.w3.org/1999/02/22-rdf-syntax-ns#subject> <http://rdf.biogateway.eu/prot/9606/P04637> .
-<http://rdf.biogateway.eu/prot-prot/uniprot!P04637--uniprot!P04637> <http://www.w3.org/1999/02/22-rdf-syntax-ns#object> <http://rdf.biogateway.eu/prot/9606/P04637> .
-<http://rdf.biogateway.eu/prot/9606/P04637> <http://purl.obolibrary.org/obo/RO_0002436> <http://rdf.biogateway.eu/prot/9606/P04637> .
-<http://rdf.biogateway.eu/prot/9606/P04637> <http://purl.obolibrary.org/obo/RO_0002436> <http://rdf.biogateway.eu/prot/9606/P04637> .
+<http://rdf.biogateway.eu/prot-prot/uniprot!P04637--uniprot!P04637> <http://www.w3.org/1999/02/22-rdf-syntax-ns#subject> <http://uniprot.org/uniprot/P04637> .
+<http://rdf.biogateway.eu/prot-prot/uniprot!P04637--uniprot!P04637> <http://www.w3.org/1999/02/22-rdf-syntax-ns#object> <http://uniprot.org/uniprot/P04637> .
+<http://uniprot.org/uniprot/P04637> <http://purl.obolibrary.org/obo/RO_0002436> <http://uniprot.org/uniprot/P04637> .
+<http://uniprot.org/uniprot/P04637> <http://purl.obolibrary.org/obo/RO_0002436> <http://uniprot.org/uniprot/P04637> .
 <http://rdf.biogateway.eu/prot-prot/uniprot!P04637--uniprot!P04637#intact> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://rdf.biogateway.eu/prot-prot/uniprot!P04637--uniprot!P04637> .
 <http://rdf.biogateway.eu/prot-prot/uniprot!P04637--uniprot!P04637#intact> <http://semanticscience.org/resource/SIO_000253> <http://identifiers.org/intact/> .
 <http://rdf.biogateway.eu/prot-prot/uniprot!P04637--uniprot!P04637#intact> <http://purl.obolibrary.org/obo/BFO_0000050> <http://identifiers.org/intact/EBI-10689041> .

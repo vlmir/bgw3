@@ -1,30 +1,16 @@
 package export
 
 import (
-	"encoding/json"
 	"errors"
 	"fmt"
 	"github.com/vlmir/bgw3/src/bgw"
+	"github.com/vlmir/bgw3/src/parse"
 	"github.com/vlmir/bgw3/src/semweb"
 	"github.com/vlmir/bgw3/src/util"
 	"log"
 	"os"
 	"strings"
 )
-
-var Ensomes = map[string]string{
-	"6239":   "ensmetazoa",
-	"7227":   "ensmetazoa",
-	"367110": "ensfungi",
-	"559292": "ensfungi",
-	"284812": "ensfungi",
-	"3702":   "ensplants",
-	"3055":   "ensplants",
-	"39947":  "ensplants",
-	"4577":   "ensplants",
-	"44689":  "ensprotists",
-	"36329":  "ensprotists",
-}
 
 func counter(s []string, c util.Set2D, a, d, v string) (l int) {
 	l = len(s)
@@ -36,11 +22,42 @@ func counter(s []string, c util.Set2D, a, d, v string) (l int) {
 	return l
 }
 
+func gene2bgwg (genes []string, xmap bgw.Xmap) []string {
+	set := make(util.Set2D)
+	for _, gene := range genes {
+		for _, bgwg := range xmap.Ncbig[gene]["bgwg"].Keys() {
+			set.Add(bgwg, gene)
+		} // by NCBI gene id
+		if len(set) == 0 {
+			for _, bgwg := range xmap.Lblg[gene]["bgwg"].Keys() {
+			set.Add(bgwg, gene)
+			} // by gene symbol
+		}
+		if len(set) == 0 {
+			for _, bgwg := range xmap.Syng[gene]["bgwg"].Keys() {
+			set.Add(bgwg, gene)
+			} // by gene synonym
+		}
+	}
+	return set.Keys()
+}
+
+func upac2bgwp(upacs []string, xmap bgw.Xmap) []string {
+	set := make(util.Set2D)
+	for _, upac := range upacs {
+		upca := strings.Split(upac, "-")[0]
+		for _, bgwp := range xmap.Upac[upca]["bgwp"].Keys() {
+			set.Add(bgwp, upac)
+		}
+		}
+	return set.Keys()
+}
+
 func Tfac2gene(d *bgw.Dat4bridge, x *bgw.Xmap, wdir string) error {
 	d4b := *d
 	xmap := *x
 	src := d4b.Src
-	taxid := d4b.Taxid
+	txid := d4b.Taxid
 	cnts := d4b.Cnts // Set2D
 	p2t := "reg2ptrg"
 	n2t := "reg2ntrg"
@@ -60,9 +77,9 @@ func Tfac2gene(d *bgw.Dat4bridge, x *bgw.Xmap, wdir string) error {
 	modes.Add("ntnu", "-", n2t)
 	sdir := "tfac2gene"
 	wpths := map[string]string{
-		p2t: fmt.Sprintf("%s%s/%s-%s-%s.nt", wdir, sdir, "p", src, taxid),
-		n2t: fmt.Sprintf("%s%s/%s-%s-%s.nt", wdir, sdir, "n", src, taxid),
-		u2t: fmt.Sprintf("%s%s/%s-%s-%s.nt", wdir, sdir, "u", src, taxid),
+		p2t: fmt.Sprintf("%s%s/%s-%s-%s.nt", wdir, sdir, "p", src, txid),
+		n2t: fmt.Sprintf("%s%s/%s-%s-%s.nt", wdir, sdir, "n", src, txid),
+		u2t: fmt.Sprintf("%s%s/%s-%s-%s.nt", wdir, sdir, "u", src, txid),
 	}
 
 	fh4p, err := os.Create(wpths[p2t])
@@ -92,42 +109,25 @@ func Tfac2gene(d *bgw.Dat4bridge, x *bgw.Xmap, wdir string) error {
 	}
 
 	duos := d4b.Duos
-	entAns := nss["prot"] // sic, never changes
+	entAns := nss["uniprot"] // sic, never changes
 	entBns := nss["gene"] // sic, never changes
 	for _, duoid := range duos.Keys() {
 		duo := duos[duoid]
 		oriAB := strings.Split(duoid, "--")
 		oriBid := oriAB[1] // gene symbol
 
-		var allAids []string // UP ACs for one duoid
+		var allAids []string // UP canonical ACs for one duoid
 		var allBids []string // gene symbols for one duoid
 		allAids = duo["uniprot"].Keys()
 		allBids = duo["ncbig"].Keys() // NCBI GeneID, single
+		allBids = append(allBids, oriBid)
 		// now allAids are all UP AC
 
 		// converting allAids to Bgwids
-		var bgwAids []string
-		for _, oneAid := range allAids {
-			for _, bgwid := range xmap.Upac[oneAid]["bgwp"].Keys() {
-				bgwAids = append(bgwAids, bgwid)
-			}
-		}
-		if len(bgwAids) == 0 {
-			continue
-		}
-
+		bgwAids := upac2bgwp(allAids, xmap)
 		// converting allBids to Bgwids; BGW genes
-		var bgwBids []string
-		for _, oneBid := range allBids {
-			bgwBids = xmap.Ncbig[oneBid]["bgwg"].Keys() // by NCBI gene id
-			if len(bgwBids) == 0 {
-				bgwBids = xmap.Lblg[oriBid]["bgwg"].Keys() // by gene symbol
-			}
-			if len(bgwBids) == 0 {
-				bgwBids = xmap.Syng[oriBid]["bgwg"].Keys() // by gene synonym
-			}
-		}
-		if len(bgwBids) == 0 {
+		bgwBids := gene2bgwg(allBids, xmap)
+		if  len(bgwAids) == 0 || len(bgwBids) == 0 {
 			continue
 		}
 
@@ -208,7 +208,7 @@ func Tfac2gene(d *bgw.Dat4bridge, x *bgw.Xmap, wdir string) error {
 			fh.Write([]byte(sb.String()))
 		} // pdck
 	} // duoid
-	log.Println("export.Tfac2gene():", src, taxid, cnts)
+	log.Println("export.Tfac2gene():", src, txid, cnts)
 	if cnts[p2t][src] > 0 {
 		fh4p.Write([]byte(header))
 	}
@@ -225,7 +225,7 @@ func SigPways(d *bgw.Dat4bridge, x *bgw.Xmap, wdir string) error {
 	d4b := *d
 	xmap := *x
 	src := d4b.Src
-	taxid := d4b.Taxid
+	txid := d4b.Taxid
 	cnts := d4b.Cnts // Set2D
 	p2t := "reg2ptrg"
 	n2t := "reg2ntrg"
@@ -235,9 +235,9 @@ func SigPways(d *bgw.Dat4bridge, x *bgw.Xmap, wdir string) error {
 	modes.Add("signor", "down-regulates", n2t)
 	sdir := "sigpways"
 	wpths := map[string]string{
-		p2t: fmt.Sprintf("%s%s/%s-%s-%s.nt", wdir, sdir, "p", src, taxid),
-		n2t: fmt.Sprintf("%s%s/%s-%s-%s.nt", wdir, sdir, "n", src, taxid),
-		u2t: fmt.Sprintf("%s%s/%s-%s-%s.nt", wdir, sdir, "u", src, taxid),
+		p2t: fmt.Sprintf("%s%s/%s-%s-%s.nt", wdir, sdir, "p", src, txid),
+		n2t: fmt.Sprintf("%s%s/%s-%s-%s.nt", wdir, sdir, "n", src, txid),
+		u2t: fmt.Sprintf("%s%s/%s-%s-%s.nt", wdir, sdir, "u", src, txid),
 	}
 
 	fh4p, err := os.Create(wpths[p2t])
@@ -268,11 +268,11 @@ func SigPways(d *bgw.Dat4bridge, x *bgw.Xmap, wdir string) error {
 
 	duos := d4b.Duos
 	mytypes := []string{"complex", "protein", "proteinfamily"} // for filetering
-	entAns := nss["prot"]                                      // sic, never changes
-	entBns := nss["prot"]                                      // sic, never changes
+	entAns := nss["uniprot"]                                      // sic, never changes
+	entBns := nss["uniprot"]                                      // sic, never changes
 	for _, duoid := range duos.Keys() {
 		duo := duos[duoid]
-		// if duo["taxid"].Keys()[0] != taxid {continue} // filtering by host
+		// if duo["txid"].Keys()[0] != txid {continue} // filtering by host
 		oriAid := duo["Aid"].Keys()[0] // assuming a single value
 		oriBid := duo["Bid"].Keys()[0] // assuming a single value
 
@@ -321,27 +321,10 @@ func SigPways(d *bgw.Dat4bridge, x *bgw.Xmap, wdir string) error {
 		// now allAids allBids are all UP AC
 
 		// converting allAids to Bgwids
-		var bgwAids []string
-		for _, oneAid := range allAids {
-			for _, bgwid := range xmap.Upac[oneAid]["bgwp"].Keys() {
-				bgwAids = append(bgwAids, bgwid)
-			}
-		}
-		if len(bgwAids) == 0 {
-			continue
-		}
-
+		bgwAids := upac2bgwp(allAids, xmap)
 		// converting allBids to Bgwids
-		var bgwBids []string
-		for _, oneBid := range allBids {
-			if src == "signor" {
-				// mapping prots to genes
-				for _, bgwpBid := range xmap.Upac[oneBid]["bgwp"].Keys() {
-					bgwBids = append(bgwBids, bgwpBid)
-				}
-			}
-		}
-		if len(bgwBids) == 0 {
+		bgwBids := upac2bgwp(allBids, xmap)
+		if  len(bgwAids) == 0 || len(bgwBids) == 0 {
 			continue
 		}
 
@@ -426,7 +409,7 @@ func SigPways(d *bgw.Dat4bridge, x *bgw.Xmap, wdir string) error {
 			fh.Write([]byte(sb.String()))
 		} // pdck
 	} // duoid
-	log.Println("export.SigPways():", src, taxid, cnts)
+	log.Println("export.SigPways():", src, txid, cnts)
 	if cnts[p2t][src] > 0 {
 		fh4p.Write([]byte(header))
 	}
@@ -443,7 +426,7 @@ func Rgr2trg(d *bgw.Dat4bridge, x *bgw.Xmap, wdir string) error {
 	d4b := *d
 	xmap := *x
 	src := d4b.Src
-	taxid := d4b.Taxid
+	txid := d4b.Taxid
 	cnts := d4b.Cnts // Set2D
 	p2t := "reg2ptrg"
 	n2t := "reg2ntrg"
@@ -453,9 +436,9 @@ func Rgr2trg(d *bgw.Dat4bridge, x *bgw.Xmap, wdir string) error {
 	modes.Add("signor", "down-regulates", n2t)
 	sdir := "reg2targ"
 	wpths := map[string]string{
-		p2t: fmt.Sprintf("%s%s/%s-%s-%s.nt", wdir, sdir, "p", src, taxid),
-		n2t: fmt.Sprintf("%s%s/%s-%s-%s.nt", wdir, sdir, "n", src, taxid),
-		u2t: fmt.Sprintf("%s%s/%s-%s-%s.nt", wdir, sdir, "u", src, taxid),
+		p2t: fmt.Sprintf("%s%s/%s-%s-%s.nt", wdir, sdir, "p", src, txid),
+		n2t: fmt.Sprintf("%s%s/%s-%s-%s.nt", wdir, sdir, "n", src, txid),
+		u2t: fmt.Sprintf("%s%s/%s-%s-%s.nt", wdir, sdir, "u", src, txid),
 	}
 
 	fh4p, err := os.Create(wpths[p2t])
@@ -490,8 +473,8 @@ func Rgr2trg(d *bgw.Dat4bridge, x *bgw.Xmap, wdir string) error {
 	// psi-mi:"MI:2258"(xenobiotic) # chemical?
 	mytypes := []string{"MI:0314", "MI:1304", "MI:0326", "MI:0328"} // for filetering
 	myRegTypes := []string{}                                        // for filetering
-	entAns := nss["prot"]                                           // sic, never changes
-	entBns := nss["prot"]                                           // sic, never changes
+	entAns := nss["uniprot"]                                           // sic, never changes
+	entBns := nss["uniprot"]                                           // sic, never changes
 	for _, duoid := range duos.Keys() {
 		duo := duos[duoid]
 		oriAid := duo["Aid"].Keys()[0] // justly assuming a single value
@@ -502,9 +485,6 @@ func Rgr2trg(d *bgw.Dat4bridge, x *bgw.Xmap, wdir string) error {
 		if len(Abits) == 1 {
 			bits := strings.Split(oriAid, ":")
 			oriAid = bits[1]
-			if bits[0] == "uniprotkb" {
-				oriAid = strings.Split(bits[1], "-")[0]
-			}
 		} else {
 			oriAid = strings.Replace(Abits[1], ":", "_", 1)
 		}
@@ -567,25 +547,10 @@ func Rgr2trg(d *bgw.Dat4bridge, x *bgw.Xmap, wdir string) error {
 		}
 
 		// converting allAids to Bgwids
-		var bgwAids []string
-		for _, oneAid := range allAids {
-			for _, bgwid := range xmap.Upac[oneAid]["bgwp"].Keys() {
-				bgwAids = append(bgwAids, bgwid)
-			}
-		}
-		if len(bgwAids) == 0 {
-			continue
-		}
-
+		bgwAids := upac2bgwp(allAids, xmap)
 		// converting allBids to Bgwids
-		var bgwBids []string
-		for _, oneBid := range allBids {
-			// mapping prots to genes
-			for _, bgwpBid := range xmap.Upac[oneBid]["bgwp"].Keys() {
-				bgwBids = append(bgwBids, bgwpBid)
-			}
-		}
-		if len(bgwBids) == 0 {
+		bgwBids := upac2bgwp(allBids, xmap)
+		if  len(bgwAids) == 0 || len(bgwBids) == 0 {
 			continue
 		}
 
@@ -660,7 +625,7 @@ func Rgr2trg(d *bgw.Dat4bridge, x *bgw.Xmap, wdir string) error {
 			fh.Write([]byte(sb.String()))
 		} // pdck
 	} // duoid
-	log.Println("export.Rgr2trg():", src, taxid, cnts)
+	log.Println("export.Rgr2trg():", src, txid, cnts)
 	if cnts[p2t][src] > 0 {
 		fh4p.Write([]byte(header))
 	}
@@ -673,22 +638,28 @@ func Rgr2trg(d *bgw.Dat4bridge, x *bgw.Xmap, wdir string) error {
 	return nil
 } // Rgr2trg
 
-func Gene(xrf2upac, upac2xrf util.Set3D, wpthG string, xmap bgw.Xmap) (error){
-	upca2upac := make(util.Set2D)
-	allupacs := upac2xrf.Keys()
-	for _, upac := range(allupacs) {
+func Gene(rpthI string, wpthG string, p *bgw.Xmap) error {
+	xmap := *p
+	// Reference proteome IDs:
+	xrf2upac, _ := parse.Idmap(rpthI, bgw.Upkeys, 1, 2, 0)
+	upac2xrf, _ := parse.Idmap(rpthI, bgw.Upkeys, 0, 1, 2)
+	upca2upac := make(util.Set2D) // TODO double-check the use of
+	for _, upac := range upac2xrf.Keys() {
 		bits := strings.Split(upac, "-")
 		if len(bits) == 2 {
 			upca := bits[0]
 			upca2upac.Add(upca, upac)
+		} else {
+			upca2upac.Add(upac, upac)
 		}
 	}
 
 	txid := xrf2upac["NCBI_TaxID"].Keys()[0]
-	nss := rdf.Nss // BGW URI name spaces
+	nss := rdf.Nss                         // BGW URI name spaces
 	txnU := rdf.CompU(nss["ncbitx"], txid) // taxon URI
 	xkeys := []string{
 		"Ensembl",
+		"EnsemblGenome",
 		"GeneID",
 	}
 	keys4g := make(util.SliceSet)
@@ -716,8 +687,6 @@ func Gene(xrf2upac, upac2xrf util.Set3D, wpthG string, xmap bgw.Xmap) (error){
 	clsU := rdf.CompU(nss["owl"], "Class")
 	srcU := rdf.FormU(nss["uniprot"])
 	graphUg := "<http://rdf.biogateway.eu/graph/gene>"
-	dfn := "" // descriptor
-	lbl := "" // short label
 	/////////////////////////////////////////////////////////////////////////////
 	wfhG, err := os.Create(wpthG)
 	util.CheckE(err)
@@ -730,90 +699,101 @@ func Gene(xrf2upac, upac2xrf util.Set3D, wpthG string, xmap bgw.Xmap) (error){
 	sbG.WriteString(rdf.FormT(graphUg, gnUs["sth2src"], srcU))
 	nsG := rdf.FormU(nss["gene"])
 	sbG.WriteString(rdf.FormT(nsG, gnUs["ins2cls"], clsU))
-	dfn = "Set of genes in Biogateway"
+	dfn := "Set of genes in Biogateway"
 	sbG.WriteString(rdf.FormT(nsG, gnUs["sth2dfn"], rdf.FormL(dfn)))
-	lbl = "gene"
+	lbl := "gene"
 	sbG.WriteString(rdf.FormT(nsG, gnUs["sth2lbl"], rdf.FormL(lbl)))
 	// cnt := make(util.Set2D)
-	allGs := xrf2upac["Gene_Name"] // set oi util.Set2D
+	allGs := xrf2upac["Gene_Name"] // set of util.Set2D
 	for _, lblG := range allGs.Keys() {
-		oneG, ok := allGs[lblG]
+		oneG, ok := allGs[lblG] // metadata for one gene
 		if !ok {
 			panic("Impossible!")
 		}
 		oneG.Check() // not empty
 		clsG := strings.Join([]string{txid, lblG}, "/")
 		clsGU := rdf.CompU(nss["gene"], clsG)
-		// canonical accessions for a gene, filtered by Reference Proteome in parse.UpTab:
+		// canonical accessions for a gene, filtered by Reference Proteome
 		// Note: gene names and synonyms are associated only with canonical accessions
 		upcas := oneG.Keys()
-		/*
-		for _, upca := range upcas {
-			xrfs, ok := upac2xrf[upca]
-			m := 1 // at least "uniparc" - SIC!
-			if l := len(xrfs); l < m {
-				// never happens
-				msg := fmt.Sprintf("export.GeneProt():%s:%s: NoXrefs", txid, upca)
-				panic(errors.New(msg))
-			} // 20200531: 4278 entries having only UnniParc refs
-		}
-		*/
 		sbG.WriteString(rdf.FormT(clsGU, gnUs["ins2cls"], clsU))
 		sbG.WriteString(rdf.FormT(clsGU, gnUs["sub2cls"], gnUs["gn"]))
 		sbG.WriteString(rdf.FormT(clsGU, gnUs["gn2txn"], txnU))
 		xmap.Lblg.Add(lblG, "bgwg", clsG)
-		xmap.Lblg.Add(clsG, "gnm", lblG)
+		xmap.Bgwg.Add(clsG, "lblg", lblG)
 		xrfs4oneg := make(util.Set2D)
 		upids4oneg := make(util.Set2D)
 		gsnms4oneg := make(util.Set2D)
 		upacs4oneg := make(util.Set2D)
 		for _, upca := range upcas {
-			upacs := upca2upac[upca].Keys()
+			upacs := upca2upac[upca].Keys() // including upcas
 			xrfs := upac2xrf[upca]
 			upids := xrfs["UniProtKB-ID"].Keys()
-			for _, upid := range(upids) {
+			for _, upid := range upids {
 				upids4oneg.Add(upid, upca)
 			}
 			gsnms := xrfs["Gene_Synonym"].Keys()
-			for _, gsnm := range(gsnms) {
+			for _, gsnm := range gsnms {
 				gsnms4oneg.Add(gsnm, upca)
 			}
-			clsPU := rdf.CompU(nss["uniprot"], upca)
+			clsP := upca
+			clsPU := rdf.CompU(nss["uniprot"], clsP)
 			clsGU := rdf.CompU(nss["gene"], clsG)
 			sbG.WriteString(rdf.FormT(clsGU, gnUs["gn2gp"], clsPU))
 			upacs4oneg.Add(upca, upca)
-			for _, upac := range(upacs) {
+			for _, upac := range upacs {
 				upacs4oneg.Add(upac, upca)
 			}
+			xmap.Bgwp.Add(clsP, "bgwg", clsG)
+			xmap.Bgwg.Add(clsG, "bgwp", clsP)
 		} // upca
-		dfn := fmt.Sprintf("gene %s/%s encoding %s", txid, lblG, upids4oneg.Keys())
-		sbG.WriteString(rdf.FormT(clsGU, gnUs["sth2dfn"], rdf.FormL(dfn)))
+		dfnG := fmt.Sprintf("gene %s/%s encoding %s", txid, lblG, upids4oneg.Keys())
+		sbG.WriteString(rdf.FormT(clsGU, gnUs["sth2dfn"], rdf.FormL(dfnG)))
 		sbG.WriteString(rdf.FormT(clsGU, gnUs["sth2lbl"], rdf.FormL(lblG)))
-		for _, synG := range(gsnms4oneg.Keys()) {
+		for _, synG := range gsnms4oneg.Keys() {
 			if synG == lblG {
 				continue
 			}
 			sbG.WriteString(rdf.FormT(clsGU, gnUs["sth2syn"], rdf.FormL(synG)))
 			xmap.Syng.Add(synG, "bgwg", clsG)
-			xmap.Syng.Add(clsG, "syng", synG)
+			xmap.Bgwg.Add(clsG, "syng", synG)
 		}
-		for _, upac := range(upacs4oneg.Keys()) {
+		for _, upac := range upacs4oneg.Keys() {
 			xrfs := upac2xrf[upac]
-			for _, xkey := range(xkeys) {
-				for _, xrf := range(xrfs[xkey].Keys()) {
+			for _, xkey := range xkeys {
+				for _, xrf := range xrfs[xkey].Keys() {
 					xrfs4oneg.Add(xkey, xrf)
 				}
 			}
 		}
+		// xkey as used in UniProt idmapping files
 		for _, xkey := range xrfs4oneg.Keys() {
+			var xrfU string
 			for _, xrf := range xrfs4oneg[xkey].Keys() {
-				xrfU := rdf.CompU(nss[bgw.Upkeys[xkey]], xrf)
+				if xkey == "EnsemblGenome" {
+					xrfU = rdf.CompU(nss[bgw.Ensomes[txid]], xrf)
+				} else {
+					xrfU = rdf.CompU(nss[bgw.Upkeys[xkey]], xrf)
+				}
 				sbG.WriteString(rdf.FormT(clsGU, gnUs["sth2clm"], xrfU))
 				insG := fmt.Sprintf("%s%s%s", clsG, "#", xrf)
 				insGU := rdf.CompU(nss["gene"], insG)
 				sbG.WriteString(rdf.FormT(insGU, gnUs["ins2cls"], clsGU))
 				lbl := fmt.Sprintf("%s#%s", xkey, xrf)
 				sbG.WriteString(rdf.FormT(insGU, gnUs["sth2lbl"], rdf.FormL(lbl)))
+				// TODO generalise
+				if xkey == "GeneID" {
+					xmap.Ncbig.Add(xrf, "bgwg", clsG)
+					xmap.Bgwg.Add(clsG, "ncbig", xrf)
+				}
+				if xkey == "Ensembl" {
+					xmap.Ensg.Add(xrf, "bgwg", clsG)
+					xmap.Bgwg.Add(clsG, "ensg", xrf)
+				}
+				if xkey == "EnsemblGenome" {
+					xmap.Ensg.Add(xrf, "bgwg", clsG)
+					xmap.Bgwg.Add(clsG, "ensg", xrf)
+				}
 			}
 		}
 	} // lblG
@@ -822,67 +802,25 @@ func Gene(xrf2upac, upac2xrf util.Set3D, wpthG string, xmap bgw.Xmap) (error){
 	return nil
 } // Gene()
 
-// GeneProt wrtes RDF files for genes (graph 'gene') and proteins (graph 'prot')
-// Arguments:
-// 1. data structure aggregating data from UniProt for a single taxon
-// 2; path for writing 'gene' file
-// e. path for writing 'prot' file
-// 4. path for writing cross-references
-// Retturns:
-// number of lines written to 'gene' file
-// number of lines written to 'prot' file
-// error
-func GeneProt(dat4rdf bgw.Dat4rdf, wpthG, wpthP, wpthX string) (int, int, error) {
-	/*
-		Fields in allPs:
-		Add("pome",pome)
-		Add("chr",chr)
-		Add("upid",cells[1])
-		Add("spnm",cells[2])
-		Add("txid",txid)
-		Add("pdfn",strings.Replace(cells[4],"\"",",,",1))
-		Add("pubmed",cells[6])
-		Add("score",bits[0])
-	*/
-	// generated by parse.UpTab()
-	allPs := *dat4rdf.Udat // util.Set3D, keys: Uniprot canonical accessions
-	allPs.Check()          // 8 linker keys:
-	// generated by parse.UpTab()
-	allTs := *dat4rdf.Txns // util.Set3D, taxonomic data
-	if len(allTs) != 1 {
-		msg := fmt.Sprintf("TaxonUndefined")
-		panic(errors.New(msg))
+func Prot(rpthU, rpthI, wpthP string, p *bgw.Xmap) error {
+	xmap := *p
+	// Reference proteome IDs:
+	xrf2upac, _ := parse.Idmap(rpthI, bgw.Upkeys, 1, 2, 0)
+	upac2xrf, _ := parse.Idmap(rpthI, bgw.Upkeys, 0, 1, 2)
+	upca2upac := make(util.Set2D) // TODO double-check the use of
+	for _, upac := range upac2xrf.Keys() {
+		bits := strings.Split(upac, "-")
+		if len(bits) == 2 {
+			upca := bits[0]
+			upca2upac.Add(upca, upac)
+		} else {
+			upca2upac.Add(upac, upac)
+		}
 	}
-	txid := allTs.Keys()[0]
-	allGs := *dat4rdf.Gnm // util.Set3D, keys: UniProt gene names
-	allGs.Check()         // 2 linkers: "upac", "gsnm"
-	// generated by parse.UpIdMap() in rdf4bgw
-	upac2xrf := *dat4rdf.Upac // util.Set3D, keys: UniProt accessions
-	upac2xrf.Check()
 
 	nss := rdf.Nss // BGW URI name spaces
-	keys4g := make(util.SliceSet)
-	// keys of object properties ('gene' graph)
-	keys4g["Opys"] = []string{
-		"gn2gp",
-		"gn2txn",
-		"ins2cls",
-		// "mbr2lst",
-		"sth2clm",
-		"sth2ori",
-		"sth2src",
-		"sub2cls",
-	}
-	// keys of annotation properties ('gene' graph)
-	keys4g["Apys"] = []string{
-		"sth2dfn",
-		"sth2lbl",
-		"sth2syn",
-	}
-	// keys of parental classes ('gene' graph)
-	keys4g["Prns"] = []string{
-		"gn",
-	}
+	txid := xrf2upac["NCBI_TaxID"].Keys()[0]
+
 	keys4p := make(util.SliceSet)
 	// keys of object properties ('prot' graph)
 	keys4p["Opys"] = []string{
@@ -909,508 +847,738 @@ func GeneProt(dat4rdf bgw.Dat4rdf, wpthG, wpthP, wpthX string) (int, int, error)
 	}
 	clsU := rdf.CompU(nss["owl"], "Class")
 	srcU := rdf.FormU(nss["uniprot"])
-	graphUg := "<http://rdf.biogateway.eu/graph/gene>"
 	graphUp := "<http://rdf.biogateway.eu/graph/prot>"
-	dfn := "" // descriptor
-	lbl := "" // short label
-	nlng := 0 // number of lines 'gene' graph
-	nlnp := 0 // number of lines 'prot' graph
 	/////////////////////////////////////////////////////////////////////////////
-	wfhG, err := os.Create(wpthG)
-	util.CheckE(err)
-	defer wfhG.Close()
 	wfhP, err := os.Create(wpthP)
 	util.CheckE(err)
 	defer wfhP.Close()
-	// 'gene' graph ini
-	var sbG strings.Builder
-	gnUs := rdf.FmtURIs(keys4g) // URIs for 'gene' graph
-	header, ng := rdf.Capita(keys4g)
-	sbG.WriteString(header)
-	nlng += ng
-	sbG.WriteString(rdf.FormT(graphUg, gnUs["sth2src"], srcU))
-	nlng++
-	//srcUa = "<https://www.uniprot.org/uniprot/?query=organism:" + txid + "&columns=id,entry%20name,organism,organism-id,protein%20names,proteome,citation,annotation%20score&format=tab>"
-	//sbG.WriteString(rdf.FormT("<http://rdf.biogateway.eu/graph/gene>", gnUs["sth2ori"], srcUa)); nlng++
-	nsG := rdf.FormU(nss["gene"])
-	sbG.WriteString(rdf.FormT(nsG, gnUs["ins2cls"], clsU))
-	nlng++
-	dfn = "Set of genes in Biogateway"
-	sbG.WriteString(rdf.FormT(nsG, gnUs["sth2dfn"], rdf.FormL(dfn)))
-	nlng++
-	sbG.WriteString(rdf.FormT(nsG, gnUs["sth2lbl"], rdf.FormL("gene")))
-	nlng++
 	// prot graph ini
 	var sbP strings.Builder
 	gpUs := rdf.FmtURIs(keys4p) // URIs for 'prot' graph
-	header, np := rdf.Capita(keys4p)
+	header, _ := rdf.Capita(keys4p)
 	sbP.WriteString(header)
-	nlnp += np
 	sbP.WriteString(rdf.FormT(graphUp, gpUs["sth2src"], srcU))
-	nlnp++
 	//srcUa = "<https://www.uniprot.org/uniprot/?query=organism:" + txid + "&columns=id,entry%20name,organism,organism-id,protein%20names,proteome,citation,annotation%20score&format=tab>"
-	//sbP.WriteString(rdf.FormT("<http://rdf.biogateway.eu/graph/prot>", gpUs["sth2ori"], srcUa)); nlnp++
-	nsP := rdf.FormU(nss["prot"])
-	sbP.WriteString(rdf.FormT(nsP, gpUs["ins2cls"], clsU))
-	nlnp++
-	dfn = "Set of translation products in Biogateway"
-	sbP.WriteString(rdf.FormT(nsP, gpUs["sth2dfn"], rdf.FormL(dfn)))
-	nlnp++
-	sbP.WriteString(rdf.FormT(nsP, gpUs["sth2lbl"], rdf.FormL("prot")))
-	nlnp++
 	/////////////////////////////////////////////////////////////////////////////
-	upca2bgwg := make(util.Set3D)         // keys: UniProt canonical accessions
-	bgwg2bgwp := make(util.Set3D)         // keys: BGW gene IDs
-	spnm := allTs[txid]["spnm"].Keys()[0] // biological species name
-	// removing alternative names:
-	bits := strings.Split(spnm, "(")
-	spnm = strings.TrimSpace(bits[0])
+
+	keys, vals := bgw.UpdatParseConf()
+	allPs, err := parse.Tab2set3D(rpthU, keys, vals)
+	allPs.Check()                          // 8 linker keys:
 	txnU := rdf.CompU(nss["ncbitx"], txid) // taxon URI
-	txnGU := rdf.CompU(nss["gene"], txid)  // BGW gene set URI
-	sbG.WriteString(rdf.FormT(txnGU, gnUs["ins2cls"], clsU))
-	nlng++
-	sbG.WriteString(rdf.FormT(txnGU, gnUs["sub2cls"], nsG))
-	nlng++
-	// sbG.WriteString(rdf.FormT(txnGU, gnUs["gn2txn"], txnU))
-	// nlng++
-	dfn = fmt.Sprintf("Set of %s genes in Biogateway", spnm)
-	sbG.WriteString(rdf.FormT(txnGU, gnUs["sth2dfn"], rdf.FormL(dfn)))
-	nlng++
-	lbl = strings.Join([]string{"gene", txid}, "/")
-	sbG.WriteString(rdf.FormT(txnGU, gnUs["sth2lbl"], rdf.FormL(lbl)))
-	nlng++
-	txnPU := rdf.CompU(nss["prot"], txid)
-	sbP.WriteString(rdf.FormT(txnPU, gpUs["ins2cls"], clsU))
-	nlnp++
-	sbP.WriteString(rdf.FormT(txnPU, gpUs["sub2cls"], nsP))
-	nlnp++
-	dfn = fmt.Sprintf("Set of %s translation products in Biogateway", spnm)
-	sbP.WriteString(rdf.FormT(txnPU, gpUs["sth2dfn"], rdf.FormL(dfn)))
-	nlnp++
-	lbl = strings.Join([]string{"prot", txid}, "/")
-	sbP.WriteString(rdf.FormT(txnPU, gpUs["sth2lbl"], rdf.FormL(lbl)))
-	nlnp++
-	/* TODO
-	if nlng < 35 || nlnp < 37 {
-		msg := fmt.Sprintf("MalformedHeader")
-		panic(errors.New(msg))
+	xkeys := []string{
+		"Ensembl_PRO",
+		"RefSeq",
 	}
-	*/
-	nlng = 0
-	nlnp = 0
-	/////////////////////////////////////////////////////////////////////////////
-	for _, chr := range allTs[txid]["chr"].Keys() {
-		chrid := strings.Join([]string{txid, chr}, "/")
-		chrGU := rdf.CompU(nss["gene"], chrid)
-		chrPU := rdf.CompU(nss["prot"], chrid)
-		sbG.WriteString(rdf.FormT(chrGU, gnUs["ins2cls"], clsU))
-		nlng++
-		sbG.WriteString(rdf.FormT(chrGU, gnUs["sub2cls"], txnGU))
-		nlng++
-		dfn := fmt.Sprintf("Set of genes residing in %s %s", spnm, chr)
-		sbG.WriteString(rdf.FormT(chrGU, gnUs["sth2dfn"], rdf.FormL(dfn)))
-		nlng++
-		lbl = strings.Join([]string{"gene", chrid}, "/")
-		sbG.WriteString(rdf.FormT(chrGU, gnUs["sth2lbl"], rdf.FormL(lbl)))
-		nlng++
-		sbP.WriteString(rdf.FormT(chrPU, gpUs["ins2cls"], clsU))
-		nlnp++
-		sbP.WriteString(rdf.FormT(chrPU, gpUs["sub2cls"], txnPU))
-		nlnp++
-		dfn = fmt.Sprintf("Set of tranlation products encoded by %s %s", spnm, chr)
-		sbP.WriteString(rdf.FormT(chrPU, gpUs["sth2dfn"], rdf.FormL(dfn)))
-		nlnp++
-		lbl = strings.Join([]string{"prot", chrid}, "/")
-		sbP.WriteString(rdf.FormT(chrPU, gpUs["sth2lbl"], rdf.FormL(lbl)))
-		nlnp++
-	}
-	/////////////////////////////////////////////////////////////////////////////
-	wfhX, err := os.Create(wpthX)
-	util.CheckE(err)
-	defer wfhX.Close()
-	xmap := bgw.NewXmap() // cross-references
+	for _, upca := range upca2upac.Keys() {
+		dfnP := "" // descriptor
+		upacs := upca2upac[upca].Keys() // including upcas
+		xrfs4onep := make(util.Set2D)
+		for _, upac := range upacs {
+			xrfs := upac2xrf[upac]
+			for _, xkey := range xkeys {
+				for _, xrf := range xrfs[xkey].Keys() {
+					xrfs4onep.Add(xkey, xrf)
+				}
+			}
+		}
+		upi2upac := make(util.Set2D) // used for instances
+		for _, upac := range upacs {
+			upi2upac.Add(upac2xrf[upac]["UniParc"].Keys()[0], upac)
+		}
 
-	/////////////////////////////////////////////////////////////////////////////
-	/// Genes ///
-	// allGs checked
-	// allGs: ALL GeneNams in the Reference Protome!
-	cnt := make(util.Set2D)
-	for _, lblG := range allGs.Keys() {
-		oneG, ok := allGs[lblG]
-		if !ok {
-			panic("Impossible!")
-		}
-		oneG.Check() // not empty
-		clsG := strings.Join([]string{txid, lblG}, "/")
-		clsGU := rdf.CompU(nss["gene"], clsG)
-		// canonical accessions for a gene, filtered by Reference Proteome in parse.UpTab:
-		// Note: gene names and synonyms are associated only with canonical accessions
-		upcas := oneG["upca"].Keys()
-		if len(upcas) == 0 {
-			msg := fmt.Sprintf("export.GeneProt():%s:%s: NoUpcas", txid, lblG)
-			panic(errors.New(msg))
-		}
-		for _, upca := range upcas {
-			xrfs, ok := upac2xrf[upca]
-			if !ok {
-				// never happens
-				msg := fmt.Sprintf("export.GeneProt():%s:%s: NoXrefs", txid, upca)
-				panic(errors.New(msg))
-			}
-			m := 1 // at least "uniparc" - SIC!
-			if l := len(xrfs); l < m {
-				// never happens
-				msg := fmt.Sprintf("export.GeneProt():%s:%s: NoXrefs", txid, upca)
-				panic(errors.New(msg))
-			} // 20200531: 4278 entries having only UnniParc refs
-		}
-		sbG.WriteString(rdf.FormT(clsGU, gnUs["ins2cls"], clsU))
-		nlng++
-		for _, chr := range oneG["chr"].Keys() { // SIC! already filtered
-			chrid := strings.Join([]string{txid, chr}, "/")
-			chrGU := rdf.CompU(nss["gene"], chrid)
-			sbG.WriteString(rdf.FormT(clsGU, gnUs["sub2cls"], chrGU))
-			nlng++
-		}
-		sbG.WriteString(rdf.FormT(clsGU, gnUs["sub2cls"], gnUs["gn"]))
-		nlng++
-		sbG.WriteString(rdf.FormT(clsGU, gnUs["gn2txn"], txnU))
-		nlng++
-		dfn := fmt.Sprintf("%s gene %s", spnm, lblG)
-		sbG.WriteString(rdf.FormT(clsGU, gnUs["sth2dfn"], rdf.FormL(dfn)))
-		nlng++
-		sbG.WriteString(rdf.FormT(clsGU, gnUs["sth2lbl"], rdf.FormL(lblG)))
-		nlng++
-		/// gene synonyms ///
-		// includes original GeneNames for entries with multipls GeneNames for now
-		for _, synG := range oneG["gsnm"].Keys() {
-			if synG == lblG {
-				continue
-			}
-			sbG.WriteString(rdf.FormT(clsGU, gnUs["sth2syn"], rdf.FormL(synG)))
-			nlng++
-			xmap.Syng.Add(synG, "bgwg", clsG)
-			xmap.Syng.Add(clsG, "syng", synG)
-		}
-		xmap.Lblg.Add(lblG, "bgwg", clsG)
-		xmap.Lblg.Add(clsG, "gnm", lblG)
-		xrfs4oneg := make(util.Set2D)
-		for _, upca := range upcas {
-			clsP := fmt.Sprintf("%s%s%s", txid, "/", upca)
-			clsPU := rdf.CompU(nss["prot"], clsP)
-			clsGU := rdf.CompU(nss["gene"], clsG)
-			sbG.WriteString(rdf.FormT(clsGU, gnUs["gn2gp"], clsPU))
-			xmap.Bgwp.Add(clsP, "bgwg", clsG)
-			xmap.Bgwg.Add(clsG, "bgwp", clsP)
-			nlng++ // NB: => gene graph
-			xrfs, ok := upac2xrf[upca]
-			ensgs := xrfs["ensgene"].Keys()
-			ensoms := xrfs["ensom"].Keys()
-			ncbigs := xrfs["ncbigene"].Keys()
-			if len(ensgs)+len(ensoms)+len(ncbigs) == 0 {
-				cnt.Add("noGx", lblG)
-			} // 20200531: 44691
-			oneP, ok := allPs[upca]
-			// skipping accessions filtered out in parse.UpTab():
-			if !ok {
-				panic("Redundant?")
-			} // probably redundant
-			upca2bgwg.Add(upca, "bgwg", clsG)
-			oriU := rdf.CompU(nss["uniprot"], upca)
-			sbG.WriteString(rdf.FormT(clsGU, gnUs["sth2ori"], oriU))
-			nlng++
-			/// id mapping ///
-			// multiple BGW GeneIDs per GeneName are possible, e.g.:
-			//<http://rdf.biogateway.eu/gene/9606/multi/CALM1>
-			// <http://rdf.biogateway.eu/gene/9606/chr-14/CALM1>
-			if len(oneP["gnm"]) == 1 {
-				for _, ensg := range ensgs {
-					xrfs4oneg.Add("ensgene", ensg)
-					xmap.Ensg.Add(ensg, "bgwg", clsG)
-					xmap.Bgwg.Add(clsG, "ensgene", ensg)
-				}
-				for _, ensom := range ensoms {
-					xrfs4oneg.Add(Ensomes[txid], ensom)
-					xmap.Ensg.Add(ensom, "bgwg", clsG)
-					xmap.Bgwg.Add(clsG, "ensom", ensom)
-				}
-				for _, ncbig := range ncbigs {
-					xrfs4oneg.Add("ncbigene", ncbig)
-					xmap.Ncbig.Add(ncbig, "bgwg", clsG)
-					xmap.Bgwg.Add(clsG, "ncbigene", ncbig)
-				}
-			}
-		} // upca
-		for _, src := range xrfs4oneg.Keys() {
-			for _, xrf := range xrfs4oneg[src].Keys() {
-				xrfU := rdf.CompU(nss[src], xrf)
-				sbG.WriteString(rdf.FormT(clsGU, gnUs["sth2clm"], xrfU))
-				nlng++
-				insG := fmt.Sprintf("%s%s%s", clsG, "#", xrf)
-				insGU := rdf.CompU(nss["gene"], insG)
-				sbG.WriteString(rdf.FormT(insGU, gpUs["ins2cls"], clsGU))
-				nlng++
-				lbl := fmt.Sprintf("%s#%s", src, xrf)
-				sbG.WriteString(rdf.FormT(insGU, gpUs["sth2lbl"], rdf.FormL(lbl)))
-				nlng++
-				sbG.WriteString(rdf.FormT(insGU, gnUs["sth2clm"], xrfU))
-				nlng++
-			}
-		}
-	} // gene name
-	/////////////////////////////////////////////////////////////////////////////
-	/// Proteins ///
-	for _, upca := range allPs.Keys() {
-
+		clsP := upca
 		/// Some sanity checks
 		oneP, ok := allPs[upca]
 		if !ok {
-			panic("Impossible!")
+			continue
 		}
-		//for upca, oneP := range allPs {
-		xrfsC, ok := upac2xrf[upca]
+		oneXs, ok := upac2xrf[upca] // xrefs for the canonical accession only
 		if !ok {
 			// never happens
-			msg := fmt.Sprintf("export.GeneProt():%s:%s: NoXrfs", txid, upca)
-			panic(errors.New(msg))
+			continue
 		}
-		// not all have synonyms, pubmed refs, thus 8 iso 10
-		if len(oneP) < 6 {
-			msg := fmt.Sprintf("export.GeneProt():%s:%s: TooFewDataFields", txid, upca)
+		if len(oneXs) < 3 {
+			msg := fmt.Sprintf("export.Prot():%s:%s: TooFewDataFields: %d", txid, upca, len(oneXs))
 			fmt.Printf("%s\n", msg)
-			panic(errors.New(msg)) // TODO:3.4: see why tis fails
+			continue
 		} // all filds present and have at least one entry
-		lblGs := oneP["gnm"].Keys()
-		l := len(lblGs)
-		if l == 0 {
-			msg := fmt.Sprintf("export.GeneProt():%s:%s: NoGeneName", txid, upca)
+		// not all have pubmed refs, thus 5 iso 6
+		if len(oneP) < 5 {
+			msg := fmt.Sprintf("export.Prot():%s:%s: TooFewDataFields: %d", txid, upca, len(oneP))
 			fmt.Printf("%s\n", msg)
+			continue
+		} // all filds present and have at least one entry
+		upids := oneP["upid"].Keys()
+		if len(upids) != 1 {
+			continue
 		}
-		upid := oneP["upid"].Keys()[0]
-		/*
-			if l > 1 {
-				// 267 accessions in 25 taxa;
-				// max 24 GeneNames in 7227 for P02283 (His2B), P02299 (His3), P84040 (His4)
-				// P04745  AMY1_HUMAN      AMY1A; AMY1B; AMY1C: single Chr  UP000005640: Chromosome 1
-				msg := fmt.Sprintf("export.GeneProt():%s:%s: %d GeneNames: %v", txid, upca, l, lblGs)
-				fmt.Printf("%s\n", msg)
-			}
-		*/
-		/// protein synonyms
-		// not really correct TODO
-		/*
-			synPs := oneP["symG"].Keys()
-			for _, gnm := range lblGs {
-				synPs = append(synPs, gnm)
-			}
-		*/
-
-		// removing alternative definitions:
-		bits := strings.Split(oneP["pdfn"].Keys()[0], "(")
-		pdfn := strings.TrimSpace(bits[0])
-		if len(pdfn) == 0 {
-			//msg := fmt.Sprintf("export.GeneProt():%s:%s: NoDefinition", txid, upca)
+		lblP := upids[0]
+		pdfns := oneP["pdfns"].Keys()
+		if len(pdfns) == 1 {
+			dfnP = strings.TrimSpace(pdfns[0])
+		} else {
+			//msg := fmt.Sprintf("export.Prot():%s:%s: NoDefinition", txid, upca)
 			//fmt.Printf("%s\n", msg)
-			pdfn = "Unspecified" // 90 in 25 species
+			dfnP = "Unspecified" // 90 in 25 species
 		} // 20200531: 124
-		score := oneP["score"].Keys()[0]
-		pubmeds := oneP["pubmed"].Keys()
-		// upca2bgwg constructed above, no isoforms herein
-		clsGs := upca2bgwg[upca]["bgwg"].Keys() // sorted
-		if l := len(clsGs); l > 1 {
-			// 20200531: 267
-			// 20200531:  none if multiple genes aggregated
-			// msg := fmt.Sprintf("export.GeneProt():%s:%s: %d BgwGeneIDs: %v", txid, upca, l, clsGs)
-			// fmt.Printf("%s\n", msg)
-		}
 		oriU := rdf.CompU(nss["uniprot"], upca)
-		clsP := fmt.Sprintf("%s%s%s", txid, "/", upca) // NEEDED!
-		clsPU := rdf.CompU(nss["prot"], clsP)          // NEEDED!
-		chrs := oneP["chr"].Keys()                     //v34 ALL chromosomes
-		if len(chrs) > 1 {
-			/*
-				msg := fmt.Sprintf("export.GeneProt():%s:%s: chrs: %d ENSG: %v", txid, upca, len(chrs), ensgs)
-				fmt.Printf("%s\n", msg)
-				msg = fmt.Sprintf("export.GeneProt():%s:%s: chrs: %d NCBIG: %v", txid, upca, len(chrs), ncbigs)
-				fmt.Printf("%s\n", msg)
-			*/
-		}
-		sbP.WriteString(rdf.FormT(clsPU, gpUs["ins2cls"], clsU))
-		nlnp++
-		for _, chr := range chrs {
-			chrid := strings.Join([]string{txid, chr}, "/")
-			chrPU := rdf.CompU(nss["prot"], chrid)
-			sbP.WriteString(rdf.FormT(clsPU, gpUs["sub2cls"], chrPU))
-			nlnp++
-		}
-		sbP.WriteString(rdf.FormT(clsPU, gpUs["sub2cls"], gpUs["tlp"]))
-		nlnp++
-		sbP.WriteString(rdf.FormT(clsPU, gpUs["gp2txn"], txnU))
-		nlnp++
-		sbP.WriteString(rdf.FormT(clsPU, gpUs["sth2eqv"], oriU))
-		nlnp++
-		// dfn := fmt.Sprintf("Protein class %s from %s", upid, spnm) //v34
-		sbP.WriteString(rdf.FormT(clsPU, gpUs["sth2dfn"], rdf.FormL(pdfn)))
-		nlnp++
-		sbP.WriteString(rdf.FormT(clsPU, gpUs["sth2lbl"], rdf.FormL(upid)))
-		nlnp++
+		sbP.WriteString(rdf.FormT(oriU, gpUs["ins2cls"], clsU))
+		sbP.WriteString(rdf.FormT(oriU, gpUs["sub2cls"], gpUs["tlp"]))
+		sbP.WriteString(rdf.FormT(oriU, gpUs["gp2txn"], txnU))
+		sbP.WriteString(rdf.FormT(oriU, gpUs["sth2dfn"], rdf.FormL(dfnP)))
+		sbP.WriteString(rdf.FormT(oriU, gpUs["sth2lbl"], rdf.FormL(lblP)))
+		xmap.Lblp.Add(lblP, "bgwp", clsP)
+		xmap.Bgwp.Add(clsP, "lblp", lblP)
+
 		// synonyms
-		var synPs []string // per upac
-		synPs = append(synPs, upca)
-		for _, lblG := range lblGs {
-			synPs = append(synPs, lblG)
+		synPs := make(util.Set2D)
+		for _, val := range oneXs["Gene_Name"].Keys() {
+			synPs.Add(val, upca)
 		}
-		for _, clsG := range clsGs { // sorted above
-			bgwg2bgwp.Add(clsG, "bgwp", clsP)
-		} // clsGs
-		for _, synP := range synPs {
-			sbP.WriteString(rdf.FormT(clsPU, gpUs["sth2syn"], rdf.FormL(synP)))
-			nlnp++
+		for _, val := range oneXs["Gene_Synonym"].Keys() {
+			synPs.Add(val, upca)
 		}
-		sbP.WriteString(rdf.FormT(clsPU, gpUs["sth2ori"], oriU))
-		nlnp++
-		sbP.WriteString(rdf.FormT(clsPU, gpUs["evd2lvl"], rdf.FormL(string(score))))
-		nlnp++                           // conversion needed?
+		synPs.Add(upca, upca)
+		for _, synP := range synPs.Keys() {
+			sbP.WriteString(rdf.FormT(oriU, gpUs["sth2syn"], rdf.FormL(synP)))
+			xmap.Synp.Add(synP, "bgwp", clsP)
+			xmap.Bgwp.Add(clsP, "synp", synP)
+		}
+
+		score := oneP["score"].Keys()[0]
+		sbP.WriteString(rdf.FormT(oriU, gpUs["evd2lvl"], rdf.FormL(string(score))))
+		pubmeds := oneP["pubmed"].Keys()
 		for _, pubmed := range pubmeds { // sorted above
 			pubmedU := rdf.CompU(nss["pubmed"], pubmed)
-			sbP.WriteString(rdf.FormT(clsPU, gpUs["sth2evd"], pubmedU))
-			nlnp++
+			sbP.WriteString(rdf.FormT(oriU, gpUs["sth2evd"], pubmedU))
 		}
-		xmap.Upac.Add(upca, "bgwp", clsP)
-		upiCs := upac2xrf[upca]["uniparc"].Keys()
-		if l := len(upiCs); l != 1 {
-			msg := fmt.Sprintf("export.GeneProt():%s:%s: %d UpArcs: %v", txid, upca, l, upiCs)
-			panic(errors.New(msg))
-		}
-		upiC := upiCs[0]
+		xmap.Upac.Add(upca, "bgwp", clsP) // for backward compatibility
 
-		// iso-forms
-		// xrfsC - all xrefs for the current canonical accession
-		// walking over iso-forms, NO canonical accesssion
-		upi2upac := make(util.Set2D)
-		for _, upac := range xrfsC["upac"].Keys() {
-			if upac == "" {
-				panic("upacEmpty")
-			}
-			upiIs := upac2xrf[upac]["uniparc"].Keys()
-			if l := len(upiIs); l != 1 {
-				msg := fmt.Sprintf("export.GeneProt():%s:%s: %d UpArcs: %v", txid, upac, l, upiIs)
-				panic(errors.New(msg))
-			}
-			upi2upac.Add(upiIs[0], upac)
-		}
-		_, ok = upi2upac[upiC]
-		if !ok {
-			upac := fmt.Sprintf("%s-0", upca)
-			upi2upac.Add(upiC, upac)
-		}
-
+		// Instances
 		for _, upi := range upi2upac.Keys() {
-			upacs := upi2upac[upi].Keys()
-			if l := len(upacs); l != 1 {
-				msg := fmt.Sprintf("export.GeneProt():%s:%s: %d MultiUpac: %v", txid, upca, l, upacs)
-				panic(errors.New(msg))
-			}
-			upac := upacs[0]
-			lblP := fmt.Sprintf("uniprot#%s", upac)
-			insP := fmt.Sprintf("%s%s%s", clsP, "#", upi)
-			insPU := rdf.CompU(nss["prot"], insP)
-			sbP.WriteString(rdf.FormT(insPU, gpUs["ins2cls"], clsPU))
-			nlnp++
-			sbP.WriteString(rdf.FormT(insPU, gpUs["sth2lbl"], rdf.FormL(lblP)))
-			nlnp++
-			// sbP.WriteString(rdf.FormT(insPU, gpUs["sth2ori"], oriU))
-			//nlnp++
-			/// id mapping ///
-			// NB: multiple ENSPs and even NPs per UPAC are common
-			xmap.Upac.Add(upac, "bgwp", insP)
-			xmap.Bgwp.Add(insP, "upac", upac)
-			xrf := ""
-			//			if upac == fmt.Sprintf("%s-0", upca) {
-			//				// no iso-forms or the set of iso-forms excludes the canonical sequence
-			//				upac = upca
-			//				sbP.WriteString(rdf.FormT(insPU, gpUs["sth2clm"], oriU))
-			//				nlnp++
-			//			} else {
-			//				xrf = fmt.Sprintf("%s%s%s", upca, "#", upac)
-			//				xrfU := rdf.CompU(nss["uniprot"], xrf)
-			//				sbP.WriteString(rdf.FormT(insPU, gpUs["sth2clm"], xrfU))
-			//				nlnp++
-			//			}
-			xrf = upi
-			xrfU := rdf.CompU(nss["uniparc"], xrf)
-			sbP.WriteString(rdf.FormT(insPU, gpUs["sth2clm"], xrfU))
-			nlnp++
-			for _, xrf = range upac2xrf[upac]["enspro"].Keys() {
-				enspU := rdf.CompU(nss["enspro"], xrf)
-				sbP.WriteString(rdf.FormT(clsPU, gpUs["sth2clm"], enspU))
-				nlnp++
-				sbP.WriteString(rdf.FormT(insPU, gpUs["sth2clm"], enspU))
-				nlnp++
-				xmap.Ensp.Add(xrf, "bgwp", insP)
-				xmap.Bgwp.Add(insP, "enspro", xrf)
-			}
-			for _, xrf = range upac2xrf[upac]["refseq"].Keys() {
-				rfsqU := rdf.CompU(nss["refseq"], xrf)
-				sbP.WriteString(rdf.FormT(clsPU, gpUs["sth2clm"], rfsqU))
-				nlnp++
-				sbP.WriteString(rdf.FormT(insPU, gpUs["sth2clm"], rfsqU))
-				nlnp++
-				xmap.Rfsq.Add(xrf, "bgwp", insP)
-				xmap.Bgwp.Add(insP, "refseq", xrf)
-			}
-		} // upac2xrf
-	} // prot
-	for bgwP, xrefs := range xmap.Bgwp { // no need to sort
-		// 20200531: canonical accessions have the same UPI as one of the iso-forms
-		upacs := xrefs["upac"].Keys()
-		if l := len(upacs); l > 2 {
-			msg := fmt.Sprintf("export.GeneProt():%s: %d UniProtAccessions: %v", bgwP, l, upacs)
-			fmt.Printf("%s\n", msg)
-		}
-		// 20200531: 159
-		// mostly worm and fly entries, typically 1 TrEMBL, 2 SP: canonical + 1 isoform
-		// the rest (27) human, up to 8 canonical accessions
-		// 20200531: 813320 with a single accession
-
-	}
-	/////////////////////////////////////////////////////////////////////////////
-	// gene -> prot relations
-	/*
-		for _, clsG := range bgwg2bgwp.Keys() {
-			idPmap := bgwg2bgwp[clsG]
-			//for clsG, idPmap := range bgwg2bgwp { // keep this
-			clsGU := rdf.CompU(nss["gene"], clsG)
-			for _, bgwP := range idPmap["bgwp"].Keys() {
-				bgwPU := rdf.CompU(nss["prot"], bgwP)
-				sbG.WriteString(rdf.FormT(clsGU, gnUs["gn2gp"], bgwPU))
-				nlng++ // NB: => gene graph
+			insU := rdf.CompU(nss["uniparc"], upi)
+			sbP.WriteString(rdf.FormT(insU, gpUs["ins2cls"], oriU))
+			lbl := fmt.Sprintf("instance of %s", lblP)
+			sbP.WriteString(rdf.FormT(insU, gpUs["sth2lbl"], rdf.FormL(lbl)))
+			xmap.Bgwp.Add(clsP, "upi", upi) // full set
+			for _, upac := range upi2upac[upi].Keys() {
+				sbP.WriteString(rdf.FormT(insU, gpUs["sth2syn"], rdf.FormL(upac)))
+				xmap.Upac.Add(upca, "upac", upac) // full set
+				xmap.Upac.Add(upac, "upi", upi)
 			}
 		}
-	*/
+		for _, xkey := range xrfs4onep.Keys() {
+			for _, xrf := range xrfs4onep[xkey].Keys() {
+				xrfU := rdf.CompU(nss[bgw.Upkeys[xkey]], xrf)
+				sbP.WriteString(rdf.FormT(oriU, gpUs["sth2clm"], xrfU))
+				// TODO generalise
+				if xkey == "RefSeq" {
+					xmap.Rfsq.Add(xrf, "bgwp", clsP)
+					xmap.Bgwp.Add(clsP, "rfsq", xrf)
+				}
+				if xkey == "Ensembl_PRO" {
+					xmap.Ensp.Add(xrf, "bgwp", clsP)
+					xmap.Bgwp.Add(clsP, "ensp", xrf)
+				}
+			}
+			}
+	} // upca
 	/////////////////////////////////////////////////////////////////////////////
-	if nlng == 0 {
-		msg := fmt.Sprintf("export.GeneProt(): Genes: NoContent")
-		return nlng, nlnp, errors.New(msg)
-	}
-	if nlnp == 0 {
-		msg := fmt.Sprintf("export.GeneProt(): Prots: NoContent")
-		return nlng, nlnp, errors.New(msg)
-	}
-	wfhG.Write([]byte(sbG.String()))
-	sbG.Reset()
 	wfhP.Write([]byte(sbP.String()))
 	sbP.Reset()
-	// xmap export
-	j, err := json.MarshalIndent(&xmap, "", " ")
-	util.CheckE(err)
-	wfhX.Write(j)
-	/////////////////////////////////////////////////////////////////////////////
-	if l := len(cnt["noGx"]); l > 0 {
-		log.Println("export.GeneProt(): Warning: NoGeneXref:", l)
-	}
-	return nlng, nlnp, nil
-} // GeneProt
+	return nil
+} // Prot()
+
+// GeneProt wrtes RDF files for genes (graph 'gene') and proteins (graph 'prot')
+// Arguments:
+// 1. data structure aggregating data from UniProt for a single taxon
+// 2; path for writing 'gene' file
+// e. path for writing 'prot' file
+// 4. path for writing cross-references
+// Retturns:
+// number of lines written to 'gene' file
+// number of lines written to 'prot' file
+// error
+//func GeneProt(dat4rdf bgw.Dat4rdf, wpthG, wpthP, wpthX string) (int, int, error) {
+//	/*
+//		Fields in allPs:
+//		Add("pome",pome)
+//		Add("chr",chr)
+//		Add("upid",cells[1])
+//		Add("spnm",cells[2])
+//		Add("txid",txid)
+//		Add("dfnP",strings.Replace(cells[4],"\"",",,",1))
+//		Add("pubmed",cells[6])
+//		Add("score",bits[0])
+//	*/
+//	// generated by parse.UpTab()
+//	allPs := *dat4rdf.Udat // util.Set3D, keys: Uniprot canonical accessions
+//	allPs.Check()          // 8 linker keys:
+//	// generated by parse.UpTab()
+//	allTs := *dat4rdf.Txns // util.Set3D, taxonomic data
+//	if len(allTs) != 1 {
+//		msg := fmt.Sprintf("TaxonUndefined")
+//		panic(errors.New(msg))
+//	}
+//	txid := allTs.Keys()[0]
+//	allGs := *dat4rdf.Gnm // util.Set3D, keys: UniProt gene names
+//	allGs.Check()         // 2 linkers: "upac", "gsnm"
+//	// generated by parse.UpIdMap() in rdf4bgw
+//	upac2xrf := *dat4rdf.Upac // util.Set3D, keys: UniProt accessions
+//	upac2xrf.Check()
+//
+//	nss := rdf.Nss // BGW URI name spaces
+//	keys4g := make(util.SliceSet)
+//	// keys of object properties ('gene' graph)
+//	keys4g["Opys"] = []string{
+//		"gn2gp",
+//		"gn2txn",
+//		"ins2cls",
+//		// "mbr2lst",
+//		"sth2clm",
+//		"sth2ori",
+//		"sth2src",
+//		"sub2cls",
+//	}
+//	// keys of annotation properties ('gene' graph)
+//	keys4g["Apys"] = []string{
+//		"sth2dfn",
+//		"sth2lbl",
+//		"sth2syn",
+//	}
+//	// keys of parental classes ('gene' graph)
+//	keys4g["Prns"] = []string{
+//		"gn",
+//	}
+//	keys4p := make(util.SliceSet)
+//	// keys of object properties ('prot' graph)
+//	keys4p["Opys"] = []string{
+//		"gp2txn",
+//		"ins2cls",
+//		"sth2eqv",
+//		// "mbr2lst",
+//		"sth2clm",
+//		"sth2evd",
+//		"sth2ori",
+//		"sth2src",
+//		"sub2cls",
+//	}
+//	// keys of annotation properties ('prot' graph)
+//	keys4p["Apys"] = []string{
+//		"evd2lvl",
+//		"sth2dfn",
+//		"sth2lbl",
+//		"sth2syn",
+//	}
+//	// keys of parental classes ('prot' graph)
+//	keys4p["Prns"] = []string{
+//		"tlp",
+//	}
+//	clsU := rdf.CompU(nss["owl"], "Class")
+//	srcU := rdf.FormU(nss["uniprot"])
+//	graphUg := "<http://rdf.biogateway.eu/graph/gene>"
+//	graphUp := "<http://rdf.biogateway.eu/graph/prot>"
+//	dfn := "" // descriptor
+//	lbl := "" // short label
+//	nlng := 0 // number of lines 'gene' graph
+//	nlnp := 0 // number of lines 'prot' graph
+//	/////////////////////////////////////////////////////////////////////////////
+//	wfhG, err := os.Create(wpthG)
+//	util.CheckE(err)
+//	defer wfhG.Close()
+//	wfhP, err := os.Create(wpthP)
+//	util.CheckE(err)
+//	defer wfhP.Close()
+//	// 'gene' graph ini
+//	var sbG strings.Builder
+//	gnUs := rdf.FmtURIs(keys4g) // URIs for 'gene' graph
+//	header, ng := rdf.Capita(keys4g)
+//	sbG.WriteString(header)
+//	nlng += ng
+//	sbG.WriteString(rdf.FormT(graphUg, gnUs["sth2src"], srcU))
+//	nlng++
+//	//srcUa = "<https://www.uniprot.org/uniprot/?query=organism:" + txid + "&columns=id,entry%20name,organism,organism-id,protein%20names,proteome,citation,annotation%20score&format=tab>"
+//	//sbG.WriteString(rdf.FormT("<http://rdf.biogateway.eu/graph/gene>", gnUs["sth2ori"], srcUa)); nlng++
+//	nsG := rdf.FormU(nss["gene"])
+//	sbG.WriteString(rdf.FormT(nsG, gnUs["ins2cls"], clsU))
+//	nlng++
+//	dfn = "Set of genes in Biogateway"
+//	sbG.WriteString(rdf.FormT(nsG, gnUs["sth2dfn"], rdf.FormL(dfn)))
+//	nlng++
+//	sbG.WriteString(rdf.FormT(nsG, gnUs["sth2lbl"], rdf.FormL("gene")))
+//	nlng++
+//	// prot graph ini
+//	var sbP strings.Builder
+//	gpUs := rdf.FmtURIs(keys4p) // URIs for 'prot' graph
+//	header, np := rdf.Capita(keys4p)
+//	sbP.WriteString(header)
+//	nlnp += np
+//	sbP.WriteString(rdf.FormT(graphUp, gpUs["sth2src"], srcU))
+//	nlnp++
+//	//srcUa = "<https://www.uniprot.org/uniprot/?query=organism:" + txid + "&columns=id,entry%20name,organism,organism-id,protein%20names,proteome,citation,annotation%20score&format=tab>"
+//	//sbP.WriteString(rdf.FormT("<http://rdf.biogateway.eu/graph/prot>", gpUs["sth2ori"], srcUa)); nlnp++
+//	nsP := rdf.FormU(nss["uniprot"])
+//	sbP.WriteString(rdf.FormT(nsP, gpUs["ins2cls"], clsU))
+//	nlnp++
+//	dfn = "Set of translation products in Biogateway"
+//	sbP.WriteString(rdf.FormT(nsP, gpUs["sth2dfn"], rdf.FormL(dfn)))
+//	nlnp++
+//	sbP.WriteString(rdf.FormT(nsP, gpUs["sth2lbl"], rdf.FormL("prot")))
+//	nlnp++
+//	/////////////////////////////////////////////////////////////////////////////
+//	upca2bgwg := make(util.Set3D)         // keys: UniProt canonical accessions
+//	bgwg2bgwp := make(util.Set3D)         // keys: BGW gene IDs
+//	spnm := allTs[txid]["spnm"].Keys()[0] // biological species name
+//	// removing alternative names:
+//	bits := strings.Split(spnm, "(")
+//	spnm = strings.TrimSpace(bits[0])
+//	txnU := rdf.CompU(nss["ncbitx"], txid) // taxon URI
+//	txnGU := rdf.CompU(nss["gene"], txid)  // BGW gene set URI
+//	sbG.WriteString(rdf.FormT(txnGU, gnUs["ins2cls"], clsU))
+//	nlng++
+//	sbG.WriteString(rdf.FormT(txnGU, gnUs["sub2cls"], nsG))
+//	nlng++
+//	// sbG.WriteString(rdf.FormT(txnGU, gnUs["gn2txn"], txnU))
+//	// nlng++
+//	dfn = fmt.Sprintf("Set of %s genes in Biogateway", spnm)
+//	sbG.WriteString(rdf.FormT(txnGU, gnUs["sth2dfn"], rdf.FormL(dfn)))
+//	nlng++
+//	lbl = strings.Join([]string{"gene", txid}, "/")
+//	sbG.WriteString(rdf.FormT(txnGU, gnUs["sth2lbl"], rdf.FormL(lbl)))
+//	nlng++
+//	txnPU := rdf.CompU(nss["uniprot"], txid)
+//	sbP.WriteString(rdf.FormT(txnPU, gpUs["ins2cls"], clsU))
+//	nlnp++
+//	sbP.WriteString(rdf.FormT(txnPU, gpUs["sub2cls"], nsP))
+//	nlnp++
+//	dfn = fmt.Sprintf("Set of %s translation products in Biogateway", spnm)
+//	sbP.WriteString(rdf.FormT(txnPU, gpUs["sth2dfn"], rdf.FormL(dfn)))
+//	nlnp++
+//	lbl = strings.Join([]string{"prot", txid}, "/")
+//	sbP.WriteString(rdf.FormT(txnPU, gpUs["sth2lbl"], rdf.FormL(lbl)))
+//	nlnp++
+//	/* TODO
+//	if nlng < 35 || nlnp < 37 {
+//		msg := fmt.Sprintf("MalformedHeader")
+//		panic(errors.New(msg))
+//	}
+//	*/
+//	nlng = 0
+//	nlnp = 0
+//	/////////////////////////////////////////////////////////////////////////////
+//	for _, chr := range allTs[txid]["chr"].Keys() {
+//		chrid := strings.Join([]string{txid, chr}, "/")
+//		chrGU := rdf.CompU(nss["gene"], chrid)
+//		chrPU := rdf.CompU(nss["uniprot"], chrid)
+//		sbG.WriteString(rdf.FormT(chrGU, gnUs["ins2cls"], clsU))
+//		nlng++
+//		sbG.WriteString(rdf.FormT(chrGU, gnUs["sub2cls"], txnGU))
+//		nlng++
+//		dfn := fmt.Sprintf("Set of genes residing in %s %s", spnm, chr)
+//		sbG.WriteString(rdf.FormT(chrGU, gnUs["sth2dfn"], rdf.FormL(dfn)))
+//		nlng++
+//		lbl = strings.Join([]string{"gene", chrid}, "/")
+//		sbG.WriteString(rdf.FormT(chrGU, gnUs["sth2lbl"], rdf.FormL(lbl)))
+//		nlng++
+//		sbP.WriteString(rdf.FormT(chrPU, gpUs["ins2cls"], clsU))
+//		nlnp++
+//		sbP.WriteString(rdf.FormT(chrPU, gpUs["sub2cls"], txnPU))
+//		nlnp++
+//		dfn = fmt.Sprintf("Set of tranlation products encoded by %s %s", spnm, chr)
+//		sbP.WriteString(rdf.FormT(chrPU, gpUs["sth2dfn"], rdf.FormL(dfn)))
+//		nlnp++
+//		lbl = strings.Join([]string{"prot", chrid}, "/")
+//		sbP.WriteString(rdf.FormT(chrPU, gpUs["sth2lbl"], rdf.FormL(lbl)))
+//		nlnp++
+//	}
+//	/////////////////////////////////////////////////////////////////////////////
+//	wfhX, err := os.Create(wpthX)
+//	util.CheckE(err)
+//	defer wfhX.Close()
+//	var xmap bgw.Xmap
+//	xmap.New()
+//
+//	/////////////////////////////////////////////////////////////////////////////
+//	/// Genes ///
+//	// allGs checked
+//	// allGs: ALL GeneNams in the Reference Protome!
+//	cnt := make(util.Set2D)
+//	for _, lblG := range allGs.Keys() {
+//		oneG, ok := allGs[lblG]
+//		if !ok {
+//			panic("Impossible!")
+//		}
+//		oneG.Check() // not empty
+//		clsG := strings.Join([]string{txid, lblG}, "/")
+//		clsGU := rdf.CompU(nss["gene"], clsG)
+//		// canonical accessions for a gene, filtered by Reference Proteome in parse.UpTab:
+//		// Note: gene names and synonyms are associated only with canonical accessions
+//		upcas := oneG["upca"].Keys()
+//		if len(upcas) == 0 {
+//			msg := fmt.Sprintf("export.GeneProt():%s:%s: NoUpcas", txid, lblG)
+//			panic(errors.New(msg))
+//		}
+//		for _, upca := range upcas {
+//			xrfs, ok := upac2xrf[upca]
+//			if !ok {
+//				// never happens
+//				msg := fmt.Sprintf("export.GeneProt():%s:%s: NoXrefs", txid, upca)
+//				panic(errors.New(msg))
+//			}
+//			m := 1 // at least "uniparc" - SIC!
+//			if l := len(xrfs); l < m {
+//				// never happens
+//				msg := fmt.Sprintf("export.GeneProt():%s:%s: NoXrefs", txid, upca)
+//				panic(errors.New(msg))
+//			} // 20200531: 4278 entries having only UnniParc refs
+//		}
+//		sbG.WriteString(rdf.FormT(clsGU, gnUs["ins2cls"], clsU))
+//		nlng++
+//		for _, chr := range oneG["chr"].Keys() { // SIC! already filtered
+//			chrid := strings.Join([]string{txid, chr}, "/")
+//			chrGU := rdf.CompU(nss["gene"], chrid)
+//			sbG.WriteString(rdf.FormT(clsGU, gnUs["sub2cls"], chrGU))
+//			nlng++
+//		}
+//		sbG.WriteString(rdf.FormT(clsGU, gnUs["sub2cls"], gnUs["gn"]))
+//		nlng++
+//		sbG.WriteString(rdf.FormT(clsGU, gnUs["gn2txn"], txnU))
+//		nlng++
+//		dfn := fmt.Sprintf("%s gene %s", spnm, lblG)
+//		sbG.WriteString(rdf.FormT(clsGU, gnUs["sth2dfn"], rdf.FormL(dfn)))
+//		nlng++
+//		sbG.WriteString(rdf.FormT(clsGU, gnUs["sth2lbl"], rdf.FormL(lblG)))
+//		nlng++
+//		/// gene synonyms ///
+//		// includes original GeneNames for entries with multipls GeneNames for now
+//		for _, synG := range oneG["gsnm"].Keys() {
+//			if synG == lblG {
+//				continue
+//			}
+//			sbG.WriteString(rdf.FormT(clsGU, gnUs["sth2syn"], rdf.FormL(synG)))
+//			nlng++
+//			xmap.Syng.Add(synG, "bgwg", clsG)
+//			xmap.Syng.Add(clsG, "syng", synG)
+//		}
+//		xmap.Lblg.Add(lblG, "bgwg", clsG)
+//		xmap.Lblg.Add(clsG, "gnm", lblG)
+//		xrfs4oneg := make(util.Set2D)
+//		for _, upca := range upcas {
+//			clsP := fmt.Sprintf("%s%s%s", txid, "/", upca)
+//			clsPU := rdf.CompU(nss["uniprot"], clsP)
+//			clsGU := rdf.CompU(nss["gene"], clsG)
+//			sbG.WriteString(rdf.FormT(clsGU, gnUs["gn2gp"], clsPU))
+//			xmap.Bgwp.Add(clsP, "bgwg", clsG)
+//			xmap.Bgwg.Add(clsG, "bgwp", clsP)
+//			nlng++ // NB: => gene graph
+//			xrfs, ok := upac2xrf[upca]
+//			ensgs := xrfs["ensgene"].Keys()
+//			ensoms := xrfs["ensom"].Keys()
+//			ncbigs := xrfs["ncbigene"].Keys()
+//			if len(ensgs)+len(ensoms)+len(ncbigs) == 0 {
+//				cnt.Add("noGx", lblG)
+//			} // 20200531: 44691
+//			oneP, ok := allPs[upca]
+//			// skipping accessions filtered out in parse.UpTab():
+//			if !ok {
+//				panic("Redundant?")
+//			} // probably redundant
+//			upca2bgwg.Add(upca, "bgwg", clsG)
+//			oriU := rdf.CompU(nss["uniprot"], upca)
+//			sbG.WriteString(rdf.FormT(clsGU, gnUs["sth2ori"], oriU))
+//			nlng++
+//			/// id mapping ///
+//			// multiple BGW GeneIDs per GeneName are possible, e.g.:
+//			//<http://rdf.biogateway.eu/gene/9606/multi/CALM1>
+//			// <http://rdf.biogateway.eu/gene/9606/chr-14/CALM1>
+//			if len(oneP["gnm"]) == 1 {
+//				for _, ensg := range ensgs {
+//					xrfs4oneg.Add("ensgene", ensg)
+//					xmap.Ensg.Add(ensg, "bgwg", clsG)
+//					xmap.Bgwg.Add(clsG, "ensgene", ensg)
+//				}
+//				for _, ensom := range ensoms {
+//					xrfs4oneg.Add(bgw.Ensomes[txid], ensom)
+//					xmap.Ensg.Add(ensom, "bgwg", clsG)
+//					xmap.Bgwg.Add(clsG, "ensom", ensom)
+//				}
+//				for _, ncbig := range ncbigs {
+//					xrfs4oneg.Add("ncbigene", ncbig)
+//					xmap.Ncbig.Add(ncbig, "bgwg", clsG)
+//					xmap.Bgwg.Add(clsG, "ncbigene", ncbig)
+//				}
+//			}
+//		} // upca
+//		for _, src := range xrfs4oneg.Keys() {
+//			for _, xrf := range xrfs4oneg[src].Keys() {
+//				xrfU := rdf.CompU(nss[src], xrf)
+//				sbG.WriteString(rdf.FormT(clsGU, gnUs["sth2clm"], xrfU))
+//				nlng++
+//				insG := fmt.Sprintf("%s%s%s", clsG, "#", xrf)
+//				insGU := rdf.CompU(nss["gene"], insG)
+//				sbG.WriteString(rdf.FormT(insGU, gpUs["ins2cls"], clsGU))
+//				nlng++
+//				lbl := fmt.Sprintf("%s#%s", src, xrf)
+//				sbG.WriteString(rdf.FormT(insGU, gpUs["sth2lbl"], rdf.FormL(lbl)))
+//				nlng++
+//				sbG.WriteString(rdf.FormT(insGU, gnUs["sth2clm"], xrfU))
+//				nlng++
+//			}
+//		}
+//	} // gene name
+//	/////////////////////////////////////////////////////////////////////////////
+//	/// Proteins ///
+//	for _, upca := range allPs.Keys() {
+//
+//		/// Some sanity checks
+//		oneP, ok := allPs[upca]
+//		if !ok {
+//			panic("Impossible!")
+//		}
+//		//for upca, oneP := range allPs {
+//		xrfsC, ok := upac2xrf[upca]
+//		if !ok {
+//			// never happens
+//			msg := fmt.Sprintf("export.GeneProt():%s:%s: NoXrfs", txid, upca)
+//			panic(errors.New(msg))
+//		}
+//		// not all have synonyms, pubmed refs, thus 8 iso 10
+//		if len(oneP) < 6 {
+//			msg := fmt.Sprintf("export.GeneProt():%s:%s: TooFewDataFields", txid, upca)
+//			fmt.Printf("%s\n", msg)
+//			panic(errors.New(msg)) // TODO:3.4: see why tis fails
+//		} // all filds present and have at least one entry
+//		lblGs := oneP["gnm"].Keys()
+//		l := len(lblGs)
+//		if l == 0 {
+//			msg := fmt.Sprintf("export.GeneProt():%s:%s: NoGeneName", txid, upca)
+//			fmt.Printf("%s\n", msg)
+//		}
+//		upid := oneP["upid"].Keys()[0]
+//		/*
+//			if l > 1 {
+//				// 267 accessions in 25 taxa;
+//				// max 24 GeneNames in 7227 for P02283 (His2B), P02299 (His3), P84040 (His4)
+//				// P04745  AMY1_HUMAN      AMY1A; AMY1B; AMY1C: single Chr  UP000005640: Chromosome 1
+//				msg := fmt.Sprintf("export.GeneProt():%s:%s: %d GeneNames: %v", txid, upca, l, lblGs)
+//				fmt.Printf("%s\n", msg)
+//			}
+//		*/
+//		/// protein synonyms
+//		// not really correct TODO
+//		/*
+//			synPs := oneP["symG"].Keys()
+//			for _, gnm := range lblGs {
+//				synPs = append(synPs, gnm)
+//			}
+//		*/
+//
+//		// removing alternative definitions:
+//		bits := strings.Split(oneP["dfnP"].Keys()[0], "(")
+//		dfnP := strings.TrimSpace(bits[0])
+//		if len(dfnP) == 0 {
+//			//msg := fmt.Sprintf("export.GeneProt():%s:%s: NoDefinition", txid, upca)
+//			//fmt.Printf("%s\n", msg)
+//			dfnP = "Unspecified" // 90 in 25 species
+//		} // 20200531: 124
+//		score := oneP["score"].Keys()[0]
+//		pubmeds := oneP["pubmed"].Keys()
+//		// upca2bgwg constructed above, no isoforms herein
+//		clsGs := upca2bgwg[upca]["bgwg"].Keys() // sorted
+//		if l := len(clsGs); l > 1 {
+//			// 20200531: 267
+//			// 20200531:  none if multiple genes aggregated
+//			// msg := fmt.Sprintf("export.GeneProt():%s:%s: %d BgwGeneIDs: %v", txid, upca, l, clsGs)
+//			// fmt.Printf("%s\n", msg)
+//		}
+//		oriU := rdf.CompU(nss["uniprot"], upca)
+//		clsP := fmt.Sprintf("%s%s%s", txid, "/", upca) // NEEDED!
+//		clsPU := rdf.CompU(nss["uniprot"], clsP)          // NEEDED!
+//		chrs := oneP["chr"].Keys()                     //v34 ALL chromosomes
+//		if len(chrs) > 1 {
+//			/*
+//				msg := fmt.Sprintf("export.GeneProt():%s:%s: chrs: %d ENSG: %v", txid, upca, len(chrs), ensgs)
+//				fmt.Printf("%s\n", msg)
+//				msg = fmt.Sprintf("export.GeneProt():%s:%s: chrs: %d NCBIG: %v", txid, upca, len(chrs), ncbigs)
+//				fmt.Printf("%s\n", msg)
+//			*/
+//		}
+//		sbP.WriteString(rdf.FormT(clsPU, gpUs["ins2cls"], clsU))
+//		nlnp++
+//		for _, chr := range chrs {
+//			chrid := strings.Join([]string{txid, chr}, "/")
+//			chrPU := rdf.CompU(nss["uniprot"], chrid)
+//			sbP.WriteString(rdf.FormT(clsPU, gpUs["sub2cls"], chrPU))
+//			nlnp++
+//		}
+//		sbP.WriteString(rdf.FormT(clsPU, gpUs["sub2cls"], gpUs["tlp"]))
+//		nlnp++
+//		sbP.WriteString(rdf.FormT(clsPU, gpUs["gp2txn"], txnU))
+//		nlnp++
+//		sbP.WriteString(rdf.FormT(clsPU, gpUs["sth2eqv"], oriU))
+//		nlnp++
+//		// dfn := fmt.Sprintf("Protein class %s from %s", upid, spnm) //v34
+//		sbP.WriteString(rdf.FormT(clsPU, gpUs["sth2dfn"], rdf.FormL(dfnP)))
+//		nlnp++
+//		sbP.WriteString(rdf.FormT(clsPU, gpUs["sth2lbl"], rdf.FormL(upid)))
+//		nlnp++
+//		// synonyms
+//		var synPs []string // per upac
+//		synPs = append(synPs, upca)
+//		for _, lblG := range lblGs {
+//			synPs = append(synPs, lblG)
+//		}
+//		for _, clsG := range clsGs { // sorted above
+//			bgwg2bgwp.Add(clsG, "bgwp", clsP)
+//		} // clsGs
+//		for _, synP := range synPs {
+//			sbP.WriteString(rdf.FormT(clsPU, gpUs["sth2syn"], rdf.FormL(synP)))
+//			nlnp++
+//		}
+//		sbP.WriteString(rdf.FormT(clsPU, gpUs["sth2ori"], oriU))
+//		nlnp++
+//		sbP.WriteString(rdf.FormT(clsPU, gpUs["evd2lvl"], rdf.FormL(string(score))))
+//		nlnp++                           // conversion needed?
+//		for _, pubmed := range pubmeds { // sorted above
+//			pubmedU := rdf.CompU(nss["pubmed"], pubmed)
+//			sbP.WriteString(rdf.FormT(clsPU, gpUs["sth2evd"], pubmedU))
+//			nlnp++
+//		}
+//		xmap.Upac.Add(upca, "bgwp", clsP)
+//		upiCs := upac2xrf[upca]["uniparc"].Keys()
+//		if l := len(upiCs); l != 1 {
+//			msg := fmt.Sprintf("export.GeneProt():%s:%s: %d UpArcs: %v", txid, upca, l, upiCs)
+//			panic(errors.New(msg))
+//		}
+//		upiC := upiCs[0]
+//
+//		// iso-forms
+//		// xrfsC - all xrefs for the current canonical accession
+//		// walking over iso-forms, NO canonical accesssion
+//		upi2upac := make(util.Set2D)
+//		for _, upac := range xrfsC["upac"].Keys() {
+//			if upac == "" {
+//				panic("upacEmpty")
+//			}
+//			upiIs := upac2xrf[upac]["uniparc"].Keys()
+//			if l := len(upiIs); l != 1 {
+//				msg := fmt.Sprintf("export.GeneProt():%s:%s: %d UpArcs: %v", txid, upac, l, upiIs)
+//				panic(errors.New(msg))
+//			}
+//			upi2upac.Add(upiIs[0], upac)
+//		}
+//		_, ok = upi2upac[upiC]
+//		if !ok {
+//			upac := fmt.Sprintf("%s-0", upca)
+//			upi2upac.Add(upiC, upac)
+//		}
+//
+//		for _, upi := range upi2upac.Keys() {
+//			upacs := upi2upac[upi].Keys()
+//			if l := len(upacs); l != 1 {
+//				msg := fmt.Sprintf("export.GeneProt():%s:%s: %d MultiUpac: %v", txid, upca, l, upacs)
+//				panic(errors.New(msg))
+//			}
+//			upac := upacs[0]
+//			lblP := fmt.Sprintf("uniprot#%s", upac)
+//			insP := fmt.Sprintf("%s%s%s", clsP, "#", upi)
+//			insPU := rdf.CompU(nss["uniprot"], insP)
+//			sbP.WriteString(rdf.FormT(insPU, gpUs["ins2cls"], clsPU))
+//			nlnp++
+//			sbP.WriteString(rdf.FormT(insPU, gpUs["sth2lbl"], rdf.FormL(lblP)))
+//			nlnp++
+//			// sbP.WriteString(rdf.FormT(insPU, gpUs["sth2ori"], oriU))
+//			//nlnp++
+//			/// id mapping ///
+//			// NB: multiple ENSPs and even NPs per UPAC are common
+//			xmap.Upac.Add(upac, "bgwp", insP)
+//			xmap.Bgwp.Add(insP, "upac", upac)
+//			xrf := ""
+//			//			if upac == fmt.Sprintf("%s-0", upca) {
+//			//				// no iso-forms or the set of iso-forms excludes the canonical sequence
+//			//				upac = upca
+//			//				sbP.WriteString(rdf.FormT(insPU, gpUs["sth2clm"], oriU))
+//			//				nlnp++
+//			//			} else {
+//			//				xrf = fmt.Sprintf("%s%s%s", upca, "#", upac)
+//			//				xrfU := rdf.CompU(nss["uniprot"], xrf)
+//			//				sbP.WriteString(rdf.FormT(insPU, gpUs["sth2clm"], xrfU))
+//			//				nlnp++
+//			//			}
+//			xrf = upi
+//			xrfU := rdf.CompU(nss["uniparc"], xrf)
+//			sbP.WriteString(rdf.FormT(insPU, gpUs["sth2clm"], xrfU))
+//			nlnp++
+//			for _, xrf = range upac2xrf[upac]["enspro"].Keys() {
+//				enspU := rdf.CompU(nss["enspro"], xrf)
+//				sbP.WriteString(rdf.FormT(clsPU, gpUs["sth2clm"], enspU))
+//				nlnp++
+//				sbP.WriteString(rdf.FormT(insPU, gpUs["sth2clm"], enspU))
+//				nlnp++
+//				xmap.Ensp.Add(xrf, "bgwp", insP)
+//				xmap.Bgwp.Add(insP, "enspro", xrf)
+//			}
+//			for _, xrf = range upac2xrf[upac]["refseq"].Keys() {
+//				rfsqU := rdf.CompU(nss["refseq"], xrf)
+//				sbP.WriteString(rdf.FormT(clsPU, gpUs["sth2clm"], rfsqU))
+//				nlnp++
+//				sbP.WriteString(rdf.FormT(insPU, gpUs["sth2clm"], rfsqU))
+//				nlnp++
+//				xmap.Rfsq.Add(xrf, "bgwp", insP)
+//				xmap.Bgwp.Add(insP, "refseq", xrf)
+//			}
+//		} // upac2xrf
+//	} // prot
+//	for bgwP, xrefs := range xmap.Bgwp { // no need to sort
+//		// 20200531: canonical accessions have the same UPI as one of the iso-forms
+//		upacs := xrefs["upac"].Keys()
+//		if l := len(upacs); l > 2 {
+//			msg := fmt.Sprintf("export.GeneProt():%s: %d UniProtAccessions: %v", bgwP, l, upacs)
+//			fmt.Printf("%s\n", msg)
+//		}
+//		// 20200531: 159
+//		// mostly worm and fly entries, typically 1 TrEMBL, 2 SP: canonical + 1 isoform
+//		// the rest (27) human, up to 8 canonical accessions
+//		// 20200531: 813320 with a single accession
+//
+//	}
+//	/////////////////////////////////////////////////////////////////////////////
+//	// gene -> prot relations
+//	/*
+//		for _, clsG := range bgwg2bgwp.Keys() {
+//			idPmap := bgwg2bgwp[clsG]
+//			//for clsG, idPmap := range bgwg2bgwp { // keep this
+//			clsGU := rdf.CompU(nss["gene"], clsG)
+//			for _, bgwP := range idPmap["bgwp"].Keys() {
+//				bgwPU := rdf.CompU(nss["uniprot"], bgwP)
+//				sbG.WriteString(rdf.FormT(clsGU, gnUs["gn2gp"], bgwPU))
+//				nlng++ // NB: => gene graph
+//			}
+//		}
+//	*/
+//	/////////////////////////////////////////////////////////////////////////////
+//	if nlng == 0 {
+//		msg := fmt.Sprintf("export.GeneProt(): Genes: NoContent")
+//		return nlng, nlnp, errors.New(msg)
+//	}
+//	if nlnp == 0 {
+//		msg := fmt.Sprintf("export.GeneProt(): Prots: NoContent")
+//		return nlng, nlnp, errors.New(msg)
+//	}
+//	wfhG.Write([]byte(sbG.String()))
+//	sbG.Reset()
+//	wfhP.Write([]byte(sbP.String()))
+//	sbP.Reset()
+//	// xmap export
+//	j, err := json.MarshalIndent(&xmap, "", " ")
+//	util.CheckE(err)
+//	wfhX.Write(j)
+//	/////////////////////////////////////////////////////////////////////////////
+//	if l := len(cnt["noGx"]); l > 0 {
+//		log.Println("export.GeneProt(): Warning: NoGeneXref:", l)
+//	}
+//	return nlng, nlnp, nil
+//} // GeneProt
 
 // Note: no isoforms in this graph
 func Gene2phen(duos, gsym2bgw util.Set3D, wpth string) (int, error) {
@@ -1656,7 +1824,7 @@ func Prot2go(duos, upac2bgw util.Set3D, wpth string) (int, error) {
 			if len(bgwLs) > 1 {
 				count.Add("oriL", oriL, bgwL)
 			}
-			uriL := rdf.CompU(nss["prot"], bgwL)
+			uriL := rdf.CompU(nss["uniprot"], bgwL)
 			sb.WriteString(rdf.FormT(duoU, rdf.CompU(rdfNS, "subject"), uriL))
 			nln++
 			sb.WriteString(rdf.FormT(uriL, ourUs[pdc], uriR))
@@ -1796,14 +1964,14 @@ func Prot2prot(duos, upac2bgw util.Set3D, wpth string) (int, error) {
 			if len(bgwLs) > 1 {
 				count.Add("oriL", oriL, bgwL)
 			}
-			uriL := rdf.CompU(nss["prot"], bgwL)
+			uriL := rdf.CompU(nss["uniprot"], bgwL)
 			sb.WriteString(rdf.FormT(duoU, rdf.CompU(rdfNS, "subject"), uriL))
 			nln++
 			for _, bgwR := range bgwRs { // sorted above
 				if len(bgwRs) > 1 {
 					count.Add("oriR", oriR, bgwR)
 				}
-				uriR := rdf.CompU(nss["prot"], bgwR)
+				uriR := rdf.CompU(nss["uniprot"], bgwR)
 				sb.WriteString(rdf.FormT(duoU, rdf.CompU(rdfNS, "object"), uriR))
 				nln++
 				sb.WriteString(rdf.FormT(uriL, ourUs[pdc], uriR))
@@ -1959,11 +2127,11 @@ func Ortho(duos, upac2bgw util.Set3D, wpth string) (int, error) {
 		// multiple subjects and objects
 		// 53 human UP ACs with multiple BGW IDs
 		for _, bgwL := range bgwLs { // sorted above
-			uriL := rdf.CompU(nss["prot"], bgwL)
+			uriL := rdf.CompU(nss["uniprot"], bgwL)
 			sb.WriteString(rdf.FormT(duoU, rdf.CompU(rdfNS, "subject"), uriL))
 			nln++
 			for _, bgwR := range bgwRs { // sorted above
-				uriR := rdf.CompU(nss["prot"], bgwR)
+				uriR := rdf.CompU(nss["uniprot"], bgwR)
 				sb.WriteString(rdf.FormT(duoU, rdf.CompU(rdfNS, "object"), uriR))
 				nln++
 				sb.WriteString(rdf.FormT(uriL, ourUs[pdc], uriR))

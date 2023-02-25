@@ -15,7 +15,7 @@ type Set3D map[string]Set2D
 type Set4D map[string]Set3D
 type SliceSet map[string][]string
 
-// TODO return error instead of paniccing?
+// TODO return error instead of panicing?
 func CheckStrings(s ...string) {
 	for i, v := range s {
 		if strings.TrimSpace(v) == "" {
@@ -24,9 +24,15 @@ func CheckStrings(s ...string) {
 	}
 }
 
+func (m Set1D) Add(key0 string) {
+	CheckStrings(key0)
+	_, ok := m[key0]
+	if !ok {
+		m[key0]++
+	}
+}
+
 func (m Set1D) Keys() []string {
-	// extracting map keys
-	//keys := make([]string, 0, len(m))
 	var keys []string
 	for k := range m {
 		keys = append(keys, k)
@@ -46,8 +52,6 @@ func (m Set2D) Add(key0, key1 string) {
 }
 
 func (m SliceSet) Keys() []string {
-	// extracting map keys
-	//keys := make([]string, 0, len(m))
 	var keys []string
 	for k := range m {
 		keys = append(keys, k)
@@ -57,8 +61,6 @@ func (m SliceSet) Keys() []string {
 }
 
 func (m Set2D) Keys() []string {
-	// extracting map keys
-	//keys := make([]string, 0, len(m))
 	var keys []string
 	for k := range m {
 		keys = append(keys, k)
@@ -103,7 +105,6 @@ func (m Set4D) Add(key0, key1, key2, key3 string) {
 }
 
 func (m Set4D) Keys() []string {
-	// extracting map keys
 	var keys []string
 	for k := range m {
 		keys = append(keys, k)
@@ -113,7 +114,6 @@ func (m Set4D) Keys() []string {
 }
 
 func (m Set3D) Keys() []string {
-	// extracting map keys
 	var keys []string
 	for k := range m {
 		keys = append(keys, k)

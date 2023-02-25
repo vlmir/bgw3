@@ -20,10 +20,10 @@
 <http://rdf.biogateway.eu/ortho/uniprot!P02340--uniprot!P04637> <http://www.w3.org/2004/02/skos/core#prefLabel> "P02340--P04637" .
 <http://rdf.biogateway.eu/ortho/uniprot!P02340--uniprot!P04637> <http://www.w3.org/2004/02/skos/core#definition> "Pair of orthologous proteins P02340 and P04637" .
 <http://rdf.biogateway.eu/ortho/uniprot!P02340--uniprot!P04637> <http://www.w3.org/1999/02/22-rdf-syntax-ns#predicate> <http://semanticscience.org/resource/SIO_000558> .
-<http://rdf.biogateway.eu/ortho/uniprot!P02340--uniprot!P04637> <http://www.w3.org/1999/02/22-rdf-syntax-ns#subject> <http://rdf.biogateway.eu/prot/10090/P02340> .
-<http://rdf.biogateway.eu/ortho/uniprot!P02340--uniprot!P04637> <http://www.w3.org/1999/02/22-rdf-syntax-ns#object> <http://rdf.biogateway.eu/prot/9606/P04637> .
-<http://rdf.biogateway.eu/prot/10090/P02340> <http://semanticscience.org/resource/SIO_000558> <http://rdf.biogateway.eu/prot/9606/P04637> .
-<http://rdf.biogateway.eu/prot/9606/P04637> <http://semanticscience.org/resource/SIO_000558> <http://rdf.biogateway.eu/prot/10090/P02340> .
+<http://rdf.biogateway.eu/ortho/uniprot!P02340--uniprot!P04637> <http://www.w3.org/1999/02/22-rdf-syntax-ns#subject> <http://uniprot.org/uniprot/P02340> .
+<http://rdf.biogateway.eu/ortho/uniprot!P02340--uniprot!P04637> <http://www.w3.org/1999/02/22-rdf-syntax-ns#object> <http://uniprot.org/uniprot/P04637> .
+<http://uniprot.org/uniprot/P02340> <http://semanticscience.org/resource/SIO_000558> <http://uniprot.org/uniprot/P04637> .
+<http://uniprot.org/uniprot/P04637> <http://semanticscience.org/resource/SIO_000558> <http://uniprot.org/uniprot/P02340> .
 <http://rdf.biogateway.eu/ortho/uniprot!P02340--uniprot!P04637#orthodb> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://rdf.biogateway.eu/ortho/uniprot!P02340--uniprot!P04637> .
 <http://rdf.biogateway.eu/ortho/uniprot!P02340--uniprot!P04637#orthodb> <http://semanticscience.org/resource/SIO_000253> <https://www.orthodb.org/> .
 <http://rdf.biogateway.eu/ortho/uniprot!P02340--uniprot!P04637#orthodb> <http://purl.obolibrary.org/obo/BFO_0000050> <https://www.orthodb.org/?query=257530at2759> .

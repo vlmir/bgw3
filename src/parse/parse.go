@@ -133,7 +133,7 @@ func Idmap(rpth string, srcs map[string]string, i1, i2, i3 int) (util.Set3D, err
 // val.Dlm2 - secondary separator of multiple values
 // val.Ind2 - the index of the value to use after splitting on Dlm2, if < 0 all values
 // val.Key - the string to be used as the seondary key in the output maps
-// val.Ind3 - integer used for conntroleing the output
+// val.Ind3 - integer used for controling the output
 // if Ind3 == -1 val.Key is used for filteering the values
 func Tab2struct(rpth string, keys, vals []bgw.Column, p *bgw.Dat4bridge) (err error) {
 	// the value in val.Ind1 is split by val.Dlm1, ALL subfilds are processed by addSubFields()
@@ -221,7 +221,7 @@ func Tab2struct(rpth string, keys, vals []bgw.Column, p *bgw.Dat4bridge) (err er
 		} // one field
 	} // one line
 	if len(duos) == 0 {
-		msg := fmt.Sprintf("parse.Tab2set3D():%s: NoData", rpth)
+		msg := fmt.Sprintf("parse.Tab2struct():%s: NoData", rpth)
 		return errors.New(msg)
 	}
 	d4b.Duos = duos
@@ -281,6 +281,9 @@ func Tab2set3D(rpth string, keys, vals []bgw.Column) (out util.Set3D, err error)
 			continue
 		}
 		cells := strings.Split(line, "\t") // fields
+		if cells[0] == "Entry" {           // header line
+			continue
+		}
 		if len(cells) < maxind+1 {
 			msg := fmt.Sprintf("%s:%d: TooFewFields", rpth, ln)
 			panic(errors.New(msg))
@@ -345,37 +348,38 @@ func Basenames(rpth, dlm string) (set util.Set2D, err error) {
 */
 
 // UpIdMap filters a file of the form db1id\tdb2label\tdb2id by values of db2lablel
-func UpIdMap(rpth string, idmkeys map[string]string) (upac2xrf util.Set3D, err error) {
-	// used one only in rdf4bgw.go pass upac2xrf to parse.UpTab():
-	// needed for retrieving all iso-form accessions in export.GeneProt()!
-	upac2xrf = make(util.Set3D)
-	rfh, err := os.Open(rpth)
-	util.CheckE(err)
-	defer rfh.Close()
-	scanner := bufio.NewScanner(rfh)
-	for scanner.Scan() { // by default scans for '\n'
-		cells := strings.Split(scanner.Text(), "\t")
-		if len(cells) != 3 {
-			continue
-		} // just a sanity check
-		key, ok := idmkeys[cells[1]]
-		if !ok {
-			continue
-		} // filtering by idmkeys
-		upac := cells[0]
-		// ALL proteomes 2022-12-14: no '"' anymore, 28 occurences of "''"
-		xrf := strings.Replace(cells[2], "\"", "`", -1) // was present in 44689
-		upac2xrf.Add(upac, key, xrf)
-		// mapping canonical accesssion and isoforms
-		// TODO see how to get rid of this
-		bits := strings.Split(upac, "-")
-		if len(bits) == 2 {
-			upca := bits[0]
-			upac2xrf.Add(upca, "upac", upac)
-		} // only for iso-forms
-	}
-	return upac2xrf, nil
-}
+//func UpIdMap(rpth string, idmkeys map[string]string) (upac2xrf util.Set3D, err error) {
+//	// not used anymore as export.GeneProt() is now obsolete
+//	// used only in rdf4bgw.go pass upac2xrf to parse.UpTab():
+//	// needed for retrieving all iso-form accessions in export.GeneProt()!
+//	upac2xrf = make(util.Set3D)
+//	rfh, err := os.Open(rpth)
+//	util.CheckE(err)
+//	defer rfh.Close()
+//	scanner := bufio.NewScanner(rfh)
+//	for scanner.Scan() { // by default scans for '\n'
+//		cells := strings.Split(scanner.Text(), "\t")
+//		if len(cells) != 3 {
+//			continue
+//		} // just a sanity check
+//		key, ok := idmkeys[cells[1]]
+//		if !ok {
+//			continue
+//		} // filtering by idmkeys
+//		upac := cells[0]
+//		// ALL proteomes 2022-12-14: no '"' anymore, 28 occurences of "''"
+//		xrf := strings.Replace(cells[2], "\"", "`", -1) // was present in 44689
+//		upac2xrf.Add(upac, key, xrf)
+//		// mapping canonical accesssion and isoforms
+//		// TODO see how to get rid of this
+//		bits := strings.Split(upac, "-")
+//		if len(bits) == 2 {
+//			upca := bits[0]
+//			upac2xrf.Add(upca, "upac", upac)
+//		} // only for iso-forms
+//	}
+//	return upac2xrf, nil
+//}
 
 /*
 9606:95744 entries no proteome
@@ -392,269 +396,269 @@ UP000005640: Chromosome 1, UP000005640: Chromosome 12, UP000005640: Chromosome 6
 UP000005640: Chromosome 1, UP000005640: Chromosome 17
 */
 // Entry   Entry name      Organism        Organism ID     Protein names   Proteomes       PubMed ID       Annotation
-func UpTab(rpth string, upac2xrf util.Set3D, txn2prm util.Set2D) (out bgw.Dat4rdf, err error) {
-	// Attn: the input file MUST hane no blank lines ??
-	allPs := make(util.Set3D)
-	allTs := make(util.Set3D)
-	allGs := make(util.Set3D)
-	fhR, err := os.Open(rpth)
-	util.CheckE(err)
-	defer fhR.Close()
-	scanner := bufio.NewScanner(fhR)
-	notInRefProt := make(util.Set1D)
-	noGeneName := make(util.Set1D)
-	noChrom := make(util.Set1D)
-	multiProtChrom := make(util.Set1D)
-	multiGene := make(util.Set1D)
-	ln := 0 // line counter
-	for scanner.Scan() {
-		/// by default scans for '\n'
-		// one line per UniProt canonical accession
-		cells := strings.Split(scanner.Text(), "\t")
-		// the # of fields is currently 11 but only 10 in test files !!
-		// the last field (GeneID) is not currently used
-		upca := cells[0]
-		if upca == "Entry" {
-			continue
-		} // skipping the header line
-		if len(cells) < 10 {
-			msg := fmt.Sprintf("parse.UpTab():%s:line:%d: TooFewFields", rpth, ln)
-			panic(errors.New(msg))
-		} // blanc lines skipped as well
-		ln++
-		_, ok := upac2xrf[upca] // RefProt ACs
-		if !ok {
-			notInRefProt[upca]++
-			continue
-		} // filtering by RefProt
-		//v34 upid := cells[1]
-		txid := cells[5]
-		prmid := txn2prm[txid].Keys()[0] // a single value
-		oneP := make(util.Set2D)
-		// Pairs Proteome: Chromosome separated by ", "
-		// A single Reference Proteome expected
-		prm2chr := make(util.Set2D)
-		/// Attn: multiple entries do occur due to diff in chromosomes !!
-		if len(cells[7]) == 0 {
-			panic("PrmChrEmpty") // never happens for Reference Proteoms
-		} // at least one pair RefProtID: ChromoID
-		prmchrs := strings.Split(cells[7], ", ") // proteome: chromosome pairs
-		/// Processing all Proteome:Chromosome values
-		for _, prmchr := range prmchrs {
-			bits := strings.Split(prmchr, ": ") // proteome: chromosome
-			if bits[0] != prmid {
-				continue
-			} // only the reference proteomes now
-			if len(bits) < 2 {
-				// happens in 367110 and 284812
-				// "Linkage Group I" "Linkage Group II" etc in 367110
-				// e.g.UP000001805: Chromosome 1, Linkage Group I, UP000001805: Unassembled WGS sequence
-				// "gap-filling sequence" in 284812
-				// e.g. UP000002485: Chromosome II, gap-filling sequence
-				// at least one pair contains RefProtID
-				// one more problem in 36329:
-				// UP000001450: Chromosome: api 20200531: 10
-				// UP000001450: Chromosome: mit 20200531: 2
-				// alongside with
-				// Apicoplast A/B 20200531: 30
-				// UP000001450: Mitochondrion 20200531: 3
-				continue // go to the next pair
-			}
-			chr := bits[1]
-			chrbits := strings.Split(chr, " ")
-			chrbit := chrbits[0]
-			/*
-				trgs := []string{"Chromosome", "Mitochondrion", "Chloroplast", "Apicoplast", "Plasmid"}
-				cnt := 0
-				for _, trg := range trgs {
-					if trg == chrbit {
-						cnt++
-					}
-				}
-			*/
-			chrid := ""
-			switch chrbit {
-			case "Chromosome": // "e.g. 'Chromosome 1'"
-				shortbit := strings.ToLower(chrbit[0:3])
-				if len(bits) == 2 {
-					chrnbr := chrbits[1]
-					chrid = strings.Join([]string{shortbit, chrnbr}, "-")
-				} else if len(bits) == 3 {
-					chrlbl := bits[2]
-					chrid = fmt.Sprintf("%s-%s", shortbit, chrlbl)
-				}
-			case "Mitochondrion":
-				chrid = strings.ToLower(chrbits[0][0:6])
-			case "Chloroplast":
-				chrid = strings.ToLower(chrbits[0][0:6])
-			case "Apicoplast":
-				// "Apicoplast A" "Apicoplat B" in 36329
-				chrid = fmt.Sprintf("%s-%s", strings.ToLower(chrbits[0][0:5]), chrbits[1])
-			case "Plasmid":
-				// "Plasmid 2-micron" in 559292 S.cerevisiae
-				lastbit := strings.Replace(chrbits[1], "-", "", -1)
-				chrid = fmt.Sprintf("%s-%s", strings.ToLower(chrbits[0][0:4]), lastbit[0:3])
-			}
-			if chrid != "" {
-				prm2chr.Add(prmid, chrid)
-			}
-		} // all Proteome:Chromosome values for the given UP entry
-		if len(prm2chr) == 0 {
-			// junk like 'Unassembled WGS sequence', 'Geneome assembly', 'Unplaced' etc
-			noChrom[upca]++
-			//v34 chrid := fmt.Sprintf("dummy") // unmapped entries allowed as of 2020-08-19
-			//v34 prm2chr.Add(prmid, chrid)
-		}
-		// a SINGLE proteome from now on !!
-
-		// proteome-chromosome pairs
-		chrs := prm2chr[prmid].Keys()
-		if len(chrs) > 1 {
-			// happens in all the 25 taxa; 10230 in 367110
-			multiProtChrom[upca]++
-			// msg := fmt.Sprintf("parse.UpTab():%s:%s: MultiChrom: %d %v", txid, upca, len(chrs), chrs)
-			// fmt.Printf("%s\n", msg)
-		}
-		// Primary Gene Names separated by "; ":
-		// empty strings for many entries
-		// numerous entries like: "14-3-3 protein", "20 amino acid ORF", "7 ER" etc
-		gnmbag := strings.Split(cells[2], "; ")
-		// Groups of " " separated GeneSynonyms, separated by "; "
-		// empty string and something like"; ; ;" occur as values
-		gsnmbag := strings.Split(cells[3], "; ")
-		if len(gsnmbag) != len(gnmbag) {
-			msg := fmt.Sprintf("parse.UpTab():%s:%s: Mismatch: %v:%v", txid, upca, gnmbag, gsnmbag)
-			panic(errors.New(msg))
-		} // never happens
-		// removing empty strings, occur in 3702 for example
-		var gnms, gsnms []string
-		for i, gnm := range gnmbag {
-			if gnm == "" {
-				continue
-			}
-			gnms = append(gnms, gnm)
-			gsnms = append(gsnms, gsnmbag[i]) // empty strings likely
-		}
-		if len(gnms) == 0 {
-			noGeneName[upca]++
-			msg := fmt.Sprintf("parse.UpTab():%s:%s: NoGene", txid, upca)
-			fmt.Printf("%s\n", msg)
-			//v334 gnms = append(gnms, upid) // allowing entries without Gene Name as of 200-07-19
-		}
-
-		if len(gnms) > 1 {
-			/*
-				for i, _ := range gnms {
-					gnms[i] = cells[1]
-				} // replacing GeneNames with UniProtID
-			*/
-			multiGene[upca]++
-			// msg := fmt.Sprintf("parse.UpTab():%s:%s: MultiGene: %d %v", txid, upca, len(gnms), gnms)
-			// fmt.Printf("%s\n", msg)
-		}
-		if len(chrs) > 1 && len(gnms) == 1 {
-			// msg := fmt.Sprintf("parse.UpTab():%s:%s: OneGeneMultiChrom: %s %v", txid, upca, gnms[0], chrs)
-			// fmt.Printf("%s\n", msg)
-		}
-		if len(chrs) > 1 && len(gnms) > 1 {
-			//v34 chrs = []string{"multi"}
-			// msg := fmt.Sprintf("parse.UpTab():%s:%s: MultiGeneMultiChrom: %d %v", txid, upca, len(gnms), chrs)
-			// fmt.Printf("%s\n", msg)
-		}
-		for i, gnm := range gnms {
-			allGs.Add(gnm, "upca", upca)
-			if len(chrs) == 1 {
-				allGs.Add(gnm, "chr", chrs[0])
-			}
-
-			oneP.Add("gnm", gnm)
-			if len(gsnms) != len(gnms) {
-				continue
-			} // occurs if an artificial GeneName added. e.g. if UP provides no primary gene name
-			for _, gsnm := range strings.Split(gsnms[i], " ") {
-				if gsnm == "" {
-					continue
-				} // no synonyms for a particulare GeneName
-				allGs.Add(gnm, "gsnm", gsnm)
-				oneP.Add("gsnm", gsnm)
-			}
-		}
-		oneP.Add("prmid", prmid)
-		//		for chr := range prm2chr[prmid] {
-		for _, chr := range chrs {
-			chr = strings.Replace(chr, " ", "-", 1)
-			oneP.Add("chr", chr)
-			allTs.Add(txid, "chr", chr)
-			if len(gnms) == 1 {
-				allGs.Add(gnms[0], "chr", chr)
-			}
-		}
-		oneP.Add("upid", cells[1])
-		oneP.Add("spnm", cells[4])
-		oneP.Add("txid", txid)
-		oneP.Add("pdfn", strings.Replace(cells[6], "\"", "''", -1))
-		//oneP.Add("pubmed", cells[8])
-		for _, pmid := range strings.Split(cells[8], "; ") {
-			if pmid == "" {
-				continue
-			}
-			oneP.Add("pubmed", pmid)
-		}
-		oneP.Add("score", strings.Split(cells[9], " ")[0])
-		allTs.Add(txid, "spnm", cells[4]) // NEEDED !!
-		allTs.Add(txid, "prmid", prmid)
-		allPs[upca] = oneP
-	} // one UniProt canonical accession
-	/////////////////////////////////////////////////////////////////////////////
-	txids := allTs.Keys()
-	msg := ""
-	if len(txids) != 1 {
-		msg = fmt.Sprintf("parse.UpTab(): MaldefinedTaxon: %v", txids)
-		return out, errors.New(msg)
-	}
-	if len(allPs) == 0 {
-		msg = fmt.Sprintf("parse.UpTab():%s: NoProts", txids)
-		return out, errors.New(msg)
-	}
-	if len(allGs) == 0 {
-		msg = fmt.Sprintf("parse.UpTab():%s: NoGenes", txids)
-		return out, errors.New(msg)
-	}
-	msg = fmt.Sprintf("parse.UpTab():%v: ProcessedEntries: %d", txids, ln)
-	log.Println(msg)
-	// skipped:
-	if len(notInRefProt) != 0 {
-		msg = fmt.Sprintf("parse.UpTab():%v: Skipped: NotInRefProt: %d", txids, len(notInRefProt))
-		log.Println(msg)
-	}
-	// not skipped:
-	if len(noGeneName) != 0 {
-		msg = fmt.Sprintf("parse.UpTab():%v: Warning: NoGeneName: %d", txids, len(noGeneName))
-		log.Println(msg)
-	}
-	if len(noChrom) != 0 {
-		msg = fmt.Sprintf("parse.UpTab():%v: Warning: NoChrom: %d", txids, len(noChrom))
-		log.Println(msg)
-	}
-	if len(multiProtChrom) != 0 {
-		// occurs in all the 25 taxa, normally limited number though goes upto 10230 in 367110
-		// 15 canonical accessions in 9606
-		msg = fmt.Sprintf("parse.UpTab():%v: Warning: MultiChrom: %d", txids, len(multiProtChrom))
-		log.Println(msg)
-	}
-	if len(multiGene) != 0 {
-		msg = fmt.Sprintf("parse.UpTab():%v: Warning: MultiGene: %d", txids, len(multiGene))
-		log.Println(msg)
-	}
-	msg = fmt.Sprintf("parse.UpTab():%s: AcceptedEntries: %d", txids, len(allPs))
-	log.Println(msg)
-	out.Upac = &upac2xrf // checked in rdf4bgw
-	// all checked above
-	out.Txns = &allTs
-	out.Udat = &allPs
-	out.Gnm = &allGs
-	return out, nil
-} // UpTab()
+//func UpTab(rpth string, upac2xrf util.Set3D, txn2prm util.Set2D) (out bgw.Dat4rdf, err error) {
+//	// Attn: the input file MUST hane no blank lines ??
+//	allPs := make(util.Set3D)
+//	allTs := make(util.Set3D)
+//	allGs := make(util.Set3D)
+//	fhR, err := os.Open(rpth)
+//	util.CheckE(err)
+//	defer fhR.Close()
+//	scanner := bufio.NewScanner(fhR)
+//	notInRefProt := make(util.Set1D)
+//	noGeneName := make(util.Set1D)
+//	noChrom := make(util.Set1D)
+//	multiProtChrom := make(util.Set1D)
+//	multiGene := make(util.Set1D)
+//	ln := 0 // line counter
+//	for scanner.Scan() {
+//		/// by default scans for '\n'
+//		// one line per UniProt canonical accession
+//		cells := strings.Split(scanner.Text(), "\t")
+//		// the # of fields is currently 11 but only 10 in test files !!
+//		// the last field (GeneID) is not currently used
+//		upca := cells[0]
+//		if upca == "Entry" {
+//			continue
+//		} // skipping the header line
+//		if len(cells) < 10 {
+//			msg := fmt.Sprintf("parse.UpTab():%s:line:%d: TooFewFields", rpth, ln)
+//			panic(errors.New(msg))
+//		} // blanc lines skipped as well
+//		ln++
+//		_, ok := upac2xrf[upca] // RefProt ACs
+//		if !ok {
+//			notInRefProt[upca]++
+//			continue
+//		} // filtering by RefProt
+//		//v34 upid := cells[1]
+//		txid := cells[5]
+//		prmid := txn2prm[txid].Keys()[0] // a single value
+//		oneP := make(util.Set2D)
+//		// Pairs Proteome: Chromosome separated by ", "
+//		// A single Reference Proteome expected
+//		prm2chr := make(util.Set2D)
+//		/// Attn: multiple entries do occur due to diff in chromosomes !!
+//		if len(cells[7]) == 0 {
+//			panic("PrmChrEmpty") // never happens for Reference Proteoms
+//		} // at least one pair RefProtID: ChromoID
+//		prmchrs := strings.Split(cells[7], ", ") // proteome: chromosome pairs
+//		/// Processing all Proteome:Chromosome values
+//		for _, prmchr := range prmchrs {
+//			bits := strings.Split(prmchr, ": ") // proteome: chromosome
+//			if bits[0] != prmid {
+//				continue
+//			} // only the reference proteomes now
+//			if len(bits) < 2 {
+//				// happens in 367110 and 284812
+//				// "Linkage Group I" "Linkage Group II" etc in 367110
+//				// e.g.UP000001805: Chromosome 1, Linkage Group I, UP000001805: Unassembled WGS sequence
+//				// "gap-filling sequence" in 284812
+//				// e.g. UP000002485: Chromosome II, gap-filling sequence
+//				// at least one pair contains RefProtID
+//				// one more problem in 36329:
+//				// UP000001450: Chromosome: api 20200531: 10
+//				// UP000001450: Chromosome: mit 20200531: 2
+//				// alongside with
+//				// Apicoplast A/B 20200531: 30
+//				// UP000001450: Mitochondrion 20200531: 3
+//				continue // go to the next pair
+//			}
+//			chr := bits[1]
+//			chrbits := strings.Split(chr, " ")
+//			chrbit := chrbits[0]
+//			/*
+//				trgs := []string{"Chromosome", "Mitochondrion", "Chloroplast", "Apicoplast", "Plasmid"}
+//				cnt := 0
+//				for _, trg := range trgs {
+//					if trg == chrbit {
+//						cnt++
+//					}
+//				}
+//			*/
+//			chrid := ""
+//			switch chrbit {
+//			case "Chromosome": // "e.g. 'Chromosome 1'"
+//				shortbit := strings.ToLower(chrbit[0:3])
+//				if len(bits) == 2 {
+//					chrnbr := chrbits[1]
+//					chrid = strings.Join([]string{shortbit, chrnbr}, "-")
+//				} else if len(bits) == 3 {
+//					chrlbl := bits[2]
+//					chrid = fmt.Sprintf("%s-%s", shortbit, chrlbl)
+//				}
+//			case "Mitochondrion":
+//				chrid = strings.ToLower(chrbits[0][0:6])
+//			case "Chloroplast":
+//				chrid = strings.ToLower(chrbits[0][0:6])
+//			case "Apicoplast":
+//				// "Apicoplast A" "Apicoplat B" in 36329
+//				chrid = fmt.Sprintf("%s-%s", strings.ToLower(chrbits[0][0:5]), chrbits[1])
+//			case "Plasmid":
+//				// "Plasmid 2-micron" in 559292 S.cerevisiae
+//				lastbit := strings.Replace(chrbits[1], "-", "", -1)
+//				chrid = fmt.Sprintf("%s-%s", strings.ToLower(chrbits[0][0:4]), lastbit[0:3])
+//			}
+//			if chrid != "" {
+//				prm2chr.Add(prmid, chrid)
+//			}
+//		} // all Proteome:Chromosome values for the given UP entry
+//		if len(prm2chr) == 0 {
+//			// junk like 'Unassembled WGS sequence', 'Geneome assembly', 'Unplaced' etc
+//			noChrom[upca]++
+//			//v34 chrid := fmt.Sprintf("dummy") // unmapped entries allowed as of 2020-08-19
+//			//v34 prm2chr.Add(prmid, chrid)
+//		}
+//		// a SINGLE proteome from now on !!
+//
+//		// proteome-chromosome pairs
+//		chrs := prm2chr[prmid].Keys()
+//		if len(chrs) > 1 {
+//			// happens in all the 25 taxa; 10230 in 367110
+//			multiProtChrom[upca]++
+//			// msg := fmt.Sprintf("parse.UpTab():%s:%s: MultiChrom: %d %v", txid, upca, len(chrs), chrs)
+//			// fmt.Printf("%s\n", msg)
+//		}
+//		// Primary Gene Names separated by "; ":
+//		// empty strings for many entries
+//		// numerous entries like: "14-3-3 protein", "20 amino acid ORF", "7 ER" etc
+//		gnmbag := strings.Split(cells[2], "; ")
+//		// Groups of " " separated GeneSynonyms, separated by "; "
+//		// empty string and something like"; ; ;" occur as values
+//		gsnmbag := strings.Split(cells[3], "; ")
+//		if len(gsnmbag) != len(gnmbag) {
+//			msg := fmt.Sprintf("parse.UpTab():%s:%s: Mismatch: %v:%v", txid, upca, gnmbag, gsnmbag)
+//			panic(errors.New(msg))
+//		} // never happens
+//		// removing empty strings, occur in 3702 for example
+//		var gnms, gsnms []string
+//		for i, gnm := range gnmbag {
+//			if gnm == "" {
+//				continue
+//			}
+//			gnms = append(gnms, gnm)
+//			gsnms = append(gsnms, gsnmbag[i]) // empty strings likely
+//		}
+//		if len(gnms) == 0 {
+//			noGeneName[upca]++
+//			msg := fmt.Sprintf("parse.UpTab():%s:%s: NoGene", txid, upca)
+//			fmt.Printf("%s\n", msg)
+//			//v334 gnms = append(gnms, upid) // allowing entries without Gene Name as of 200-07-19
+//		}
+//
+//		if len(gnms) > 1 {
+//			/*
+//				for i, _ := range gnms {
+//					gnms[i] = cells[1]
+//				} // replacing GeneNames with UniProtID
+//			*/
+//			multiGene[upca]++
+//			// msg := fmt.Sprintf("parse.UpTab():%s:%s: MultiGene: %d %v", txid, upca, len(gnms), gnms)
+//			// fmt.Printf("%s\n", msg)
+//		}
+//		if len(chrs) > 1 && len(gnms) == 1 {
+//			// msg := fmt.Sprintf("parse.UpTab():%s:%s: OneGeneMultiChrom: %s %v", txid, upca, gnms[0], chrs)
+//			// fmt.Printf("%s\n", msg)
+//		}
+//		if len(chrs) > 1 && len(gnms) > 1 {
+//			//v34 chrs = []string{"multi"}
+//			// msg := fmt.Sprintf("parse.UpTab():%s:%s: MultiGeneMultiChrom: %d %v", txid, upca, len(gnms), chrs)
+//			// fmt.Printf("%s\n", msg)
+//		}
+//		for i, gnm := range gnms {
+//			allGs.Add(gnm, "upca", upca)
+//			if len(chrs) == 1 {
+//				allGs.Add(gnm, "chr", chrs[0])
+//			}
+//
+//			oneP.Add("gnm", gnm)
+//			if len(gsnms) != len(gnms) {
+//				continue
+//			} // occurs if an artificial GeneName added. e.g. if UP provides no primary gene name
+//			for _, gsnm := range strings.Split(gsnms[i], " ") {
+//				if gsnm == "" {
+//					continue
+//				} // no synonyms for a particulare GeneName
+//				allGs.Add(gnm, "gsnm", gsnm)
+//				oneP.Add("gsnm", gsnm)
+//			}
+//		}
+//		oneP.Add("prmid", prmid)
+//		//		for chr := range prm2chr[prmid] {
+//		for _, chr := range chrs {
+//			chr = strings.Replace(chr, " ", "-", 1)
+//			oneP.Add("chr", chr)
+//			allTs.Add(txid, "chr", chr)
+//			if len(gnms) == 1 {
+//				allGs.Add(gnms[0], "chr", chr)
+//			}
+//		}
+//		oneP.Add("upid", cells[1])
+//		oneP.Add("spnm", cells[4])
+//		oneP.Add("txid", txid)
+//		oneP.Add("pdfn", strings.Replace(cells[6], "\"", "''", -1))
+//		//oneP.Add("pubmed", cells[8])
+//		for _, pmid := range strings.Split(cells[8], "; ") {
+//			if pmid == "" {
+//				continue
+//			}
+//			oneP.Add("pubmed", pmid)
+//		}
+//		oneP.Add("score", strings.Split(cells[9], " ")[0])
+//		allTs.Add(txid, "spnm", cells[4]) // NEEDED !!
+//		allTs.Add(txid, "prmid", prmid)
+//		allPs[upca] = oneP
+//	} // one UniProt canonical accession
+//	/////////////////////////////////////////////////////////////////////////////
+//	txids := allTs.Keys()
+//	msg := ""
+//	if len(txids) != 1 {
+//		msg = fmt.Sprintf("parse.UpTab(): MaldefinedTaxon: %v", txids)
+//		return out, errors.New(msg)
+//	}
+//	if len(allPs) == 0 {
+//		msg = fmt.Sprintf("parse.UpTab():%s: NoProts", txids)
+//		return out, errors.New(msg)
+//	}
+//	if len(allGs) == 0 {
+//		msg = fmt.Sprintf("parse.UpTab():%s: NoGenes", txids)
+//		return out, errors.New(msg)
+//	}
+//	msg = fmt.Sprintf("parse.UpTab():%v: ProcessedEntries: %d", txids, ln)
+//	log.Println(msg)
+//	// skipped:
+//	if len(notInRefProt) != 0 {
+//		msg = fmt.Sprintf("parse.UpTab():%v: Skipped: NotInRefProt: %d", txids, len(notInRefProt))
+//		log.Println(msg)
+//	}
+//	// not skipped:
+//	if len(noGeneName) != 0 {
+//		msg = fmt.Sprintf("parse.UpTab():%v: Warning: NoGeneName: %d", txids, len(noGeneName))
+//		log.Println(msg)
+//	}
+//	if len(noChrom) != 0 {
+//		msg = fmt.Sprintf("parse.UpTab():%v: Warning: NoChrom: %d", txids, len(noChrom))
+//		log.Println(msg)
+//	}
+//	if len(multiProtChrom) != 0 {
+//		// occurs in all the 25 taxa, normally limited number though goes upto 10230 in 367110
+//		// 15 canonical accessions in 9606
+//		msg = fmt.Sprintf("parse.UpTab():%v: Warning: MultiChrom: %d", txids, len(multiProtChrom))
+//		log.Println(msg)
+//	}
+//	if len(multiGene) != 0 {
+//		msg = fmt.Sprintf("parse.UpTab():%v: Warning: MultiGene: %d", txids, len(multiGene))
+//		log.Println(msg)
+//	}
+//	msg = fmt.Sprintf("parse.UpTab():%s: AcceptedEntries: %d", txids, len(allPs))
+//	log.Println(msg)
+//	out.Upac = &upac2xrf // checked in rdf4bgw
+//	// all checked above
+//	out.Txns = &allTs
+//	out.Udat = &allPs
+//	out.Gnm = &allGs
+//	return out, nil
+//} // UpTab()
 
 func UpVar(rpth string, filters ...util.Set3D) (duos util.Set3D, err error) {
 	// filters is used only for filtering
@@ -743,6 +747,7 @@ colocalizes_with
 contributes_to
 */
 func Gaf(rpth string, filters ...util.Set3D) (bp, cc, mf util.Set3D, err error) {
+	// TODO replace with Tab2struct()
 	ourppys := map[string]string{
 		"C": "gp2cc",
 		"F": "gp2mf",
@@ -869,6 +874,7 @@ part_of
 	}
 */
 func Gpa(rpth string, filters ...util.Set3D) (duos util.Set3D) {
+	// TODO replace with Tab2struct()
 	ourppys := map[string]string{
 		"part_of":     "gp2cc",
 		"enables":     "gp2mf",
@@ -932,8 +938,8 @@ func Gpa(rpth string, filters ...util.Set3D) (duos util.Set3D) {
 	return duos
 } // Gpa()
 
-// TODO  use Tab2set3D()
 func MiTab(rpth string, filters ...util.Set3D) (duos util.Set3D, err error) {
+	// TODO replace with Tab2struct()
 	tsvkeys := map[int][]string{
 		// NB: 0:1 duos are NOT inique !
 		//0: []string{"upacA", "|"}, // 9606: all single

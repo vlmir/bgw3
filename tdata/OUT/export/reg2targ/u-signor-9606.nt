@@ -1,61 +1,61 @@
-<http://rdf.biogateway.eu/reg2utrg/prot!9606/P27361--prot!9606/P10275> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#Class> .
-<http://rdf.biogateway.eu/reg2utrg/prot!9606/P27361--prot!9606/P10275> <http://www.w3.org/2000/01/rdf-schema#subClassOf> <http://www.w3.org/1999/02/22-rdf-syntax-ns#Statement> .
-<http://rdf.biogateway.eu/reg2utrg/prot!9606/P27361--prot!9606/P10275> <http://www.w3.org/2004/02/skos/core#prefLabel> "involved in regulation of" .
-<http://rdf.biogateway.eu/reg2utrg/prot!9606/P27361--prot!9606/P10275> <http://www.w3.org/2004/02/skos/core#definition> "9606/P27361 involved in regulation of 9606/P10275" .
-<http://rdf.biogateway.eu/reg2utrg/prot!9606/P27361--prot!9606/P10275> <http://www.w3.org/1999/02/22-rdf-syntax-ns#predicate> <http://purl.obolibrary.org/obo/RO_0002428> .
-<http://rdf.biogateway.eu/reg2utrg/prot!9606/P27361--prot!9606/P10275> <http://www.w3.org/1999/02/22-rdf-syntax-ns#subject> <http://rdf.biogateway.eu/prot/9606/P27361> .
-<http://rdf.biogateway.eu/reg2utrg/prot!9606/P27361--prot!9606/P10275> <http://www.w3.org/1999/02/22-rdf-syntax-ns#object> <http://rdf.biogateway.eu/prot/9606/P10275> .
-<http://rdf.biogateway.eu/prot/9606/P27361> <http://purl.obolibrary.org/obo/RO_0002428> <http://rdf.biogateway.eu/prot/9606/P10275> .
-<http://rdf.biogateway.eu/reg2utrg/prot!9606/P27361--prot!9606/P10275#signor> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://rdf.biogateway.eu/reg2utrg/prot!9606/P27361--prot!9606/P10275> .
-<http://rdf.biogateway.eu/reg2utrg/prot!9606/P27361--prot!9606/P10275#signor> <http://www.w3.org/2004/02/skos/core#prefLabel> "prot!9606/P27361--prot!9606/P10275 from signor" .
-<http://rdf.biogateway.eu/reg2utrg/prot!9606/P27361--prot!9606/P10275#signor> <http://semanticscience.org/resource/SIO_000253> <http://signor.uniroma2.it> .
-<http://rdf.biogateway.eu/reg2utrg/prot!9606/P27361--prot!9606/P10275#signor> <http://www.w3.org/2004/02/skos/core#relatedMatch> <http://purl.obolibrary.org/obo/MI_0217> .
-<http://rdf.biogateway.eu/reg2utrg/prot!9606/P27361--prot!9606/P10275#signor> <http://semanticscience.org/resource/SIO_000772> <http://identifiers.org/pubmed/18511414> .
-<http://rdf.biogateway.eu/reg2utrg/prot!9606/P27361--prot!9606/P10275#signor> <http://schema.org/evidenceLevel> "0.1364" .
-<http://rdf.biogateway.eu/reg2utrg/prot!9606/P27361--prot!9606/P48431> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#Class> .
-<http://rdf.biogateway.eu/reg2utrg/prot!9606/P27361--prot!9606/P48431> <http://www.w3.org/2000/01/rdf-schema#subClassOf> <http://www.w3.org/1999/02/22-rdf-syntax-ns#Statement> .
-<http://rdf.biogateway.eu/reg2utrg/prot!9606/P27361--prot!9606/P48431> <http://www.w3.org/2004/02/skos/core#prefLabel> "involved in regulation of" .
-<http://rdf.biogateway.eu/reg2utrg/prot!9606/P27361--prot!9606/P48431> <http://www.w3.org/2004/02/skos/core#definition> "9606/P27361 involved in regulation of 9606/P48431" .
-<http://rdf.biogateway.eu/reg2utrg/prot!9606/P27361--prot!9606/P48431> <http://www.w3.org/1999/02/22-rdf-syntax-ns#predicate> <http://purl.obolibrary.org/obo/RO_0002428> .
-<http://rdf.biogateway.eu/reg2utrg/prot!9606/P27361--prot!9606/P48431> <http://www.w3.org/1999/02/22-rdf-syntax-ns#subject> <http://rdf.biogateway.eu/prot/9606/P27361> .
-<http://rdf.biogateway.eu/reg2utrg/prot!9606/P27361--prot!9606/P48431> <http://www.w3.org/1999/02/22-rdf-syntax-ns#object> <http://rdf.biogateway.eu/prot/9606/P48431> .
-<http://rdf.biogateway.eu/prot/9606/P27361> <http://purl.obolibrary.org/obo/RO_0002428> <http://rdf.biogateway.eu/prot/9606/P48431> .
-<http://rdf.biogateway.eu/reg2utrg/prot!9606/P27361--prot!9606/P48431#signor> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://rdf.biogateway.eu/reg2utrg/prot!9606/P27361--prot!9606/P48431> .
-<http://rdf.biogateway.eu/reg2utrg/prot!9606/P27361--prot!9606/P48431#signor> <http://www.w3.org/2004/02/skos/core#prefLabel> "prot!9606/P27361--prot!9606/P48431 from signor" .
-<http://rdf.biogateway.eu/reg2utrg/prot!9606/P27361--prot!9606/P48431#signor> <http://semanticscience.org/resource/SIO_000253> <http://signor.uniroma2.it> .
-<http://rdf.biogateway.eu/reg2utrg/prot!9606/P27361--prot!9606/P48431#signor> <http://purl.obolibrary.org/obo/RO_0002331> <http://purl.obolibrary.org/obo/MI_2247> .
-<http://rdf.biogateway.eu/reg2utrg/prot!9606/P27361--prot!9606/P48431#signor> <http://www.w3.org/2004/02/skos/core#relatedMatch> <http://purl.obolibrary.org/obo/MI_2286> .
-<http://rdf.biogateway.eu/reg2utrg/prot!9606/P27361--prot!9606/P48431#signor> <http://semanticscience.org/resource/SIO_000772> <http://identifiers.org/pubmed/24942200> .
-<http://rdf.biogateway.eu/reg2utrg/prot!9606/P27361--prot!9606/P48431#signor> <http://schema.org/evidenceLevel> "0.1364" .
-<http://rdf.biogateway.eu/reg2utrg/prot!9606/Q01081--prot!9606/P04637> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#Class> .
-<http://rdf.biogateway.eu/reg2utrg/prot!9606/Q01081--prot!9606/P04637> <http://www.w3.org/2000/01/rdf-schema#subClassOf> <http://www.w3.org/1999/02/22-rdf-syntax-ns#Statement> .
-<http://rdf.biogateway.eu/reg2utrg/prot!9606/Q01081--prot!9606/P04637> <http://www.w3.org/2004/02/skos/core#prefLabel> "involved in regulation of" .
-<http://rdf.biogateway.eu/reg2utrg/prot!9606/Q01081--prot!9606/P04637> <http://www.w3.org/2004/02/skos/core#definition> "9606/Q01081 involved in regulation of 9606/P04637" .
-<http://rdf.biogateway.eu/reg2utrg/prot!9606/Q01081--prot!9606/P04637> <http://www.w3.org/1999/02/22-rdf-syntax-ns#predicate> <http://purl.obolibrary.org/obo/RO_0002428> .
-<http://rdf.biogateway.eu/reg2utrg/prot!9606/Q01081--prot!9606/P04637> <http://www.w3.org/1999/02/22-rdf-syntax-ns#subject> <http://rdf.biogateway.eu/prot/9606/Q01081> .
-<http://rdf.biogateway.eu/reg2utrg/prot!9606/Q01081--prot!9606/P04637> <http://www.w3.org/1999/02/22-rdf-syntax-ns#object> <http://rdf.biogateway.eu/prot/9606/P04637> .
-<http://rdf.biogateway.eu/prot/9606/Q01081> <http://purl.obolibrary.org/obo/RO_0002428> <http://rdf.biogateway.eu/prot/9606/P04637> .
-<http://rdf.biogateway.eu/reg2utrg/prot!9606/Q01081--prot!9606/P04637#signor> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://rdf.biogateway.eu/reg2utrg/prot!9606/Q01081--prot!9606/P04637> .
-<http://rdf.biogateway.eu/reg2utrg/prot!9606/Q01081--prot!9606/P04637#signor> <http://www.w3.org/2004/02/skos/core#prefLabel> "prot!9606/Q01081--prot!9606/P04637 from signor" .
-<http://rdf.biogateway.eu/reg2utrg/prot!9606/Q01081--prot!9606/P04637#signor> <http://semanticscience.org/resource/SIO_000253> <http://signor.uniroma2.it> .
-<http://rdf.biogateway.eu/reg2utrg/prot!9606/Q01081--prot!9606/P04637#signor> <http://purl.obolibrary.org/obo/RO_0002331> <http://purl.obolibrary.org/obo/MI_2247> .
-<http://rdf.biogateway.eu/reg2utrg/prot!9606/Q01081--prot!9606/P04637#signor> <http://www.w3.org/2004/02/skos/core#relatedMatch> <http://purl.obolibrary.org/obo/MI_2286> .
-<http://rdf.biogateway.eu/reg2utrg/prot!9606/Q01081--prot!9606/P04637#signor> <http://semanticscience.org/resource/SIO_000772> <http://identifiers.org/pubmed/31144421> .
-<http://rdf.biogateway.eu/reg2utrg/prot!9606/Q9BTC0--prot!9606/P08648> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#Class> .
-<http://rdf.biogateway.eu/reg2utrg/prot!9606/Q9BTC0--prot!9606/P08648> <http://www.w3.org/2000/01/rdf-schema#subClassOf> <http://www.w3.org/1999/02/22-rdf-syntax-ns#Statement> .
-<http://rdf.biogateway.eu/reg2utrg/prot!9606/Q9BTC0--prot!9606/P08648> <http://www.w3.org/2004/02/skos/core#prefLabel> "involved in regulation of" .
-<http://rdf.biogateway.eu/reg2utrg/prot!9606/Q9BTC0--prot!9606/P08648> <http://www.w3.org/2004/02/skos/core#definition> "9606/Q9BTC0 involved in regulation of 9606/P08648" .
-<http://rdf.biogateway.eu/reg2utrg/prot!9606/Q9BTC0--prot!9606/P08648> <http://www.w3.org/1999/02/22-rdf-syntax-ns#predicate> <http://purl.obolibrary.org/obo/RO_0002428> .
-<http://rdf.biogateway.eu/reg2utrg/prot!9606/Q9BTC0--prot!9606/P08648> <http://www.w3.org/1999/02/22-rdf-syntax-ns#subject> <http://rdf.biogateway.eu/prot/9606/Q9BTC0> .
-<http://rdf.biogateway.eu/reg2utrg/prot!9606/Q9BTC0--prot!9606/P08648> <http://www.w3.org/1999/02/22-rdf-syntax-ns#object> <http://rdf.biogateway.eu/prot/9606/P08648> .
-<http://rdf.biogateway.eu/prot/9606/Q9BTC0> <http://purl.obolibrary.org/obo/RO_0002428> <http://rdf.biogateway.eu/prot/9606/P08648> .
-<http://rdf.biogateway.eu/reg2utrg/prot!9606/Q9BTC0--prot!9606/P08648#signor> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://rdf.biogateway.eu/reg2utrg/prot!9606/Q9BTC0--prot!9606/P08648> .
-<http://rdf.biogateway.eu/reg2utrg/prot!9606/Q9BTC0--prot!9606/P08648#signor> <http://www.w3.org/2004/02/skos/core#prefLabel> "prot!9606/Q9BTC0--prot!9606/P08648 from signor" .
-<http://rdf.biogateway.eu/reg2utrg/prot!9606/Q9BTC0--prot!9606/P08648#signor> <http://semanticscience.org/resource/SIO_000253> <http://signor.uniroma2.it> .
-<http://rdf.biogateway.eu/reg2utrg/prot!9606/Q9BTC0--prot!9606/P08648#signor> <http://purl.obolibrary.org/obo/RO_0002331> <http://purl.obolibrary.org/obo/MI_2247> .
-<http://rdf.biogateway.eu/reg2utrg/prot!9606/Q9BTC0--prot!9606/P08648#signor> <http://www.w3.org/2004/02/skos/core#relatedMatch> <http://purl.obolibrary.org/obo/MI_2286> .
-<http://rdf.biogateway.eu/reg2utrg/prot!9606/Q9BTC0--prot!9606/P08648#signor> <http://semanticscience.org/resource/SIO_000772> <http://identifiers.org/pubmed/22469980> .
-<http://rdf.biogateway.eu/reg2utrg/prot!9606/Q9BTC0--prot!9606/P08648#signor> <http://schema.org/evidenceLevel> "0.1364" .
+<http://rdf.biogateway.eu/reg2utrg/prot!P27361--prot!P10275> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#Class> .
+<http://rdf.biogateway.eu/reg2utrg/prot!P27361--prot!P10275> <http://www.w3.org/2000/01/rdf-schema#subClassOf> <http://www.w3.org/1999/02/22-rdf-syntax-ns#Statement> .
+<http://rdf.biogateway.eu/reg2utrg/prot!P27361--prot!P10275> <http://www.w3.org/2004/02/skos/core#prefLabel> "involved in regulation of" .
+<http://rdf.biogateway.eu/reg2utrg/prot!P27361--prot!P10275> <http://www.w3.org/2004/02/skos/core#definition> "P27361 involved in regulation of P10275" .
+<http://rdf.biogateway.eu/reg2utrg/prot!P27361--prot!P10275> <http://www.w3.org/1999/02/22-rdf-syntax-ns#predicate> <http://purl.obolibrary.org/obo/RO_0002428> .
+<http://rdf.biogateway.eu/reg2utrg/prot!P27361--prot!P10275> <http://www.w3.org/1999/02/22-rdf-syntax-ns#subject> <http://uniprot.org/uniprot/P27361> .
+<http://rdf.biogateway.eu/reg2utrg/prot!P27361--prot!P10275> <http://www.w3.org/1999/02/22-rdf-syntax-ns#object> <http://uniprot.org/uniprot/P10275> .
+<http://uniprot.org/uniprot/P27361> <http://purl.obolibrary.org/obo/RO_0002428> <http://uniprot.org/uniprot/P10275> .
+<http://rdf.biogateway.eu/reg2utrg/prot!P27361--prot!P10275#signor> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://rdf.biogateway.eu/reg2utrg/prot!P27361--prot!P10275> .
+<http://rdf.biogateway.eu/reg2utrg/prot!P27361--prot!P10275#signor> <http://www.w3.org/2004/02/skos/core#prefLabel> "prot!P27361--prot!P10275 from signor" .
+<http://rdf.biogateway.eu/reg2utrg/prot!P27361--prot!P10275#signor> <http://semanticscience.org/resource/SIO_000253> <http://signor.uniroma2.it> .
+<http://rdf.biogateway.eu/reg2utrg/prot!P27361--prot!P10275#signor> <http://www.w3.org/2004/02/skos/core#relatedMatch> <http://purl.obolibrary.org/obo/MI_0217> .
+<http://rdf.biogateway.eu/reg2utrg/prot!P27361--prot!P10275#signor> <http://semanticscience.org/resource/SIO_000772> <http://identifiers.org/pubmed/18511414> .
+<http://rdf.biogateway.eu/reg2utrg/prot!P27361--prot!P10275#signor> <http://schema.org/evidenceLevel> "0.1364" .
+<http://rdf.biogateway.eu/reg2utrg/prot!P27361--prot!P48431> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#Class> .
+<http://rdf.biogateway.eu/reg2utrg/prot!P27361--prot!P48431> <http://www.w3.org/2000/01/rdf-schema#subClassOf> <http://www.w3.org/1999/02/22-rdf-syntax-ns#Statement> .
+<http://rdf.biogateway.eu/reg2utrg/prot!P27361--prot!P48431> <http://www.w3.org/2004/02/skos/core#prefLabel> "involved in regulation of" .
+<http://rdf.biogateway.eu/reg2utrg/prot!P27361--prot!P48431> <http://www.w3.org/2004/02/skos/core#definition> "P27361 involved in regulation of P48431" .
+<http://rdf.biogateway.eu/reg2utrg/prot!P27361--prot!P48431> <http://www.w3.org/1999/02/22-rdf-syntax-ns#predicate> <http://purl.obolibrary.org/obo/RO_0002428> .
+<http://rdf.biogateway.eu/reg2utrg/prot!P27361--prot!P48431> <http://www.w3.org/1999/02/22-rdf-syntax-ns#subject> <http://uniprot.org/uniprot/P27361> .
+<http://rdf.biogateway.eu/reg2utrg/prot!P27361--prot!P48431> <http://www.w3.org/1999/02/22-rdf-syntax-ns#object> <http://uniprot.org/uniprot/P48431> .
+<http://uniprot.org/uniprot/P27361> <http://purl.obolibrary.org/obo/RO_0002428> <http://uniprot.org/uniprot/P48431> .
+<http://rdf.biogateway.eu/reg2utrg/prot!P27361--prot!P48431#signor> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://rdf.biogateway.eu/reg2utrg/prot!P27361--prot!P48431> .
+<http://rdf.biogateway.eu/reg2utrg/prot!P27361--prot!P48431#signor> <http://www.w3.org/2004/02/skos/core#prefLabel> "prot!P27361--prot!P48431 from signor" .
+<http://rdf.biogateway.eu/reg2utrg/prot!P27361--prot!P48431#signor> <http://semanticscience.org/resource/SIO_000253> <http://signor.uniroma2.it> .
+<http://rdf.biogateway.eu/reg2utrg/prot!P27361--prot!P48431#signor> <http://purl.obolibrary.org/obo/RO_0002331> <http://purl.obolibrary.org/obo/MI_2247> .
+<http://rdf.biogateway.eu/reg2utrg/prot!P27361--prot!P48431#signor> <http://www.w3.org/2004/02/skos/core#relatedMatch> <http://purl.obolibrary.org/obo/MI_2286> .
+<http://rdf.biogateway.eu/reg2utrg/prot!P27361--prot!P48431#signor> <http://semanticscience.org/resource/SIO_000772> <http://identifiers.org/pubmed/24942200> .
+<http://rdf.biogateway.eu/reg2utrg/prot!P27361--prot!P48431#signor> <http://schema.org/evidenceLevel> "0.1364" .
+<http://rdf.biogateway.eu/reg2utrg/prot!Q01081--prot!P04637> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#Class> .
+<http://rdf.biogateway.eu/reg2utrg/prot!Q01081--prot!P04637> <http://www.w3.org/2000/01/rdf-schema#subClassOf> <http://www.w3.org/1999/02/22-rdf-syntax-ns#Statement> .
+<http://rdf.biogateway.eu/reg2utrg/prot!Q01081--prot!P04637> <http://www.w3.org/2004/02/skos/core#prefLabel> "involved in regulation of" .
+<http://rdf.biogateway.eu/reg2utrg/prot!Q01081--prot!P04637> <http://www.w3.org/2004/02/skos/core#definition> "Q01081 involved in regulation of P04637" .
+<http://rdf.biogateway.eu/reg2utrg/prot!Q01081--prot!P04637> <http://www.w3.org/1999/02/22-rdf-syntax-ns#predicate> <http://purl.obolibrary.org/obo/RO_0002428> .
+<http://rdf.biogateway.eu/reg2utrg/prot!Q01081--prot!P04637> <http://www.w3.org/1999/02/22-rdf-syntax-ns#subject> <http://uniprot.org/uniprot/Q01081> .
+<http://rdf.biogateway.eu/reg2utrg/prot!Q01081--prot!P04637> <http://www.w3.org/1999/02/22-rdf-syntax-ns#object> <http://uniprot.org/uniprot/P04637> .
+<http://uniprot.org/uniprot/Q01081> <http://purl.obolibrary.org/obo/RO_0002428> <http://uniprot.org/uniprot/P04637> .
+<http://rdf.biogateway.eu/reg2utrg/prot!Q01081--prot!P04637#signor> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://rdf.biogateway.eu/reg2utrg/prot!Q01081--prot!P04637> .
+<http://rdf.biogateway.eu/reg2utrg/prot!Q01081--prot!P04637#signor> <http://www.w3.org/2004/02/skos/core#prefLabel> "prot!Q01081--prot!P04637 from signor" .
+<http://rdf.biogateway.eu/reg2utrg/prot!Q01081--prot!P04637#signor> <http://semanticscience.org/resource/SIO_000253> <http://signor.uniroma2.it> .
+<http://rdf.biogateway.eu/reg2utrg/prot!Q01081--prot!P04637#signor> <http://purl.obolibrary.org/obo/RO_0002331> <http://purl.obolibrary.org/obo/MI_2247> .
+<http://rdf.biogateway.eu/reg2utrg/prot!Q01081--prot!P04637#signor> <http://www.w3.org/2004/02/skos/core#relatedMatch> <http://purl.obolibrary.org/obo/MI_2286> .
+<http://rdf.biogateway.eu/reg2utrg/prot!Q01081--prot!P04637#signor> <http://semanticscience.org/resource/SIO_000772> <http://identifiers.org/pubmed/31144421> .
+<http://rdf.biogateway.eu/reg2utrg/prot!Q9BTC0--prot!P08648> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#Class> .
+<http://rdf.biogateway.eu/reg2utrg/prot!Q9BTC0--prot!P08648> <http://www.w3.org/2000/01/rdf-schema#subClassOf> <http://www.w3.org/1999/02/22-rdf-syntax-ns#Statement> .
+<http://rdf.biogateway.eu/reg2utrg/prot!Q9BTC0--prot!P08648> <http://www.w3.org/2004/02/skos/core#prefLabel> "involved in regulation of" .
+<http://rdf.biogateway.eu/reg2utrg/prot!Q9BTC0--prot!P08648> <http://www.w3.org/2004/02/skos/core#definition> "Q9BTC0 involved in regulation of P08648" .
+<http://rdf.biogateway.eu/reg2utrg/prot!Q9BTC0--prot!P08648> <http://www.w3.org/1999/02/22-rdf-syntax-ns#predicate> <http://purl.obolibrary.org/obo/RO_0002428> .
+<http://rdf.biogateway.eu/reg2utrg/prot!Q9BTC0--prot!P08648> <http://www.w3.org/1999/02/22-rdf-syntax-ns#subject> <http://uniprot.org/uniprot/Q9BTC0> .
+<http://rdf.biogateway.eu/reg2utrg/prot!Q9BTC0--prot!P08648> <http://www.w3.org/1999/02/22-rdf-syntax-ns#object> <http://uniprot.org/uniprot/P08648> .
+<http://uniprot.org/uniprot/Q9BTC0> <http://purl.obolibrary.org/obo/RO_0002428> <http://uniprot.org/uniprot/P08648> .
+<http://rdf.biogateway.eu/reg2utrg/prot!Q9BTC0--prot!P08648#signor> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://rdf.biogateway.eu/reg2utrg/prot!Q9BTC0--prot!P08648> .
+<http://rdf.biogateway.eu/reg2utrg/prot!Q9BTC0--prot!P08648#signor> <http://www.w3.org/2004/02/skos/core#prefLabel> "prot!Q9BTC0--prot!P08648 from signor" .
+<http://rdf.biogateway.eu/reg2utrg/prot!Q9BTC0--prot!P08648#signor> <http://semanticscience.org/resource/SIO_000253> <http://signor.uniroma2.it> .
+<http://rdf.biogateway.eu/reg2utrg/prot!Q9BTC0--prot!P08648#signor> <http://purl.obolibrary.org/obo/RO_0002331> <http://purl.obolibrary.org/obo/MI_2247> .
+<http://rdf.biogateway.eu/reg2utrg/prot!Q9BTC0--prot!P08648#signor> <http://www.w3.org/2004/02/skos/core#relatedMatch> <http://purl.obolibrary.org/obo/MI_2286> .
+<http://rdf.biogateway.eu/reg2utrg/prot!Q9BTC0--prot!P08648#signor> <http://semanticscience.org/resource/SIO_000772> <http://identifiers.org/pubmed/22469980> .
+<http://rdf.biogateway.eu/reg2utrg/prot!Q9BTC0--prot!P08648#signor> <http://schema.org/evidenceLevel> "0.1364" .
 <http://www.w3.org/2004/02/skos/core#definition> <http://www.w3.org/2000/01/rdf-schema#subPropertyOf> <http://www.w3.org/2002/07/owl#AnnotationProperty> .
 <http://www.w3.org/2004/02/skos/core#definition> <http://www.w3.org/2004/02/skos/core#prefLabel> "has definition" .
 <http://www.w3.org/2004/02/skos/core#prefLabel> <http://www.w3.org/2000/01/rdf-schema#subPropertyOf> <http://www.w3.org/2002/07/owl#AnnotationProperty> .

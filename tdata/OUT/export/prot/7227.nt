@@ -25,35 +25,30 @@
 <http://semanticscience.org/resource/SIO_010043> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#Class> .
 <http://semanticscience.org/resource/SIO_010043> <http://www.w3.org/2004/02/skos/core#prefLabel> "Protein" .
 <http://rdf.biogateway.eu/graph/prot> <http://semanticscience.org/resource/SIO_000253> <http://uniprot.org/uniprot/> .
-<http://rdf.biogateway.eu/prot/> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#Class> .
-<http://rdf.biogateway.eu/prot/> <http://www.w3.org/2004/02/skos/core#definition> "Set of translation products in Biogateway" .
-<http://rdf.biogateway.eu/prot/> <http://www.w3.org/2004/02/skos/core#prefLabel> "prot" .
-<http://rdf.biogateway.eu/prot/7227> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#Class> .
-<http://rdf.biogateway.eu/prot/7227> <http://www.w3.org/2000/01/rdf-schema#subClassOf> <http://rdf.biogateway.eu/prot/> .
-<http://rdf.biogateway.eu/prot/7227> <http://www.w3.org/2004/02/skos/core#definition> "Set of Drosophila melanogaster translation products in Biogateway" .
-<http://rdf.biogateway.eu/prot/7227> <http://www.w3.org/2004/02/skos/core#prefLabel> "prot/7227" .
-<http://rdf.biogateway.eu/prot/7227/chr-3L> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#Class> .
-<http://rdf.biogateway.eu/prot/7227/chr-3L> <http://www.w3.org/2000/01/rdf-schema#subClassOf> <http://rdf.biogateway.eu/prot/7227> .
-<http://rdf.biogateway.eu/prot/7227/chr-3L> <http://www.w3.org/2004/02/skos/core#definition> "Set of tranlation products encoded by Drosophila melanogaster chr-3L" .
-<http://rdf.biogateway.eu/prot/7227/chr-3L> <http://www.w3.org/2004/02/skos/core#prefLabel> "prot/7227/chr-3L" .
-<http://rdf.biogateway.eu/prot/7227/P00528> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#Class> .
-<http://rdf.biogateway.eu/prot/7227/P00528> <http://www.w3.org/2000/01/rdf-schema#subClassOf> <http://rdf.biogateway.eu/prot/7227/chr-3L> .
-<http://rdf.biogateway.eu/prot/7227/P00528> <http://www.w3.org/2000/01/rdf-schema#subClassOf> <http://semanticscience.org/resource/SIO_010043> .
-<http://rdf.biogateway.eu/prot/7227/P00528> <http://purl.obolibrary.org/obo/RO_0000052> <http://purl.obolibrary.org/obo/NCBITaxon_7227> .
-<http://rdf.biogateway.eu/prot/7227/P00528> <http://www.w3.org/2002/07/owl#sameAs> <http://uniprot.org/uniprot/P00528> .
-<http://rdf.biogateway.eu/prot/7227/P00528> <http://www.w3.org/2004/02/skos/core#definition> "Tyrosine-protein kinase Src64B" .
-<http://rdf.biogateway.eu/prot/7227/P00528> <http://www.w3.org/2004/02/skos/core#prefLabel> "SRC64_DROME" .
-<http://rdf.biogateway.eu/prot/7227/P00528> <http://www.w3.org/2004/02/skos/core#altLabel> "P00528" .
-<http://rdf.biogateway.eu/prot/7227/P00528> <http://www.w3.org/2004/02/skos/core#altLabel> "Src64B" .
-<http://rdf.biogateway.eu/prot/7227/P00528> <http://schema.org/evidenceOrigin> <http://uniprot.org/uniprot/P00528> .
-<http://rdf.biogateway.eu/prot/7227/P00528> <http://schema.org/evidenceLevel> "5" .
-<http://rdf.biogateway.eu/prot/7227/P00528> <http://semanticscience.org/resource/SIO_000772> <http://identifiers.org/pubmed/10731132> .
-<http://rdf.biogateway.eu/prot/7227/P00528> <http://semanticscience.org/resource/SIO_000772> <http://identifiers.org/pubmed/12537569> .
-<http://rdf.biogateway.eu/prot/7227/P00528> <http://semanticscience.org/resource/SIO_000772> <http://identifiers.org/pubmed/12537572> .
-<http://rdf.biogateway.eu/prot/7227/P00528> <http://semanticscience.org/resource/SIO_000772> <http://identifiers.org/pubmed/2996778> .
-<http://rdf.biogateway.eu/prot/7227/P00528> <http://semanticscience.org/resource/SIO_000772> <http://identifiers.org/pubmed/31491385> .
-<http://rdf.biogateway.eu/prot/7227/P00528> <http://semanticscience.org/resource/SIO_000772> <http://identifiers.org/pubmed/6317185> .
-<http://rdf.biogateway.eu/prot/7227/P00528> <http://semanticscience.org/resource/SIO_000772> <http://identifiers.org/pubmed/9731193> .
-<http://rdf.biogateway.eu/prot/7227/P00528#UPI0000124921> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://rdf.biogateway.eu/prot/7227/P00528> .
-<http://rdf.biogateway.eu/prot/7227/P00528#UPI0000124921> <http://www.w3.org/2004/02/skos/core#prefLabel> "uniprot#P00528-0" .
-<http://rdf.biogateway.eu/prot/7227/P00528#UPI0000124921> <http://www.w3.org/2004/02/skos/core#closeMatch> <http://uniprot.org/uniparc/UPI0000124921> .
+<http://uniprot.org/uniprot/P00528> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#Class> .
+<http://uniprot.org/uniprot/P00528> <http://www.w3.org/2000/01/rdf-schema#subClassOf> <http://semanticscience.org/resource/SIO_010043> .
+<http://uniprot.org/uniprot/P00528> <http://purl.obolibrary.org/obo/RO_0000052> <http://purl.obolibrary.org/obo/NCBITaxon_7227> .
+<http://uniprot.org/uniprot/P00528> <http://www.w3.org/2004/02/skos/core#definition> "Tyrosine-protein kinase Src64B (Dsrc64) (EC 2.7.10.2)" .
+<http://uniprot.org/uniprot/P00528> <http://www.w3.org/2004/02/skos/core#prefLabel> "SRC64_DROME" .
+<http://uniprot.org/uniprot/P00528> <http://www.w3.org/2004/02/skos/core#altLabel> "P00528" .
+<http://uniprot.org/uniprot/P00528> <http://www.w3.org/2004/02/skos/core#altLabel> "Src1" .
+<http://uniprot.org/uniprot/P00528> <http://www.w3.org/2004/02/skos/core#altLabel> "Src64B" .
+<http://uniprot.org/uniprot/P00528> <http://schema.org/evidenceLevel> "5" .
+<http://uniprot.org/uniprot/P00528> <http://semanticscience.org/resource/SIO_000772> <http://identifiers.org/pubmed/10731132> .
+<http://uniprot.org/uniprot/P00528> <http://semanticscience.org/resource/SIO_000772> <http://identifiers.org/pubmed/12537569> .
+<http://uniprot.org/uniprot/P00528> <http://semanticscience.org/resource/SIO_000772> <http://identifiers.org/pubmed/12537572> .
+<http://uniprot.org/uniprot/P00528> <http://semanticscience.org/resource/SIO_000772> <http://identifiers.org/pubmed/2996778> .
+<http://uniprot.org/uniprot/P00528> <http://semanticscience.org/resource/SIO_000772> <http://identifiers.org/pubmed/31491385> .
+<http://uniprot.org/uniprot/P00528> <http://semanticscience.org/resource/SIO_000772> <http://identifiers.org/pubmed/6317185> .
+<http://uniprot.org/uniprot/P00528> <http://semanticscience.org/resource/SIO_000772> <http://identifiers.org/pubmed/9731193> .
+<http://uniprot.org/uniparc/UPI0000124921> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://uniprot.org/uniprot/P00528> .
+<http://uniprot.org/uniparc/UPI0000124921> <http://www.w3.org/2004/02/skos/core#prefLabel> "instance of SRC64_DROME" .
+<http://uniprot.org/uniparc/UPI0000124921> <http://www.w3.org/2004/02/skos/core#altLabel> "P00528" .
+<http://uniprot.org/uniprot/P00528> <http://www.w3.org/2004/02/skos/core#closeMatch> <http://identifiers.org/refseq/NP_001014561.1> .
+<http://uniprot.org/uniprot/P00528> <http://www.w3.org/2004/02/skos/core#closeMatch> <http://identifiers.org/refseq/NP_001014562.1> .
+<http://uniprot.org/uniprot/P00528> <http://www.w3.org/2004/02/skos/core#closeMatch> <http://identifiers.org/refseq/NP_001014563.1> .
+<http://uniprot.org/uniprot/P00528> <http://www.w3.org/2004/02/skos/core#closeMatch> <http://identifiers.org/refseq/NP_001014564.1> .
+<http://uniprot.org/uniprot/P00528> <http://www.w3.org/2004/02/skos/core#closeMatch> <http://identifiers.org/refseq/NP_001189051.1> .
+<http://uniprot.org/uniprot/P00528> <http://www.w3.org/2004/02/skos/core#closeMatch> <http://identifiers.org/refseq/NP_001246628.1> .
+<http://uniprot.org/uniprot/P00528> <http://www.w3.org/2004/02/skos/core#closeMatch> <http://identifiers.org/refseq/NP_001246629.1> .
+<http://uniprot.org/uniprot/P00528> <http://www.w3.org/2004/02/skos/core#closeMatch> <http://identifiers.org/refseq/NP_524934.2> .
