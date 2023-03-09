@@ -23,17 +23,17 @@ var Ensomes = map[string]string{
 }
 
 var Upkeys = map[string]string{
-	"UniProtKB-ID":      "upid",
-	"Gene_Name":         "gnm",
-	"Gene_Synonym":      "gsnm",
-	"Ensembl":           "ensgene",
-	"Ensembl_PRO":       "enspro",
-	"EnsemblGenome":     "ensom",
+	"UniProtKB-ID":  "upid",
+	"Gene_Name":     "gnm",
+	"Gene_Synonym":  "gsnm",
+	"Ensembl":       "ensgene",
+	"Ensembl_PRO":   "enspro",
+	"EnsemblGenome": "ensom",
 	// "EnsemblGenome_PRO": "ensompro", // transcripts...
-	"GeneID":            "ncbigene",
-	"RefSeq":            "refseq",
-	"UniParc":           "uniparc",
-	"NCBI_TaxID":        "ncbitx",
+	"GeneID":     "ncbigene",
+	"RefSeq":     "refseq",
+	"UniParc":    "uniparc",
+	"NCBI_TaxID": "ncbitx",
 }
 
 var Orthokeys = map[string]string{
@@ -137,12 +137,13 @@ func UpdatParseConf() ([]Column, []Column) {
 	vals := []Column{
 		// {0, "; ", 0, "|", 0, "upca"}, // single value
 		{1, "; ", 0, "|", 0, "upid"}, // single value
-		// the next two fields should be avoided!
-		// {2, "; ", 0, "|", 0, "gnms"},// '; ' separated but some vals contain ';'!
-		// {3, "; ", 0, "|", 0, "gsnms"},// '; ' separated but some vals contain ';'!
-		{4, "; ", 0, "|", 0, "taxnm"}, // single value but 59 unique names !
-		{5, "; ", 0, "|", 0, "txid"}, // single value but 59 unique names !
-		{6, "!", 0, "; ", 0, "pdfns"}, // may contain '|', ';' etc, no '!'
+		// gnms: '|' separated for CHLRE else '; ' with no '|';
+		{2, "; ", -1, "|", 0, "gnms"}, // '; ' separated but some vals contain ';'!
+		// gsnms: '|' separated for CHLRE; ' ' separated for DROME, '|' do occrur;
+		{2, "; ", -1, "|", 0, "gsnms"}, // '; ' separated but some vals contain ';'!
+		{4, "; ", 0, "|", 0, "taxnm"},  // single value but 59 unique names !
+		{5, "; ", 0, "|", 0, "txid"},   // single value but 59 unique names !
+		{6, "!", 0, "; ", 0, "pdfns"},  // may contain '|', ';' etc, no '!'
 		// the next field may contain multiple proteomes per taxon!
 		// {7, "; ", -1, ": ", 0, "poms"}, // '; ' separated, 'pomeid: chrid'
 		{8, "; ", -1, "; ", 0, "pubmed"}, // '; ' separated

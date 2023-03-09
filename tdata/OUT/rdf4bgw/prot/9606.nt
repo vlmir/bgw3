@@ -25,17 +25,17 @@
 <http://semanticscience.org/resource/SIO_010043> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#Class> .
 <http://semanticscience.org/resource/SIO_010043> <http://www.w3.org/2004/02/skos/core#prefLabel> "Protein" .
 <http://rdf.biogateway.eu/graph/prot> <http://semanticscience.org/resource/SIO_000253> <http://uniprot.org/uniprot/> .
-<http://uniprot.org/uniprot/FOOFOO> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#Class> .
-<http://uniprot.org/uniprot/FOOFOO> <http://www.w3.org/2000/01/rdf-schema#subClassOf> <http://semanticscience.org/resource/SIO_010043> .
-<http://uniprot.org/uniprot/FOOFOO> <http://purl.obolibrary.org/obo/RO_0000052> <http://purl.obolibrary.org/obo/NCBITaxon_9606> .
-<http://uniprot.org/uniprot/FOOFOO> <http://www.w3.org/2004/02/skos/core#definition> "Cellular tumor antigen p53" .
-<http://uniprot.org/uniprot/FOOFOO> <http://www.w3.org/2004/02/skos/core#prefLabel> "P53_GHOST" .
-<http://uniprot.org/uniprot/FOOFOO> <http://www.w3.org/2004/02/skos/core#altLabel> "FOOFOO" .
-<http://uniprot.org/uniprot/FOOFOO> <http://schema.org/evidenceLevel> "1" .
-<http://uniprot.org/uniparc/UPI000002ED67> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://uniprot.org/uniprot/FOOFOO> .
+<http://uniprot.org/uniprot/FOOBAR> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#Class> .
+<http://uniprot.org/uniprot/FOOBAR> <http://www.w3.org/2000/01/rdf-schema#subClassOf> <http://semanticscience.org/resource/SIO_010043> .
+<http://uniprot.org/uniprot/FOOBAR> <http://purl.obolibrary.org/obo/RO_0000052> <http://purl.obolibrary.org/obo/NCBITaxon_9606> .
+<http://uniprot.org/uniprot/FOOBAR> <http://www.w3.org/2004/02/skos/core#definition> "Cellular tumor antigen p53" .
+<http://uniprot.org/uniprot/FOOBAR> <http://www.w3.org/2004/02/skos/core#prefLabel> "P53_GHOST" .
+<http://uniprot.org/uniprot/FOOBAR> <http://www.w3.org/2004/02/skos/core#altLabel> "FOOBAR" .
+<http://uniprot.org/uniprot/FOOBAR> <http://schema.org/evidenceLevel> "1" .
+<http://uniprot.org/uniparc/UPI000002ED67> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://uniprot.org/uniprot/FOOBAR> .
 <http://uniprot.org/uniparc/UPI000002ED67> <http://www.w3.org/2004/02/skos/core#prefLabel> "instance of P53_GHOST" .
-<http://uniprot.org/uniparc/UPI000002ED67> <http://www.w3.org/2004/02/skos/core#altLabel> "FOOFOO" .
-<http://uniprot.org/uniparc/UPI000002ED67> <http://www.w3.org/2004/02/skos/core#altLabel> "FOOFOO-2" .
+<http://uniprot.org/uniparc/UPI000002ED67> <http://www.w3.org/2004/02/skos/core#altLabel> "FOOBAR" .
+<http://uniprot.org/uniparc/UPI000002ED67> <http://www.w3.org/2004/02/skos/core#altLabel> "FOOBAR-2" .
 <http://uniprot.org/uniprot/P04637> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#Class> .
 <http://uniprot.org/uniprot/P04637> <http://www.w3.org/2000/01/rdf-schema#subClassOf> <http://semanticscience.org/resource/SIO_010043> .
 <http://uniprot.org/uniprot/P04637> <http://purl.obolibrary.org/obo/RO_0000052> <http://purl.obolibrary.org/obo/NCBITaxon_9606> .

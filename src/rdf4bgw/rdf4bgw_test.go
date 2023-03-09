@@ -92,7 +92,8 @@ func Test_tfac2gene(t *testing.T) {
 	arg3[0].Add("9606", "testprome")
 	tts := []tt{
 		// {pth, wpth, arg3[0], 2},
-		{pth, wpth, arg3[0], 4}, // new tests
+		// {pth, wpth, arg3[0], 4}, // new tests
+		{pth, wpth, arg3[0], 3}, // new tests
 	}
 	pdck := "reg2ptrg"
 	src := "tfacts"

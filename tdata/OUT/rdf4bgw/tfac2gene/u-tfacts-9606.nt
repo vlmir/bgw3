@@ -1,31 +1,17 @@
-<http://rdf.biogateway.eu/reg2utrg/prot!FOOFOO--gene!9606/FOO> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#Class> .
-<http://rdf.biogateway.eu/reg2utrg/prot!FOOFOO--gene!9606/FOO> <http://www.w3.org/2000/01/rdf-schema#subClassOf> <http://www.w3.org/1999/02/22-rdf-syntax-ns#Statement> .
-<http://rdf.biogateway.eu/reg2utrg/prot!FOOFOO--gene!9606/FOO> <http://www.w3.org/2004/02/skos/core#prefLabel> "involved in regulation of" .
-<http://rdf.biogateway.eu/reg2utrg/prot!FOOFOO--gene!9606/FOO> <http://www.w3.org/2004/02/skos/core#definition> "FOOFOO involved in regulation of 9606/FOO" .
-<http://rdf.biogateway.eu/reg2utrg/prot!FOOFOO--gene!9606/FOO> <http://www.w3.org/1999/02/22-rdf-syntax-ns#predicate> <http://purl.obolibrary.org/obo/RO_0002428> .
-<http://rdf.biogateway.eu/reg2utrg/prot!FOOFOO--gene!9606/FOO> <http://www.w3.org/1999/02/22-rdf-syntax-ns#subject> <http://uniprot.org/uniprot/FOOFOO> .
-<http://rdf.biogateway.eu/reg2utrg/prot!FOOFOO--gene!9606/FOO> <http://www.w3.org/1999/02/22-rdf-syntax-ns#object> <http://rdf.biogateway.eu/gene/9606/FOO> .
-<http://uniprot.org/uniprot/FOOFOO> <http://purl.obolibrary.org/obo/RO_0002428> <http://rdf.biogateway.eu/gene/9606/FOO> .
-<http://rdf.biogateway.eu/reg2utrg/prot!FOOFOO--gene!9606/FOO#tfacts> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://rdf.biogateway.eu/reg2utrg/prot!FOOFOO--gene!9606/FOO> .
-<http://rdf.biogateway.eu/reg2utrg/prot!FOOFOO--gene!9606/FOO#tfacts> <http://www.w3.org/2004/02/skos/core#prefLabel> "prot!FOOFOO--gene!9606/FOO from tfacts" .
-<http://rdf.biogateway.eu/reg2utrg/prot!FOOFOO--gene!9606/FOO#tfacts> <http://semanticscience.org/resource/SIO_000253> <http://www.tfacts.org> .
-<http://rdf.biogateway.eu/reg2utrg/prot!FOOFOO--gene!9606/FOO#tfacts> <http://purl.obolibrary.org/obo/RO_0002331> <http://purl.obolibrary.org/obo/MI_2247> .
-<http://rdf.biogateway.eu/reg2utrg/prot!FOOFOO--gene!9606/FOO#tfacts> <http://semanticscience.org/resource/SIO_000772> <http://identifiers.org/pubmed/16144844> .
-<http://rdf.biogateway.eu/reg2utrg/prot!FOOFOO--gene!9606/FOO#tfacts> <http://schema.org/evidenceLevel> "High" .
-<http://rdf.biogateway.eu/reg2utrg/prot!FOOFOO--gene!9606/TP53> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#Class> .
-<http://rdf.biogateway.eu/reg2utrg/prot!FOOFOO--gene!9606/TP53> <http://www.w3.org/2000/01/rdf-schema#subClassOf> <http://www.w3.org/1999/02/22-rdf-syntax-ns#Statement> .
-<http://rdf.biogateway.eu/reg2utrg/prot!FOOFOO--gene!9606/TP53> <http://www.w3.org/2004/02/skos/core#prefLabel> "involved in regulation of" .
-<http://rdf.biogateway.eu/reg2utrg/prot!FOOFOO--gene!9606/TP53> <http://www.w3.org/2004/02/skos/core#definition> "FOOFOO involved in regulation of 9606/TP53" .
-<http://rdf.biogateway.eu/reg2utrg/prot!FOOFOO--gene!9606/TP53> <http://www.w3.org/1999/02/22-rdf-syntax-ns#predicate> <http://purl.obolibrary.org/obo/RO_0002428> .
-<http://rdf.biogateway.eu/reg2utrg/prot!FOOFOO--gene!9606/TP53> <http://www.w3.org/1999/02/22-rdf-syntax-ns#subject> <http://uniprot.org/uniprot/FOOFOO> .
-<http://rdf.biogateway.eu/reg2utrg/prot!FOOFOO--gene!9606/TP53> <http://www.w3.org/1999/02/22-rdf-syntax-ns#object> <http://rdf.biogateway.eu/gene/9606/TP53> .
-<http://uniprot.org/uniprot/FOOFOO> <http://purl.obolibrary.org/obo/RO_0002428> <http://rdf.biogateway.eu/gene/9606/TP53> .
-<http://rdf.biogateway.eu/reg2utrg/prot!FOOFOO--gene!9606/TP53#tfacts> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://rdf.biogateway.eu/reg2utrg/prot!FOOFOO--gene!9606/TP53> .
-<http://rdf.biogateway.eu/reg2utrg/prot!FOOFOO--gene!9606/TP53#tfacts> <http://www.w3.org/2004/02/skos/core#prefLabel> "prot!FOOFOO--gene!9606/TP53 from tfacts" .
-<http://rdf.biogateway.eu/reg2utrg/prot!FOOFOO--gene!9606/TP53#tfacts> <http://semanticscience.org/resource/SIO_000253> <http://www.tfacts.org> .
-<http://rdf.biogateway.eu/reg2utrg/prot!FOOFOO--gene!9606/TP53#tfacts> <http://purl.obolibrary.org/obo/RO_0002331> <http://purl.obolibrary.org/obo/MI_2247> .
-<http://rdf.biogateway.eu/reg2utrg/prot!FOOFOO--gene!9606/TP53#tfacts> <http://semanticscience.org/resource/SIO_000772> <http://identifiers.org/pubmed/16144844> .
-<http://rdf.biogateway.eu/reg2utrg/prot!FOOFOO--gene!9606/TP53#tfacts> <http://schema.org/evidenceLevel> "High" .
+<http://rdf.biogateway.eu/reg2utrg/prot!P04637--gene!9606/BAR> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#Class> .
+<http://rdf.biogateway.eu/reg2utrg/prot!P04637--gene!9606/BAR> <http://www.w3.org/2000/01/rdf-schema#subClassOf> <http://www.w3.org/1999/02/22-rdf-syntax-ns#Statement> .
+<http://rdf.biogateway.eu/reg2utrg/prot!P04637--gene!9606/BAR> <http://www.w3.org/2004/02/skos/core#prefLabel> "involved in regulation of" .
+<http://rdf.biogateway.eu/reg2utrg/prot!P04637--gene!9606/BAR> <http://www.w3.org/2004/02/skos/core#definition> "P04637 involved in regulation of 9606/BAR" .
+<http://rdf.biogateway.eu/reg2utrg/prot!P04637--gene!9606/BAR> <http://www.w3.org/1999/02/22-rdf-syntax-ns#predicate> <http://purl.obolibrary.org/obo/RO_0002428> .
+<http://rdf.biogateway.eu/reg2utrg/prot!P04637--gene!9606/BAR> <http://www.w3.org/1999/02/22-rdf-syntax-ns#subject> <http://uniprot.org/uniprot/P04637> .
+<http://rdf.biogateway.eu/reg2utrg/prot!P04637--gene!9606/BAR> <http://www.w3.org/1999/02/22-rdf-syntax-ns#object> <http://rdf.biogateway.eu/gene/9606/BAR> .
+<http://uniprot.org/uniprot/P04637> <http://purl.obolibrary.org/obo/RO_0002428> <http://rdf.biogateway.eu/gene/9606/BAR> .
+<http://rdf.biogateway.eu/reg2utrg/prot!P04637--gene!9606/BAR#tfacts> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://rdf.biogateway.eu/reg2utrg/prot!P04637--gene!9606/BAR> .
+<http://rdf.biogateway.eu/reg2utrg/prot!P04637--gene!9606/BAR#tfacts> <http://www.w3.org/2004/02/skos/core#prefLabel> "prot!P04637--gene!9606/BAR from tfacts" .
+<http://rdf.biogateway.eu/reg2utrg/prot!P04637--gene!9606/BAR#tfacts> <http://semanticscience.org/resource/SIO_000253> <http://www.tfacts.org> .
+<http://rdf.biogateway.eu/reg2utrg/prot!P04637--gene!9606/BAR#tfacts> <http://purl.obolibrary.org/obo/RO_0002331> <http://purl.obolibrary.org/obo/MI_2247> .
+<http://rdf.biogateway.eu/reg2utrg/prot!P04637--gene!9606/BAR#tfacts> <http://semanticscience.org/resource/SIO_000772> <http://identifiers.org/pubmed/16144844> .
+<http://rdf.biogateway.eu/reg2utrg/prot!P04637--gene!9606/BAR#tfacts> <http://schema.org/evidenceLevel> "High" .
 <http://rdf.biogateway.eu/reg2utrg/prot!P04637--gene!9606/FOO> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#Class> .
 <http://rdf.biogateway.eu/reg2utrg/prot!P04637--gene!9606/FOO> <http://www.w3.org/2000/01/rdf-schema#subClassOf> <http://www.w3.org/1999/02/22-rdf-syntax-ns#Statement> .
 <http://rdf.biogateway.eu/reg2utrg/prot!P04637--gene!9606/FOO> <http://www.w3.org/2004/02/skos/core#prefLabel> "involved in regulation of" .

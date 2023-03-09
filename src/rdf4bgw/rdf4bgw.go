@@ -37,7 +37,7 @@ func geneprot(datdir, bgwdir string, txn2prm util.Set2D) (err error) {
 		/////////////////////////////////////////////////////////////////////////////
 		var xmap bgw.Xmap
 		xmap.New()
-		err := export.Gene(rpthi, wpthg, &xmap)
+		err := export.Gene(rpthu, rpthi, wpthg, &xmap)
 		util.CheckE(err)
 		err = export.Prot(rpthu, rpthi, wpthp, &xmap)
 		util.CheckE(err)

@@ -84,6 +84,7 @@ import (
 func Test_Gene(t *testing.T) {
 	// TODO implement properly without duplicating the tests
 	type tt struct {
+		arg0 string // path to UP data
 		arg1 string
 		arg2 string
 		arg3 *bgw.Xmap
@@ -94,18 +95,24 @@ func Test_Gene(t *testing.T) {
 	xmap.New()
 	pth := "../../tdata/"
 	wpth := pth + "OUT/export/"
+	arg00 := pth + "uniprot/9606.upt"
 	arg01 := pth + "idmapping/UP000005640_9606.idmapping"
 	arg02 := wpth + "gene/9606.nt"
 	arg03 := &xmap
+	arg10 := pth + "uniprot/7227.upt"
 	arg11 := pth + "idmapping/UP000000803_7227.idmapping"
 	arg12 := wpth + "gene/7227.nt"
 	arg13 := &xmap
 	tts := []tt{
-		{arg01, arg02, arg03, 2, 1},
-		{arg11, arg12, arg13, 3, 2},
+		// {arg00, arg01, arg02, arg03, 2, 1},
+		// {arg00, arg01, arg02, arg03, 4, 1},
+		{arg00, arg01, arg02, arg03, 4, 3},
+		// {arg00, arg11, arg12, arg13, 3, 2},
+		// {arg10, arg11, arg12, arg13, 6, 2},
+		{arg10, arg11, arg12, arg13, 6, 5},
 	}
 	for i, tt := range tts {
-		_ = Gene(tt.arg1, tt.arg2, tt.arg3)
+		_ = Gene(tt.arg0, tt.arg1, tt.arg2, tt.arg3)
 		n := len(xmap.Lblg.Keys())
 		if n != tt.val1 {
 			t.Error(
