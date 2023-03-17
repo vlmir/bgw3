@@ -1,22 +1,22 @@
-<http://rdf.biogateway.eu/reg2ptrg/prot!P01100--gene!9606/MMP13> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#Class> .
-<http://rdf.biogateway.eu/reg2ptrg/prot!P01100--gene!9606/MMP13> <http://www.w3.org/2000/01/rdf-schema#subClassOf> <http://www.w3.org/1999/02/22-rdf-syntax-ns#Statement> .
-<http://rdf.biogateway.eu/reg2ptrg/prot!P01100--gene!9606/MMP13> <http://www.w3.org/2000/01/rdf-schema#subClassOf> <http://rdf.biogateway.eu/reg2utrg/prot!P01100--gene!9606/MMP13> .
-<http://rdf.biogateway.eu/reg2ptrg/prot!P01100--gene!9606/MMP13> <http://www.w3.org/2004/02/skos/core#prefLabel> "involved in positive regulation of" .
-<http://rdf.biogateway.eu/reg2ptrg/prot!P01100--gene!9606/MMP13> <http://www.w3.org/2004/02/skos/core#definition> "P01100 involved in positive regulation of 9606/MMP13" .
-<http://rdf.biogateway.eu/reg2ptrg/prot!P01100--gene!9606/MMP13> <http://www.w3.org/1999/02/22-rdf-syntax-ns#predicate> <http://purl.obolibrary.org/obo/RO_0002429> .
-<http://rdf.biogateway.eu/reg2ptrg/prot!P01100--gene!9606/MMP13> <http://www.w3.org/1999/02/22-rdf-syntax-ns#subject> <http://uniprot.org/uniprot/P01100> .
-<http://rdf.biogateway.eu/reg2ptrg/prot!P01100--gene!9606/MMP13> <http://www.w3.org/1999/02/22-rdf-syntax-ns#object> <http://rdf.biogateway.eu/gene/9606/MMP13> .
+<reg2ptrg/prot!P01100--gene!9606/MMP13> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#Class> .
+<reg2ptrg/prot!P01100--gene!9606/MMP13> <http://www.w3.org/2000/01/rdf-schema#subClassOf> <http://www.w3.org/1999/02/22-rdf-syntax-ns#Statement> .
+<reg2ptrg/prot!P01100--gene!9606/MMP13> <http://www.w3.org/2000/01/rdf-schema#subClassOf> <reg2utrg/prot!P01100--gene!9606/MMP13> .
+<reg2ptrg/prot!P01100--gene!9606/MMP13> <http://www.w3.org/2004/02/skos/core#prefLabel> "involved in positive regulation of" .
+<reg2ptrg/prot!P01100--gene!9606/MMP13> <http://www.w3.org/2004/02/skos/core#definition> "P01100 involved in positive regulation of 9606/MMP13" .
+<reg2ptrg/prot!P01100--gene!9606/MMP13> <http://www.w3.org/1999/02/22-rdf-syntax-ns#predicate> <http://purl.obolibrary.org/obo/RO_0002429> .
+<reg2ptrg/prot!P01100--gene!9606/MMP13> <http://www.w3.org/1999/02/22-rdf-syntax-ns#subject> <http://uniprot.org/uniprot/P01100> .
+<reg2ptrg/prot!P01100--gene!9606/MMP13> <http://www.w3.org/1999/02/22-rdf-syntax-ns#object> <http://rdf.biogateway.eu/gene/9606/MMP13> .
 <http://uniprot.org/uniprot/P01100> <http://purl.obolibrary.org/obo/RO_0002429> <http://rdf.biogateway.eu/gene/9606/MMP13> .
-<http://rdf.biogateway.eu/reg2ptrg/prot!P01100--gene!9606/MMP13#ntnu> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://rdf.biogateway.eu/reg2ptrg/prot!P01100--gene!9606/MMP13> .
-<http://rdf.biogateway.eu/reg2ptrg/prot!P01100--gene!9606/MMP13#ntnu> <http://www.w3.org/2004/02/skos/core#prefLabel> "prot!P01100--gene!9606/MMP13 from ntnu" .
-<http://rdf.biogateway.eu/reg2ptrg/prot!P01100--gene!9606/MMP13#ntnu> <http://semanticscience.org/resource/SIO_000253> <NTNU> .
-<http://rdf.biogateway.eu/reg2ptrg/prot!P01100--gene!9606/MMP13#ntnu> <http://purl.obolibrary.org/obo/RO_0002331> <http://purl.obolibrary.org/obo/MI_2247> .
-<http://rdf.biogateway.eu/reg2ptrg/prot!P01100--gene!9606/MMP13#ntnu> <http://semanticscience.org/resource/SIO_000772> <http://identifiers.org/pubmed/10779518> .
-<http://rdf.biogateway.eu/reg2ptrg/prot!P01100--gene!9606/MMP13#ntnu> <http://semanticscience.org/resource/SIO_000772> <http://identifiers.org/pubmed/11641401> .
-<http://rdf.biogateway.eu/reg2ptrg/prot!P01100--gene!9606/MMP13#ntnu> <http://semanticscience.org/resource/SIO_000772> <http://identifiers.org/pubmed/12460732> .
-<http://rdf.biogateway.eu/reg2ptrg/prot!P01100--gene!9606/MMP13#ntnu> <http://semanticscience.org/resource/SIO_000772> <http://identifiers.org/pubmed/14575638> .
-<http://rdf.biogateway.eu/reg2ptrg/prot!P01100--gene!9606/MMP13#ntnu> <http://semanticscience.org/resource/SIO_000772> <http://identifiers.org/pubmed/19038372> .
-<http://rdf.biogateway.eu/reg2ptrg/prot!P01100--gene!9606/MMP13#ntnu> <http://semanticscience.org/resource/SIO_000772> <http://identifiers.org/pubmed/19126648> .
+<reg2ptrg/prot!P01100--gene!9606/MMP13#ntnu> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <reg2ptrg/prot!P01100--gene!9606/MMP13> .
+<reg2ptrg/prot!P01100--gene!9606/MMP13#ntnu> <http://www.w3.org/2004/02/skos/core#prefLabel> "prot!P01100--gene!9606/MMP13 from ntnu" .
+<reg2ptrg/prot!P01100--gene!9606/MMP13#ntnu> <http://semanticscience.org/resource/SIO_000253> <NTNU> .
+<reg2ptrg/prot!P01100--gene!9606/MMP13#ntnu> <http://purl.obolibrary.org/obo/RO_0002331> <http://purl.obolibrary.org/obo/MI_2247> .
+<reg2ptrg/prot!P01100--gene!9606/MMP13#ntnu> <http://semanticscience.org/resource/SIO_000772> <http://identifiers.org/pubmed/10779518> .
+<reg2ptrg/prot!P01100--gene!9606/MMP13#ntnu> <http://semanticscience.org/resource/SIO_000772> <http://identifiers.org/pubmed/11641401> .
+<reg2ptrg/prot!P01100--gene!9606/MMP13#ntnu> <http://semanticscience.org/resource/SIO_000772> <http://identifiers.org/pubmed/12460732> .
+<reg2ptrg/prot!P01100--gene!9606/MMP13#ntnu> <http://semanticscience.org/resource/SIO_000772> <http://identifiers.org/pubmed/14575638> .
+<reg2ptrg/prot!P01100--gene!9606/MMP13#ntnu> <http://semanticscience.org/resource/SIO_000772> <http://identifiers.org/pubmed/19038372> .
+<reg2ptrg/prot!P01100--gene!9606/MMP13#ntnu> <http://semanticscience.org/resource/SIO_000772> <http://identifiers.org/pubmed/19126648> .
 <http://www.w3.org/2004/02/skos/core#definition> <http://www.w3.org/2000/01/rdf-schema#subPropertyOf> <http://www.w3.org/2002/07/owl#AnnotationProperty> .
 <http://www.w3.org/2004/02/skos/core#definition> <http://www.w3.org/2004/02/skos/core#prefLabel> "has definition" .
 <http://www.w3.org/2004/02/skos/core#prefLabel> <http://www.w3.org/2000/01/rdf-schema#subPropertyOf> <http://www.w3.org/2002/07/owl#AnnotationProperty> .

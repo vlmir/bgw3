@@ -125,7 +125,7 @@ func saveOneUniprot(txid string, datdir string) error {
 	return nil
 }
 
-// TODO to be tested
+// TODO change file names
 func saveOneSignor(txid string, datdir string) error {
 	subdir := "signor/"
 	ext := ".mi28"
@@ -171,8 +171,10 @@ func saveOneGaf(txid string, datdir string, gafpome string) error {
 	subdir := "goa/"
 	ext := ".gaf"
 	wpth := fmt.Sprintf("%s%s%s%s", datdir, subdir, txid, ext)
-	//if err := HttpFile(uri, wpth); err != nil {
-	if _, err := GetFile(uri, "Accept", "text", wpth); err != nil {
+	// the 3 functions generate identical files in about the same time
+	//if _, err := HttpFile(uri, wpth); err != nil {
+	if err := WgetFile(uri, wpth); err != nil {
+		//if _, err := GetFile(uri, "Accept", "text", wpth); err != nil {
 		log.Println("txid:", txid)
 		panic(err)
 	}

@@ -1025,11 +1025,17 @@ func MiTab(rpth string, filters ...util.Set3D) (duos util.Set3D, err error) {
 	return duos, nil
 } // MiTab()
 
+// orthosolo() is used by OrthoDuo()
+// retrns a map for 1 taxon, primary key sourse dabase label
 func orthosolo(datdir, txid string, txn2prm util.Set2D, idmkeys map[string]string) (util.Set3D, error) {
 	solos := make(util.Set3D)
 	subdir := "idmapping/"
 	ext := ".idmapping"
 	prmids := txn2prm[txid].Keys() // normally 1, yet multiple may occur
+	if len(prmids) > 1 {
+		msg := fmt.Sprintf("parse.orthosolo():%s: MultipleProteomes:", txid)
+		log.Println(msg, prmids)
+	}
 	for _, prmid := range prmids {
 		prmid := fmt.Sprintf("%s%s%s", prmid, "_", txid)
 		pth := fmt.Sprintf("%s%s%s%s", datdir, subdir, prmid, ext) // read
@@ -1055,6 +1061,11 @@ func orthosolo(datdir, txid string, txn2prm util.Set2D, idmkeys map[string]strin
 	return solos, nil
 } // orthosolo()
 
+// OrthoDuo() extracts orthology relations from UniProt idmappings for a pair of taxa
+// returns a map, keys:
+// primary: relation label
+// secondary: source database label
+// tertiary: relation identifier in the source database
 func OrthoDuo(datdir, txidL, txidR string, txn2prm util.Set2D, idmkeys map[string]string) (util.Set3D, error) {
 	duos := make(util.Set3D)
 	outL, err := orthosolo(datdir, txidL, txn2prm, idmkeys)

@@ -109,7 +109,7 @@ func Test_Gene(t *testing.T) {
 		{arg00, arg01, arg02, arg03, 4, 3},
 		// {arg00, arg11, arg12, arg13, 3, 2},
 		// {arg10, arg11, arg12, arg13, 6, 2},
-		{arg10, arg11, arg12, arg13, 6, 5},
+		{arg10, arg11, arg12, arg13, 6, 5}, // cumulative
 	}
 	for i, tt := range tts {
 		_ = Gene(tt.arg0, tt.arg1, tt.arg2, tt.arg3)
@@ -431,30 +431,26 @@ func Test_Prot2go(t *testing.T) {
 func Test_Ortho(t *testing.T) {
 	type tt struct {
 		arg1 util.Set3D
-		arg2 util.Set3D
 		arg3 string
 		val1 int
 	}
 	pth := "../../tdata/"
 	wpth := pth + "OUT/export/"
 	arg1 := make(util.Set3D)
-	arg2 := make(util.Set3D)
 	arg1.Add("uniprot!P02340--uniprot!P04637", "KO", "K04451")
 	arg1.Add("uniprot!P02340--uniprot!P04637", "OrthoDB", "257530at2759") // no isoforms
-	arg2.Add("P04637", "bgwp", "P04637")
-	arg2.Add("P02340", "bgwp", "P02340")
 	arg3 := wpth + "ortho/10090-9606.nt"
 	tts := []tt{
-		{arg1, arg2, arg3, 12},
+		{arg1, arg3, 12},
 	}
 	for i, tt := range tts {
-		n, err := Ortho(tt.arg1, tt.arg2, tt.arg3)
+		n, err := Ortho(tt.arg1, tt.arg3)
 		if err != nil {
 			return
 		}
 		if n != tt.val1 {
 			t.Error(
-				"For test", i+1, ": ", len(tt.arg1), tt.arg2, tt.arg3,
+				"For test", i+1, ": ", len(tt.arg1), tt.arg3,
 				"\n\twant", tt.val1,
 				"\n\thave", n,
 			)

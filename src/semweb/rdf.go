@@ -36,9 +36,8 @@ var Nss = map[string]string{
 	"ensmetazoa":  "https://metazoa.ensembl.org/id/",
 	"ensprotists": "https://protists.ensembl.org/id/",
 	"sigpway":     "https://signor.uniroma2.it/getPathwayData.php?pathway=",
-	"bgw":         "http://rdf.biogateway.eu/",
 	"gene":        "http://rdf.biogateway.eu/gene/",
-	"prot":        "http://rdf.biogateway.eu/prot/",
+	// "prot":        "http://rdf.biogateway.eu/prot/",
 }
 
 //"orthodb": "https://www.orthodb.org/?query=", // accepts IDs from UP idmapping TODO

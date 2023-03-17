@@ -781,7 +781,6 @@ func Gene(rpthU, rpthI, wpthG string, p *bgw.Xmap) error {
 		sbG.WriteString(rdf.FormT(clsGU, gnUs["sth2dfn"], rdf.FormL(dfnG)))
 		sbG.WriteString(rdf.FormT(clsGU, gnUs["sth2lbl"], rdf.FormL(gnm)))
 		for _, synG := range gsnms4oneg.Keys() {
-			fmt.Println(upids, synG)
 			sbG.WriteString(rdf.FormT(clsGU, gnUs["sth2syn"], rdf.FormL(synG)))
 			xmap.Syng.Add(synG, "bgwg", clsG)
 			xmap.Bgwg.Add(clsG, "syng", synG)
@@ -2081,8 +2080,8 @@ func Prot2prot(duos, upac2bgw util.Set3D, wpth string) (int, error) {
 	return nln, nil
 } // Prot2prot
 
-// Note: no isoforms in this graph
-func Ortho(duos, upac2bgw util.Set3D, wpth string) (int, error) {
+func Ortho(duos util.Set3D, wpth string) (int, error) {
+	// Note: no UP isoforms in this graph; only RefProt canonical accessions
 	nss := rdf.Nss // BGW URI name spaces
 	keys4b := make(util.SliceSet)
 	keys4b["Opys"] = []string{
@@ -2124,21 +2123,13 @@ func Ortho(duos, upac2bgw util.Set3D, wpth string) (int, error) {
 	rdfNS := nss["rdf"]
 	idmkeys := bgw.Orthokeys
 	cntD := 0
-	cnt := make(util.Set2D)
+	// cnt := make(util.Set2D)
 	for _, duoid := range duos.Keys() {
 		duo := duos[duoid]
 		duoU := rdf.CompU(stmNS, duoid)
 		bits := strings.Split(duoid, "--")
-		oriL := strings.Split(bits[0], "!")[1] // UniProt Accession
-		oriR := strings.Split(bits[1], "!")[1] // UniProt Accession
-		bgwLs := upac2bgw[oriL]["bgwp"].Keys()
-		bgwRs := upac2bgw[oriR]["bgwp"].Keys()
-		if l := counter(bgwLs, cnt, "addP", "dropP", oriL); l == 0 {
-			continue
-		}
-		if l := counter(bgwRs, cnt, "addP", "dropP", oriR); l == 0 {
-			continue
-		}
+		oriL := strings.Split(bits[0], "!")[1] // UniProt Canonical Accession
+		oriR := strings.Split(bits[1], "!")[1] // UniProt Canonical Accession
 		sb.WriteString(rdf.FormT(duoU, ourUs["ins2cls"], clsU))
 		nln++
 		sb.WriteString(rdf.FormT(duoU, ourUs["sub2cls"], ourUs["stm"]))
@@ -2152,22 +2143,16 @@ func Ortho(duos, upac2bgw util.Set3D, wpth string) (int, error) {
 		pdc := "orl2orl"
 		sb.WriteString(rdf.FormT(duoU, rdf.CompU(rdfNS, "predicate"), ourUs[pdc]))
 		nln++
-		// multiple subjects and objects
-		// 53 human UP ACs with multiple BGW IDs
-		for _, bgwL := range bgwLs { // sorted above
-			uriL := rdf.CompU(nss["uniprot"], bgwL)
-			sb.WriteString(rdf.FormT(duoU, rdf.CompU(rdfNS, "subject"), uriL))
-			nln++
-			for _, bgwR := range bgwRs { // sorted above
-				uriR := rdf.CompU(nss["uniprot"], bgwR)
-				sb.WriteString(rdf.FormT(duoU, rdf.CompU(rdfNS, "object"), uriR))
-				nln++
-				sb.WriteString(rdf.FormT(uriL, ourUs[pdc], uriR))
-				nln++
-				sb.WriteString(rdf.FormT(uriR, ourUs[pdc], uriL))
-				nln++
-			}
-		}
+		uriL := rdf.CompU(nss["uniprot"], oriL)
+		sb.WriteString(rdf.FormT(duoU, rdf.CompU(rdfNS, "subject"), uriL))
+		nln++
+		uriR := rdf.CompU(nss["uniprot"], oriR)
+		sb.WriteString(rdf.FormT(duoU, rdf.CompU(rdfNS, "object"), uriR))
+		nln++
+		sb.WriteString(rdf.FormT(uriL, ourUs[pdc], uriR))
+		nln++
+		sb.WriteString(rdf.FormT(uriR, ourUs[pdc], uriL))
+		nln++
 		// TODO add relations uriL/R memberOf setU
 
 		/// instances

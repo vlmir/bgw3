@@ -330,7 +330,9 @@ func prot2go(datdir, bgwdir string, txn2prm util.Set2D, fx string) (int, error) 
 			bps, ccs, mfs, err = parse.Gaf(rpth)
 		} else {
 			msg := fmt.Sprintf("%s: UnrecognizedFileExtension: %s", txid, fx)
-			panic(errors.New(msg))
+			log.Println("rdf4bgw.prot2go():", msg)
+			continue // TODO test this
+			// panic(errors.New(msg))
 		}
 		if err != nil {
 			msg := fmt.Sprintf("rdf4bgw.go:main.prot2go():%s: %s", err, txid)
@@ -417,30 +419,11 @@ func ortho(datdir, bgwdir string, txn2prm util.Set2D) (int, error) {
 				log.Println(msg)
 			} // NoData
 			/////////////////////////////////////////////////////////////////////////////
-			up2bgw := make(util.Set3D)
-			subdir := "xmap/"
-			ext := ".json"
-			// building up2bgw for one pair of taxa
-			for _, txid := range txids {
-				rpthx := fmt.Sprintf("%s%s%s%s", bgwdir, subdir, txid, ext) // read BGW map json
-				var xmap bgw.Xmap
-				xmap.New()
-				err := xmap.Unmarshal(rpthx)
-				util.CheckE(err)
-				upac2bgw := xmap.Upac
-				for upac, all := range upac2bgw {
-					for src, one := range all {
-						for id, _ := range one {
-							up2bgw.Add(upac, src, id)
-						}
-					}
-				}
-			}
-			subdir = "ortho/"
-			ext = ".nt"
+			subdir := "ortho/"
+			ext := ".nt"
 			file := fmt.Sprintf("%s%s%s%s", txidL, "-", txidR, ext)
 			wpth := fmt.Sprintf("%s%s%s", bgwdir, subdir, file)
-			nts, err := export.Ortho(duos, up2bgw, wpth)
+			nts, err := export.Ortho(duos, wpth)
 			if err != nil {
 				msg := fmt.Sprintf("rdf4bgw.go:main.ortho():%s:%v", err, txids)
 				log.Println(msg)
