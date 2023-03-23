@@ -1035,7 +1035,7 @@ func orthosolo(datdir, txid string, txn2prm util.Set2D, idmkeys map[string]strin
 	if len(prmids) > 1 {
 		msg := fmt.Sprintf("parse.orthosolo():%s: MultipleProteomes:", txid)
 		log.Println(msg, prmids)
-	}
+	} // never occors
 	for _, prmid := range prmids {
 		prmid := fmt.Sprintf("%s%s%s", prmid, "_", txid)
 		pth := fmt.Sprintf("%s%s%s%s", datdir, subdir, prmid, ext) // read

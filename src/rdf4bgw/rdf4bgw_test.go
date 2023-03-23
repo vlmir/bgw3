@@ -123,7 +123,7 @@ func Test_ortho(t *testing.T) {
 	arg3[0].Add("9606", "ortho")
 	arg3[0].Add("10090", "ortho")
 	tts := []tt{
-		{pth, wpth, arg3[0], 24},
+		{pth, wpth, arg3[0], 28},
 	}
 	for i, tt := range tts {
 		n, _ := ortho(tt.arg1, tt.arg2, tt.arg3)

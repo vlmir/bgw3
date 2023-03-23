@@ -1958,7 +1958,6 @@ func Prot2prot(duos, upac2bgw util.Set3D, wpth string) (int, error) {
 		refs := duo["pubmedIds"].Keys()
 		refs = util.X1type(refs, "pubmed", ":")
 
-		duoU := rdf.CompU(stmNS, duoid)
 		bits := strings.Split(duoid, "--")
 		idL := bits[0]
 		idR := bits[1]
@@ -1966,8 +1965,10 @@ func Prot2prot(duos, upac2bgw util.Set3D, wpth string) (int, error) {
 		oriL = strings.Split(oriL, "-")[0] // UP canonical accession
 		oriR := strings.Split(idR, "!")[1] // UP accession
 		oriR = strings.Split(oriR, "-")[0] // UP canonical accession
-		bgwLs := upac2bgw[oriL]["bgwp"].Keys()
-		bgwRs := upac2bgw[oriR]["bgwp"].Keys()
+		duoid = fmt.Sprintf("uniprot!%s--uniprot!%s", oriL, oriR) // redefining
+		duoU := rdf.CompU(stmNS, duoid)
+		bgwLs := upac2bgw[oriL]["bgwp"].Keys() // needed for filtering by RefProt
+		bgwRs := upac2bgw[oriR]["bgwp"].Keys() // needed for filtering by RefProt
 		if l := counter(bgwLs, cnt, "addP", "dropP", oriL); l == 0 {
 			continue
 		}
@@ -2086,6 +2087,7 @@ func Ortho(duos util.Set3D, wpth string) (int, error) {
 	keys4b := make(util.SliceSet)
 	keys4b["Opys"] = []string{
 		"orl2orl",
+		"mbr2lst",
 		"ins2cls",
 		"sth2src",
 		"sub2cls",
@@ -2123,7 +2125,6 @@ func Ortho(duos util.Set3D, wpth string) (int, error) {
 	rdfNS := nss["rdf"]
 	idmkeys := bgw.Orthokeys
 	cntD := 0
-	// cnt := make(util.Set2D)
 	for _, duoid := range duos.Keys() {
 		duo := duos[duoid]
 		duoU := rdf.CompU(stmNS, duoid)
@@ -2153,7 +2154,6 @@ func Ortho(duos util.Set3D, wpth string) (int, error) {
 		nln++
 		sb.WriteString(rdf.FormT(uriR, ourUs[pdc], uriL))
 		nln++
-		// TODO add relations uriL/R memberOf setU
 
 		/// instances
 		for _, srck := range duo.Keys() {
@@ -2176,7 +2176,11 @@ func Ortho(duos util.Set3D, wpth string) (int, error) {
 				}
 				lastbit := fmt.Sprintf("%s%s", prefix, setid)
 				setU := rdf.FormU(fmt.Sprintf("%s%s", nss[src], lastbit))
-				sb.WriteString(rdf.FormT(insU, ourUs["sub2set"], setU))
+				sb.WriteString(rdf.FormT(insU, ourUs["sub2set"], setU)) // part_of
+				nln++
+				sb.WriteString(rdf.FormT(uriL, ourUs["mbr2lst"], setU))
+				nln++
+				sb.WriteString(rdf.FormT(uriR, ourUs["mbr2lst"], setU))
 				nln++
 			}
 		}
@@ -2185,11 +2189,6 @@ func Ortho(duos util.Set3D, wpth string) (int, error) {
 		sb.Reset()
 	} // duoid
 	msg := ""
-	if cntD == 0 {
-		msg = fmt.Sprintf("export.Ortho(): NoDuos")
-		//panic(errors.New(msg))
-		log.Printf("%s", msg)
-	} // ultimately probable for very distant species
 	msg = fmt.Sprintf("export.Ortho(): Pairs: added: %d dropped: %d", cntD, len(duos)-cntD)
 	log.Println(msg)
 	/*

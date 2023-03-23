@@ -441,7 +441,7 @@ func Test_Ortho(t *testing.T) {
 	arg1.Add("uniprot!P02340--uniprot!P04637", "OrthoDB", "257530at2759") // no isoforms
 	arg3 := wpth + "ortho/10090-9606.nt"
 	tts := []tt{
-		{arg1, arg3, 12},
+		{arg1, arg3, 14},
 	}
 	for i, tt := range tts {
 		n, err := Ortho(tt.arg1, tt.arg3)
