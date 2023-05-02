@@ -48,6 +48,7 @@ func Test_Tab2struct(t *testing.T) {
 		arg4 *bgw.Dat4bridge
 		val  int
 	}
+	d4bs := make([]bgw.Dat4bridge, 0, 5)
 	keys0 := []bgw.Column{
 		{0, ":", 1, "--", 0, ""},
 		{1, ":", 1, "--", 0, ""},
@@ -58,27 +59,37 @@ func Test_Tab2struct(t *testing.T) {
 	}
 	keys1, vals1 := bgw.TftgParseConf()
 	keys2, vals2 := bgw.SignorParseConf()
-	var d4b bgw.Dat4bridge
-	d4b.New()
-	arg4 := &d4b
+	keys3, vals3 := bgw.TflinkParseConf()
+	var d4b0 bgw.Dat4bridge
+	var d4b1 bgw.Dat4bridge
+	var d4b2 bgw.Dat4bridge
+	var d4b3 bgw.Dat4bridge
+	d4b0.New()
+	d4b1.New()
+	d4b2.New()
+	d4b3.New()
+	d4bs = append(d4bs, d4b0, d4b1, d4b2, d4b3)
 	pth := "../../tdata/"
 	tts := []tt{
-		{pth + "intact/9606.mit", keys0, vals0, arg4, 2},
-		{pth + "static/tfacts/9606.f2g", keys1, vals1, arg4, 5},
-		{pth + "signor/9606.mi28", keys2, vals2, arg4, 15},
+		{pth + "intact/9606.mit", keys0, vals0, &d4bs[0], 2},
+		{pth + "static/tfacts/9606.f2g", keys1, vals1, &d4bs[1], 5},
+		{pth + "signor/9606.mi28", keys2, vals2, &d4bs[2], 15},
+		{pth + "tflink/9606.tsv", keys3, vals3, &d4bs[3], 6},
 	}
 	keys := []string{
 		"P04637--P04637",
 		"AP1--SPP1",
 		"uniprotkb:Q9BTC0--uniprotkb:P08648",
+		//		"uniprot:Q9H9S0--geneid:22943",
+		"NANOG--DKK1",
 	}
 	for i, tt := range tts {
 		_ = Tab2struct(tt.arg1, tt.arg2, tt.arg3, tt.arg4)
-		if len(d4b.Duos[keys[i]]) != tt.val {
+		if len(d4bs[i].Duos[keys[i]]) != tt.val {
 			t.Error(
 				"For test", i+1, ": ", tt.arg1, tt.arg2, tt.arg3,
 				"\n\twant", tt.val,
-				"\n\thave", len(d4b.Duos[keys[i]]),
+				"\n\thave", len(d4bs[i].Duos[keys[i]]),
 			)
 		}
 	}
@@ -193,7 +204,7 @@ func Test_Tab2set3D(t *testing.T) {
 //			)
 //		}
 //	}
-//}
+//} UpTab()
 
 func Test_UpVar(t *testing.T) {
 	type tt struct {

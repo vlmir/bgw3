@@ -75,6 +75,8 @@ func Tfac2gene(d *bgw.Dat4bridge, x *bgw.Xmap, wdir string) error {
 	modes.Add("tfacts", "DOWN", n2t)
 	modes.Add("ntnu", "+", p2t)
 	modes.Add("ntnu", "-", n2t)
+	modes.Add("tflink", "activator", p2t)
+	modes.Add("tflink", "repressor", n2t)
 	sdir := "tfac2gene"
 	wpths := map[string]string{
 		p2t: fmt.Sprintf("%s%s/%s-%s-%s.nt", wdir, sdir, "p", src, txid),
@@ -111,13 +113,14 @@ func Tfac2gene(d *bgw.Dat4bridge, x *bgw.Xmap, wdir string) error {
 	duos := d4b.Duos
 	entAns := nss["uniprot"] // sic, never changes
 	entBns := nss["gene"]    // sic, never changes
-	for _, duoid := range duos.Keys() {
-		duo := duos[duoid]
-		oriAB := strings.Split(duoid, "--")
+	flags := make(util.Set1D) // for printing the header only once per file
+	for _, duokey := range duos.Keys() {
+		duo := duos[duokey]
+		oriAB := strings.Split(duokey, "--")
 		oriBid := oriAB[1] // gene symbol
 
-		var allAids []string // UP canonical ACs for one duoid
-		var allBids []string // gene symbols for one duoid
+		var allAids []string // UP canonical ACs for one duokey
+		var allBids []string // gene symbols for one duokey
 		allAids = duo["uniprot"].Keys()
 		allBids = duo["ncbig"].Keys() // NCBI GeneID, single
 		allBids = append(allBids, oriBid)
@@ -132,64 +135,46 @@ func Tfac2gene(d *bgw.Dat4bridge, x *bgw.Xmap, wdir string) error {
 		}
 
 		//  assigning predicate depending of  the direction of regulation
-		pdcks := []string{u2t} // all predicate keys for one duoid, u2t first
+		pdcks := []string{u2t} // all predicate keys for one duokey, u2t first
 		for _, onemod := range duo["mode"].Keys() {
 			// keys for predicates
 			for _, pdck := range modes[src][onemod].Keys() {
 				pdcks = append(pdcks, pdck)
 			}
 		} // onemod
-
-		prnU := ""
 		for _, pdck := range pdcks {
-			stmns := fmt.Sprintf("%s%s/", nss["bgw"], pdck)
+			clsns := fmt.Sprintf("%s%s/", nss["bgw"], pdck)
 			var sb strings.Builder
 			//sb.WriteString(rdf.FormT(graphU, ourUs["sth2src"], srcU))
 			for _, entAid := range bgwAids {
 				for _, entBid := range bgwBids {
 					cnts.Add(pdck, src)
-					stmid := fmt.Sprintf("prot!%s--gene!%s", entAid, entBid)
-					stmU := rdf.CompU(stmns, stmid)
+					clsid := fmt.Sprintf("uniprot!%s--gene!%s", entAid, entBid)
+					clsU := rdf.CompU(clsns, clsid)
 					entAU := rdf.CompU(entAns, entAid)
 					entBU := rdf.CompU(entBns, entBid)
-					sb.WriteString(rdf.FormT(stmU, ourUs["ins2cls"], rdf.CompU(nss["owl"], "Class")))
-					sb.WriteString(rdf.FormT(stmU, ourUs["sub2cls"], ourUs["stm"]))
-					if pdck == u2t {
-						prnU = stmU
-					} else {
-						sb.WriteString(rdf.FormT(stmU, ourUs["sub2cls"], prnU))
-					}
-					stmlbl := rdf.Opys[pdck][2]
-					sb.WriteString(rdf.FormT(stmU, ourUs["sth2lbl"], rdf.FormL(stmlbl)))
-					stmdfn := fmt.Sprintf("%s %s %s", entAid, stmlbl, entBid)
-					sb.WriteString(rdf.FormT(stmU, ourUs["sth2dfn"], rdf.FormL(stmdfn)))
-					sb.WriteString(rdf.FormT(stmU, rdf.CompU(rdfns, "predicate"), ourUs[pdck]))
-					sb.WriteString(rdf.FormT(stmU, rdf.CompU(rdfns, "subject"), entAU))
-					sb.WriteString(rdf.FormT(stmU, rdf.CompU(rdfns, "object"), entBU))
+					sb.WriteString(rdf.FormT(clsU, ourUs["ins2cls"], rdf.CompU(nss["owl"], "Class")))
+					sb.WriteString(rdf.FormT(clsU, ourUs["sub2cls"], ourUs["stm"]))
+					sb.WriteString(rdf.FormT(clsU, ourUs["sth2lbl"], rdf.FormL(clsid)))
+					clsdfn := fmt.Sprintf("%s %s %s", entAid, rdf.Opys[pdck][2], entBid)
+					sb.WriteString(rdf.FormT(clsU, ourUs["sth2dfn"], rdf.FormL(clsdfn)))
+					sb.WriteString(rdf.FormT(clsU, rdf.CompU(rdfns, "predicate"), ourUs[pdck]))
+					sb.WriteString(rdf.FormT(clsU, rdf.CompU(rdfns, "subject"), entAU))
+					sb.WriteString(rdf.FormT(clsU, rdf.CompU(rdfns, "object"), entBU))
 					sb.WriteString(rdf.FormT(entAU, ourUs[pdck], entBU))
 
 					/// INSTANCES
-					insid := fmt.Sprintf("%s%s%s", stmid, "#", src)
-					insU := rdf.CompU(stmns, insid)
-					inslbl := fmt.Sprintf("%s%s%s", stmid, " from ", src) // changed
-					sb.WriteString(rdf.FormT(insU, ourUs["ins2cls"], stmU))
-					for _, id := range duo["stmid"].Keys() {
-						id = strings.Replace(id, ":", "_", 1)
-						sb.WriteString(rdf.FormT(insU, ourUs["ins2cls"], rdf.CompU(nss["obo"], id)))
-					}
-					sb.WriteString(rdf.FormT(insU, ourUs["sth2lbl"], rdf.FormL(inslbl)))
+					insU := fmt.Sprintf("%s%s%s", clsU, "#", src)
+					sb.WriteString(rdf.FormT(insU, ourUs["ins2cls"], clsU))
+					sb.WriteString(rdf.FormT(insU, ourUs["sth2lbl"], rdf.FormL(clsid)))
 					sb.WriteString(rdf.FormT(insU, ourUs["sth2src"], srcU))
-					id := "MI:2247"
+					id := "MI:2247" // transcriptional regulation
 					id = strings.Replace(id, ":", "_", 1)
 					sb.WriteString(rdf.FormT(insU, ourUs["gp2bp"], rdf.CompU(nss["obo"], id)))
-					for _, id := range duo["reglevelid"].Keys() {
+					for _, id := range duo["mtdid"].Keys() {
 						id = strings.Replace(id, ":", "_", 1)
-						sb.WriteString(rdf.FormT(insU, ourUs["gp2bp"], rdf.CompU(nss["obo"], id)))
-					}
-					for _, id := range duo["typeABid"].Keys() {
-						id = strings.Replace(id, ":", "_", 1)
-						sb.WriteString(rdf.FormT(insU, ourUs["sth2rlm"], rdf.CompU(nss["obo"], id)))
-					}
+						sb.WriteString(rdf.FormT(insU, ourUs["sth2mtd"], rdf.CompU(nss["obo"], id)))
+					} // only for tflink
 					// clean up of the mess in the data
 					for _, key := range duo["pubmed"].Keys() {
 						b := util.IsDigital(key)
@@ -200,24 +185,30 @@ func Tfac2gene(d *bgw.Dat4bridge, x *bgw.Xmap, wdir string) error {
 						sb.WriteString(rdf.FormT(insU, ourUs["sth2evd"], pubmedU))
 					}
 					for _, key := range duo["score"].Keys() {
+						bits := strings.Split(key, ":")
+						if len(bits) == 2 {
+							if bits[1] == "Yes" {
+								key = "High"
+							} else {
+								key = "Low"
+							}
+						}
 						sb.WriteString(rdf.FormT(insU, ourUs["evd2lvl"], rdf.FormL(key)))
 					}
 				} // entBid
 			} // entAid
-			fh := fhs[pdck]
-			fh.Write([]byte(sb.String()))
+			if cnts[pdck][src] > 0 {
+				flags.Add(pdck)
+				fh := fhs[pdck]
+				if flags[pdck] == 1 {
+				fh.Write([]byte(header))
+				}
+				fh.Write([]byte(sb.String()))
+				flags[pdck]++
+			}
 		} // pdck
-	} // duoid
+	} // duokey
 	log.Println("export.Tfac2gene():", src, txid, cnts)
-	if cnts[p2t][src] > 0 {
-		fh4p.Write([]byte(header))
-	}
-	if cnts[n2t][src] > 0 {
-		fh4n.Write([]byte(header))
-	}
-	if cnts[u2t][src] > 0 {
-		fh4u.Write([]byte(header))
-	}
 	return nil
 } // Tfac2gene
 
@@ -270,14 +261,15 @@ func SigPways(d *bgw.Dat4bridge, x *bgw.Xmap, wdir string) error {
 	mytypes := []string{"complex", "protein", "proteinfamily"} // for filetering
 	entAns := nss["uniprot"]                                   // sic, never changes
 	entBns := nss["uniprot"]                                   // sic, never changes
-	for _, duoid := range duos.Keys() {
-		duo := duos[duoid]
+	flags := make(util.Set1D) // for printing the header only once per file
+	for _, duokey := range duos.Keys() {
+		duo := duos[duokey]
 		// if duo["txid"].Keys()[0] != txid {continue} // filtering by host
 		oriAid := duo["Aid"].Keys()[0] // assuming a single value
 		oriBid := duo["Bid"].Keys()[0] // assuming a single value
 
-		var allAids []string // UP ACs for one duoid
-		var allBids []string // UP ACs for one duoid
+		var allAids []string // UP ACs for one duokey
+		var allBids []string // UP ACs for one duokey
 		typeAs := duo["typeAlbl"].Keys()
 		typeBs := duo["typeBlbl"].Keys()
 		// currently 3 types for both A and B entities
@@ -290,11 +282,11 @@ func SigPways(d *bgw.Dat4bridge, x *bgw.Xmap, wdir string) error {
 		}
 		// skipping pairs with ambiguous entyty types - never happens
 		if len(typeAs) > 1 {
-			fmt.Printf("%s%s %s %s", "export.SigPways(): multiple entity A types, skipping: ", src, duoid, typeAs)
+			fmt.Printf("%s%s %s %s", "export.SigPways(): multiple entity A types, skipping: ", src, duokey, typeAs)
 			continue
 		}
 		if len(typeBs) > 1 {
-			fmt.Printf("%s%s %s %s", "export.SigPways(): multiple entity B types, skipping: ", src, duoid, typeBs)
+			fmt.Printf("%s%s %s %s", "export.SigPways(): multiple entity B types, skipping: ", src, duokey, typeBs)
 			continue
 		}
 		typeA := typeAs[0]
@@ -329,7 +321,7 @@ func SigPways(d *bgw.Dat4bridge, x *bgw.Xmap, wdir string) error {
 		}
 
 		//  assigning predicate depending of  the direction of regulation
-		pdcks := []string{u2t} // all predicate keys for one duoid, u2t first
+		pdcks := []string{u2t} // all predicate keys for one duokey, u2t first
 		for _, onemod := range duo["modelbl"].Keys() {
 			onemod = strings.Split(onemod, " ")[0]
 			// keys for predicates
@@ -338,44 +330,31 @@ func SigPways(d *bgw.Dat4bridge, x *bgw.Xmap, wdir string) error {
 			}
 		} // onemod
 
-		prnU := ""
 		for _, pdck := range pdcks {
-			stmns := fmt.Sprintf("%s%s/", nss["bgw"], pdck)
+			clsns := fmt.Sprintf("%s%s/", nss["bgw"], pdck)
 			var sb strings.Builder
 			//sb.WriteString(rdf.FormT(graphU, ourUs["sth2src"], srcU))
 			for _, entAid := range bgwAids {
 				for _, entBid := range bgwBids {
 					cnts.Add(pdck, src)
-					stmid := fmt.Sprintf("prot!%s--prot!%s", entAid, entBid)
-					stmU := rdf.CompU(stmns, stmid)
+					clsid := fmt.Sprintf("uniprot!%s--uniprot!%s", entAid, entBid)
+					clsU := rdf.CompU(clsns, clsid)
 					entAU := rdf.CompU(entAns, entAid)
 					entBU := rdf.CompU(entBns, entBid)
-					sb.WriteString(rdf.FormT(stmU, ourUs["ins2cls"], rdf.CompU(nss["owl"], "Class")))
-					sb.WriteString(rdf.FormT(stmU, ourUs["sub2cls"], ourUs["stm"]))
-					if pdck == u2t {
-						prnU = stmU
-					} else {
-						sb.WriteString(rdf.FormT(stmU, ourUs["sub2cls"], prnU))
-					}
-					stmlbl := rdf.Opys[pdck][2]
-					sb.WriteString(rdf.FormT(stmU, ourUs["sth2lbl"], rdf.FormL(stmlbl)))
-					stmdfn := fmt.Sprintf("%s %s %s", entAid, stmlbl, entBid)
-					sb.WriteString(rdf.FormT(stmU, ourUs["sth2dfn"], rdf.FormL(stmdfn)))
-					sb.WriteString(rdf.FormT(stmU, rdf.CompU(rdfns, "predicate"), ourUs[pdck]))
-					sb.WriteString(rdf.FormT(stmU, rdf.CompU(rdfns, "subject"), entAU))
-					sb.WriteString(rdf.FormT(stmU, rdf.CompU(rdfns, "object"), entBU))
+					sb.WriteString(rdf.FormT(clsU, ourUs["ins2cls"], rdf.CompU(nss["owl"], "Class")))
+					sb.WriteString(rdf.FormT(clsU, ourUs["sub2cls"], ourUs["stm"]))
+					sb.WriteString(rdf.FormT(clsU, ourUs["sth2lbl"], rdf.FormL(clsid)))
+					clsdfn := fmt.Sprintf("%s %s %s", entAid, rdf.Opys[pdck][2], entBid)
+					sb.WriteString(rdf.FormT(clsU, ourUs["sth2dfn"], rdf.FormL(clsdfn)))
+					sb.WriteString(rdf.FormT(clsU, rdf.CompU(rdfns, "predicate"), ourUs[pdck]))
+					sb.WriteString(rdf.FormT(clsU, rdf.CompU(rdfns, "subject"), entAU))
+					sb.WriteString(rdf.FormT(clsU, rdf.CompU(rdfns, "object"), entBU))
 					sb.WriteString(rdf.FormT(entAU, ourUs[pdck], entBU))
 
 					/// INSTANCES
-					insid := fmt.Sprintf("%s%s%s", stmid, "#", src)
-					insU := rdf.CompU(stmns, insid)
-					inslbl := fmt.Sprintf("%s%s%s", stmid, " from ", src) // changed
-					sb.WriteString(rdf.FormT(insU, ourUs["ins2cls"], stmU))
-					for _, id := range duo["stmid"].Keys() {
-						id = strings.Replace(id, ":", "_", 1)
-						sb.WriteString(rdf.FormT(insU, ourUs["ins2cls"], rdf.CompU(nss["obo"], id)))
-					}
-					sb.WriteString(rdf.FormT(insU, ourUs["sth2lbl"], rdf.FormL(inslbl)))
+					insU := fmt.Sprintf("%s%s%s", clsU, "#", src)
+					sb.WriteString(rdf.FormT(insU, ourUs["ins2cls"], clsU))
+					sb.WriteString(rdf.FormT(insU, ourUs["sth2lbl"], rdf.FormL(clsid)))
 					sb.WriteString(rdf.FormT(insU, ourUs["sth2src"], srcU))
 					for _, id := range duo["cellid"].Keys() {
 						id = strings.Replace(id, ":", "_", 1)
@@ -405,20 +384,18 @@ func SigPways(d *bgw.Dat4bridge, x *bgw.Xmap, wdir string) error {
 					}
 				} // entBid
 			} // entAid
-			fh := fhs[pdck]
-			fh.Write([]byte(sb.String()))
+			if cnts[pdck][src] > 0 {
+				flags.Add(pdck)
+				fh := fhs[pdck]
+				if flags[pdck] == 1 {
+				fh.Write([]byte(header))
+				}
+				fh.Write([]byte(sb.String()))
+				flags[pdck]++
+			}
 		} // pdck
-	} // duoid
+	} // duokey
 	log.Println("export.SigPways():", src, txid, cnts)
-	if cnts[p2t][src] > 0 {
-		fh4p.Write([]byte(header))
-	}
-	if cnts[n2t][src] > 0 {
-		fh4n.Write([]byte(header))
-	}
-	if cnts[u2t][src] > 0 {
-		fh4u.Write([]byte(header))
-	}
 	return nil
 } // SigPways
 
@@ -475,8 +452,9 @@ func Rgr2trg(d *bgw.Dat4bridge, x *bgw.Xmap, wdir string) error {
 	myRegTypes := []string{}                                        // for filetering
 	entAns := nss["uniprot"]                                        // sic, never changes
 	entBns := nss["uniprot"]                                        // sic, never changes
-	for _, duoid := range duos.Keys() {
-		duo := duos[duoid]
+	flags := make(util.Set1D) // for printing the header only once per file
+	for _, duokey := range duos.Keys() {
+		duo := duos[duokey]
 		oriAid := duo["Aid"].Keys()[0] // justly assuming a single value
 		oriBid := duo["Bid"].Keys()[0] // justly assuming a single value
 		Abits := strings.Split(oriAid, "\"")
@@ -497,8 +475,8 @@ func Rgr2trg(d *bgw.Dat4bridge, x *bgw.Xmap, wdir string) error {
 		} else {
 			oriBid = strings.Replace(Bbits[1], ":", "_", 1)
 		}
-		var allAids []string // UP ACs for one duoid
-		var allBids []string // UP ACs for one duoid
+		var allAids []string // UP ACs for one duokey
+		var allBids []string // UP ACs for one duokey
 		// filtering by the level of regulation
 		if len(myRegTypes) != 0 {
 			if len(util.Shared(myRegTypes, duo["reglevelid"].Keys())) == 0 {
@@ -516,11 +494,11 @@ func Rgr2trg(d *bgw.Dat4bridge, x *bgw.Xmap, wdir string) error {
 		}
 		// skipping pairs with ambiguous entyty types - never happens
 		if len(typeAs) > 1 {
-			fmt.Printf("%s%s %s %s", "export.Rgr2trg(): multiple entity A types, skipping: ", src, duoid, typeAs)
+			fmt.Printf("%s%s %s %s", "export.Rgr2trg(): multiple entity A types, skipping: ", src, duokey, typeAs)
 			continue
 		}
 		if len(typeBs) > 1 {
-			fmt.Printf("%s%s %s %s", "export.Rgr2trg(): multiple entity B types, skipping: ", src, duoid, typeBs)
+			fmt.Printf("%s%s %s %s", "export.Rgr2trg(): multiple entity B types, skipping: ", src, duokey, typeBs)
 			continue
 		}
 		typeA := typeAs[0] // assuming a single vwlue
@@ -555,7 +533,7 @@ func Rgr2trg(d *bgw.Dat4bridge, x *bgw.Xmap, wdir string) error {
 		}
 
 		//  assigning predicate depending of  the direction of regulation
-		pdcks := []string{u2t} // all predicate keys for one duoid, u2t first
+		pdcks := []string{u2t} // all predicate keys for one duokey, u2t first
 		for _, onemod := range duo["modelbl"].Keys() {
 			onemod = util.StripParQuots(onemod)
 			onemod = strings.Split(onemod, " ")[0]
@@ -565,44 +543,32 @@ func Rgr2trg(d *bgw.Dat4bridge, x *bgw.Xmap, wdir string) error {
 			}
 		} // onemod
 
-		prnU := ""
 		for _, pdck := range pdcks {
-			stmns := fmt.Sprintf("%s%s/", nss["bgw"], pdck)
+			clsns := fmt.Sprintf("%s%s/", nss["bgw"], pdck)
 			var sb strings.Builder
 			//sb.WriteString(rdf.FormT(graphU, ourUs["sth2src"], srcU))
 			for _, entAid := range bgwAids {
 				for _, entBid := range bgwBids {
 					cnts.Add(pdck, src)
-					stmid := fmt.Sprintf("prot!%s--prot!%s", entAid, entBid)
-					stmU := rdf.CompU(stmns, stmid)
+					clsid := fmt.Sprintf("uniprot!%s--uniprot!%s", entAid, entBid)
+					clsU := rdf.CompU(clsns, clsid)
 					entAU := rdf.CompU(entAns, entAid)
 					entBU := rdf.CompU(entBns, entBid)
-					sb.WriteString(rdf.FormT(stmU, ourUs["ins2cls"], rdf.CompU(nss["owl"], "Class")))
-					sb.WriteString(rdf.FormT(stmU, ourUs["sub2cls"], ourUs["stm"]))
-					if pdck == u2t {
-						prnU = stmU
-					} else {
-						sb.WriteString(rdf.FormT(stmU, ourUs["sub2cls"], prnU))
-					}
-					stmlbl := rdf.Opys[pdck][2]
-					sb.WriteString(rdf.FormT(stmU, ourUs["sth2lbl"], rdf.FormL(stmlbl)))
-					stmdfn := fmt.Sprintf("%s %s %s", entAid, stmlbl, entBid)
-					sb.WriteString(rdf.FormT(stmU, ourUs["sth2dfn"], rdf.FormL(stmdfn)))
-					sb.WriteString(rdf.FormT(stmU, rdf.CompU(rdfns, "predicate"), ourUs[pdck]))
-					sb.WriteString(rdf.FormT(stmU, rdf.CompU(rdfns, "subject"), entAU))
-					sb.WriteString(rdf.FormT(stmU, rdf.CompU(rdfns, "object"), entBU))
+					sb.WriteString(rdf.FormT(clsU, ourUs["ins2cls"], rdf.CompU(nss["owl"], "Class")))
+					sb.WriteString(rdf.FormT(clsU, ourUs["sub2cls"], ourUs["stm"]))
+					sb.WriteString(rdf.FormT(clsU, ourUs["sth2lbl"], rdf.FormL(clsid)))
+					clsdfn := fmt.Sprintf("%s %s %s", entAid, rdf.Opys[pdck][2], entBid)
+					sb.WriteString(rdf.FormT(clsU, ourUs["sth2dfn"], rdf.FormL(clsdfn)))
+					sb.WriteString(rdf.FormT(clsU, rdf.CompU(rdfns, "predicate"), ourUs[pdck]))
+					sb.WriteString(rdf.FormT(clsU, rdf.CompU(rdfns, "subject"), entAU))
+					sb.WriteString(rdf.FormT(clsU, rdf.CompU(rdfns, "object"), entBU))
 					sb.WriteString(rdf.FormT(entAU, ourUs[pdck], entBU))
 
 					/// INSTANCES
-					insid := fmt.Sprintf("%s%s%s", stmid, "#", src)
-					insU := rdf.CompU(stmns, insid)
-					inslbl := fmt.Sprintf("%s%s%s", stmid, " from ", src) // changed
-					sb.WriteString(rdf.FormT(insU, ourUs["ins2cls"], stmU))
-					for _, id := range duo["stmid"].Keys() {
-						id = strings.Replace(id, ":", "_", 1)
-						sb.WriteString(rdf.FormT(insU, ourUs["ins2cls"], rdf.CompU(nss["obo"], id)))
-					}
-					sb.WriteString(rdf.FormT(insU, ourUs["sth2lbl"], rdf.FormL(inslbl)))
+					insU := fmt.Sprintf("%s%s%s", clsU, "#", src)
+					// inslbl := fmt.Sprintf("%s%s%s", clsid, " from ", src) // changed
+					sb.WriteString(rdf.FormT(insU, ourUs["ins2cls"], clsU))
+					sb.WriteString(rdf.FormT(insU, ourUs["sth2lbl"], rdf.FormL(clsid)))
 					sb.WriteString(rdf.FormT(insU, ourUs["sth2src"], srcU))
 					for _, id := range duo["reglevelid"].Keys() {
 						id = strings.Replace(id, ":", "_", 1)
@@ -621,20 +587,18 @@ func Rgr2trg(d *bgw.Dat4bridge, x *bgw.Xmap, wdir string) error {
 					}
 				} // entBid
 			} // entAid
-			fh := fhs[pdck]
-			fh.Write([]byte(sb.String()))
+			if cnts[pdck][src] > 0 {
+				flags.Add(pdck)
+				fh := fhs[pdck]
+				if flags[pdck] == 1 {
+				fh.Write([]byte(header))
+				}
+				fh.Write([]byte(sb.String()))
+				flags[pdck]++
+			}
 		} // pdck
-	} // duoid
+	} // duokey
 	log.Println("export.Rgr2trg():", src, txid, cnts)
-	if cnts[p2t][src] > 0 {
-		fh4p.Write([]byte(header))
-	}
-	if cnts[n2t][src] > 0 {
-		fh4n.Write([]byte(header))
-	}
-	if cnts[u2t][src] > 0 {
-		fh4u.Write([]byte(header))
-	}
 	return nil
 } // Rgr2trg
 
@@ -1668,14 +1632,16 @@ func Gene2phen(duos, gsym2bgw util.Set3D, wpth string) (int, error) {
 		idR := bits[1]
 		oriL := strings.Split(idL, "!")[1] // Gene Name
 		bgwLs := gsym2bgw[oriL]["bgwg"].Keys()
+		cntLs := len(bgwLs)
+		if cntLs != 1 {
+			msg := fmt.Sprintf("export.Gene2phen():%s: bgwLs: %v", oriL, bgwLs)
+			fmt.Printf("%s\n", msg)
+		} // 2303: 1 missing BGW gene, likely due to RefProt filtering
+		// filtering, superfluous, done anyway by looping over bgwLs
 		l := 0
 		if l = counter(bgwLs, cnt, "addG", "dropG", oriL); l == 0 {
 			continue
 		}
-		if l != 1 {
-			msg := fmt.Sprintf("export.Gene2phen():%s: bgwLs: %v", oriL, bgwLs)
-			fmt.Printf("%s\n", msg)
-		} // 20200531: no missing genes
 		oriR := strings.Split(idR, "!")[1] // OMIM ID
 		duoU := rdf.CompU(stmNS, duoid)
 		sb.WriteString(rdf.FormT(duoU, ourUs["ins2cls"], clsU))
@@ -1692,19 +1658,24 @@ func Gene2phen(duos, gsym2bgw util.Set3D, wpth string) (int, error) {
 		} // 20200531: 2 using symG in the key, all the 4 accs with a single dfn
 		// 20200531: 69 with > 1 dfns using symG in the key; the same MIM ID indeed
 		dfns := duo["dfn"].Keys()
-		if len(dfns) > 2 {
-			msg := fmt.Sprintf("export.Gene2phen():%s:%v: dfns: %v", duoid, upcas, dfns)
+		if len(dfns) != 1 {
+			msg := fmt.Sprintf("export.Gene2phen():%s:%v: %v dfns: %v", duoid, upcas, len(dfns), dfns)
 			fmt.Printf("%s\n", msg)
-		} // 20200531: 2
-		clsdfn := fmt.Sprintf("Association between gene %s and disease %v", oriL, dfns)
+		} // 230303: 74
+		dfn := strings.Join(dfns, "; ")
+		clsdfn := fmt.Sprintf("Association between gene %s and disease %v", oriL, dfn)
 		sb.WriteString(rdf.FormT(duoU, ourUs["sth2dfn"], rdf.FormL(clsdfn)))
+		nln++
+
+		// an attempt to get desease names in the App, to no avail
+		uriR := rdf.CompU(nss["omim"], oriR)
+		sb.WriteString(rdf.FormT(uriR, ourUs["sth2lbl"], rdf.FormL(dfn)))
 		nln++
 
 		pdc := "gn2phn"
 		sb.WriteString(rdf.FormT(duoU, rdf.CompU(rdfNS, "predicate"), ourUs[pdc]))
 		nln++
-		uriR := rdf.CompU(nss["omim"], oriR)
-		// multiple subjects
+		// multiple subjects (never happens)
 		for _, bgwL := range bgwLs { // sorted above
 			uriL := rdf.CompU(nss["gene"], bgwL)
 			sb.WriteString(rdf.FormT(duoU, rdf.CompU(rdfNS, "subject"), uriL))
@@ -1714,6 +1685,8 @@ func Gene2phen(duos, gsym2bgw util.Set3D, wpth string) (int, error) {
 		}
 		sb.WriteString(rdf.FormT(duoU, rdf.CompU(rdfNS, "object"), uriR))
 		nln++
+
+		/// INSTANCES
 		insid := fmt.Sprintf("%s%s%s", duoid, "#", src)
 		insU := rdf.CompU(stmNS, insid)
 		sb.WriteString(rdf.FormT(insU, ourUs["ins2cls"], duoU))
@@ -1859,7 +1832,8 @@ func Prot2go(duos, upac2bgw util.Set3D, wpth string) (int, error) {
 		}
 		sb.WriteString(rdf.FormT(duoU, rdf.CompU(rdfNS, "object"), uriR))
 		nln++
-		/// Instance level
+
+		/// INSTANCES
 		insid := fmt.Sprintf("%s%s%s", duoid, "#", "goa")
 		insU := rdf.CompU(stmNS, insid)
 		sb.WriteString(rdf.FormT(insU, ourUs["ins2cls"], duoU))
@@ -1961,10 +1935,10 @@ func Prot2prot(duos, upac2bgw util.Set3D, wpth string) (int, error) {
 		bits := strings.Split(duoid, "--")
 		idL := bits[0]
 		idR := bits[1]
-		oriL := strings.Split(idL, "!")[1] // UP accession
-		oriL = strings.Split(oriL, "-")[0] // UP canonical accession
-		oriR := strings.Split(idR, "!")[1] // UP accession
-		oriR = strings.Split(oriR, "-")[0] // UP canonical accession
+		oriL := strings.Split(idL, "!")[1]                        // UP accession
+		oriL = strings.Split(oriL, "-")[0]                        // UP canonical accession
+		oriR := strings.Split(idR, "!")[1]                        // UP accession
+		oriR = strings.Split(oriR, "-")[0]                        // UP canonical accession
 		duoid = fmt.Sprintf("uniprot!%s--uniprot!%s", oriL, oriR) // redefining
 		duoU := rdf.CompU(stmNS, duoid)
 		bgwLs := upac2bgw[oriL]["bgwp"].Keys() // needed for filtering by RefProt
@@ -2008,6 +1982,8 @@ func Prot2prot(duos, upac2bgw util.Set3D, wpth string) (int, error) {
 				nln++
 			}
 		}
+
+		/// INSTANCES
 		insid := fmt.Sprintf("%s%s%s", duoid, "#", "intact")
 		insU := rdf.CompU(stmNS, insid)
 		sb.WriteString(rdf.FormT(insU, ourUs["ins2cls"], duoU))
@@ -2155,7 +2131,7 @@ func Ortho(duos util.Set3D, wpth string) (int, error) {
 		sb.WriteString(rdf.FormT(uriR, ourUs[pdc], uriL))
 		nln++
 
-		/// instances
+		/// INSTANCES
 		for _, srck := range duo.Keys() {
 			src, ok := idmkeys[srck]
 			if !ok {
@@ -2165,6 +2141,7 @@ func Ortho(duos util.Set3D, wpth string) (int, error) {
 			insU := rdf.CompU(stmNS, insid)
 			sb.WriteString(rdf.FormT(insU, ourUs["ins2cls"], duoU))
 			nln++
+			sb.WriteString(rdf.FormT(insU, ourUs["sth2lbl"], rdf.FormL(clslbl)))
 			srcU := rdf.FormU(nss[src])
 			sb.WriteString(rdf.FormT(insU, ourUs["sth2src"], srcU))
 			nln++

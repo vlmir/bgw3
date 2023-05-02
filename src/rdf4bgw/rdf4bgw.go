@@ -217,36 +217,35 @@ func tfac2gene(datdir, bgwdir string, txn2prm util.Set2D) (util.Set2D, error) {
 		// define keys and vals for parsing
 		var vals []bgw.Column
 		var keys []bgw.Column
-		ext := ""
 		rpth := ""
-		keys, vals = bgw.TftgParseConf()
-		ext = ".f2g"
 
-		for txid := range txn2prm {
-			if txid != "9606" {
-				continue
-			} // for now
+		for txid := range bgw.Tflink {
 			var d4b bgw.Dat4bridge // one source, one taxon
 			d4b.New()
-			rpth = fmt.Sprintf("%s%s%s%s%s%s", datdir, "static/", src, "/", txid, ext)
-			log.Println("Rdf4bgw.tfac2gene(): processing", rpth)
+			if src == "tflink" {
+				keys, vals = bgw.TflinkParseConf()
+				rpth = fmt.Sprintf("%s%s%s%s%s", datdir, src, "/", txid, ".tsv")
+			} else {
+				keys, vals = bgw.TftgParseConf()
+				rpth = fmt.Sprintf("%s%s%s%s%s%s", datdir, "static/", src, "/", txid, ".f2g")
+			}
+			// log.Println("Rdf4bgw.tfac2gene(): processing", rpth)
 			err := parse.Tab2struct(rpth, keys, vals, &d4b)
-			if err != nil {
-				log.Printf("%s%s", "tfac2gene:parse.Tab2struct: ", err)
+			if err != nil { // normal
+				// log.Printf("%s%s", "tfac2gene:parse.Tab2struct: ", err)
 				continue // sic!
 			}
-			// d4b is now loaded with data
+			/// d4b is now loaded with data
+
 			var xmap bgw.Xmap
 			xmap.New()
 			subdir := "xmap/"
-			ext := ".json"
-			rpthx := fmt.Sprintf("%s%s%s%s", bgwdir, subdir, txid, ext) // read BGW map json
+			rpthx := fmt.Sprintf("%s%s%s%s", bgwdir, subdir, txid, ".json") // read BGW map json
 			err = xmap.Unmarshal(rpthx)
 			util.CheckE(err)
 
 			d4b.Src = src
 			d4b.Taxid = txid
-			// err = export.Rgr2trg(&d4b, &xmap, bgwdir)
 			err = export.Tfac2gene(&d4b, &xmap, bgwdir)
 			if err != nil {
 				//panic(err)
@@ -308,6 +307,7 @@ func prot2go(datdir, bgwdir string, txn2prm util.Set2D, fx string) (int, error) 
 	log.Println("\n\tprot2go for:", "all") // is not printed TODO
 	nln := 0
 	for _, txid := range txn2prm.Keys() {
+		if txid == "9031" {continue}
 		log.Println("\n\tprot2go for:", txid)
 		subdir := "goa/"
 		rpth := fmt.Sprintf("%s%s%s%s", datdir, subdir, txid, fx) // read Goa data

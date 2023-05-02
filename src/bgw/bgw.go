@@ -8,6 +8,16 @@ import (
 
 var CV = "3.3.0"
 
+var Tflink = map[string]string{
+	"6239":   "Caenorhabditis_elegans_interactions_All_mitab_v1.0.tsv.gz",
+	"7955":   "Danio_rerio_interactions_All_mitab_v1.0.tsv.gz",
+	"7227":   "Drosophila_melanogaster_interactions_All_mitab_v1.0.tsv.gz",
+	"9606":   "Homo_sapiens_interactions_All_mitab_v1.0.tsv.gz",
+	"10090":  "Mus_musculus_interactions_All_mitab_v1.0.tsv.gz",
+	"10116":  "Rattus_norvegicus_interactions_All_mitab_v1.0.tsv.gz",
+	"559292": "Saccharomyces_cerevisiae_interactions_All_mitab_v1.0.tsv.gz",
+}
+
 var Ensomes = map[string]string{
 	"6239":   "ensmetazoa",
 	"7227":   "ensmetazoa",
@@ -167,6 +177,29 @@ func TftgParseConf() ([]Column, []Column) {
 	return keys, vals
 }
 
+func TflinkParseConf() ([]Column, []Column) {
+	keys := []Column{
+		{4, "\"", 1, "--", 0, ""},
+		{5, "\"", 1, "--", 0, ""},
+	}
+	vals := []Column{
+		{0, "|", 1, ":", 0, "uniprot"}, // prot id; single value
+		{3, "|", 1, ":", 0, "ncbig"},   // gene id; single value
+		{8, "|", 1, ":", -1, "pubmed"}, // filtering by "pubmed"
+		{6, "|", 1, "\"", 1, "mtdid"},  // multiple values
+		// {11, "|", 1, "\"", 0, "typeABid"}, // single value, all MI:2232 (molecular association)
+		// {11, "|", 3, "\"", 0, "typeABlbl"},
+		// {13, "|", 1, ":", 0, "oregannoid"}, // not for all, multiple values
+		// {20, "|", 1, "\"", 0, "typeAid"}, // single value, all MI:0326 (protein)
+		// {20, "|", 3, "\"", 0, "typeAlbl"},
+		// {21, "|", 1, "\"", 0, "typeBid"}, // single value, all MI:0250 (gene)
+		// {21, "|", 3, "\"", 0, "typeBlbl"},
+		{25, "|", 1, "\"", 1, "mode"},  // multiple values
+		{27, "|", 1, "\"", 1, "score"}, // single values, TODO adjust
+	}
+	return keys, vals
+} // TflinkParseConf
+
 func SignorParseConf() ([]Column, []Column) {
 	keys := []Column{
 		{0, "|", 0, "--", 0, ""},
@@ -229,6 +262,7 @@ func Keys4rgrs() util.SliceSet {
 		"reg2itrg",
 		"ins2cls",
 		"sth2src",
+		"sth2mtd",
 		"gp2bp",
 		"sth2rlm",
 		"sub2cls",

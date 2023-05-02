@@ -128,6 +128,7 @@ var Uris4tftg = map[string]string{
 	"trrust": "http://www.grnpedia.org/trrust/",
 	"cytreg": "https://www.fuxmanlab.com",
 	"geredb": "http://www.thua45.cn/geredb",
+	"tflink": "https://tflink.net/",
 }
 
 /// Functions

@@ -9,6 +9,8 @@ import (
 	"strings"
 )
 
+// TODO trim all strings
+
 type Set1D map[string]int
 type Set2D map[string]Set1D
 type Set3D map[string]Set2D

@@ -661,6 +661,7 @@ UP000005640: Chromosome 1, UP000005640: Chromosome 17
 //} // UpTab()
 
 func UpVar(rpth string, filters ...util.Set3D) (duos util.Set3D, err error) {
+	// TODO trim all strings
 	// filters is used only for filtering
 	/*
 	 AARS	  P49588	 VAR_063527  p.Arg329His	Disease	   rs267606621 Charcot-Marie-Tooth disease 2N(CMT2N) [MIM:613287]

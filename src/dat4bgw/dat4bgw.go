@@ -5,6 +5,7 @@ import (
 	"errors"
 	"flag"
 	"fmt"
+	"github.com/vlmir/bgw3/src/bgw"
 	"github.com/vlmir/bgw3/src/util"
 	"io"
 	"log"
@@ -15,7 +16,8 @@ import (
 	"time"
 )
 
-// function Rwget() recirsively identifies target files and downloads in a slecified location
+// function Rwget() recursively identifies target files and downloads in a slecified location
+// irreproducible downloaded files. TODO
 // arg1: base URI of the source
 // arg2: pattern for filtering
 // download location
@@ -44,7 +46,7 @@ func WgetFile(strs ...string) (err error) {
 		cmd = exec.Command("wget", "-q", url, "-O", pth) // Attn: all flags separately!
 	} else if n == 1 {
 		url = strs[0]
-		cmd = exec.Command("wget", "-q", url) // Attn: all flags separately!
+		cmd = exec.Command("wget", "-q", url, "-O", "-") // Attn: all flags separately!
 	} else {
 		panic(errors.New(fmt.Sprintf("Expexting 1 or 2 args, got: %d", n)))
 	}
@@ -295,6 +297,25 @@ func saveAllOnto(datdir string) {
 	}
 }
 
+func saveOneTflink(uri, txid, datdir string) error {
+	subdir := "tflink/"
+	ext := ".tsv.gz"
+	wpth := fmt.Sprintf("%s%s%s%s", datdir, subdir, txid, ext)
+	if err := WgetFile(uri, wpth); err != nil {
+		log.Println("saveOneTflink(): Warning: Failed to download data for:", txid, err)
+		return err
+	}
+	return nil
+}
+
+func saveAllTflink(datdir string) {
+	ns := "https://cdn.netbiol.org/tflink/download_files/TFLink_"
+	for txid := range bgw.Tflink {
+		uri := ns + bgw.Tflink[txid]
+		saveOneTflink(uri, txid, datdir)
+	}
+}
+
 func main() {
 	aP := flag.Bool("a", false, "download [a]ll") // should not normally be used
 	oP := flag.Bool("o", false, "download [o]ntologies")
@@ -304,6 +325,7 @@ func main() {
 	iP := flag.Bool("i", false, "download molecular [i]ntaraction data")
 	uP := flag.Bool("u", false, "download [u]niprot data")
 	sP := flag.Bool("s", false, "download [s]ignor data")
+	lP := flag.Bool("l", false, "download tf[l]ink data")
 	gP := flag.Bool("g", false, "download [g]ene ontology annotations")
 	tP := flag.String("t", "./taxa.tls", "selected [t]axa")
 	var cnt int
@@ -329,6 +351,12 @@ func main() {
 		// Done with ontos in 54m5.856446087s - What's that ???
 		saveAllOnto(datdir)
 		log.Println("Done with ontos in", time.Since(start))
+	}
+
+	if *aP || *lP {
+		start := time.Now()
+		saveAllTflink(datdir)
+		log.Println("Done with TFlink in", time.Since(start))
 	}
 
 	if *aP || *sP {

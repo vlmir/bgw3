@@ -97,6 +97,7 @@ func Test_tfac2gene(t *testing.T) {
 	}
 	pdck := "reg2ptrg"
 	src := "tfacts"
+	// src := "tflink" // no interactions after filtering by xmap
 	for i, tt := range tts {
 		cnts, _ := tfac2gene(tt.arg1, tt.arg2, tt.arg3) // process ALL files in src dir
 		if cnts[pdck][src] != tt.val {

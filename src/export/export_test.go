@@ -283,6 +283,9 @@ func TestRgr2trg(t *testing.T) {
 	}
 } // TestRgr2trg
 
+// output: 3 RDF files, each one specific for a particular predicate
+// URIs conditioned on the predicate
+// multiple subjects and objects are possible
 func Test_Tfac2gene(t *testing.T) {
 	type tt struct {
 		arg1 *bgw.Dat4bridge
@@ -300,20 +303,28 @@ func Test_Tfac2gene(t *testing.T) {
 	d4b1.New()
 	keys, vals = bgw.TftgParseConf()
 	_ = parse.Tab2struct(pth+"static/ntnu/9606.f2g", keys, vals, &d4b1)
+	var d4b2 bgw.Dat4bridge
+	d4b2.New()
+	keys, vals = bgw.TflinkParseConf()
+	_ = parse.Tab2struct(pth+"tflink/9606.tsv", keys, vals, &d4b2)
 	var xmap bgw.Xmap
 	xmap.New()
 	xmap.Upac.Add("P01100", "bgwp", "P01100")
 	xmap.Upac.Add("P04637", "bgwp", "P04637")
+	xmap.Upac.Add("P37231", "bgwp", "P37231") // for tflink
 	xmap.Ncbig.Add("4322", "bgwg", "9606/MMP13")
 	xmap.Ncbig.Add("7157", "bgwg", "9606/TP53")
+	xmap.Ncbig.Add("5915", "bgwg", "9606/RARB") // for tflink
 	xmap.Bgwg.Add("9606/MMP13", "bgwp", "P01100")
 	xmap.Bgwg.Add("9606/TP53", "bgwp", "P04637")
+	xmap.Bgwg.Add("9606/RARB", "bgwp", "P10826") // for tflink
 	/// exporting
-	srcs := []string{"tfacts", "ntnu"}
+	srcs := []string{"tfacts", "ntnu", "tflink"}
 
 	tts := []tt{
 		{&d4b0, &xmap, pth + "OUT/export/", 2},
 		{&d4b1, &xmap, pth + "OUT/export/", 1},
+		{&d4b2, &xmap, pth + "OUT/export/", 1}, // sic!
 	}
 	pdck := "reg2utrg"
 	for i, tt := range tts {
@@ -345,7 +356,7 @@ func Test_UpVar(t *testing.T) {
 	arg1, _ := parse.UpVar(pth + "uniprot/P04637.var")
 	arg4 := wpth + "gene2phen/9606.nt"
 	t2s := []tt{
-		{arg1, arg3, arg4, 11},
+		{arg1, arg3, arg4, 12},
 	}
 	for i, tt := range t2s {
 		n, err := Gene2phen(tt.arg1, tt.arg3, tt.arg4)
