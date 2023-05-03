@@ -164,7 +164,8 @@ func Tfac2gene(d *bgw.Dat4bridge, x *bgw.Xmap, wdir string) error {
 					sb.WriteString(rdf.FormT(entAU, ourUs[pdck], entBU))
 
 					/// INSTANCES
-					insU := fmt.Sprintf("%s%s%s", clsU, "#", src)
+					insid := fmt.Sprintf("%s#%s", clsid, src)
+					insU := rdf.CompU(clsns, insid)
 					sb.WriteString(rdf.FormT(insU, ourUs["ins2cls"], clsU))
 					sb.WriteString(rdf.FormT(insU, ourUs["sth2lbl"], rdf.FormL(clsid)))
 					sb.WriteString(rdf.FormT(insU, ourUs["sth2src"], srcU))
@@ -352,7 +353,8 @@ func SigPways(d *bgw.Dat4bridge, x *bgw.Xmap, wdir string) error {
 					sb.WriteString(rdf.FormT(entAU, ourUs[pdck], entBU))
 
 					/// INSTANCES
-					insU := fmt.Sprintf("%s%s%s", clsU, "#", src)
+					insid := fmt.Sprintf("%s#%s", clsid, src)
+					insU := rdf.CompU(clsns, insid)
 					sb.WriteString(rdf.FormT(insU, ourUs["ins2cls"], clsU))
 					sb.WriteString(rdf.FormT(insU, ourUs["sth2lbl"], rdf.FormL(clsid)))
 					sb.WriteString(rdf.FormT(insU, ourUs["sth2src"], srcU))
@@ -565,7 +567,8 @@ func Rgr2trg(d *bgw.Dat4bridge, x *bgw.Xmap, wdir string) error {
 					sb.WriteString(rdf.FormT(entAU, ourUs[pdck], entBU))
 
 					/// INSTANCES
-					insU := fmt.Sprintf("%s%s%s", clsU, "#", src)
+					insid := fmt.Sprintf("%s#%s", clsid, src)
+					insU := rdf.CompU(clsns, insid)
 					// inslbl := fmt.Sprintf("%s%s%s", clsid, " from ", src) // changed
 					sb.WriteString(rdf.FormT(insU, ourUs["ins2cls"], clsU))
 					sb.WriteString(rdf.FormT(insU, ourUs["sth2lbl"], rdf.FormL(clsid)))
