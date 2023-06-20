@@ -1,0 +1,57 @@
+<http://schema.org/evidenceLevel> <http://www.w3.org/2000/01/rdf-schema#subPropertyOf> <http://www.w3.org/2002/07/owl#AnnotationProperty> .
+<http://schema.org/evidenceLevel> <http://www.w3.org/2004/02/skos/core#prefLabel> "has evidence level" .
+<http://www.w3.org/2004/02/skos/core#definition> <http://www.w3.org/2000/01/rdf-schema#subPropertyOf> <http://www.w3.org/2002/07/owl#AnnotationProperty> .
+<http://www.w3.org/2004/02/skos/core#definition> <http://www.w3.org/2004/02/skos/core#prefLabel> "has definition" .
+<http://www.w3.org/2004/02/skos/core#prefLabel> <http://www.w3.org/2000/01/rdf-schema#subPropertyOf> <http://www.w3.org/2002/07/owl#AnnotationProperty> .
+<http://www.w3.org/2004/02/skos/core#prefLabel> <http://www.w3.org/2004/02/skos/core#prefLabel> "has name" .
+<http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2000/01/rdf-schema#subPropertyOf> <http://www.w3.org/2002/07/owl#ObjectProperty> .
+<http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2004/02/skos/core#prefLabel> "is instance of" .
+<http://semanticscience.org/resource/SIO_000772> <http://www.w3.org/2000/01/rdf-schema#subPropertyOf> <http://www.w3.org/2002/07/owl#ObjectProperty> .
+<http://semanticscience.org/resource/SIO_000772> <http://www.w3.org/2004/02/skos/core#prefLabel> "has evidence" .
+<http://www.w3.org/2000/01/rdf-schema#isDefinedBy> <http://www.w3.org/2000/01/rdf-schema#subPropertyOf> <http://www.w3.org/2002/07/owl#ObjectProperty> .
+<http://www.w3.org/2000/01/rdf-schema#isDefinedBy> <http://www.w3.org/2004/02/skos/core#prefLabel> "is defined by" .
+<http://semanticscience.org/resource/SIO_000253> <http://www.w3.org/2000/01/rdf-schema#subPropertyOf> <http://www.w3.org/2002/07/owl#ObjectProperty> .
+<http://semanticscience.org/resource/SIO_000253> <http://www.w3.org/2004/02/skos/core#prefLabel> "has source" .
+<http://purl.obolibrary.org/obo/RO_0002436> <http://www.w3.org/2000/01/rdf-schema#subPropertyOf> <http://www.w3.org/2002/07/owl#ObjectProperty> .
+<http://purl.obolibrary.org/obo/RO_0002436> <http://www.w3.org/2004/02/skos/core#prefLabel> "molecularly interacts with" .
+<http://www.w3.org/2000/01/rdf-schema#subClassOf> <http://www.w3.org/2000/01/rdf-schema#subPropertyOf> <http://www.w3.org/2002/07/owl#ObjectProperty> .
+<http://www.w3.org/2000/01/rdf-schema#subClassOf> <http://www.w3.org/2004/02/skos/core#prefLabel> "is subclass of" .
+<http://purl.obolibrary.org/obo/BFO_0000050> <http://www.w3.org/2000/01/rdf-schema#subPropertyOf> <http://www.w3.org/2002/07/owl#ObjectProperty> .
+<http://purl.obolibrary.org/obo/BFO_0000050> <http://www.w3.org/2004/02/skos/core#prefLabel> "is part of" .
+<http://www.w3.org/1999/02/22-rdf-syntax-ns#Statement> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#Class> .
+<http://www.w3.org/1999/02/22-rdf-syntax-ns#Statement> <http://www.w3.org/2004/02/skos/core#prefLabel> "Triple" .
+<http://rdf.biogateway.eu/prot-prot/uniprot!P07041--uniprot!Q8X225> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#Class> .
+<http://rdf.biogateway.eu/prot-prot/uniprot!P07041--uniprot!Q8X225> <http://www.w3.org/2000/01/rdf-schema#subClassOf> <http://www.w3.org/1999/02/22-rdf-syntax-ns#Statement> .
+<http://rdf.biogateway.eu/prot-prot/uniprot!P07041--uniprot!Q8X225> <http://www.w3.org/2004/02/skos/core#prefLabel> "uniprot!P07041--uniprot!Q8X225" .
+<http://rdf.biogateway.eu/prot-prot/uniprot!P07041--uniprot!Q8X225> <http://www.w3.org/2004/02/skos/core#definition> "P07041 molecularly interacts with Q8X225" .
+<http://rdf.biogateway.eu/prot-prot/uniprot!P07041--uniprot!Q8X225> <http://www.w3.org/1999/02/22-rdf-syntax-ns#predicate> <http://purl.obolibrary.org/obo/RO_0002436> .
+<http://rdf.biogateway.eu/prot-prot/uniprot!P07041--uniprot!Q8X225> <http://www.w3.org/1999/02/22-rdf-syntax-ns#subject> <http://uniprot.org/uniprot/P07041> .
+<http://rdf.biogateway.eu/prot-prot/uniprot!P07041--uniprot!Q8X225> <http://www.w3.org/1999/02/22-rdf-syntax-ns#object> <http://uniprot.org/uniprot/Q8X225> .
+<http://uniprot.org/uniprot/P07041> <http://purl.obolibrary.org/obo/RO_0002436> <http://uniprot.org/uniprot/Q8X225> .
+<http://uniprot.org/uniprot/Q8X225> <http://purl.obolibrary.org/obo/RO_0002436> <http://uniprot.org/uniprot/P07041> .
+<http://rdf.biogateway.eu/prot-prot/uniprot!P07041--uniprot!Q8X225#intact> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://rdf.biogateway.eu/prot-prot/uniprot!P07041--uniprot!Q8X225> .
+<http://rdf.biogateway.eu/prot-prot/uniprot!P07041--uniprot!Q8X225#intact> <http://semanticscience.org/resource/SIO_000253> <http://identifiers.org/intact/> .
+<http://rdf.biogateway.eu/prot-prot/uniprot!P07041--uniprot!Q8X225#intact> <http://purl.obolibrary.org/obo/BFO_0000050> <http://identifiers.org/intact/EBI-1269004> .
+<http://rdf.biogateway.eu/prot-prot/uniprot!P07041--uniprot!Q8X225#intact> <http://purl.obolibrary.org/obo/BFO_0000050> <http://identifiers.org/intact/EBI-1270225> .
+<http://rdf.biogateway.eu/prot-prot/uniprot!P07041--uniprot!Q8X225#intact> <http://semanticscience.org/resource/SIO_000772> <http://identifiers.org/pubmed/12887903> .
+<http://rdf.biogateway.eu/prot-prot/uniprot!P07041--uniprot!Q8X225#intact> <http://schema.org/evidenceLevel> "0.56" .
+<http://rdf.biogateway.eu/prot-prot/uniprot!P07041--uniprot!Q8X225#intact> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://purl.obolibrary.org/obo/MI_0407> .
+<http://rdf.biogateway.eu/prot-prot/uniprot!P07041--uniprot!Q8X225#intact> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://purl.obolibrary.org/obo/MI_0414> .
+<http://rdf.biogateway.eu/prot-prot/uniprot!P07041--uniprot!Q8X225#intact> <http://www.w3.org/2000/01/rdf-schema#isDefinedBy> <http://purl.obolibrary.org/obo/MI_0114> .
+<http://rdf.biogateway.eu/prot-prot/uniprot!P07041--uniprot!Q8X225#intact> <http://www.w3.org/2000/01/rdf-schema#isDefinedBy> <http://purl.obolibrary.org/obo/MI_0415> .
+<http://rdf.biogateway.eu/prot-prot/uniprot!Q01371--uniprot!Q01371> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#Class> .
+<http://rdf.biogateway.eu/prot-prot/uniprot!Q01371--uniprot!Q01371> <http://www.w3.org/2000/01/rdf-schema#subClassOf> <http://www.w3.org/1999/02/22-rdf-syntax-ns#Statement> .
+<http://rdf.biogateway.eu/prot-prot/uniprot!Q01371--uniprot!Q01371> <http://www.w3.org/2004/02/skos/core#prefLabel> "uniprot!Q01371--uniprot!Q01371" .
+<http://rdf.biogateway.eu/prot-prot/uniprot!Q01371--uniprot!Q01371> <http://www.w3.org/2004/02/skos/core#definition> "Q01371 molecularly interacts with Q01371" .
+<http://rdf.biogateway.eu/prot-prot/uniprot!Q01371--uniprot!Q01371> <http://www.w3.org/1999/02/22-rdf-syntax-ns#predicate> <http://purl.obolibrary.org/obo/RO_0002436> .
+<http://rdf.biogateway.eu/prot-prot/uniprot!Q01371--uniprot!Q01371> <http://www.w3.org/1999/02/22-rdf-syntax-ns#subject> <http://uniprot.org/uniprot/Q01371> .
+<http://rdf.biogateway.eu/prot-prot/uniprot!Q01371--uniprot!Q01371> <http://www.w3.org/1999/02/22-rdf-syntax-ns#object> <http://uniprot.org/uniprot/Q01371> .
+<http://uniprot.org/uniprot/Q01371> <http://purl.obolibrary.org/obo/RO_0002436> <http://uniprot.org/uniprot/Q01371> .
+<http://uniprot.org/uniprot/Q01371> <http://purl.obolibrary.org/obo/RO_0002436> <http://uniprot.org/uniprot/Q01371> .
+<http://rdf.biogateway.eu/prot-prot/uniprot!Q01371--uniprot!Q01371#intact> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://rdf.biogateway.eu/prot-prot/uniprot!Q01371--uniprot!Q01371> .
+<http://rdf.biogateway.eu/prot-prot/uniprot!Q01371--uniprot!Q01371#intact> <http://semanticscience.org/resource/SIO_000253> <http://identifiers.org/intact/> .
+<http://rdf.biogateway.eu/prot-prot/uniprot!Q01371--uniprot!Q01371#intact> <http://purl.obolibrary.org/obo/BFO_0000050> <http://identifiers.org/intact/EBI-2922631> .
+<http://rdf.biogateway.eu/prot-prot/uniprot!Q01371--uniprot!Q01371#intact> <http://semanticscience.org/resource/SIO_000772> <http://identifiers.org/pubmed/20813262> .
+<http://rdf.biogateway.eu/prot-prot/uniprot!Q01371--uniprot!Q01371#intact> <http://schema.org/evidenceLevel> "0.37" .
+<http://rdf.biogateway.eu/prot-prot/uniprot!Q01371--uniprot!Q01371#intact> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://purl.obolibrary.org/obo/MI_0915> .
+<http://rdf.biogateway.eu/prot-prot/uniprot!Q01371--uniprot!Q01371#intact> <http://www.w3.org/2000/01/rdf-schema#isDefinedBy> <http://purl.obolibrary.org/obo/MI_0018> .

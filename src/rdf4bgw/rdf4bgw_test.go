@@ -45,6 +45,10 @@ func Test_geneprot(t *testing.T) {
 	}
 }
 
+func Test_prot2pro(t *testing.T) {
+	// TODO
+}
+
 func Test_gene2phen(t *testing.T) {
 	// TODO
 }
@@ -100,6 +104,35 @@ func Test_tfac2gene(t *testing.T) {
 	// src := "tflink" // no interactions after filtering by xmap
 	for i, tt := range tts {
 		cnts, _ := tfac2gene(tt.arg1, tt.arg2, tt.arg3) // process ALL files in src dir
+		if cnts[pdck][src] != tt.val {
+			t.Error(
+				"For test", i+1, ": ", tt.arg1, tt.arg2, tt.arg3,
+				"\n\twant", tt.val,
+				"\n\thave", cnts[pdck][src],
+			)
+		}
+	}
+}
+
+func Test_prot2prot(t *testing.T) {
+	type tt struct {
+		arg1 string
+		arg2 string
+		arg3 util.Set2D
+		val  int
+	}
+	pth := "../../tdata/"
+	wpth := pth + "OUT/rdf4bgw/"
+	var arg3 [5]util.Set2D // txmap
+	arg3[0] = make(util.Set2D)
+	arg3[0].Add("9606", "testprome")
+	tts := []tt{
+		{pth, wpth, arg3[0], 1},
+	}
+	pdck := "tlp2tlp"
+	src := "intact"
+	for i, tt := range tts {
+		cnts, _ := prot2prot(tt.arg1, tt.arg2, tt.arg3) // process ALL files in src dir
 		if cnts[pdck][src] != tt.val {
 			t.Error(
 				"For test", i+1, ": ", tt.arg1, tt.arg2, tt.arg3,

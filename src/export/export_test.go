@@ -9,78 +9,7 @@ import (
 
 // TODO use Test_Tfac2gene as a paradigm
 
-// this test MUST come before the other !!
-//func Test_GeneProt(t *testing.T) {
-//	// TODO implement properly without duplicating the tests
-//	type tt struct {
-//		arg1 bgw.Dat4rdf
-//		arg2 string
-//		arg3 string
-//		arg4 string
-//		val1 int
-//		val2 int
-//	}
-//	pth := "../../tdata/"
-//	wpth := pth + "OUT/export/"
-//	txn2prm := make(util.Set2D)
-//	txn2prm.Add("9606", "UP000005640")
-//	txn2prm.Add("7227", "UP000000803")
-//	upacs, _ := parse.UpIdMap(pth+"idmapping/UP000005640_9606.idmapping", bgw.Upkeys)
-//	arg01, _ := parse.UpTab(pth+"uniprot/9606.upt", upacs, txn2prm)
-//	arg01.Upac = &upacs
-//	arg02 := wpth + "gene/9606.nt"
-//	arg03 := wpth + "prot/9606.nt"
-//	arg04 := wpth + "xmap/9606.json"
-//	tts := []tt{
-//		//		{arg01, arg02, arg03, arg04, 35, 76},
-//		{arg01, arg02, arg03, arg04, 50, 68},
-//	}
-//	for i, tt := range tts {
-//		n, m, _ := GeneProt(tt.arg1, tt.arg2, tt.arg3, tt.arg4)
-//		if n != tt.val1 {
-//			t.Error(
-//				"For test", i+1, ": ",
-//				"\n\twant", tt.val1,
-//				"\n\thave", n,
-//			)
-//		}
-//		if m != tt.val2 {
-//			t.Error(
-//				"For test", i+1, ": ",
-//				"\n\twant", tt.val2,
-//				"\n\thave", m,
-//			)
-//		}
-//	}
-//	upacs, _ = parse.UpIdMap(pth+"idmapping/UP000000803_7227.idmapping", bgw.Upkeys)
-//	arg11, _ := parse.UpTab(pth+"uniprot/7227.upt", upacs, txn2prm)
-//	arg11.Upac = &upacs
-//	arg12 := wpth + "gene/7227.nt"
-//	arg13 := wpth + "prot/7227.nt"
-//	arg14 := wpth + "xmap/7227.json"
-//	tts = []tt{
-//		//		{arg11, arg12, arg13, arg14, 14, 33},
-//		{arg11, arg12, arg13, arg14, 21, 25},
-//	}
-//	for i, tt := range tts {
-//		n, m, _ := GeneProt(tt.arg1, tt.arg2, tt.arg3, tt.arg4)
-//		if n != tt.val1 {
-//			t.Error(
-//				"For test", i+1, ": ",
-//				"\n\twant", tt.val1,
-//				"\n\thave", n,
-//			)
-//		}
-//		if m != tt.val2 {
-//			t.Error(
-//				"For test", i+1, ": ",
-//				"\n\twant", tt.val2,
-//				"\n\thave", m,
-//			)
-//		}
-//	}
-//} // Test_GeneProt()
-
+// the 2 tests below MUST come first !
 func Test_Gene(t *testing.T) {
 	// TODO implement properly without duplicating the tests
 	type tt struct {
@@ -283,6 +212,52 @@ func TestRgr2trg(t *testing.T) {
 	}
 } // TestRgr2trg
 
+func Test_Prot2prot(t *testing.T) {
+	type tt struct {
+		arg1 *bgw.Dat4bridge
+		arg2 *bgw.Xmap
+		arg3 string
+		val1 int
+	}
+	pth := "../../tdata/"
+	// parsing
+	keys, vals := bgw.IntactParseConf()
+	var d4b0 bgw.Dat4bridge
+	d4b0.New()
+	_ = parse.Tab2struct(pth+"intact/9606.mi25", keys, vals, &d4b0)
+	var d4b1 bgw.Dat4bridge
+	d4b1.New()
+	_ = parse.Tab2struct(pth+"intact/367110.mi25", keys, vals, &d4b1)
+
+	var xmap bgw.Xmap
+	xmap.New()
+	xmap.Upac.Add("P04637", "bgwp", "P04637")
+	xmap.Upac.Add("Q8X225", "bgwp", "Q8X225") // for 367110
+	xmap.Upac.Add("P07041", "bgwp", "P07041") // for 367110
+	xmap.Upac.Add("Q01371", "bgwp", "Q01371") // for 367110
+	/// exporting
+	srcs := []string{"intact", "intact"}
+	taxa := []string{"9606", "367110"}
+	tts := []tt{
+		{&d4b0, &xmap, pth + "OUT/export/", 1},
+		{&d4b1, &xmap, pth + "OUT/export/", 2},
+	}
+	pdck := "tlp2tlp"
+	for i, tt := range tts {
+		(*tt.arg1).Src = srcs[i]
+		(*tt.arg1).Taxid = taxa[i]
+		Prot2prot(tt.arg1, tt.arg2, tt.arg3)
+		cnts := (*tt.arg1).Cnts
+		if cnts[pdck][srcs[i]] != tt.val1 {
+			t.Error(
+				"For test", i+1, ": ",
+				"\n\twant", tt.val1,
+				"\n\thave", cnts[pdck][srcs[i]],
+			)
+		}
+	}
+} // Prot2prot
+
 // output: 3 RDF files, each one specific for a particular predicate
 // URIs conditioned on the predicate
 // multiple subjects and objects are possible
@@ -373,6 +348,7 @@ func Test_UpVar(t *testing.T) {
 	}
 }
 
+/*
 func Test_MiTab(t *testing.T) {
 	type tt struct {
 		arg1 util.Set3D
@@ -385,10 +361,10 @@ func Test_MiTab(t *testing.T) {
 	wpth := pth + "OUT/export/"
 	arg2 := make(util.Set3D)
 	arg2.Add("P04637", "bgwp", "P04637")
-	arg1, _ := parse.MiTab(pth+"intact/9606.mit", arg2)
+	arg1, _ := parse.MiTab(pth+"intact/9606.mi25", arg2)
 	arg3 := wpth + "prot2prot/9606.nt"
 	tts := []tt{
-		{arg1, arg2, arg3, 73},
+		{arg1, arg2, arg3, 20},
 	}
 	for i, tt := range tts {
 		n, err := Prot2prot(tt.arg1, tt.arg2, tt.arg3)
@@ -404,6 +380,7 @@ func Test_MiTab(t *testing.T) {
 		}
 	}
 }
+*/
 
 func Test_Prot2go(t *testing.T) {
 	type tt struct {

@@ -9,7 +9,7 @@ import (
 	"strings"
 )
 
-// TODO trim all strings
+// TODO trim all strings ? better to be done in the parsers
 
 type Set1D map[string]int
 type Set2D map[string]Set1D
@@ -17,8 +17,9 @@ type Set3D map[string]Set2D
 type Set4D map[string]Set3D
 type SliceSet map[string][]string
 
-// TODO return error instead of panicing?
+// TODO return error instead of panicing ?
 func CheckStrings(s ...string) {
+	// just checks, does ot trim
 	for i, v := range s {
 		if strings.TrimSpace(v) == "" {
 			panic(errors.New(fmt.Sprintf("%v: index: %d: EmptyString", s, i)))

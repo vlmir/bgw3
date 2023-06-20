@@ -21,8 +21,8 @@
 <http://rdf.biogateway.eu/gene-phen/hgncsymb!TP53--omim!151623> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#Class> .
 <http://rdf.biogateway.eu/gene-phen/hgncsymb!TP53--omim!151623> <http://www.w3.org/2000/01/rdf-schema#subClassOf> <http://www.w3.org/1999/02/22-rdf-syntax-ns#Statement> .
 <http://rdf.biogateway.eu/gene-phen/hgncsymb!TP53--omim!151623> <http://www.w3.org/2004/02/skos/core#prefLabel> "TP53--151623" .
-<http://rdf.biogateway.eu/gene-phen/hgncsymb!TP53--omim!151623> <http://www.w3.org/2004/02/skos/core#definition> "Association between gene TP53 and disease Li-Fraumeni syndrome (LFS) " .
-<http://purl.bioontology.org/ontology/OMIM/151623> <http://www.w3.org/2004/02/skos/core#prefLabel> "Li-Fraumeni syndrome (LFS) " .
+<http://rdf.biogateway.eu/gene-phen/hgncsymb!TP53--omim!151623> <http://www.w3.org/2004/02/skos/core#definition> "Association between gene TP53 and disease Li-Fraumeni syndrome (LFS)" .
+<http://purl.bioontology.org/ontology/OMIM/151623> <http://www.w3.org/2004/02/skos/core#prefLabel> "Li-Fraumeni syndrome (LFS)" .
 <http://rdf.biogateway.eu/gene-phen/hgncsymb!TP53--omim!151623> <http://www.w3.org/1999/02/22-rdf-syntax-ns#predicate> <http://purl.obolibrary.org/obo/RO_0002331> .
 <http://rdf.biogateway.eu/gene-phen/hgncsymb!TP53--omim!151623> <http://www.w3.org/1999/02/22-rdf-syntax-ns#subject> <http://rdf.biogateway.eu/gene/9606/TP53> .
 <http://rdf.biogateway.eu/gene/9606/TP53> <http://purl.obolibrary.org/obo/RO_0002331> <http://purl.bioontology.org/ontology/OMIM/151623> .

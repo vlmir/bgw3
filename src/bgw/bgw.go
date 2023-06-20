@@ -52,6 +52,7 @@ var Orthokeys = map[string]string{
 }
 
 type Column struct {
+	// TODO swap Ind2 Dlm2 ?
 	Ind1 int
 	Dlm1 string
 	Ind2 int
@@ -185,8 +186,8 @@ func TflinkParseConf() ([]Column, []Column) {
 	vals := []Column{
 		{0, "|", 1, ":", 0, "uniprot"}, // prot id; single value
 		{3, "|", 1, ":", 0, "ncbig"},   // gene id; single value
-		{8, "|", 1, ":", -1, "pubmed"}, // filtering by "pubmed"
 		{6, "|", 1, "\"", 1, "mtdid"},  // multiple values
+		{8, "|", 1, ":", -1, "pubmed"}, // filtering by "pubmed"
 		// {11, "|", 1, "\"", 0, "typeABid"}, // single value, all MI:2232 (molecular association)
 		// {11, "|", 3, "\"", 0, "typeABlbl"},
 		// {13, "|", 1, ":", 0, "oregannoid"}, // not for all, multiple values
@@ -195,10 +196,28 @@ func TflinkParseConf() ([]Column, []Column) {
 		// {21, "|", 1, "\"", 0, "typeBid"}, // single value, all MI:0250 (gene)
 		// {21, "|", 3, "\"", 0, "typeBlbl"},
 		{25, "|", 1, "\"", 1, "mode"},  // multiple values
-		{27, "|", 1, "\"", 1, "score"}, // single values, TODO adjust
+		{27, "|", 1, "\"", 1, "score"}, // single values, TODO adjust ??
 	}
 	return keys, vals
 } // TflinkParseConf
+
+func IntactParseConf() ([]Column, []Column) {
+	keys := []Column{
+		{0, ":", 1, "--", -1, "uniprotkb"}, // sorting and filtering by "uniprotkb"
+		{1, ":", 1, "--", -1, "uniprotkb"}, // the last join string is defining
+	}
+	vals := []Column{
+		{0, "|", 1, ":", 0, "uniprotkb"}, // filtering by "uniprotkb"
+		{1, "|", 1, ":", 0, "uniprotkb"}, // filtering by "uniprotkb"
+		{6, "|", 1, "\"", 1, "mtd"},      // psi-mi ids
+		{8, "|", 1, ":", -1, "pubmed"},
+		{11, "|", 1, "\"", 0, "typeABid"},       // psi-mi id; 9606: single values
+		{11, "|", 2, "\"", 0, "typeABlbl"},      // not used
+		{13, "|", 1, ":", -1, "intact"},         // intact:EBI-20559053|imex:IM-26397-1
+		{14, "|", 1, ":", -1, "intact-miscore"}, // author score:D|intact-miscore:0.37
+	}
+	return keys, vals
+} // IntactParseConf
 
 func SignorParseConf() ([]Column, []Column) {
 	keys := []Column{

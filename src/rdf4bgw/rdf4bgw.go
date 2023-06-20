@@ -256,12 +256,63 @@ func tfac2gene(datdir, bgwdir string, txn2prm util.Set2D) (util.Set2D, error) {
 				cnts.Add(pdck, src)
 				cnts[pdck][src] = d4b.Cnts[pdck][src]
 			}
-		}
-	}
+		} // txid
+	} // src
 	return cnts, nil
 } // tfac2gene
 
+func prot2prot(datdir, bgwdir string, txn2prm util.Set2D) (util.Set2D, error) {
+	log.Println("\n\tprot2prot for:", "all")
+	cnts := make(util.Set2D)
+	var pdcks = []string{
+		"tlp2tlp",
+	}
+	src := "intact" // for now
+	for _, txid := range txn2prm.Keys() {
+		log.Println("\n\tprot2prot for:", txid)
+		subdir := "intact/"
+		ext := ".mi25"
+		rpth := fmt.Sprintf("%s%s%s%s", datdir, subdir, txid, ext) // read IntAct tsv
+		subdir = "prot2prot/"
+		ext = ".nt"
+		// wpth := fmt.Sprintf("%s%sintact-%s%s", bgwdir, subdir, txid, ext) // write ppi nt
+		subdir = "xmap/"
+		ext = ".json"
+		rpthx := fmt.Sprintf("%s%s%s%s", bgwdir, subdir, txid, ext) // read BGW map json
+		/////////////////////////////////////////////////////////////////////////////
+		var xmap bgw.Xmap
+		xmap.New()
+		err := xmap.Unmarshal(rpthx)
+		util.CheckE(err)
+		/////////////////////////////////////////////////////////////////////////////
+		//duos, err := parse.MiTab(rpth, upac2bgw)
+		var d4b bgw.Dat4bridge
+		d4b.New()
+		keys, vals := bgw.IntactParseConf()
+		err = parse.Tab2struct(rpth, keys, vals, &d4b)
+		if err != nil {
+			msg := fmt.Sprintf("rdf4bgw.go:main.prot2prot():%s: %s", err, txid)
+			log.Println(msg)
+		} // NoData
+		/////////////////////////////////////////////////////////////////////////////
+		d4b.Src = src
+		d4b.Taxid = txid
+		err = export.Prot2prot(&d4b, &xmap, bgwdir)
+		if err != nil {
+			msg := fmt.Sprintf("rdf4bgw.go:main.prot2prot():%s: %s", err, txid)
+			log.Println(msg)
+			continue
+		}
+		for _, pdck := range pdcks {
+			cnts.Add(pdck, src)
+			cnts[pdck][src] = d4b.Cnts[pdck][src]
+		}
+	} // taxid
+	return cnts, nil
+} // prot2prot()
+
 func gene2phen(datdir, bgwdir string, txn2prm util.Set2D) (int, error) {
+	// TODO interface similar to tfac2gene etc.
 	log.Println("\n\tgene2phen for:", "all") // is not printed TODO
 	nln := 0
 	for txid := range txn2prm {
@@ -304,10 +355,13 @@ func gene2phen(datdir, bgwdir string, txn2prm util.Set2D) (int, error) {
 } // gene2phen()
 
 func prot2go(datdir, bgwdir string, txn2prm util.Set2D, fx string) (int, error) {
+	// TODO interface similar to tfac2gene etc.
 	log.Println("\n\tprot2go for:", "all") // is not printed TODO
 	nln := 0
 	for _, txid := range txn2prm.Keys() {
-		if txid == "9031" {continue}
+		if txid == "9031" {
+			continue
+		}
 		log.Println("\n\tprot2go for:", txid)
 		subdir := "goa/"
 		rpth := fmt.Sprintf("%s%s%s%s", datdir, subdir, txid, fx) // read Goa data
@@ -363,47 +417,9 @@ func prot2go(datdir, bgwdir string, txn2prm util.Set2D, fx string) (int, error) 
 	return nln, nil
 } // prot2go()
 
-func prot2prot(datdir, bgwdir string, txn2prm util.Set2D) (int, error) {
-	log.Println("\n\tprot2prot for:", "all")
-	nlt := 0
-	for _, txid := range txn2prm.Keys() {
-		log.Println("\n\tprot2prot for:", txid)
-		subdir := "intact/"
-		ext := ".mi25"
-		rpth := fmt.Sprintf("%s%s%s%s", datdir, subdir, txid, ext) // read IntAct tsv
-		subdir = "prot2prot/"
-		ext = ".nt"
-		wpth := fmt.Sprintf("%s%s%s%s", bgwdir, subdir, txid, ext) // write ppi nt
-		subdir = "xmap/"
-		ext = ".json"
-		rpthx := fmt.Sprintf("%s%s%s%s", bgwdir, subdir, txid, ext) // read BGW map json
-		/////////////////////////////////////////////////////////////////////////////
-		var xmap bgw.Xmap
-		xmap.New()
-		err := xmap.Unmarshal(rpthx)
-		util.CheckE(err)
-		upac2bgw := xmap.Upac
-		/////////////////////////////////////////////////////////////////////////////
-		//duos, err := parse.MiTab(rpth, upac2bgw)
-		duos, err := parse.MiTab(rpth)
-		if err != nil {
-			msg := fmt.Sprintf("rdf4bgw.go:main.prot2prot():%s: %s", err, txid)
-			log.Println(msg)
-		} // NoData
-		/////////////////////////////////////////////////////////////////////////////
-		nts, err := export.Prot2prot(duos, upac2bgw, wpth)
-		if err != nil {
-			msg := fmt.Sprintf("rdf4bgw.go:main.prot2prot():%s: %s", err, txid)
-			log.Println(msg)
-			continue
-		}
-		nlt += nts
-	}
-	return nlt, nil
-} // prot2prot()
-
 // ///////////////////////////////////////////////////////////////////////////
 func ortho(datdir, bgwdir string, txn2prm util.Set2D) (int, error) {
+	// TODO interface similar to tfac2gene etc.
 	log.Println("\n\tortho for:", "all")
 	idmkeys := bgw.Orthokeys
 	nln := 0
@@ -437,6 +453,7 @@ func ortho(datdir, bgwdir string, txn2prm util.Set2D) (int, error) {
 
 // //////////////////////////////////////////////////////////////////////////
 func main() {
+	// TODO for all functions: add taxa and proteome lists as arguments !
 	start := time.Now()
 	aP := flag.Bool("a", false, "export [a]ll")
 	eP := flag.Bool("e", false, "export gene and protein [e]ntities")

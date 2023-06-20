@@ -49,14 +49,7 @@ func Test_Tab2struct(t *testing.T) {
 		val  int
 	}
 	d4bs := make([]bgw.Dat4bridge, 0, 5)
-	keys0 := []bgw.Column{
-		{0, ":", 1, "--", 0, ""},
-		{1, ":", 1, "--", 0, ""},
-	}
-	vals0 := []bgw.Column{
-		{6, "|", 1, "\"", 1, "mtd"},
-		{8, "|", 1, ":", -1, "pubmed"},
-	}
+	keys0, vals0 := bgw.IntactParseConf()
 	keys1, vals1 := bgw.TftgParseConf()
 	keys2, vals2 := bgw.SignorParseConf()
 	keys3, vals3 := bgw.TflinkParseConf()
@@ -71,7 +64,7 @@ func Test_Tab2struct(t *testing.T) {
 	d4bs = append(d4bs, d4b0, d4b1, d4b2, d4b3)
 	pth := "../../tdata/"
 	tts := []tt{
-		{pth + "intact/9606.mit", keys0, vals0, &d4bs[0], 2},
+		{pth + "intact/9606.mi25", keys0, vals0, &d4bs[0], 7}, // 8? TODO
 		{pth + "static/tfacts/9606.f2g", keys1, vals1, &d4bs[1], 5},
 		{pth + "signor/9606.mi28", keys2, vals2, &d4bs[2], 15},
 		{pth + "tflink/9606.tsv", keys3, vals3, &d4bs[3], 6},
@@ -113,7 +106,7 @@ func Test_Tab2set3D(t *testing.T) {
 	arg2_2, arg3_2 := bgw.TftgParseConf()
 	pth := "../../tdata/"
 	tts := []tt{
-		{pth + "intact/9606.mit", arg2_1, arg3_1, 2},
+		{pth + "intact/9606.mi25", arg2_1, arg3_1, 2},
 		{pth + "static/tfacts/9606.f2g", arg2_2, arg3_2, 5},
 	}
 	keys := []string{
@@ -230,6 +223,7 @@ func Test_UpVar(t *testing.T) {
 	}
 }
 
+/*
 func Test_MiTab(t *testing.T) {
 	type tt struct {
 		arg1 string
@@ -239,7 +233,7 @@ func Test_MiTab(t *testing.T) {
 	pth := "../../tdata/"
 	mit := make(util.Set3D)
 	mits := []tt{
-		{pth + "intact/9606.mit", mit, 1},
+		{pth + "intact/9606.mi25", mit, 1},
 	}
 	for i, tt := range mits {
 		tt.arg2.Add("P04637", "test", "t")
@@ -253,6 +247,7 @@ func Test_MiTab(t *testing.T) {
 		}
 	}
 }
+*/
 
 func Test_Gaf(t *testing.T) {
 	type tt struct {
