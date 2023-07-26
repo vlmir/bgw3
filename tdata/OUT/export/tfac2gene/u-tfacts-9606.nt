@@ -34,31 +34,31 @@
 <http://purl.obolibrary.org/obo/BFO_0000050> <http://www.w3.org/2004/02/skos/core#prefLabel> "is part of" .
 <http://www.w3.org/1999/02/22-rdf-syntax-ns#Statement> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#Class> .
 <http://www.w3.org/1999/02/22-rdf-syntax-ns#Statement> <http://www.w3.org/2004/02/skos/core#prefLabel> "Triple" .
-<reg2utrg/uniprot!P01100--gene!9606/MMP13> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#Class> .
-<reg2utrg/uniprot!P01100--gene!9606/MMP13> <http://www.w3.org/2000/01/rdf-schema#subClassOf> <http://www.w3.org/1999/02/22-rdf-syntax-ns#Statement> .
-<reg2utrg/uniprot!P01100--gene!9606/MMP13> <http://www.w3.org/2004/02/skos/core#prefLabel> "uniprot!P01100--gene!9606/MMP13" .
-<reg2utrg/uniprot!P01100--gene!9606/MMP13> <http://www.w3.org/2004/02/skos/core#definition> "P01100 involved in regulation of 9606/MMP13" .
-<reg2utrg/uniprot!P01100--gene!9606/MMP13> <http://www.w3.org/1999/02/22-rdf-syntax-ns#predicate> <http://purl.obolibrary.org/obo/RO_0002428> .
-<reg2utrg/uniprot!P01100--gene!9606/MMP13> <http://www.w3.org/1999/02/22-rdf-syntax-ns#subject> <http://uniprot.org/uniprot/P01100> .
-<reg2utrg/uniprot!P01100--gene!9606/MMP13> <http://www.w3.org/1999/02/22-rdf-syntax-ns#object> <http://rdf.biogateway.eu/gene/9606/MMP13> .
+<http://rdf.biogateway.eu/reg2utrg/uniprot!P01100--gene!9606/MMP13> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#Class> .
+<http://rdf.biogateway.eu/reg2utrg/uniprot!P01100--gene!9606/MMP13> <http://www.w3.org/2000/01/rdf-schema#subClassOf> <http://www.w3.org/1999/02/22-rdf-syntax-ns#Statement> .
+<http://rdf.biogateway.eu/reg2utrg/uniprot!P01100--gene!9606/MMP13> <http://www.w3.org/2004/02/skos/core#prefLabel> "uniprot!P01100--gene!9606/MMP13" .
+<http://rdf.biogateway.eu/reg2utrg/uniprot!P01100--gene!9606/MMP13> <http://www.w3.org/2004/02/skos/core#definition> "P01100 involved in regulation of 9606/MMP13" .
+<http://rdf.biogateway.eu/reg2utrg/uniprot!P01100--gene!9606/MMP13> <http://www.w3.org/1999/02/22-rdf-syntax-ns#predicate> <http://purl.obolibrary.org/obo/RO_0002428> .
+<http://rdf.biogateway.eu/reg2utrg/uniprot!P01100--gene!9606/MMP13> <http://www.w3.org/1999/02/22-rdf-syntax-ns#subject> <http://uniprot.org/uniprot/P01100> .
+<http://rdf.biogateway.eu/reg2utrg/uniprot!P01100--gene!9606/MMP13> <http://www.w3.org/1999/02/22-rdf-syntax-ns#object> <http://rdf.biogateway.eu/gene/9606/MMP13> .
 <http://uniprot.org/uniprot/P01100> <http://purl.obolibrary.org/obo/RO_0002428> <http://rdf.biogateway.eu/gene/9606/MMP13> .
-<reg2utrg/uniprot!P01100--gene!9606/MMP13#tfacts> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <reg2utrg/uniprot!P01100--gene!9606/MMP13> .
-<reg2utrg/uniprot!P01100--gene!9606/MMP13#tfacts> <http://www.w3.org/2004/02/skos/core#prefLabel> "uniprot!P01100--gene!9606/MMP13" .
-<reg2utrg/uniprot!P01100--gene!9606/MMP13#tfacts> <http://semanticscience.org/resource/SIO_000253> <http://www.tfacts.org> .
-<reg2utrg/uniprot!P01100--gene!9606/MMP13#tfacts> <http://purl.obolibrary.org/obo/RO_0002331> <http://purl.obolibrary.org/obo/MI_2247> .
-<reg2utrg/uniprot!P01100--gene!9606/MMP13#tfacts> <http://semanticscience.org/resource/SIO_000772> <http://identifiers.org/pubmed/16144844> .
-<reg2utrg/uniprot!P01100--gene!9606/MMP13#tfacts> <http://schema.org/evidenceLevel> "High" .
-<reg2utrg/uniprot!P04637--gene!9606/TP53> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#Class> .
-<reg2utrg/uniprot!P04637--gene!9606/TP53> <http://www.w3.org/2000/01/rdf-schema#subClassOf> <http://www.w3.org/1999/02/22-rdf-syntax-ns#Statement> .
-<reg2utrg/uniprot!P04637--gene!9606/TP53> <http://www.w3.org/2004/02/skos/core#prefLabel> "uniprot!P04637--gene!9606/TP53" .
-<reg2utrg/uniprot!P04637--gene!9606/TP53> <http://www.w3.org/2004/02/skos/core#definition> "P04637 involved in regulation of 9606/TP53" .
-<reg2utrg/uniprot!P04637--gene!9606/TP53> <http://www.w3.org/1999/02/22-rdf-syntax-ns#predicate> <http://purl.obolibrary.org/obo/RO_0002428> .
-<reg2utrg/uniprot!P04637--gene!9606/TP53> <http://www.w3.org/1999/02/22-rdf-syntax-ns#subject> <http://uniprot.org/uniprot/P04637> .
-<reg2utrg/uniprot!P04637--gene!9606/TP53> <http://www.w3.org/1999/02/22-rdf-syntax-ns#object> <http://rdf.biogateway.eu/gene/9606/TP53> .
+<http://rdf.biogateway.eu/reg2utrg/uniprot!P01100--gene!9606/MMP13#tfacts> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://rdf.biogateway.eu/reg2utrg/uniprot!P01100--gene!9606/MMP13> .
+<http://rdf.biogateway.eu/reg2utrg/uniprot!P01100--gene!9606/MMP13#tfacts> <http://www.w3.org/2004/02/skos/core#prefLabel> "uniprot!P01100--gene!9606/MMP13" .
+<http://rdf.biogateway.eu/reg2utrg/uniprot!P01100--gene!9606/MMP13#tfacts> <http://semanticscience.org/resource/SIO_000253> <http://www.tfacts.org> .
+<http://rdf.biogateway.eu/reg2utrg/uniprot!P01100--gene!9606/MMP13#tfacts> <http://purl.obolibrary.org/obo/RO_0002331> <http://purl.obolibrary.org/obo/MI_2247> .
+<http://rdf.biogateway.eu/reg2utrg/uniprot!P01100--gene!9606/MMP13#tfacts> <http://semanticscience.org/resource/SIO_000772> <http://identifiers.org/pubmed/16144844> .
+<http://rdf.biogateway.eu/reg2utrg/uniprot!P01100--gene!9606/MMP13#tfacts> <http://schema.org/evidenceLevel> "High" .
+<http://rdf.biogateway.eu/reg2utrg/uniprot!P04637--gene!9606/TP53> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#Class> .
+<http://rdf.biogateway.eu/reg2utrg/uniprot!P04637--gene!9606/TP53> <http://www.w3.org/2000/01/rdf-schema#subClassOf> <http://www.w3.org/1999/02/22-rdf-syntax-ns#Statement> .
+<http://rdf.biogateway.eu/reg2utrg/uniprot!P04637--gene!9606/TP53> <http://www.w3.org/2004/02/skos/core#prefLabel> "uniprot!P04637--gene!9606/TP53" .
+<http://rdf.biogateway.eu/reg2utrg/uniprot!P04637--gene!9606/TP53> <http://www.w3.org/2004/02/skos/core#definition> "P04637 involved in regulation of 9606/TP53" .
+<http://rdf.biogateway.eu/reg2utrg/uniprot!P04637--gene!9606/TP53> <http://www.w3.org/1999/02/22-rdf-syntax-ns#predicate> <http://purl.obolibrary.org/obo/RO_0002428> .
+<http://rdf.biogateway.eu/reg2utrg/uniprot!P04637--gene!9606/TP53> <http://www.w3.org/1999/02/22-rdf-syntax-ns#subject> <http://uniprot.org/uniprot/P04637> .
+<http://rdf.biogateway.eu/reg2utrg/uniprot!P04637--gene!9606/TP53> <http://www.w3.org/1999/02/22-rdf-syntax-ns#object> <http://rdf.biogateway.eu/gene/9606/TP53> .
 <http://uniprot.org/uniprot/P04637> <http://purl.obolibrary.org/obo/RO_0002428> <http://rdf.biogateway.eu/gene/9606/TP53> .
-<reg2utrg/uniprot!P04637--gene!9606/TP53#tfacts> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <reg2utrg/uniprot!P04637--gene!9606/TP53> .
-<reg2utrg/uniprot!P04637--gene!9606/TP53#tfacts> <http://www.w3.org/2004/02/skos/core#prefLabel> "uniprot!P04637--gene!9606/TP53" .
-<reg2utrg/uniprot!P04637--gene!9606/TP53#tfacts> <http://semanticscience.org/resource/SIO_000253> <http://www.tfacts.org> .
-<reg2utrg/uniprot!P04637--gene!9606/TP53#tfacts> <http://purl.obolibrary.org/obo/RO_0002331> <http://purl.obolibrary.org/obo/MI_2247> .
-<reg2utrg/uniprot!P04637--gene!9606/TP53#tfacts> <http://semanticscience.org/resource/SIO_000772> <http://identifiers.org/pubmed/16144844> .
-<reg2utrg/uniprot!P04637--gene!9606/TP53#tfacts> <http://schema.org/evidenceLevel> "High" .
+<http://rdf.biogateway.eu/reg2utrg/uniprot!P04637--gene!9606/TP53#tfacts> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://rdf.biogateway.eu/reg2utrg/uniprot!P04637--gene!9606/TP53> .
+<http://rdf.biogateway.eu/reg2utrg/uniprot!P04637--gene!9606/TP53#tfacts> <http://www.w3.org/2004/02/skos/core#prefLabel> "uniprot!P04637--gene!9606/TP53" .
+<http://rdf.biogateway.eu/reg2utrg/uniprot!P04637--gene!9606/TP53#tfacts> <http://semanticscience.org/resource/SIO_000253> <http://www.tfacts.org> .
+<http://rdf.biogateway.eu/reg2utrg/uniprot!P04637--gene!9606/TP53#tfacts> <http://purl.obolibrary.org/obo/RO_0002331> <http://purl.obolibrary.org/obo/MI_2247> .
+<http://rdf.biogateway.eu/reg2utrg/uniprot!P04637--gene!9606/TP53#tfacts> <http://semanticscience.org/resource/SIO_000772> <http://identifiers.org/pubmed/16144844> .
+<http://rdf.biogateway.eu/reg2utrg/uniprot!P04637--gene!9606/TP53#tfacts> <http://schema.org/evidenceLevel> "High" .

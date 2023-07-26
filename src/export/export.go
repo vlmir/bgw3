@@ -249,6 +249,7 @@ func Tfac2gene(d *bgw.Dat4bridge, x *bgw.Xmap, wdir string) error {
 	duos := d4b.Duos
 	entAns := nss["uniprot"]  // sic, never changes
 	entBns := nss["gene"]     // sic, never changes
+	bgwNS := "http://rdf.biogateway.eu/"
 	flags := make(util.Set1D) // for printing the header only once per file
 	for _, duokey := range duos.Keys() {
 		duo := duos[duokey]
@@ -279,7 +280,7 @@ func Tfac2gene(d *bgw.Dat4bridge, x *bgw.Xmap, wdir string) error {
 			}
 		} // onemod
 		for _, pdck := range pdcks {
-			clsns := fmt.Sprintf("%s%s/", nss["bgw"], pdck)
+			clsns := fmt.Sprintf("%s%s/", bgwNS, pdck)
 			var sb strings.Builder
 			//sb.WriteString(rdf.FormT(graphU, ourUs["sth2src"], srcU))
 			for _, entAid := range bgwAids {
@@ -398,6 +399,7 @@ func SigPways(d *bgw.Dat4bridge, x *bgw.Xmap, wdir string) error {
 	mytypes := []string{"complex", "protein", "proteinfamily"} // for filetering
 	entAns := nss["uniprot"]                                   // sic, never changes
 	entBns := nss["uniprot"]                                   // sic, never changes
+	bgwNS := "http://rdf.biogateway.eu/"
 	flags := make(util.Set1D)                                  // for printing the header only once per file
 	for _, duokey := range duos.Keys() {
 		duo := duos[duokey]
@@ -468,7 +470,7 @@ func SigPways(d *bgw.Dat4bridge, x *bgw.Xmap, wdir string) error {
 		} // onemod
 
 		for _, pdck := range pdcks {
-			clsns := fmt.Sprintf("%s%s/", nss["bgw"], pdck)
+			clsns := fmt.Sprintf("%s%s/", bgwNS, pdck)
 			var sb strings.Builder
 			//sb.WriteString(rdf.FormT(graphU, ourUs["sth2src"], srcU))
 			for _, entAid := range bgwAids {
@@ -590,6 +592,7 @@ func Rgr2trg(d *bgw.Dat4bridge, x *bgw.Xmap, wdir string) error {
 	myRegTypes := []string{}                                        // for filetering
 	entAns := nss["uniprot"]                                        // sic, never changes
 	entBns := nss["uniprot"]                                        // sic, never changes
+	bgwNS := "http://rdf.biogateway.eu/"
 	flags := make(util.Set1D)                                       // for printing the header only once per file
 	for _, duokey := range duos.Keys() {
 		duo := duos[duokey]
@@ -682,7 +685,7 @@ func Rgr2trg(d *bgw.Dat4bridge, x *bgw.Xmap, wdir string) error {
 		} // onemod
 
 		for _, pdck := range pdcks {
-			clsns := fmt.Sprintf("%s%s/", nss["bgw"], pdck)
+			clsns := fmt.Sprintf("%s%s/", bgwNS, pdck)
 			var sb strings.Builder
 			//sb.WriteString(rdf.FormT(graphU, ourUs["sth2src"], srcU))
 			for _, entAid := range bgwAids {
