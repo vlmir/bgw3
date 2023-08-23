@@ -66,7 +66,7 @@ func Test_Tab2struct(t *testing.T) {
 	tts := []tt{
 		{pth + "intact/9606.mi25", keys0, vals0, &d4bs[0], 7}, // 8? TODO
 		{pth + "static/tfacts/9606.f2g", keys1, vals1, &d4bs[1], 5},
-		{pth + "signor/9606.mi28", keys2, vals2, &d4bs[2], 15},
+		{pth + "signor/9606.mi28", keys2, vals2, &d4bs[2], 16}, // 15->16 - added mtd field
 		{pth + "tflink/9606.tsv", keys3, vals3, &d4bs[3], 6},
 	}
 	keys := []string{

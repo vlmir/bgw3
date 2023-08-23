@@ -264,8 +264,7 @@ func saveAllOnto(datdir string) {
 	//	}
 	// Attn: needs to be updated prior each download!
 	var subms = map[string]string{
-		// 2021-05-2o
-		"OMIM": "/submissions/20",
+		"OMIM": "/submissions/23", // 2023-03-07
 	}
 	ext = ".ttl"
 	for onto, subm := range subms {

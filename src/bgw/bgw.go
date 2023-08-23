@@ -161,7 +161,7 @@ func UpdatParseConf() ([]Column, []Column) {
 		{9, "; ", 0, " ", 0, "score"},    // single value
 	}
 	return keys, vals
-} // UpdatParseConf()
+} // UpdatParseConf
 
 func TftgParseConf() ([]Column, []Column) {
 	keys := []Column{
@@ -176,7 +176,7 @@ func TftgParseConf() ([]Column, []Column) {
 		{5, "|", 0, ";", 0, "mode"},
 	}
 	return keys, vals
-}
+} // TftgParseConf
 
 func TflinkParseConf() ([]Column, []Column) {
 	keys := []Column{
@@ -227,6 +227,7 @@ func SignorParseConf() ([]Column, []Column) {
 	vals := []Column{
 		{0, "|", 0, "|", 0, "Aid"},     // single value; Attn: diverse formats !!
 		{1, "|", 0, "|", 0, "Bid"},     // single value; Attn: diverse formats !!
+		{6, "|", 1, "\"", 1, "mtd"},      // psi-mi ids
 		{8, "|", 1, ":", -1, "pubmed"}, // filtering by "pubmed"
 		{11, "|", 1, "\"", 0, "typeABid"},
 		{11, "|", 2, "\"", 0, "typeABlbl"},
@@ -242,7 +243,7 @@ func SignorParseConf() ([]Column, []Column) {
 		{45, "|", 2, "\"", 0, "modelbl"},
 	}
 	return keys, vals
-}
+} // SignorParseConf
 
 func SigPwaysParseConf() ([]Column, []Column) {
 	// "|" is not used at all
@@ -269,33 +270,37 @@ func SigPwaysParseConf() ([]Column, []Column) {
 		{31, ";", 0, "|", 0, "score"},
 	}
 	return keys, vals
-}
+} // SigPwaysParseConf
 
-func Keys4rgrs() util.SliceSet {
-	keys := make(util.SliceSet)
-	keys["Opys"] = []string{
-		"reg2ptrg",
-		"reg2ntrg",
-		"reg2utrg",
-		"reg2dtrg",
-		"reg2itrg",
-		"ins2cls",
-		"sth2src",
-		"sth2mtd",
-		"gp2bp",
-		"sth2rlm",
-		"sub2cls",
-		"sth2evd",
-		"pcs2loc",
-		"step2pway",
-	}
-	keys["Apys"] = []string{
-		"sth2dfn",
-		"sth2lbl",
-		"evd2lvl",
-	}
-	keys["Prns"] = []string{
-		"stm",
-	}
-	return keys
-}
+//// TODO separate for reg2targ and tfac2gene
+//func Keys4rgrs() util.SliceSet {
+//	keys := make(util.SliceSet)
+//	keys["Opys"] = []string{
+//		"sub2cls",
+//		"stm2sbj",
+//		"stm2obj",
+//		"stm2pdc",
+//		"reg2ptrg",
+//		"reg2ntrg",
+//		"reg2utrg",
+//		"ins2cls",
+//		"sth2src",
+//		"sth2mtd",
+//		"sth2evd",
+//		"gp2bp",
+//		"reg2dtrg", // not in tfac2gene
+//		"reg2itrg", // not in tfac2gene
+//		"sth2rlm", // not in tfac2gene, TODO find a better property
+//		"pss2loc", // only in pathways
+//		"step2pway", // only in pathways
+//	}
+//	keys["Apys"] = []string{
+//		"sth2dfn",
+//		"sth2lbl",
+//		"evd2lvl",
+//	}
+//	keys["Prns"] = []string{
+//		"stm",
+//	}
+//	return keys
+//} // Keys4rgrs
