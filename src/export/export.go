@@ -238,7 +238,7 @@ func Rgr2trg(d *bgw.Dat4bridge, x *bgw.Xmap, wdir string) error {
 		"sth2evd",
 		"sth2mtd",
 		"mi2bp",
-		"sth2rlm", // 'interaction type' TODO find a better property
+		"sth2rlm", // 'interaction type' TODO find a better property - rdf:type ?
 	}
 	keys4b["Apys"] = []string{
 		"sth2dfn",

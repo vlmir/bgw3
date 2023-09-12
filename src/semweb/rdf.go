@@ -220,11 +220,11 @@ func Capita(rdfmap util.SliceSet) (string, int) {
 			top = "Class"
 		case group == "Opys":
 			dic = Opys
-			pdc = Opys["sub2ppy"]
+			pdc = Opys["ins2cls"]
 			top = "ObjectProperty"
 		case group == "Apys":
 			dic = Apys
-			pdc = Opys["sub2ppy"]
+			pdc = Opys["ins2cls"]
 			top = "AnnotationProperty"
 		}
 		pU := CompU(Nss[pdc[0]], pdc[1])
@@ -249,39 +249,3 @@ func Capita(rdfmap util.SliceSet) (string, int) {
 	return sb.String(), nln
 }
 
-//func Header(uris map[string]string, rdfmap util.SliceSet) (string, int) {
-//	// fmtUs returned via arg group:Uri
-//	var sb strings.Builder
-//	k4p := ""
-//	k4o := ""
-//	nln := 0
-//	for group, urikeys := range(rdfmap) {
-//		switch {
-//		case group == "Prns":
-//			k4p = "sub2cls"
-//			k4o = "cls"
-//		case group == "Opys":
-//			k4p = "sub2ppy"
-//			k4o = "opy"
-//		case group == "Apys":
-//			k4p = "sub2ppy"
-//			k4o = "apy"
-//		}
-//		plU := uris["sth2lbl"]
-//		pU := uris[k4p]
-//		for _, urikey := range urikeys {
-//			// skipping the sanity checks performed in fmtURIs()
-//			sU := uris[urikey]
-//			oU := uris[k4o]
-//			sb.WriteString(FormT(sU, pU, oU))
-//			nln++
-//			l4s := urikey// TODO see how to fix the values
-//			sb.WriteString(FormT(sU, plU, FormL(l4s)))
-//			nln++
-//		}
-//	}
-//	if len(sb.String()) == 0 {
-//		panic(errors.New(fmt.Sprintf("Empty header")))
-//	}
-//	return sb.String(), nln
-//}
