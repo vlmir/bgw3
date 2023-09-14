@@ -6,8 +6,8 @@
 <http://www.w3.org/2004/02/skos/core#altLabel> <http://www.w3.org/2004/02/skos/core#prefLabel> "has synonym" .
 <http://semanticscience.org/resource/SIO_010078> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#ObjectProperty> .
 <http://semanticscience.org/resource/SIO_010078> <http://www.w3.org/2004/02/skos/core#prefLabel> "encodes" .
-<http://purl.obolibrary.org/obo/RO_0000052> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#ObjectProperty> .
-<http://purl.obolibrary.org/obo/RO_0000052> <http://www.w3.org/2004/02/skos/core#prefLabel> "characteristic of" .
+<http://purl.obolibrary.org/obo/RO_0002162> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#ObjectProperty> .
+<http://purl.obolibrary.org/obo/RO_0002162> <http://www.w3.org/2004/02/skos/core#prefLabel> "in taxon" .
 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#ObjectProperty> .
 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2004/02/skos/core#prefLabel> "is instance of" .
 <http://www.w3.org/2004/02/skos/core#closeMatch> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#ObjectProperty> .
@@ -26,7 +26,7 @@
 <http://rdf.biogateway.eu/gene/> <http://www.w3.org/2004/02/skos/core#prefLabel> "gene" .
 <http://rdf.biogateway.eu/gene/7227/Src64B> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#Class> .
 <http://rdf.biogateway.eu/gene/7227/Src64B> <http://www.w3.org/2000/01/rdf-schema#subClassOf> <http://semanticscience.org/resource/SIO_010035> .
-<http://rdf.biogateway.eu/gene/7227/Src64B> <http://purl.obolibrary.org/obo/RO_0000052> <http://purl.obolibrary.org/obo/NCBITaxon_7227> .
+<http://rdf.biogateway.eu/gene/7227/Src64B> <http://purl.obolibrary.org/obo/RO_0002162> <http://purl.obolibrary.org/obo/NCBITaxon_7227> .
 <http://rdf.biogateway.eu/gene/7227/Src64B> <http://semanticscience.org/resource/SIO_010078> <http://uniprot.org/uniprot/P00528> .
 <http://rdf.biogateway.eu/gene/7227/Src64B> <http://www.w3.org/2004/02/skos/core#definition> "gene 7227/Src64B encoding [SRC64_DROME]" .
 <http://rdf.biogateway.eu/gene/7227/Src64B> <http://www.w3.org/2004/02/skos/core#prefLabel> "Src64B" .
@@ -39,7 +39,7 @@
 <http://rdf.biogateway.eu/gene/7227/Src64B#48973> <http://www.w3.org/2004/02/skos/core#prefLabel> "GeneID#48973" .
 <http://rdf.biogateway.eu/gene/7227/Test_1> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#Class> .
 <http://rdf.biogateway.eu/gene/7227/Test_1> <http://www.w3.org/2000/01/rdf-schema#subClassOf> <http://semanticscience.org/resource/SIO_010035> .
-<http://rdf.biogateway.eu/gene/7227/Test_1> <http://purl.obolibrary.org/obo/RO_0000052> <http://purl.obolibrary.org/obo/NCBITaxon_7227> .
+<http://rdf.biogateway.eu/gene/7227/Test_1> <http://purl.obolibrary.org/obo/RO_0002162> <http://purl.obolibrary.org/obo/NCBITaxon_7227> .
 <http://rdf.biogateway.eu/gene/7227/Test_1> <http://semanticscience.org/resource/SIO_010078> <http://uniprot.org/uniprot/P00528> .
 <http://rdf.biogateway.eu/gene/7227/Test_1> <http://www.w3.org/2004/02/skos/core#definition> "gene 7227/Test_1 encoding [SRC64_DROME]" .
 <http://rdf.biogateway.eu/gene/7227/Test_1> <http://www.w3.org/2004/02/skos/core#prefLabel> "Test 1" .

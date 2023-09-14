@@ -69,14 +69,14 @@ func Test_rgr2trg(t *testing.T) {
 		{pth, wpth, arg3[0], 0}, // used to be '1' TODO
 	}
 	pdck := "reg2ntrg" // sic! positive interactions eliminated due to xmap
-	src := "signor"
+	srck := "signor"
 	for i, tt := range tts {
-		cnts, _ := rgr2trg(tt.arg1, tt.arg2, tt.arg3) // process ALL files in src dir
-		if cnts[pdck][src] != tt.val {
+		cnts, _ := rgr2trg(tt.arg1, tt.arg2, tt.arg3) // process ALL files in srck dir
+		if cnts[pdck][srck] != tt.val {
 			t.Error(
 				"For test", i+1, ": ", tt.arg1, tt.arg2, tt.arg3,
 				"\n\twant", tt.val,
-				"\n\thave", cnts[pdck][src],
+				"\n\thave", cnts[pdck][srck],
 			)
 		}
 	}
@@ -100,15 +100,15 @@ func Test_tfac2gene(t *testing.T) {
 		{pth, wpth, arg3[0], 3}, // new tests
 	}
 	pdck := "reg2ptrg"
-	src := "tfacts"
-	// src := "tflink" // no interactions after filtering by xmap
+	srck := "tfacts"
+	// srck := "tflink" // no interactions after filtering by xmap
 	for i, tt := range tts {
-		cnts, _ := tfac2gene(tt.arg1, tt.arg2, tt.arg3) // process ALL files in src dir
-		if cnts[pdck][src] != tt.val {
+		cnts, _ := tfac2gene(tt.arg1, tt.arg2, tt.arg3) // process ALL files in srck dir
+		if cnts[pdck][srck] != tt.val {
 			t.Error(
 				"For test", i+1, ": ", tt.arg1, tt.arg2, tt.arg3,
 				"\n\twant", tt.val,
-				"\n\thave", cnts[pdck][src],
+				"\n\thave", cnts[pdck][srck],
 			)
 		}
 	}
@@ -130,14 +130,14 @@ func Test_prot2prot(t *testing.T) {
 		{pth, wpth, arg3[0], 1},
 	}
 	pdck := "tlp2tlp"
-	src := "intact"
+	srck := "intact"
 	for i, tt := range tts {
-		cnts, _ := prot2prot(tt.arg1, tt.arg2, tt.arg3) // process ALL files in src dir
-		if cnts[pdck][src] != tt.val {
+		cnts, _ := prot2prot(tt.arg1, tt.arg2, tt.arg3) // process ALL files in srck dir
+		if cnts[pdck][srck] != tt.val {
 			t.Error(
 				"For test", i+1, ": ", tt.arg1, tt.arg2, tt.arg3,
 				"\n\twant", tt.val,
-				"\n\thave", cnts[pdck][src],
+				"\n\thave", cnts[pdck][srck],
 			)
 		}
 	}

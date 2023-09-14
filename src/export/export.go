@@ -77,16 +77,16 @@ func Prot2prot(d *bgw.Dat4bridge, x *bgw.Xmap, wdir string) error {
 	}
 	nss := rdf.Nss // BGW URI name spaces
 	d4b := *d
-	src := d4b.Src
+	srck := d4b.Src
 	txid := d4b.Taxid
 	sdir := "prot2prot"
-	wpth := fmt.Sprintf("%s%s/%s-%s.nt", wdir, sdir, src, txid)
+	wpth := fmt.Sprintf("%s%s/%s-%s.nt", wdir, sdir, srck, txid)
 	wfh, err := os.Create(wpth)
 	util.CheckE(err)
 	defer wfh.Close()
 	var sb strings.Builder
 	ourUs := rdf.FmtURIs(keys4b)
-	srcU := rdf.FormU(nss[src])
+	srcU := rdf.FormU(nss[srck])
 	// graphU := "<http://rdf.biogateway.eu/graph/prot2prot>"
 	// sb.WriteString(rdf.FormT(graphU, ourUs["sth2src"], srcU))
 
@@ -130,7 +130,7 @@ func Prot2prot(d *bgw.Dat4bridge, x *bgw.Xmap, wdir string) error {
 			msg := fmt.Sprintf("export.prot2prot(): Multiple BGW ids: idB: %s bgwBs: %v", idB, bgwBs)
 			log.Println(msg)
 		} // normally should never happen
-		cnts.Add(pdck, src)
+		cnts.Add(pdck, srck)
 		bgwA := bgwAs[0]
 		bgwB := bgwBs[0]
 		duoid = fmt.Sprintf("uniprot!%s--uniprot!%s", bgwA, bgwB) // redefining
@@ -179,7 +179,7 @@ func Prot2prot(d *bgw.Dat4bridge, x *bgw.Xmap, wdir string) error {
 			sb.WriteString(rdf.FormT(insU, ourUs["sth2mtd"], myU))
 		}
 
-		if cnts[pdck][src] > 0 {
+		if cnts[pdck][srck] > 0 {
 			flags.Add(pdck)
 			if flags[pdck] == 1 {
 				wfh.Write([]byte(header))
@@ -195,7 +195,7 @@ func Prot2prot(d *bgw.Dat4bridge, x *bgw.Xmap, wdir string) error {
 func Rgr2trg(d *bgw.Dat4bridge, x *bgw.Xmap, wdir string) error {
 	d4b := *d
 	xmap := *x
-	src := d4b.Src
+	srck := d4b.Src
 	txid := d4b.Taxid
 	cnts := d4b.Cnts // Set2D
 	p2t := "reg2ptrg"
@@ -206,9 +206,9 @@ func Rgr2trg(d *bgw.Dat4bridge, x *bgw.Xmap, wdir string) error {
 	modes.Add("signor", "down-regulates", n2t)
 	sdir := "reg2targ"
 	wpths := map[string]string{
-		p2t: fmt.Sprintf("%s%s/%s-%s-%s.nt", wdir, sdir, "p", src, txid),
-		n2t: fmt.Sprintf("%s%s/%s-%s-%s.nt", wdir, sdir, "n", src, txid),
-		u2t: fmt.Sprintf("%s%s/%s-%s-%s.nt", wdir, sdir, "u", src, txid),
+		p2t: fmt.Sprintf("%s%s/%s-%s-%s.nt", wdir, sdir, "p", srck, txid),
+		n2t: fmt.Sprintf("%s%s/%s-%s-%s.nt", wdir, sdir, "n", srck, txid),
+		u2t: fmt.Sprintf("%s%s/%s-%s-%s.nt", wdir, sdir, "u", srck, txid),
 	}
 
 	fh4p, err := os.Create(wpths[p2t])
@@ -250,8 +250,8 @@ func Rgr2trg(d *bgw.Dat4bridge, x *bgw.Xmap, wdir string) error {
 	}
 	ourUs := rdf.FmtURIs(keys4b)
 	nss := rdf.Nss // BGW URI name spaces
-	//srcns := nss[src] // fully qualified namespace
-	srcU := rdf.FormU(rdf.Uris4tftg[src])
+	//srcns := nss[srck] // fully qualified namespace
+	srcU := rdf.FormU(rdf.Uris4tftg[srck])
 	rdfns := nss["rdf"]
 	// graphns := fmt.Sprintf("%s%s", nss["bgw"], "graph/")
 	header, nln := rdf.Capita(keys4b)
@@ -311,11 +311,11 @@ func Rgr2trg(d *bgw.Dat4bridge, x *bgw.Xmap, wdir string) error {
 		}
 		// skipping pairs with ambiguous entyty types - never happens
 		if len(typeAs) > 1 {
-			fmt.Printf("%s%s %s %s", "export.Rgr2trg(): multiple entity A types, skipping: ", src, duokey, typeAs)
+			fmt.Printf("%s%s %s %s", "export.Rgr2trg(): multiple entity A types, skipping: ", srck, duokey, typeAs)
 			continue
 		}
 		if len(typeBs) > 1 {
-			fmt.Printf("%s%s %s %s", "export.Rgr2trg(): multiple entity B types, skipping: ", src, duokey, typeBs)
+			fmt.Printf("%s%s %s %s", "export.Rgr2trg(): multiple entity B types, skipping: ", srck, duokey, typeBs)
 			continue
 		}
 		typeA := typeAs[0] // assuming a single vwlue
@@ -355,7 +355,7 @@ func Rgr2trg(d *bgw.Dat4bridge, x *bgw.Xmap, wdir string) error {
 			onemod = util.StripParQuots(onemod)
 			onemod = strings.Split(onemod, " ")[0]
 			// keys for predicates
-			for _, pdck := range modes[src][onemod].Keys() {
+			for _, pdck := range modes[srck][onemod].Keys() {
 				pdcks = append(pdcks, pdck)
 			}
 		} // onemod
@@ -366,7 +366,7 @@ func Rgr2trg(d *bgw.Dat4bridge, x *bgw.Xmap, wdir string) error {
 			//sb.WriteString(rdf.FormT(graphU, ourUs["sth2src"], srcU))
 			for _, entAid := range bgwAids {
 				for _, entBid := range bgwBids {
-					cnts.Add(pdck, src)
+					cnts.Add(pdck, srck)
 					clsid := fmt.Sprintf("uniprot!%s--uniprot!%s", entAid, entBid)
 					clsU := rdf.CompU(clsns, clsid)
 					entAU := rdf.CompU(entAns, entAid)
@@ -382,9 +382,9 @@ func Rgr2trg(d *bgw.Dat4bridge, x *bgw.Xmap, wdir string) error {
 					sb.WriteString(rdf.FormT(entAU, ourUs[pdck], entBU))
 
 					/// INSTANCES
-					insid := fmt.Sprintf("%s#%s", clsid, src)
+					insid := fmt.Sprintf("%s#%s", clsid, srck)
 					insU := rdf.CompU(clsns, insid)
-					// inslbl := fmt.Sprintf("%s%s%s", clsid, " from ", src) // changed
+					// inslbl := fmt.Sprintf("%s%s%s", clsid, " from ", srck) // changed
 					sb.WriteString(rdf.FormT(insU, ourUs["ins2cls"], clsU))
 					sb.WriteString(rdf.FormT(insU, ourUs["sth2lbl"], rdf.FormL(clsid)))
 					sb.WriteString(rdf.FormT(insU, ourUs["sth2src"], srcU))
@@ -411,7 +411,7 @@ func Rgr2trg(d *bgw.Dat4bridge, x *bgw.Xmap, wdir string) error {
 
 				} // entBid
 			} // entAid
-			if cnts[pdck][src] > 0 {
+			if cnts[pdck][srck] > 0 {
 				flags.Add(pdck)
 				fh := fhs[pdck]
 				if flags[pdck] == 1 {
@@ -422,14 +422,14 @@ func Rgr2trg(d *bgw.Dat4bridge, x *bgw.Xmap, wdir string) error {
 			}
 		} // pdck
 	} // duokey
-	log.Println("export.Rgr2trg():", src, txid, cnts)
+	log.Println("export.Rgr2trg():", srck, txid, cnts)
 	return nil
 } // Rgr2trg
 
 func Tfac2gene(d *bgw.Dat4bridge, x *bgw.Xmap, wdir string) error {
 	d4b := *d
 	xmap := *x
-	src := d4b.Src
+	srck := d4b.Src
 	txid := d4b.Taxid
 	cnts := d4b.Cnts // Set2D
 	p2t := "reg2ptrg"
@@ -452,9 +452,9 @@ func Tfac2gene(d *bgw.Dat4bridge, x *bgw.Xmap, wdir string) error {
 	modes.Add("tflink", "repressor", n2t)
 	sdir := "tfac2gene"
 	wpths := map[string]string{
-		p2t: fmt.Sprintf("%s%s/%s-%s-%s.nt", wdir, sdir, "p", src, txid),
-		n2t: fmt.Sprintf("%s%s/%s-%s-%s.nt", wdir, sdir, "n", src, txid),
-		u2t: fmt.Sprintf("%s%s/%s-%s-%s.nt", wdir, sdir, "u", src, txid),
+		p2t: fmt.Sprintf("%s%s/%s-%s-%s.nt", wdir, sdir, "p", srck, txid),
+		n2t: fmt.Sprintf("%s%s/%s-%s-%s.nt", wdir, sdir, "n", srck, txid),
+		u2t: fmt.Sprintf("%s%s/%s-%s-%s.nt", wdir, sdir, "u", srck, txid),
 	}
 
 	fh4p, err := os.Create(wpths[p2t])
@@ -495,8 +495,8 @@ func Tfac2gene(d *bgw.Dat4bridge, x *bgw.Xmap, wdir string) error {
 	}
 	ourUs := rdf.FmtURIs(keys4b)
 	nss := rdf.Nss // BGW URI name spaces
-	//srcns := nss[src] // fully qualified namespace
-	srcU := rdf.FormU(rdf.Uris4tftg[src])
+	//srcns := nss[srck] // fully qualified namespace
+	srcU := rdf.FormU(rdf.Uris4tftg[srck])
 	rdfns := nss["rdf"]
 	// graphns := fmt.Sprintf("%s%s", nss["bgw"], "graph/")
 	header, nln := rdf.Capita(keys4b)
@@ -534,7 +534,7 @@ func Tfac2gene(d *bgw.Dat4bridge, x *bgw.Xmap, wdir string) error {
 		pdcks := []string{u2t} // all predicate keys for one duokey, u2t first
 		for _, onemod := range duo["mode"].Keys() {
 			// keys for predicates
-			for _, pdck := range modes[src][onemod].Keys() {
+			for _, pdck := range modes[srck][onemod].Keys() {
 				pdcks = append(pdcks, pdck)
 			}
 		} // onemod
@@ -544,7 +544,7 @@ func Tfac2gene(d *bgw.Dat4bridge, x *bgw.Xmap, wdir string) error {
 			//sb.WriteString(rdf.FormT(graphU, ourUs["sth2src"], srcU))
 			for _, entAid := range bgwAids {
 				for _, entBid := range bgwBids {
-					cnts.Add(pdck, src)
+					cnts.Add(pdck, srck)
 					clsid := fmt.Sprintf("uniprot!%s--gene!%s", entAid, entBid)
 					clsU := rdf.CompU(clsns, clsid)
 					entAU := rdf.CompU(entAns, entAid)
@@ -560,7 +560,7 @@ func Tfac2gene(d *bgw.Dat4bridge, x *bgw.Xmap, wdir string) error {
 					sb.WriteString(rdf.FormT(entAU, ourUs[pdck], entBU))
 
 					/// INSTANCES
-					insid := fmt.Sprintf("%s#%s", clsid, src)
+					insid := fmt.Sprintf("%s#%s", clsid, srck)
 					insU := rdf.CompU(clsns, insid)
 					sb.WriteString(rdf.FormT(insU, ourUs["ins2cls"], clsU))
 					sb.WriteString(rdf.FormT(insU, ourUs["sth2lbl"], rdf.FormL(clsid)))
@@ -594,7 +594,7 @@ func Tfac2gene(d *bgw.Dat4bridge, x *bgw.Xmap, wdir string) error {
 					}
 				} // entBid
 			} // entAid
-			if cnts[pdck][src] > 0 {
+			if cnts[pdck][srck] > 0 {
 				flags.Add(pdck)
 				fh := fhs[pdck]
 				if flags[pdck] == 1 {
@@ -605,14 +605,14 @@ func Tfac2gene(d *bgw.Dat4bridge, x *bgw.Xmap, wdir string) error {
 			}
 		} // pdck
 	} // duokey
-	log.Println("export.Tfac2gene():", src, txid, cnts)
+	log.Println("export.Tfac2gene():", srck, txid, cnts)
 	return nil
 } // Tfac2gene
 
 func SigPways(d *bgw.Dat4bridge, x *bgw.Xmap, wdir string) error {
 	d4b := *d
 	xmap := *x
-	src := d4b.Src
+	srck := d4b.Src
 	txid := d4b.Taxid
 	cnts := d4b.Cnts // Set2D
 	p2t := "reg2ptrg"
@@ -623,9 +623,9 @@ func SigPways(d *bgw.Dat4bridge, x *bgw.Xmap, wdir string) error {
 	modes.Add("signor", "down-regulates", n2t)
 	sdir := "sigpways"
 	wpths := map[string]string{
-		p2t: fmt.Sprintf("%s%s/%s-%s-%s.nt", wdir, sdir, "p", src, txid),
-		n2t: fmt.Sprintf("%s%s/%s-%s-%s.nt", wdir, sdir, "n", src, txid),
-		u2t: fmt.Sprintf("%s%s/%s-%s-%s.nt", wdir, sdir, "u", src, txid),
+		p2t: fmt.Sprintf("%s%s/%s-%s-%s.nt", wdir, sdir, "p", srck, txid),
+		n2t: fmt.Sprintf("%s%s/%s-%s-%s.nt", wdir, sdir, "n", srck, txid),
+		u2t: fmt.Sprintf("%s%s/%s-%s-%s.nt", wdir, sdir, "u", srck, txid),
 	}
 
 	fh4p, err := os.Create(wpths[p2t])
@@ -668,8 +668,8 @@ func SigPways(d *bgw.Dat4bridge, x *bgw.Xmap, wdir string) error {
 	}
 	ourUs := rdf.FmtURIs(keys4b)
 	nss := rdf.Nss // BGW URI name spaces
-	//srcns := nss[src] // fully qualified namespace
-	srcU := rdf.FormU(rdf.Uris4tftg[src])
+	//srcns := nss[srck] // fully qualified namespace
+	srcU := rdf.FormU(rdf.Uris4tftg[srck])
 	rdfns := nss["rdf"]
 	// graphns := fmt.Sprintf("%s%s", nss["bgw"], "graph/")
 	header, nln := rdf.Capita(keys4b)
@@ -704,11 +704,11 @@ func SigPways(d *bgw.Dat4bridge, x *bgw.Xmap, wdir string) error {
 		}
 		// skipping pairs with ambiguous entyty types - never happens
 		if len(typeAs) > 1 {
-			fmt.Printf("%s%s %s %s", "export.SigPways(): multiple entity A types, skipping: ", src, duokey, typeAs)
+			fmt.Printf("%s%s %s %s", "export.SigPways(): multiple entity A types, skipping: ", srck, duokey, typeAs)
 			continue
 		}
 		if len(typeBs) > 1 {
-			fmt.Printf("%s%s %s %s", "export.SigPways(): multiple entity B types, skipping: ", src, duokey, typeBs)
+			fmt.Printf("%s%s %s %s", "export.SigPways(): multiple entity B types, skipping: ", srck, duokey, typeBs)
 			continue
 		}
 		typeA := typeAs[0]
@@ -747,7 +747,7 @@ func SigPways(d *bgw.Dat4bridge, x *bgw.Xmap, wdir string) error {
 		for _, onemod := range duo["modelbl"].Keys() {
 			onemod = strings.Split(onemod, " ")[0]
 			// keys for predicates
-			for _, pdck := range modes[src][onemod].Keys() {
+			for _, pdck := range modes[srck][onemod].Keys() {
 				pdcks = append(pdcks, pdck)
 			}
 		} // onemod
@@ -758,7 +758,7 @@ func SigPways(d *bgw.Dat4bridge, x *bgw.Xmap, wdir string) error {
 			//sb.WriteString(rdf.FormT(graphU, ourUs["sth2src"], srcU))
 			for _, entAid := range bgwAids {
 				for _, entBid := range bgwBids {
-					cnts.Add(pdck, src)
+					cnts.Add(pdck, srck)
 					clsid := fmt.Sprintf("uniprot!%s--uniprot!%s", entAid, entBid)
 					clsU := rdf.CompU(clsns, clsid)
 					entAU := rdf.CompU(entAns, entAid)
@@ -774,7 +774,7 @@ func SigPways(d *bgw.Dat4bridge, x *bgw.Xmap, wdir string) error {
 					sb.WriteString(rdf.FormT(entAU, ourUs[pdck], entBU))
 
 					/// INSTANCES
-					insid := fmt.Sprintf("%s#%s", clsid, src)
+					insid := fmt.Sprintf("%s#%s", clsid, srck)
 					insU := rdf.CompU(clsns, insid)
 					sb.WriteString(rdf.FormT(insU, ourUs["ins2cls"], clsU))
 					sb.WriteString(rdf.FormT(insU, ourUs["sth2lbl"], rdf.FormL(clsid)))
@@ -807,7 +807,7 @@ func SigPways(d *bgw.Dat4bridge, x *bgw.Xmap, wdir string) error {
 					}
 				} // entBid
 			} // entAid
-			if cnts[pdck][src] > 0 {
+			if cnts[pdck][srck] > 0 {
 				flags.Add(pdck)
 				fh := fhs[pdck]
 				if flags[pdck] == 1 {
@@ -818,7 +818,7 @@ func SigPways(d *bgw.Dat4bridge, x *bgw.Xmap, wdir string) error {
 			}
 		} // pdck
 	} // duokey
-	log.Println("export.SigPways():", src, txid, cnts)
+	log.Println("export.SigPways():", srck, txid, cnts)
 	return nil
 } // SigPways
 
@@ -860,7 +860,7 @@ func Gene(rpthUP, rpthI, wpthG string, p *bgw.Xmap) error {
 	// keys of object properties ('gene' graph)
 	keys4g["Opys"] = []string{
 		"gn2gp",
-		"gn2txn",
+		"be2txn",
 		"ins2cls",
 		// "mbr2lst",
 		"sth2clm",
@@ -952,7 +952,7 @@ func Gene(rpthUP, rpthI, wpthG string, p *bgw.Xmap) error {
 		clsGU := rdf.CompU(nss["gene"], clsG)
 		sbG.WriteString(rdf.FormT(clsGU, gnUs["ins2cls"], clsU))
 		sbG.WriteString(rdf.FormT(clsGU, gnUs["sub2cls"], gnUs["gn"]))
-		sbG.WriteString(rdf.FormT(clsGU, gnUs["gn2txn"], txnU))
+		sbG.WriteString(rdf.FormT(clsGU, gnUs["be2txn"], txnU))
 		xmap.Lblg.Add(lblG, "bgwg", clsG)
 		xmap.Bgwg.Add(clsG, "lblg", lblG)
 		for _, upca := range upcas {
@@ -1037,7 +1037,7 @@ func Prot(rpthUP, rpthI, wpthP string, p *bgw.Xmap) error {
 	keys4p := make(util.SliceSet)
 	// keys of object properties ('prot' graph)
 	keys4p["Opys"] = []string{
-		"gp2txn",
+		"be2txn",
 		"ins2cls",
 		"sth2clm",
 		"sth2evd",
@@ -1135,7 +1135,7 @@ func Prot(rpthUP, rpthI, wpthP string, p *bgw.Xmap) error {
 		oriU := rdf.CompU(nss["uniprot"], upca)
 		sbP.WriteString(rdf.FormT(oriU, gpUs["ins2cls"], clsU))
 		sbP.WriteString(rdf.FormT(oriU, gpUs["sub2cls"], gpUs["tlp"]))
-		sbP.WriteString(rdf.FormT(oriU, gpUs["gp2txn"], txnU))
+		sbP.WriteString(rdf.FormT(oriU, gpUs["be2txn"], txnU))
 		sbP.WriteString(rdf.FormT(oriU, gpUs["sth2dfn"], rdf.FormL(dfnP)))
 		sbP.WriteString(rdf.FormT(oriU, gpUs["sth2lbl"], rdf.FormL(lblP)))
 		xmap.Lblp.Add(lblP, "bgwp", clsP)
@@ -1204,10 +1204,10 @@ func Prot(rpthUP, rpthI, wpthP string, p *bgw.Xmap) error {
 func Gene2phen(duos, gsym2bgw util.Set3D, wpth string) (int, error) {
 	nss := rdf.Nss // BGW URI name spaces
 	nln := 0
-	src := "uniprot"
-	srcU := rdf.FormU(nss[src])
+	srck := "uniprot"
+	srcU := rdf.FormU(nss[srck])
 	if len(srcU) == 0 {
-		msg := fmt.Sprintf("export.Gene2phen():UnknownNamespace: %s", src)
+		msg := fmt.Sprintf("export.Gene2phen():UnknownNamespace: %s", srck)
 		panic(errors.New(msg))
 	}
 	keys4b := make(util.SliceSet)
@@ -1318,7 +1318,7 @@ func Gene2phen(duos, gsym2bgw util.Set3D, wpth string) (int, error) {
 		nln++
 
 		/// INSTANCES
-		insid := fmt.Sprintf("%s%s%s", duoid, "#", src)
+		insid := fmt.Sprintf("%s%s%s", duoid, "#", srck)
 		insU := rdf.CompU(stmNS, insid)
 		sb.WriteString(rdf.FormT(insU, ourUs["ins2cls"], duoU))
 		nln++
@@ -1531,6 +1531,11 @@ func Ortho(duos util.Set3D, wpth string) (int, error) {
 	keys4b["Prns"] = []string{
 		"stm",
 	}
+	var srcs = map[string]string{
+		"uniprot":     "http://uniprot.org/uniprot/",
+		"keggortho":   "http://identifiers.org/kegg.orthology/",
+		"orthodb":     "https://www.orthodb.org/",
+	}
 	clsU := rdf.CompU(nss["owl"], "Class")
 	// ortho graph ini
 	nln := 0
@@ -1543,7 +1548,7 @@ func Ortho(duos util.Set3D, wpth string) (int, error) {
 	sb.WriteString(header)
 	nln += n
 	graphU := "<http://rdf.biogateway.eu/graph/ortho>"
-	srcU := rdf.FormU(nss["uniprot"])
+	srcU := rdf.FormU(srcs["uniprot"])
 	sb.WriteString(rdf.FormT(graphU, ourUs["sth2src"], srcU))
 	nln++
 	if nln < 17 {
@@ -1554,7 +1559,8 @@ func Ortho(duos util.Set3D, wpth string) (int, error) {
 	///////////////////////////////////////////////////////////////////////////////
 	stmNS := "http://rdf.biogateway.eu/ortho/"
 	rdfNS := nss["rdf"]
-	idmkeys := bgw.Orthokeys
+	idmkeys := bgw.Orthokeys // currently only "OrthoDB": "orthodb", TODO move here?
+	fmt.Println(duos)
 	cntD := 0
 	for _, duoid := range duos.Keys() {
 		duo := duos[duoid]
@@ -1587,27 +1593,23 @@ func Ortho(duos util.Set3D, wpth string) (int, error) {
 		nln++
 
 		/// INSTANCES
-		for _, srck := range duo.Keys() {
-			src, ok := idmkeys[srck]
+		for _, idmk := range duo.Keys() {
+			srck, ok := idmkeys[idmk]
+			fmt.Println(idmk, ":", srck)
 			if !ok {
 				continue
 			} // needed!
-			insid := fmt.Sprintf("%s%s%s", duoid, "#", src)
+			insid := fmt.Sprintf("%s%s%s", duoid, "#", srck)
 			insU := rdf.CompU(stmNS, insid)
 			sb.WriteString(rdf.FormT(insU, ourUs["ins2cls"], duoU))
 			nln++
 			sb.WriteString(rdf.FormT(insU, ourUs["sth2lbl"], rdf.FormL(clslbl)))
-			srcU := rdf.FormU(nss[src])
+			srcU := rdf.FormU(srcs[srck])
 			sb.WriteString(rdf.FormT(insU, ourUs["sth2src"], srcU))
 			nln++
 			// looping over orthology clusters:
-			for _, setid := range duo[srck].Keys() {
-				prefix := ""
-				if srck == "OrthoDB" {
-					prefix = "?query="
-				}
-				lastbit := fmt.Sprintf("%s%s", prefix, setid)
-				setU := rdf.FormU(fmt.Sprintf("%s%s", nss[src], lastbit))
+			for _, setid := range duo[idmk].Keys() {
+				setU := rdf.FormU(fmt.Sprintf("%s%s", nss[srck], setid))
 				sb.WriteString(rdf.FormT(insU, ourUs["sub2set"], setU)) // part_of
 				nln++
 				sb.WriteString(rdf.FormT(uriL, ourUs["mbr2lst"], setU))

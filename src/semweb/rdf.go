@@ -23,7 +23,7 @@ var Nss = map[string]string{
 	"ncbitx":      "http://purl.obolibrary.org/obo/NCBITaxon_",
 	"refseq":      "http://identifiers.org/refseq/",
 	"keggortho":   "http://identifiers.org/kegg.orthology/",
-	"orthodb":     "https://www.orthodb.org/",
+	"orthodb":     "https://www.orthodb.org/?query=", // acepts IDs from UniProt ID mappings
 	"omim":        "http://purl.bioontology.org/ontology/OMIM/",
 	"intact":      "http://identifiers.org/intact/",
 	"goa":         "http://identifiers.org/goa/",
@@ -40,7 +40,6 @@ var Nss = map[string]string{
 	// "prot":        "http://rdf.biogateway.eu/prot/",
 }
 
-//"orthodb": "https://www.orthodb.org/?query=", // accepts IDs from UP idmapping TODO
 
 // Object Properties
 var Opys = util.SliceSet{
@@ -54,9 +53,10 @@ var Opys = util.SliceSet{
 	"sth2clm": {"skos", "closeMatch", "has close match"},
 	"sth2rlm": {"skos", "relatedMatch", "has related match"},
 	"sub2set": {"obo", "BFO_0000050", "is part of"},
-	"gn2txn":  {"obo", "RO_0000052", "characteristic of"},
-	"gp2txn":  {"obo", "RO_0000052", "characteristic of"},
-	//"be2txn":	{"biolink", "in_taxon", "is characteristic of taxon"} // for any biological entity TODO
+	//"gn2txn":  {"obo", "RO_0000052", "characteristic of"},
+	//"gp2txn":  {"obo", "RO_0000052", "characteristic of"},
+	"be2txn":  {"obo", "RO_0002162", "in taxon"}, // confusing definition
+	//"be2txn":	{"biolink", "in_taxon", "is characteristic of taxon"} // declared equivalent to RO_0002162 
 	"mbr2lst": {"schema", "memberOf", "is member of"},
 	"ins2cls": {"rdf", "type", "is instance of"},
 	"stm2sbj": {"rdf", "subject", "has subject"},
@@ -64,7 +64,6 @@ var Opys = util.SliceSet{
 	"stm2pdc": {"rdf", "predicate", "has predicate"},
 	"gn2phn":  {"obo", "RO_0002331", "involved in"},
 	"gp2bp":   {"obo", "RO_0002331", "involved in", "biological_process"},
-	"mi2bp":   {"obo", "RO_0002331", "involved in", "biological_process"},
 	"gp2cc":   {"obo", "BFO_0000050", "is part of", "cellular_component"},
 	"gp2mf":   {"obo", "RO_0002327", "enables", "molecular_function"},
 	"gn2gp":   {"sio", "SIO_010078", "encodes"},
@@ -75,8 +74,9 @@ var Opys = util.SliceSet{
 	"reg2ntrg":  {"obo", "RO_0002430", "involved in negative regulation of"},
 	"sth2mtd":   {"rdfs", "isDefinedBy", "is defined by"},
 	"orl2orl":   {"sio", "SIO_000558", "is orthologous to"},
-	"mi2loc":   {"obo", "BFO_0000066", "occurs in"},
-	"step2pway": {"obo", "BFO_0000050", "is part of", "cellular_component"},
+	"mi2bp":   {"obo", "RO_0002331", "involved in"},
+	"mi2loc":   {"obo", "BFO_0000066", "occurs in"}, // sigpways only
+	"step2pway": {"obo", "BFO_0000050", "is part of"},
 	"reg2dtrg":  {"obo", "RO_0002578", "directly regulates"},
 	"reg2itrg":  {"obo", "RO_0012012", "indirectly regulates"},
 	// not used yet SIO_000208"
@@ -85,8 +85,8 @@ var Opys = util.SliceSet{
 
 // Datatype Properties
 var Dpys = util.SliceSet{
-	"gi2^": {"obo", "OGI_1000004", "start point of interval"},
-	"gi2#": {"obo", "OGI_1000003", "end point of interval"},
+	"gi2^": {"obo", "GENO_0000894", "start position"},
+	"gi2#": {"obo", "GENO_0000895", "end position"},
 }
 
 // Annotation Properties

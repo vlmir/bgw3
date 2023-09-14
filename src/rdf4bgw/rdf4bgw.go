@@ -59,13 +59,13 @@ func reg2pway(datdir, bgwdir string, txn2prm util.Set2D) (util.Set2D, error) {
 		"reg2ntrg",
 		"reg2utrg",
 	}
-	for src, _ := range rdf.Uris4rgrtrg {
+	for srck, _ := range rdf.Uris4rgrtrg {
 		// define keys and vals for parsing
 		var vals []bgw.Column
 		var keys []bgw.Column
 		ext := ""
 		rpth := ""
-		if src == "signor" {
+		if srck == "signor" {
 			keys, vals = bgw.SigPwaysParseConf()
 			ext = ".tsv"
 		}
@@ -76,8 +76,8 @@ func reg2pway(datdir, bgwdir string, txn2prm util.Set2D) (util.Set2D, error) {
 			} // for now
 			var d4b bgw.Dat4bridge // one source, one taxon
 			d4b.New()
-			if src == "signor" {
-				rpth = fmt.Sprintf("%s%s%s%s%s", datdir, src, "/", "pathways", ext)
+			if srck == "signor" {
+				rpth = fmt.Sprintf("%s%s%s%s%s", datdir, srck, "/", "pathways", ext)
 			}
 			log.Println("Rdf4bgw.reg2pway(): processing", rpth)
 			err := parse.Tab2struct(rpth, keys, vals, &d4b)
@@ -94,11 +94,11 @@ func reg2pway(datdir, bgwdir string, txn2prm util.Set2D) (util.Set2D, error) {
 			err = xmap.Unmarshal(rpthx)
 			util.CheckE(err)
 
-			if src == "signor" {
+			if srck == "signor" {
 				// generating map signor-id -> entitity-ids
 
 				sigmap := make(util.Set3D)
-				rdir := fmt.Sprintf("%s%s%s", datdir, src, "/")
+				rdir := fmt.Sprintf("%s%s%s", datdir, srck, "/")
 				smpths := []string{
 					rdir + "complexes.map",
 					rdir + "families.map",
@@ -111,7 +111,7 @@ func reg2pway(datdir, bgwdir string, txn2prm util.Set2D) (util.Set2D, error) {
 				xmap.Signor = sigmap
 			}
 
-			d4b.Src = src
+			d4b.Src = srck
 			d4b.Taxid = txid
 			err = export.SigPways(&d4b, &xmap, bgwdir)
 			if err != nil {
@@ -120,8 +120,8 @@ func reg2pway(datdir, bgwdir string, txn2prm util.Set2D) (util.Set2D, error) {
 				continue
 			}
 			for _, pdck := range pdcks {
-				cnts.Add(pdck, src)
-				cnts[pdck][src] = d4b.Cnts[pdck][src]
+				cnts.Add(pdck, srck)
+				cnts[pdck][srck] = d4b.Cnts[pdck][srck]
 			}
 		}
 	}
@@ -136,13 +136,13 @@ func rgr2trg(datdir, bgwdir string, txn2prm util.Set2D) (util.Set2D, error) {
 		"reg2ntrg",
 		"reg2utrg",
 	}
-	for src, _ := range rdf.Uris4rgrtrg {
+	for srck, _ := range rdf.Uris4rgrtrg {
 		// define keys and vals for parsing
 		var vals []bgw.Column
 		var keys []bgw.Column
 		ext := ""
 		rpth := ""
-		if src == "signor" {
+		if srck == "signor" {
 			keys, vals = bgw.SignorParseConf()
 			ext = ".mi28"
 		}
@@ -153,8 +153,8 @@ func rgr2trg(datdir, bgwdir string, txn2prm util.Set2D) (util.Set2D, error) {
 			} // for now
 			var d4b bgw.Dat4bridge // one source, one taxon
 			d4b.New()
-			if src == "signor" {
-				rpth = fmt.Sprintf("%s%s%s%s%s", datdir, src, "/", txid, ext)
+			if srck == "signor" {
+				rpth = fmt.Sprintf("%s%s%s%s%s", datdir, srck, "/", txid, ext)
 			}
 			log.Println("Rdf4bgw.rgr2trg(): processing", rpth)
 			err := parse.Tab2struct(rpth, keys, vals, &d4b)
@@ -171,11 +171,11 @@ func rgr2trg(datdir, bgwdir string, txn2prm util.Set2D) (util.Set2D, error) {
 			err = xmap.Unmarshal(rpthx)
 			util.CheckE(err)
 
-			if src == "signor" {
+			if srck == "signor" {
 				// generating map signor-id -> entitity-ids
 
 				sigmap := make(util.Set3D)
-				rdir := fmt.Sprintf("%s%s%s", datdir, src, "/")
+				rdir := fmt.Sprintf("%s%s%s", datdir, srck, "/")
 				smpths := []string{
 					rdir + "complexes.map",
 					rdir + "families.map",
@@ -188,7 +188,7 @@ func rgr2trg(datdir, bgwdir string, txn2prm util.Set2D) (util.Set2D, error) {
 				xmap.Signor = sigmap
 			}
 
-			d4b.Src = src
+			d4b.Src = srck
 			d4b.Taxid = txid
 			err = export.Rgr2trg(&d4b, &xmap, bgwdir)
 			if err != nil {
@@ -197,8 +197,8 @@ func rgr2trg(datdir, bgwdir string, txn2prm util.Set2D) (util.Set2D, error) {
 				continue
 			}
 			for _, pdck := range pdcks {
-				cnts.Add(pdck, src)
-				cnts[pdck][src] = d4b.Cnts[pdck][src]
+				cnts.Add(pdck, srck)
+				cnts[pdck][srck] = d4b.Cnts[pdck][srck]
 			}
 		}
 	}
@@ -213,7 +213,7 @@ func tfac2gene(datdir, bgwdir string, txn2prm util.Set2D) (util.Set2D, error) {
 		"reg2ntrg",
 		"reg2utrg",
 	}
-	for src, _ := range rdf.Uris4tftg {
+	for srck, _ := range rdf.Uris4tftg {
 		// define keys and vals for parsing
 		var vals []bgw.Column
 		var keys []bgw.Column
@@ -222,12 +222,12 @@ func tfac2gene(datdir, bgwdir string, txn2prm util.Set2D) (util.Set2D, error) {
 		for txid := range bgw.Tflink {
 			var d4b bgw.Dat4bridge // one source, one taxon
 			d4b.New()
-			if src == "tflink" {
+			if srck == "tflink" {
 				keys, vals = bgw.TflinkParseConf()
-				rpth = fmt.Sprintf("%s%s%s%s%s", datdir, src, "/", txid, ".tsv")
+				rpth = fmt.Sprintf("%s%s%s%s%s", datdir, srck, "/", txid, ".tsv")
 			} else {
 				keys, vals = bgw.TftgParseConf()
-				rpth = fmt.Sprintf("%s%s%s%s%s%s", datdir, "static/", src, "/", txid, ".f2g")
+				rpth = fmt.Sprintf("%s%s%s%s%s%s", datdir, "static/", srck, "/", txid, ".f2g")
 			}
 			// log.Println("Rdf4bgw.tfac2gene(): processing", rpth)
 			err := parse.Tab2struct(rpth, keys, vals, &d4b)
@@ -244,7 +244,7 @@ func tfac2gene(datdir, bgwdir string, txn2prm util.Set2D) (util.Set2D, error) {
 			err = xmap.Unmarshal(rpthx)
 			util.CheckE(err)
 
-			d4b.Src = src
+			d4b.Src = srck
 			d4b.Taxid = txid
 			err = export.Tfac2gene(&d4b, &xmap, bgwdir)
 			if err != nil {
@@ -253,11 +253,11 @@ func tfac2gene(datdir, bgwdir string, txn2prm util.Set2D) (util.Set2D, error) {
 				continue
 			}
 			for _, pdck := range pdcks {
-				cnts.Add(pdck, src)
-				cnts[pdck][src] = d4b.Cnts[pdck][src]
+				cnts.Add(pdck, srck)
+				cnts[pdck][srck] = d4b.Cnts[pdck][srck]
 			}
 		} // txid
-	} // src
+	} // srck
 	return cnts, nil
 } // tfac2gene
 
@@ -267,7 +267,7 @@ func prot2prot(datdir, bgwdir string, txn2prm util.Set2D) (util.Set2D, error) {
 	var pdcks = []string{
 		"tlp2tlp",
 	}
-	src := "intact" // for now
+	srck := "intact" // for now
 	for _, txid := range txn2prm.Keys() {
 		log.Println("\n\tprot2prot for:", txid)
 		subdir := "intact/"
@@ -295,7 +295,7 @@ func prot2prot(datdir, bgwdir string, txn2prm util.Set2D) (util.Set2D, error) {
 			log.Println(msg)
 		} // NoData
 		/////////////////////////////////////////////////////////////////////////////
-		d4b.Src = src
+		d4b.Src = srck
 		d4b.Taxid = txid
 		err = export.Prot2prot(&d4b, &xmap, bgwdir)
 		if err != nil {
@@ -304,8 +304,8 @@ func prot2prot(datdir, bgwdir string, txn2prm util.Set2D) (util.Set2D, error) {
 			continue
 		}
 		for _, pdck := range pdcks {
-			cnts.Add(pdck, src)
-			cnts[pdck][src] = d4b.Cnts[pdck][src]
+			cnts.Add(pdck, srck)
+			cnts[pdck][srck] = d4b.Cnts[pdck][srck]
 		}
 	} // taxid
 	return cnts, nil
