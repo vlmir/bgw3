@@ -1560,7 +1560,6 @@ func Ortho(duos util.Set3D, wpth string) (int, error) {
 	stmNS := "http://rdf.biogateway.eu/ortho/"
 	rdfNS := nss["rdf"]
 	idmkeys := bgw.Orthokeys // currently only "OrthoDB": "orthodb", TODO move here?
-	fmt.Println(duos)
 	cntD := 0
 	for _, duoid := range duos.Keys() {
 		duo := duos[duoid]
@@ -1595,7 +1594,6 @@ func Ortho(duos util.Set3D, wpth string) (int, error) {
 		/// INSTANCES
 		for _, idmk := range duo.Keys() {
 			srck, ok := idmkeys[idmk]
-			fmt.Println(idmk, ":", srck)
 			if !ok {
 				continue
 			} // needed!

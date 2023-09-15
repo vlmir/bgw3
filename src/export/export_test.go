@@ -425,7 +425,7 @@ func Test_Ortho(t *testing.T) {
 	pth := "../../tdata/"
 	wpth := pth + "OUT/export/"
 	arg1 := make(util.Set3D)
-	arg1.Add("uniprot!P02340--uniprot!P04637", "KO", "K04451")
+	// arg1.Add("uniprot!P02340--uniprot!P04637", "KO", "K04451")
 	arg1.Add("uniprot!P02340--uniprot!P04637", "OrthoDB", "257530at2759") // no isoforms
 	arg3 := wpth + "ortho/10090-9606.nt"
 	tts := []tt{

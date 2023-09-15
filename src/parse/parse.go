@@ -133,13 +133,12 @@ func Sig2up(sigmap util.Set3D, pths []string) error {
 	return nil
 }
 
-// used only in orthosolo()
-func Idmap(rpth string, srcs map[string]string, i1, i2, i3 int) (util.Set3D, error) {
+func Idmap(rpth string, idmkeys map[string]string, i1, i2, i3 int) (util.Set3D, error) {
 	out := make(util.Set3D)
 	fh, err := os.Open(rpth)
 	//util.CheckE(err)
 	if err != nil {
-		msg := fmt.Sprintf("parse.Idmap(%s, %v, %d, %d, %d):", rpth, srcs, i1, i2, i3)
+		msg := fmt.Sprintf("parse.Idmap(%s, %v, %d, %d, %d):", rpth, idmkeys, i1, i2, i3)
 		log.Println(msg)
 		return out, err
 	}
@@ -150,10 +149,10 @@ func Idmap(rpth string, srcs map[string]string, i1, i2, i3 int) (util.Set3D, err
 		if len(cells) != 3 {
 			continue
 		}
-		_, ok := srcs[cells[1]] // filtering
+		_, ok := idmkeys[cells[1]] // filtering
 		if !ok {
 			continue
-		} // filtering by srcs
+		} // filtering by idmkeys
 		// ALL proteomes 2022-12-14: no '"' anymore, 28 occurences of "''"
 		key1 := strings.Replace(cells[i1], "\"", "`", -1) // was present in 44689
 		key2 := strings.Replace(cells[i2], "\"", "`", -1) // was present in 44689
@@ -623,7 +622,8 @@ func Gpa(rpth string, filters ...util.Set3D) (duos util.Set3D) {
 
 // orthosolo() is used by OrthoDuo()
 // retrns a map for 1 taxon, primary key sourse dabase label
-func orthosolo(datdir, txid string, txn2prm util.Set2D, idmkeys map[string]string) (util.Set3D, error) {
+func orthosolo(datdir, txid string, txn2prm util.Set2D) (util.Set3D, error) {
+	idmkeys := bgw.Orthokeys
 	solos := make(util.Set3D)
 	subdir := "idmapping/"
 	ext := ".idmapping"
@@ -635,20 +635,19 @@ func orthosolo(datdir, txid string, txn2prm util.Set2D, idmkeys map[string]strin
 	for _, prmid := range prmids {
 		prmid := fmt.Sprintf("%s%s%s", prmid, "_", txid)
 		pth := fmt.Sprintf("%s%s%s%s", datdir, subdir, prmid, ext) // read
-		//dat, err := util.FilterByValues(pth, idmkeys, 1, 1, 0)
 		dat, err := Idmap(pth, idmkeys, 1, 2, 0)
 		util.CheckE(err)
-		for src, all := range dat {
+		for idmk, all := range dat {
 			for id, one := range all {
 				for upac, _ := range one {
-					solos.Add(src, id, upac)
+					solos.Add(idmk, id, upac)
 				}
 			}
-		} // src; e.g. KO, OrthoDB
+		} // idmk; e.g. KO, OrthoDB
 	}
 	count := 0
-	for src, _ := range solos {
-		count += len(solos[src])
+	for idmk, _ := range solos {
+		count += len(solos[idmk])
 	}
 	if count == 0 {
 		msg := fmt.Sprintf("parse.orthosolo:%s: NoData", txid)
@@ -662,25 +661,27 @@ func orthosolo(datdir, txid string, txn2prm util.Set2D, idmkeys map[string]strin
 // primary: relation label
 // secondary: source database label
 // tertiary: relation identifier in the source database
-func OrthoDuo(datdir, txidL, txidR string, txn2prm util.Set2D, idmkeys map[string]string) (util.Set3D, error) {
+// func OrthoDuo(datdir, txidL, txidR string, txn2prm util.Set2D, idmkeys map[string]string) (util.Set3D, error) {
+func OrthoDuo(datdir, txidL, txidR string, txn2prm util.Set2D) (util.Set3D, error) {
+	idmkeys := bgw.Orthokeys
 	duos := make(util.Set3D)
-	outL, err := orthosolo(datdir, txidL, txn2prm, idmkeys)
+	outL, err := orthosolo(datdir, txidL, txn2prm)
 	if err != nil {
 		return duos, err
 	} // NoDate for one taxaon
-	outR, err := orthosolo(datdir, txidR, txn2prm, idmkeys)
+	outR, err := orthosolo(datdir, txidR, txn2prm)
 	if err != nil {
 		return duos, err
 	} // NoDate for one taxaon
-	for src, _ := range idmkeys {
-		allL, ok := outL[src]
+	for idmk, _ := range idmkeys {
+		allL, ok := outL[idmk]
 		if !ok {
 			continue
 		}
-		allR, ok := outR[src]
+		allR, ok := outR[idmk]
 		if !ok {
 			continue
-		} // now data from 'src' is present in both taxa
+		} // now data from 'idmk' is present in both taxa
 		for id, oneL := range allL {
 			oneR, ok := allR[id]
 			if !ok {
@@ -692,7 +693,7 @@ func OrthoDuo(datdir, txidL, txidR string, txn2prm util.Set2D, idmkeys map[strin
 						continue
 					} // skipping diagonal and symmetrical
 					duoid := fmt.Sprintf("uniprot!%s--uniprot!%s", upLac, upRac)
-					duos.Add(duoid, src, id)
+					duos.Add(duoid, idmk, id)
 				}
 			}
 		}

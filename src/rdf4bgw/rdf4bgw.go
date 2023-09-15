@@ -421,7 +421,6 @@ func prot2go(datdir, bgwdir string, txn2prm util.Set2D, fx string) (int, error) 
 func ortho(datdir, bgwdir string, txn2prm util.Set2D) (int, error) {
 	// TODO interface similar to tfac2gene etc.
 	log.Println("\n\tortho for:", "all")
-	idmkeys := bgw.Orthokeys
 	nln := 0
 	for _, txidL := range txn2prm.Keys() {
 		for _, txidR := range txn2prm.Keys() {
@@ -429,7 +428,7 @@ func ortho(datdir, bgwdir string, txn2prm util.Set2D) (int, error) {
 				continue
 			} // skipping symmetrical and digonal
 			txids := [2]string{txidL, txidR}
-			duos, err := parse.OrthoDuo(datdir, txidL, txidR, txn2prm, idmkeys)
+			duos, err := parse.OrthoDuo(datdir, txidL, txidR, txn2prm)
 			if err != nil {
 				msg := fmt.Sprintf("rdf4bgw.go:main.ortho():%s:%v", err, txids)
 				log.Println(msg)
