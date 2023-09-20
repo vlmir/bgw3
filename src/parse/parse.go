@@ -435,8 +435,8 @@ func Gaf(rpth string, filters ...util.Set3D) (bp, cc, mf util.Set3D, err error) 
 		"F": "gp2mf",
 		"P": "gp2bp",
 	}
-	srcL := "uniprot"
-	srcR := "obo"
+	srckL := "uniprot"
+	srckR := "obo"
 	bp = make(util.Set3D)
 	cc = make(util.Set3D)
 	mf = make(util.Set3D)
@@ -467,8 +467,8 @@ func Gaf(rpth string, filters ...util.Set3D) (bp, cc, mf util.Set3D, err error) 
 		if !ok {
 			continue
 		}
-		idL := fmt.Sprintf("%s%s%s", srcL, "!", upac)
-		idR := fmt.Sprintf("%s%s%s", srcR, "!", goid)
+		idL := fmt.Sprintf("%s%s%s", srckL, "!", upac)
+		idR := fmt.Sprintf("%s%s%s", srckR, "!", goid)
 		pairid := fmt.Sprintf("%s%s%s", idL, "--", idR)
 		refs := make([]string, 0)
 		for _, ref := range strings.Split(cells[5], "|") {
@@ -562,8 +562,8 @@ func Gpa(rpth string, filters ...util.Set3D) (duos util.Set3D) {
 		"enables":     "gp2mf",
 		"involved_in": "gp2bp",
 	}
-	srcL := "uniprot"
-	srcR := "obo"
+	srckL := "uniprot"
+	srckR := "obo"
 	duos = make(util.Set3D)
 	fhR, err := os.Open(rpth)
 	util.CheckE(err)
@@ -594,8 +594,8 @@ func Gpa(rpth string, filters ...util.Set3D) (duos util.Set3D) {
 		if !ok {
 			continue
 		} // filtering py rels
-		idL := fmt.Sprintf("%s%s%s", srcL, "!", upac)
-		idR := fmt.Sprintf("%s%s%s", srcR, "!", goid)
+		idL := fmt.Sprintf("%s%s%s", srckL, "!", upac)
+		idR := fmt.Sprintf("%s%s%s", srckR, "!", goid)
 		pairid := fmt.Sprintf("%s%s%s", idL, "--", idR)
 		eco := strings.Replace(cells[5], ":", "_", 1)
 		refs := make([]string, 0)
@@ -620,6 +620,7 @@ func Gpa(rpth string, filters ...util.Set3D) (duos util.Set3D) {
 	return duos
 } // Gpa()
 
+// orthosolo() extracts orthology relations from UniProt idmappings for one taxon (sic!)
 // orthosolo() is used by OrthoDuo()
 // retrns a map for 1 taxon, primary key sourse dabase label
 func orthosolo(datdir, txid string, txn2prm util.Set2D) (util.Set3D, error) {
@@ -638,12 +639,12 @@ func orthosolo(datdir, txid string, txn2prm util.Set2D) (util.Set3D, error) {
 		dat, err := Idmap(pth, idmkeys, 1, 2, 0)
 		util.CheckE(err)
 		for idmk, all := range dat {
-			for id, one := range all {
+			for xid, one := range all {
 				for upac, _ := range one {
-					solos.Add(idmk, id, upac)
+					solos.Add(idmk, xid, upac)
 				}
-			}
-		} // idmk; e.g. KO, OrthoDB
+			} // xid: external cluster ID
+		} // idmk: e.g. KO, OrthoDB
 	}
 	count := 0
 	for idmk, _ := range solos {
@@ -696,7 +697,7 @@ func OrthoDuo(datdir, txidL, txidR string, txn2prm util.Set2D) (util.Set3D, erro
 					duos.Add(duoid, idmk, id)
 				}
 			}
-		}
+		} // id: external cluster ID
 	}
 	if len(duos) == 0 {
 		msg := fmt.Sprintf("parse.OrthoDuo():%s--%s: NoData", txidL, txidR)

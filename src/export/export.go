@@ -1510,6 +1510,7 @@ func Prot2go(duos, upac2bgw util.Set3D, wpth string) (int, error) {
 } // Prot2go
 
 func Ortho(duos util.Set3D, wpth string) (int, error) {
+	// duos: output of parse.OrthoDuos()
 	// Note: no UP isoforms in this graph; only RefProt canonical accessions
 	nss := rdf.Nss // BGW URI name spaces
 	keys4b := make(util.SliceSet)
@@ -1596,7 +1597,7 @@ func Ortho(duos util.Set3D, wpth string) (int, error) {
 			srck, ok := idmkeys[idmk]
 			if !ok {
 				continue
-			} // needed!
+			} // needed! ?
 			insid := fmt.Sprintf("%s%s%s", duoid, "#", srck)
 			insU := rdf.CompU(stmNS, insid)
 			sb.WriteString(rdf.FormT(insU, ourUs["ins2cls"], duoU))

@@ -271,36 +271,3 @@ func SigPwaysParseConf() ([]Column, []Column) {
 	}
 	return keys, vals
 } // SigPwaysParseConf
-
-//// TODO separate for reg2targ and tfac2gene
-//func Keys4rgrs() util.SliceSet {
-//	keys := make(util.SliceSet)
-//	keys["Opys"] = []string{
-//		"sub2cls",
-//		"stm2sbj",
-//		"stm2obj",
-//		"stm2pdc",
-//		"reg2ptrg",
-//		"reg2ntrg",
-//		"reg2utrg",
-//		"ins2cls",
-//		"sth2src",
-//		"sth2mtd",
-//		"sth2evd",
-//		"gp2bp",
-//		"reg2dtrg", // not in tfac2gene
-//		"reg2itrg", // not in tfac2gene
-//		"sth2rlm", // not in tfac2gene, TODO find a better property
-//		"pss2loc", // only in pathways
-//		"step2pway", // only in pathways
-//	}
-//	keys["Apys"] = []string{
-//		"sth2dfn",
-//		"sth2lbl",
-//		"evd2lvl",
-//	}
-//	keys["Prns"] = []string{
-//		"stm",
-//	}
-//	return keys
-//} // Keys4rgrs

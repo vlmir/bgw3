@@ -204,37 +204,37 @@ func X1quoted(s []string, key string, dlm string) []string {
 }
 
 // FilterByValues filters a tab-delimited file by values in a specified field
-func FilterByValues(rpth string, srcs map[string]string, ind1, ind2, ind3 int) (Set3D, error) {
-	// used only in parse.orthosolo() and dat4bgw
-	// looks like a problem with memory leakage TODO fis
-	out := make(Set3D)
-	fh, err := os.Open(rpth)
-	CheckE(err)
-	defer fh.Close()
-	scanner := bufio.NewScanner(fh)
-	indmax := 0
-	inds := [3]int{ind1, ind2, ind3}
-	for _, v := range inds {
-		if v > indmax {
-			indmax = v
-		}
-	}
-	for scanner.Scan() { // by default scans for '\n'
-		cells := strings.Split(scanner.Text(), "\t")
-		if len(cells) <= indmax {
-			continue
-		}
-		_, ok := srcs[cells[ind2]] // filtering
-		if !ok {
-			continue
-		} // filtering by srcs
-		key1 := strings.Replace(cells[ind1], "\"", "''", -1) // present e.g. in 44689
-		key2 := strings.Replace(cells[ind2], "\"", "''", -1) // present e.g. in 44689
-		key3 := strings.Replace(cells[ind3], "\"", "''", -1) // present e.g. in 44689
-		out.Add(key1, key2, key3)
-	}
-	return out, nil
-}
+//func FilterByValues(rpth string, srcs map[string]string, ind1, ind2, ind3 int) (Set3D, error) {
+//	// used only in parse.orthosolo() and dat4bgw
+//	// looks like a problem with memory leakage TODO fis
+//	out := make(Set3D)
+//	fh, err := os.Open(rpth)
+//	CheckE(err)
+//	defer fh.Close()
+//	scanner := bufio.NewScanner(fh)
+//	indmax := 0
+//	inds := [3]int{ind1, ind2, ind3}
+//	for _, v := range inds {
+//		if v > indmax {
+//			indmax = v
+//		}
+//	}
+//	for scanner.Scan() { // by default scans for '\n'
+//		cells := strings.Split(scanner.Text(), "\t")
+//		if len(cells) <= indmax {
+//			continue
+//		}
+//		_, ok := srcs[cells[ind2]] // filtering
+//		if !ok {
+//			continue
+//		} // filtering by srcs
+//		key1 := strings.Replace(cells[ind1], "\"", "''", -1) // present e.g. in 44689
+//		key2 := strings.Replace(cells[ind2], "\"", "''", -1) // present e.g. in 44689
+//		key3 := strings.Replace(cells[ind3], "\"", "''", -1) // present e.g. in 44689
+//		out.Add(key1, key2, key3)
+//	}
+//	return out, nil
+//}
 
 // MakeMap generates a map from a file delimited by an arbitrary string
 func MakeMap(pth string, keyind int, valind int, dlm string) (Set2D, error) {

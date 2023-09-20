@@ -191,6 +191,7 @@ func Test_Gaf(t *testing.T) {
 }
 
 func Test_OrthoDuo(t *testing.T) {
+	// TODO re-implement
 	arg1 := "../../tdata/"
 	arg3 := "9606"
 	arg2 := "10090"

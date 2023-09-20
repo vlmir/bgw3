@@ -214,32 +214,32 @@ func Test_X1type(t *testing.T) {
 	}
 }
 
-func Test_FilterByValues(t *testing.T) {
-	type tt struct {
-		arg1 string
-		arg2 map[string]string
-		arg3 int
-		arg4 int
-		arg5 int
-		val  int
-	}
-	pth := "../../tdata/idmapping/"
-	t1s := []tt{
-		{pth + "UP000005640_9606.idmapping", map[string]string{"NCBI_TaxID": "test"}, 2, 1, 0, 1},
-		{pth + "UP000005640_9606.idmapping", map[string]string{"NCBI_TaxID": "test"}, 0, 1, 2, 1},
-		{pth + "UP000005640_9606.idmapping", map[string]string{"UniParc": "test"}, 0, 1, 2, 5},
-	}
-	for i, tt := range t1s {
-		idm, _ := FilterByValues(tt.arg1, tt.arg2, tt.arg3, tt.arg4, tt.arg5)
-		if len(idm) != tt.val {
-			t.Error(
-				"For test", i+1, ": ", tt.arg1, tt.arg2, tt.arg3, tt.arg4, tt.arg5,
-				"\n\twant", tt.val,
-				"\n\thave", len(idm),
-			)
-		}
-	}
-}
+//func Test_FilterByValues(t *testing.T) {
+//	type tt struct {
+//		arg1 string
+//		arg2 map[string]string
+//		arg3 int
+//		arg4 int
+//		arg5 int
+//		val  int
+//	}
+//	pth := "../../tdata/idmapping/"
+//	t1s := []tt{
+//		{pth + "UP000005640_9606.idmapping", map[string]string{"NCBI_TaxID": "test"}, 2, 1, 0, 1},
+//		{pth + "UP000005640_9606.idmapping", map[string]string{"NCBI_TaxID": "test"}, 0, 1, 2, 1},
+//		{pth + "UP000005640_9606.idmapping", map[string]string{"UniParc": "test"}, 0, 1, 2, 5},
+//	}
+//	for i, tt := range t1s {
+//		idm, _ := FilterByValues(tt.arg1, tt.arg2, tt.arg3, tt.arg4, tt.arg5)
+//		if len(idm) != tt.val {
+//			t.Error(
+//				"For test", i+1, ": ", tt.arg1, tt.arg2, tt.arg3, tt.arg4, tt.arg5,
+//				"\n\twant", tt.val,
+//				"\n\thave", len(idm),
+//			)
+//		}
+//	}
+//}
 
 func Test_MakeMap(t *testing.T) {
 	pth := "../../tdata/idmapping/"

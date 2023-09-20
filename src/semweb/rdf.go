@@ -129,10 +129,10 @@ var Uris4tftg = map[string]string{
 	"ntnu":   "NTNU",
 	"signor": "http://signor.uniroma2.it",
 	"tfacts": "http://www.tfacts.org",
-	"trrust": "http://www.grnpedia.org/trrust/",
+	"trrust": "http://www.grnpedia.org/trrust",
 	"cytreg": "https://www.fuxmanlab.com",
 	"geredb": "http://www.thua45.cn/geredb",
-	"tflink": "https://tflink.net/",
+	"tflink": "https://tflink.net",
 }
 
 /// Functions
