@@ -13,6 +13,7 @@ var Nss = map[string]string{
 	"owl":         "http://www.w3.org/2002/07/owl#",
 	"skos":        "http://www.w3.org/2004/02/skos/core#",
 	"schema":      "http://schema.org/",
+	"sd":	"http://www.w3.org/ns/sparql-service-description#", // Dataset, Graph, NamedGraph etc.
 	"biolink":     "https://w3id.org/biolink/vocab/", // TODO implement
 	"obo":         "http://purl.obolibrary.org/obo/",
 	"sio":         "http://semanticscience.org/resource/",
@@ -46,7 +47,7 @@ var Opys = util.SliceSet{
 	"sub2cls": {"rdfs", "subClassOf", "is subclass of"},
 	"sub2ppy": {"rdfs", "subPropertyOf", "is subproperty of"},
 	"sth2evd": {"sio", "SIO_000772", "has evidence"},               // PubMed only: ALL
-	"sth2ori": {"schema", "evidenceOrigin", "has evidence origin"}, // DATA sources; ALL; e.g. bgwp -> upca
+	"sth2ori": {"schema", "evidenceOrigin", "has evidence origin"}, // class level only; object: an external entity
 	"sth2src": {"sio", "SIO_000253", "has source", "has source is a relation between an entity and another entity from which it stems from."},
 	//"sth2src":   {"biolink", "provided_by", "is provided by"}, // e.g. UniProt TODO
 	"sth2eqv": {"owl", "sameAs", "is equivalent to"},

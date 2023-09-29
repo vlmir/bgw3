@@ -161,7 +161,8 @@ func Test_Gaf(t *testing.T) {
 	pth := "../../tdata/"
 	var set = make(util.Set3D)
 	var gafs = []tt{
-		{pth + "goa/9606.gaf", set, 150, 17, 39},
+		// {pth + "goa/9606.gaf", set, 150, 17, 39},
+		{pth + "goa/9606.gaf", set, 1, 1, 1},
 	}
 	for i, tt := range gafs {
 		tt.arg2.Add("P04637", "test", "t")

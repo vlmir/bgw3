@@ -1,4 +1,5 @@
 package export
+// TODO GLOBAL SIO_000253 -> evidenceOrigin
 
 import (
 	"errors"
@@ -95,7 +96,7 @@ func Prot2prot(d *bgw.Dat4bridge, x *bgw.Xmap, wdir string) error {
 	xmap := *x
 	cnts := d4b.Cnts // Set2D
 	header, nln := rdf.Capita(keys4b)
-	if nln < 22 { // 23?
+	if nln < 28 { // 23? // special case
 		msg := fmt.Sprintf("MalformedHeader")
 		panic(errors.New(msg))
 	}
@@ -255,7 +256,7 @@ func Rgr2trg(d *bgw.Dat4bridge, x *bgw.Xmap, wdir string) error {
 	rdfns := nss["rdf"]
 	// graphns := fmt.Sprintf("%s%s", nss["bgw"], "graph/")
 	header, nln := rdf.Capita(keys4b)
-	if nln < 24 {
+	if nln < 34 {
 		msg := fmt.Sprintf("MalformedHeader")
 		panic(errors.New(msg))
 	}
@@ -500,7 +501,7 @@ func Tfac2gene(d *bgw.Dat4bridge, x *bgw.Xmap, wdir string) error {
 	rdfns := nss["rdf"]
 	// graphns := fmt.Sprintf("%s%s", nss["bgw"], "graph/")
 	header, nln := rdf.Capita(keys4b)
-	if nln < 24 {
+	if nln < 32 {
 		msg := fmt.Sprintf("MalformedHeader")
 		panic(errors.New(msg))
 	}
@@ -673,7 +674,7 @@ func SigPways(d *bgw.Dat4bridge, x *bgw.Xmap, wdir string) error {
 	rdfns := nss["rdf"]
 	// graphns := fmt.Sprintf("%s%s", nss["bgw"], "graph/")
 	header, nln := rdf.Capita(keys4b)
-	if nln < 24 {
+	if nln < 36 {
 		msg := fmt.Sprintf("MalformedHeader")
 		panic(errors.New(msg))
 	}
@@ -864,7 +865,6 @@ func Gene(rpthUP, rpthI, wpthG string, p *bgw.Xmap) error {
 		"ins2cls",
 		// "mbr2lst",
 		"sth2clm",
-		"sth2ori",
 		"sth2src",
 		"sub2cls",
 	}
@@ -879,8 +879,8 @@ func Gene(rpthUP, rpthI, wpthG string, p *bgw.Xmap) error {
 		"gn",
 	}
 	clsU := rdf.CompU(nss["owl"], "Class")
-	srcU := rdf.FormU(nss["uniprot"])
-	graphUg := "<http://rdf.biogateway.eu/graph/gene>"
+	// srcU := rdf.FormU(nss["uniprot"])
+	// graphUg := "<http://rdf.biogateway.eu/graph/gene>"
 	/////////////////////////////////////////////////////////////////////////////
 	wfhG, err := os.Create(wpthG)
 	util.CheckE(err)
@@ -888,9 +888,13 @@ func Gene(rpthUP, rpthI, wpthG string, p *bgw.Xmap) error {
 	// 'gene' graph ini
 	var sbG strings.Builder
 	gnUs := rdf.FmtURIs(keys4g) // URIs for 'gene' graph
-	header, _ := rdf.Capita(keys4g)
+	header, nln := rdf.Capita(keys4g)
+	if nln < 20 {
+		msg := fmt.Sprintf("MalformedHeader")
+		panic(errors.New(msg))
+	}
 	sbG.WriteString(header)
-	sbG.WriteString(rdf.FormT(graphUg, gnUs["sth2src"], srcU))
+	// sbG.WriteString(rdf.FormT(graphUg, gnUs["sth2src"], srcU))
 	nsG := rdf.FormU(nss["gene"])
 	sbG.WriteString(rdf.FormT(nsG, gnUs["ins2cls"], clsU))
 	dfn := "Set of genes in Biogateway"
@@ -1041,8 +1045,7 @@ func Prot(rpthUP, rpthI, wpthP string, p *bgw.Xmap) error {
 		"ins2cls",
 		"sth2clm",
 		"sth2evd",
-		"sth2ori",
-		"sth2src",
+		// "sth2src", // special case
 		"sub2cls",
 	}
 	// keys of annotation properties ('prot' graph)
@@ -1057,8 +1060,8 @@ func Prot(rpthUP, rpthI, wpthP string, p *bgw.Xmap) error {
 		"tlp",
 	}
 	clsU := rdf.CompU(nss["owl"], "Class")
-	srcU := rdf.FormU(nss["uniprot"])
-	graphUp := "<http://rdf.biogateway.eu/graph/prot>"
+	// srcU := rdf.FormU(nss["uniprot"])
+	// graphUp := "<http://rdf.biogateway.eu/graph/prot>"
 	/////////////////////////////////////////////////////////////////////////////
 	wfhP, err := os.Create(wpthP)
 	util.CheckE(err)
@@ -1066,9 +1069,13 @@ func Prot(rpthUP, rpthI, wpthP string, p *bgw.Xmap) error {
 	// prot graph ini
 	var sbP strings.Builder
 	gpUs := rdf.FmtURIs(keys4p) // URIs for 'prot' graph
-	header, _ := rdf.Capita(keys4p)
+	header, nln := rdf.Capita(keys4p)
+	if nln < 20 {
+		msg := fmt.Sprintf("MalformedHeader")
+		panic(errors.New(msg))
+	}
 	sbP.WriteString(header)
-	sbP.WriteString(rdf.FormT(graphUp, gpUs["sth2src"], srcU))
+	// sbP.WriteString(rdf.FormT(graphUp, gpUs["sth2src"], srcU))
 	//srcUa = "<https://www.uniprot.org/uniprot/?query=organism:" + txid + "&columns=id,entry%20name,organism,organism-id,protein%20names,proteome,citation,annotation%20score&format=tab>"
 	/////////////////////////////////////////////////////////////////////////////
 
@@ -1203,7 +1210,6 @@ func Prot(rpthUP, rpthI, wpthP string, p *bgw.Xmap) error {
 // Note: no isoforms in this graph
 func Gene2phen(duos, gsym2bgw util.Set3D, wpth string) (int, error) {
 	nss := rdf.Nss // BGW URI name spaces
-	nln := 0
 	srck := "uniprot"
 	srcU := rdf.FormU(nss[srck])
 	if len(srcU) == 0 {
@@ -1219,7 +1225,6 @@ func Gene2phen(duos, gsym2bgw util.Set3D, wpth string) (int, error) {
 		"gn2phn",
 		"ins2cls",
 		"sth2src",
-		"sth2ori",
 	}
 	keys4b["Apys"] = []string{
 		"sth2dfn",
@@ -1237,20 +1242,17 @@ func Gene2phen(duos, gsym2bgw util.Set3D, wpth string) (int, error) {
 	defer wfh.Close()
 	var sb strings.Builder
 	ourUs := rdf.FmtURIs(keys4b)
-	header, n := rdf.Capita(keys4b)
-	sb.WriteString(header)
-	nln += n
-	graphU := "<http://rdf.biogateway.eu/graph/gene2phen>"
-	sb.WriteString(rdf.FormT(graphU, ourUs["sth2src"], srcU))
-	nln++
-	myori := "ftp://ftp.uniprot.org/pub/databases/uniprot/current_release/knowledgebase/variants/humsavar.txt"
-	oriU := rdf.FormU(myori)
-	sb.WriteString(rdf.FormT(graphU, ourUs["sth2ori"], oriU))
-	nln++
-	if nln < 18 {
+	header, nln := rdf.Capita(keys4b)
+	if nln < 20 {
 		msg := fmt.Sprintf("MalformedHeader")
 		panic(errors.New(msg))
 	}
+	sb.WriteString(header)
+	// graphU := "<http://rdf.biogateway.eu/graph/gene2phen>"
+	// sb.WriteString(rdf.FormT(graphU, ourUs["sth2src"], srcU))
+	// myori := "ftp://ftp.uniprot.org/pub/databases/uniprot/current_release/knowledgebase/variants/humsavar.txt"
+	// oriU := rdf.FormU(myori)
+	// sb.WriteString(rdf.FormT(graphU, ourUs["sth2ori"], oriU))
 	nln = 0
 	stmNS := "http://rdf.biogateway.eu/gene-phen/"
 	rdfNS := nss["rdf"]
@@ -1325,11 +1327,11 @@ func Gene2phen(duos, gsym2bgw util.Set3D, wpth string) (int, error) {
 		sb.WriteString(rdf.FormT(insU, ourUs["sth2src"], srcU))
 		nln++
 		// metadata
-		for _, upca := range upcas { // sorted above
-			myU := rdf.CompU(nss["uniprot"], upca)
-			sb.WriteString(rdf.FormT(insU, ourUs["sth2ori"], myU))
-			nln++
-		}
+//		for _, upca := range upcas { // sorted above
+//			myU := rdf.CompU(nss["uniprot"], upca)
+//			sb.WriteString(rdf.FormT(insU, ourUs["sth2ori"], myU))
+//			nln++
+//		}
 		cntD++
 		wfh.Write([]byte(sb.String()))
 		sb.Reset()
@@ -1373,7 +1375,6 @@ func Prot2go(duos, upac2bgw util.Set3D, wpth string) (int, error) {
 		"sth2src",
 		"sth2evd",
 		"sth2mtd",
-		"sth2ori",
 	}
 	keys4b["Apys"] = []string{
 		"sth2dfn",
@@ -1384,29 +1385,23 @@ func Prot2go(duos, upac2bgw util.Set3D, wpth string) (int, error) {
 	}
 	clsU := rdf.CompU(nss["owl"], "Class")
 	// prot2bp prot2cc prot2mf graph ini
-	nln := 0
 	wfh, err := os.Create(wpth)
 	util.CheckE(err)
 	defer wfh.Close()
 	var sb strings.Builder
 	ourUs := rdf.FmtURIs(keys4b)
-	header, n := rdf.Capita(keys4b)
-	sb.WriteString(header)
-	nln += n
-	bits := strings.Split(wpth, "/")
-	graph := bits[len(bits)-2]
-	graphU := fmt.Sprintf("<http://rdf.biogateway.eu/graph/%s>", graph)
-	sb.WriteString(rdf.FormT(graphU, ourUs["sth2src"], srcU))
-	nln++
-	/*
-		myori := "https://www.ebi.ac.uk/QuickGO/services/annotation/downloadSearch?taxonId=" + "9606" // TODO implement
-		oriU := rdf.FormU(myori)
-		sb.WriteString(rdf.FormT(graphU, ourUs["sth2ori"], oriU)); nln++
-	*/
-	if nln < 25 {
+	header, nln := rdf.Capita(keys4b)
+	if nln < 28 {
 		msg := fmt.Sprintf("MalformedHeader")
 		panic(errors.New(msg))
 	}
+	sb.WriteString(header)
+	// bits := strings.Split(wpth, "/")
+	// graph := bits[len(bits)-2]
+	// graphU := fmt.Sprintf("<http://rdf.biogateway.eu/graph/%s>", graph)
+	// sb.WriteString(rdf.FormT(graphU, ourUs["sth2src"], srcU))
+		// myori := "https://www.ebi.ac.uk/QuickGO/services/annotation/downloadSearch?taxonId=" + "9606" // TODO implement
+		// oriU := rdf.FormU(myori)
 	nln = 0
 
 	stmNS := "http://rdf.biogateway.eu/prot-onto/"
@@ -1475,9 +1470,9 @@ func Prot2go(duos, upac2bgw util.Set3D, wpth string) (int, error) {
 		sb.WriteString(rdf.FormT(insU, ourUs["sth2src"], srcU))
 		nln++
 		// metadata
-		myU := rdf.CompU(nss["goa"], oriL)
-		sb.WriteString(rdf.FormT(insU, ourUs["sth2ori"], myU))
-		nln++
+		// myU := rdf.CompU(nss["goa"], oriL)
+		// sb.WriteString(rdf.FormT(insU, ourUs["sth2ori"], myU))
+		// nln++
 		// refs sorted above. X1type() preserves the order
 		for _, ref := range util.X1type(refs, "pubmed", "!") {
 			myU := rdf.CompU(nss["pubmed"], ref)
@@ -1539,23 +1534,20 @@ func Ortho(duos util.Set3D, wpth string) (int, error) {
 	}
 	clsU := rdf.CompU(nss["owl"], "Class")
 	// ortho graph ini
-	nln := 0
 	wfh, err := os.Create(wpth)
 	util.CheckE(err)
 	defer wfh.Close()
 	var sb strings.Builder
 	ourUs := rdf.FmtURIs(keys4b)
-	header, n := rdf.Capita(keys4b)
-	sb.WriteString(header)
-	nln += n
-	graphU := "<http://rdf.biogateway.eu/graph/ortho>"
-	srcU := rdf.FormU(srcs["uniprot"])
-	sb.WriteString(rdf.FormT(graphU, ourUs["sth2src"], srcU))
-	nln++
-	if nln < 17 {
+	header, nln := rdf.Capita(keys4b)
+	if nln < 24 {
 		msg := fmt.Sprintf("MalformedHeader")
 		panic(errors.New(msg))
 	}
+	sb.WriteString(header)
+	// srcU := rdf.FormU(srcs["uniprot"])
+	// graphU := "<http://rdf.biogateway.eu/graph/ortho>"
+	// sb.WriteString(rdf.FormT(graphU, ourUs["sth2src"], srcU))
 	nln = 0
 	///////////////////////////////////////////////////////////////////////////////
 	stmNS := "http://rdf.biogateway.eu/ortho/"

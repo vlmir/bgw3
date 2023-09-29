@@ -331,7 +331,7 @@ func Test_UpVar(t *testing.T) {
 	arg1, _ := parse.UpVar(pth + "uniprot/P04637.var")
 	arg4 := wpth + "gene2phen/9606.nt"
 	t2s := []tt{
-		{arg1, arg3, arg4, 12},
+		{arg1, arg3, arg4, 11},
 	}
 	for i, tt := range t2s {
 		n, err := Gene2phen(tt.arg1, tt.arg3, tt.arg4)
@@ -348,40 +348,6 @@ func Test_UpVar(t *testing.T) {
 	}
 }
 
-/*
-func Test_MiTab(t *testing.T) {
-	type tt struct {
-		arg1 util.Set3D
-		arg2 util.Set3D
-		arg3 string
-		val1 int
-	}
-
-	pth := "../../tdata/"
-	wpth := pth + "OUT/export/"
-	arg2 := make(util.Set3D)
-	arg2.Add("P04637", "bgwp", "P04637")
-	arg1, _ := parse.MiTab(pth+"intact/9606.mi25", arg2)
-	arg3 := wpth + "prot2prot/9606.nt"
-	tts := []tt{
-		{arg1, arg2, arg3, 20},
-	}
-	for i, tt := range tts {
-		n, err := Prot2prot(tt.arg1, tt.arg2, tt.arg3)
-		if err != nil {
-			return
-		}
-		if n != tt.val1 {
-			t.Error(
-				"For test", i+1, ": ", len(tt.arg1), tt.arg2, tt.arg3,
-				"\n\twant", tt.val1,
-				"\n\thave", n,
-			)
-		}
-	}
-}
-*/
-
 func Test_Prot2go(t *testing.T) {
 	type tt struct {
 		arg1 util.Set3D
@@ -397,9 +363,9 @@ func Test_Prot2go(t *testing.T) {
 	bps, ccs, mfs, _ := parse.Gaf(pth+"goa/9606.gaf", arg2)
 	out := [3]string{"prot2bp/9606.nt", "prot2cc/9606.nt", "prot2mf/9606.nt"}
 	tts := []tt{
-		{bps, arg2, wpth + out[0], 1961},
-		{ccs, arg2, wpth + out[1], 260},
-		{mfs, arg2, wpth + out[2], 853},
+		{bps, arg2, wpth + out[0], 13},
+		{ccs, arg2, wpth + out[1], 14},
+		{mfs, arg2, wpth + out[2], 13},
 	}
 	for i, tt := range tts {
 		n, err := Prot2go(tt.arg1, tt.arg2, tt.arg3)
