@@ -76,6 +76,10 @@ func Prot2prot(d *bgw.Dat4bridge, x *bgw.Xmap, wdir string) error {
 	keys4b["Prns"] = []string{
 		"stm",
 	}
+	var srcs = map[string]string{
+		"uniprot":     "http://uniprot.org/uniprot",
+	"intact":      "http://identifiers.org/intact",
+	}
 	nss := rdf.Nss // BGW URI name spaces
 	d4b := *d
 	srck := d4b.Src
@@ -87,7 +91,7 @@ func Prot2prot(d *bgw.Dat4bridge, x *bgw.Xmap, wdir string) error {
 	defer wfh.Close()
 	var sb strings.Builder
 	ourUs := rdf.FmtURIs(keys4b)
-	srcU := rdf.FormU(nss[srck])
+	srcU := rdf.FormU(srcs[srck])
 	// graphU := "<http://rdf.biogateway.eu/graph/prot2prot>"
 	// sb.WriteString(rdf.FormT(graphU, ourUs["sth2src"], srcU))
 
@@ -1211,11 +1215,6 @@ func Prot(rpthUP, rpthI, wpthP string, p *bgw.Xmap) error {
 func Gene2phen(duos, gsym2bgw util.Set3D, wpth string) (int, error) {
 	nss := rdf.Nss // BGW URI name spaces
 	srck := "uniprot"
-	srcU := rdf.FormU(nss[srck])
-	if len(srcU) == 0 {
-		msg := fmt.Sprintf("export.Gene2phen():UnknownNamespace: %s", srck)
-		panic(errors.New(msg))
-	}
 	keys4b := make(util.SliceSet)
 	keys4b["Opys"] = []string{
 		"sub2cls",
@@ -1233,6 +1232,10 @@ func Gene2phen(duos, gsym2bgw util.Set3D, wpth string) (int, error) {
 	keys4b["Prns"] = []string{
 		"stm",
 	}
+	var srcs = map[string]string{
+		"uniprot":     "http://uniprot.org/uniprot",
+	}
+	srcU := rdf.FormU(srcs[srck])
 	clsU := rdf.CompU(nss["owl"], "Class")
 	// gene2phen graph ini
 	wfh, err := os.Create(wpth)
@@ -1528,9 +1531,9 @@ func Ortho(duos util.Set3D, wpth string) (int, error) {
 		"stm",
 	}
 	var srcs = map[string]string{
-		"uniprot":     "http://uniprot.org/uniprot/",
-		"keggortho":   "http://identifiers.org/kegg.orthology/",
-		"orthodb":     "https://www.orthodb.org/",
+		"uniprot":     "http://uniprot.org/uniprot",
+		"keggortho":   "http://identifiers.org/kegg.orthology",
+		"orthodb":     "https://www.orthodb.org",
 	}
 	clsU := rdf.CompU(nss["owl"], "Class")
 	// ortho graph ini

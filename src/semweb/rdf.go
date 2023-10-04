@@ -47,9 +47,10 @@ var Opys = util.SliceSet{
 	"sub2cls": {"rdfs", "subClassOf", "is subclass of"},
 	"sub2ppy": {"rdfs", "subPropertyOf", "is subproperty of"},
 	"sth2evd": {"sio", "SIO_000772", "has evidence"},               // PubMed only: ALL
-	"sth2ori": {"schema", "evidenceOrigin", "has evidence origin"}, // class level only; object: an external entity
-	"sth2src": {"sio", "SIO_000253", "has source", "has source is a relation between an entity and another entity from which it stems from."},
-	//"sth2src":   {"biolink", "provided_by", "is provided by"}, // e.g. UniProt TODO
+	"sth2ori": {"schema", "evidenceOrigin", "has evidence origin"}, // object: an external entity, currently used only by Juan
+	"sth2src": {"sio", "SIO_000253", "has source", "has source is a relation between an entity and another entity from which it stems from."}, // is this the right property for linking instances to databases? TODO
+	//"sth2src":   {"biolink", "provided_by", "is provided by"}, 
+	//"sth2src":   {"biolink", "supporting_data_source", "has supporting data source"}, //  better choice, used already by Juan
 	"sth2eqv": {"owl", "sameAs", "is equivalent to"},
 	"sth2clm": {"skos", "closeMatch", "has close match"},
 	"sth2rlm": {"skos", "relatedMatch", "has related match"},
