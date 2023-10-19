@@ -18,6 +18,9 @@ func Test_Init(t *testing.T) {
 	if err := os.MkdirAll(filepath.Join(dpth, "uniprot/"), 0755); err != nil {
 		log.Println(err)
 	}
+	if err := os.MkdirAll(filepath.Join(dpth, "idmapping/"), 0755); err != nil {
+		log.Println(err)
+	}
 	if err := os.MkdirAll(filepath.Join(dpth, "goa/"), 0755); err != nil {
 		log.Println(err)
 	}
@@ -31,7 +34,7 @@ func Test_Init(t *testing.T) {
 
 /*
  */
-func Test_getOneUniprot(t *testing.T) {
+func Test_saveOneUniprot(t *testing.T) {
 	mystart := time.Now()
 	type tt struct {
 		arg1 string
@@ -39,8 +42,8 @@ func Test_getOneUniprot(t *testing.T) {
 		val1 error
 	}
 	pth := "../../tdata/"
-	txids := [...]string{"1343077", "2018007"}
-	datdirs := [...]string{pth + "dat4bgw/", pth + "dat4bgw/"}
+	txids := [...]string{"36329"}
+	datdirs := [...]string{pth + "dat4bgw/"}
 	tts := []tt{
 		{txids[0], datdirs[0], nil},
 		//{txids[1], datdirs[1], nil},
@@ -58,7 +61,7 @@ func Test_getOneUniprot(t *testing.T) {
 	log.Println("Done with saveOneUniprot in", time.Since(mystart))
 }
 
-func Test_getOneSignor(t *testing.T) {
+func Test_saveOneSignor(t *testing.T) {
 	mystart := time.Now()
 	type tt struct {
 		arg1 string
@@ -84,7 +87,7 @@ func Test_getOneSignor(t *testing.T) {
 	log.Println("Done with saveOneSignor in", time.Since(mystart))
 }
 
-func Test_getOneIntact(t *testing.T) {
+func Test_saveOneIntact(t *testing.T) {
 	mystart := time.Now()
 	type tt struct {
 		arg1 string
@@ -92,11 +95,10 @@ func Test_getOneIntact(t *testing.T) {
 		val1 error
 	}
 	pth := "../../tdata/"
-	txids := [...]string{"1672772", "9031"}
+	txids := [...]string{"367110"} // Sic! the file for 36329 is much larger
 	datdirs := [...]string{pth + "dat4bgw/", pth + "dat4bgw/"}
 	tts := []tt{
 		{txids[0], datdirs[0], nil},
-		{txids[1], datdirs[1], nil},
 	}
 	for i, tt := range tts {
 		err := saveOneIntact(tt.arg1, tt.arg2)
@@ -111,7 +113,7 @@ func Test_getOneIntact(t *testing.T) {
 	log.Println("Done with saveOneIntact in", time.Since(mystart))
 }
 
-func Test_getOneGaf(t *testing.T) {
+func Test_saveOneIdmap(t *testing.T) {
 	mystart := time.Now()
 	type tt struct {
 		arg1 string
@@ -120,7 +122,35 @@ func Test_getOneGaf(t *testing.T) {
 		val1 error
 	}
 	pth := "../../tdata/"
-	txids := [...]string{"1672772"}
+	txids := [...]string{"36329"}
+	pmids := [...]string{"UP000001450"}
+	datdirs := [...]string{pth + "dat4bgw/"}
+	tts := []tt{
+		{txids[0], pmids[0], datdirs[0], nil},
+	}
+	for i, tt := range tts {
+		err := saveOneIdmap(tt.arg1, tt.arg2, tt.arg3)
+		if err != tt.val1 {
+			t.Error(
+				"For test", i+1, ": ",
+				"\n\twant", tt.val1,
+				"\n\thave", err,
+			)
+		}
+	}
+	log.Println("Done with saveOneIdmap in", time.Since(mystart))
+}
+
+func Test_saveOneGaf(t *testing.T) {
+	mystart := time.Now()
+	type tt struct {
+		arg1 string
+		arg2 string
+		arg3 string
+		val1 error
+	}
+	pth := "../../tdata/"
+	txids := [...]string{"36329"}
 	datdirs := [...]string{pth + "dat4bgw/", pth + "dat4bgw/"}
 	pomes := [...]string{"493.P_falciparum.goa"}
 	tts := []tt{
@@ -138,7 +168,7 @@ func Test_getOneGaf(t *testing.T) {
 	}
 	log.Println("Done with saveOneGaf in", time.Since(mystart))
 }
-func Test_getOneGpa(t *testing.T) {
+func Test_saveOneGpa(t *testing.T) {
 	mystart := time.Now()
 	type tt struct {
 		arg1 string
@@ -293,6 +323,7 @@ func Test_WgetFile(t *testing.T) {
 	log.Println("Done with WgetFile in", time.Since(mystart))
 }
 
+/*
 func Test_Rwget(t *testing.T) {
 	mystart := time.Now()
 	type tt struct {
@@ -325,6 +356,7 @@ func Test_Rwget(t *testing.T) {
 	}
 	log.Println("Done with Rwget in", time.Since(mystart))
 }
+*/
 
 func Test_Cleanup(t *testing.T) {
 	pth := "../../tdata/"

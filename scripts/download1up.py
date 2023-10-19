@@ -22,10 +22,11 @@ def get_batch(batch_url):
         yield response, total
         batch_url = get_next_link(response.headers)
 
-taxid = sys.argv[1]
-#url = 'https://rest.uniprot.org/uniprotkb/search?fields=accession%2Cid%2Cprotein_name%2Corganism_name%2Corganism_id%2Cgene_primary%2Cgene_synonym%2Cxref_proteomes%2Clit_pubmed_id%2Cannotation_score&format=tsv&query=%28taxonomy_id%3A' + taxid + '%29&size=500'
-url = 'https://rest.uniprot.org/uniprotkb/search?fields=accession%2Cid%2Cgene_primary%2Cgene_synonym%2Corganism_name%2Corganism_id%2Cprotein_name%2Cxref_proteomes%2Clit_pubmed_id%2Cannotation_score&format=tsv&query=%28taxonomy_id%3A' + taxid + '%29&size=500'
-wpth = taxid + '.upt'
+txid = sys.argv[1]
+datdir = sys.argv[2] # with a trailing '/'
+subdir = 'uniprot/'
+url = 'https://rest.uniprot.org/uniprotkb/search?fields=accession%2Cid%2Cgene_primary%2Cgene_synonym%2Corganism_name%2Corganism_id%2Cprotein_name%2Cxref_proteomes%2Clit_pubmed_id%2Cannotation_score&format=tsv&query=%28taxonomy_id%3A' + txid + '%29&size=500'
+wpth = datdir + subdir + txid + '.upt'
 progress = 0
 with open(wpth, 'w') as f:
     for batch, total in get_batch(url):

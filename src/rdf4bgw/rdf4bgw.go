@@ -482,11 +482,11 @@ func main() {
 	rpthT := *tP      // path to a list of selected taxa
 	log.Println("Started rdf4bgw with args:", args)
 	/////////////////////////////////////////////////////////////////////////////
-	tx2pm, err := util.MakeMap(rpthP, 1, 0, "_")
+	tx2pm, err := util.MakeMap(rpthP, 1, 0, "_") // only for building txn2prm below
 	util.CheckE(err)
 	log.Println("AllRefProteomes:", len(tx2pm))
 	////////////////////////////////////////////////////////////////////////////
-	taxa4bgw, err := util.MakeMap(rpthT, 0, 1, ".")
+	taxa4bgw, err := util.MakeMap(rpthT, 0, 1, ".") // only for building txn2prm below
 	util.CheckE(err)
 	log.Println("TaxaForBgw:", len(taxa4bgw))
 	/////////////////////////////////////////////////////////////////////////////

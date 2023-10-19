@@ -17,7 +17,7 @@ import (
 )
 
 // function Rwget() recursively identifies target files and downloads in a slecified location
-// irreproducible downloaded files. TODO
+// irreproducible set of downloaded files. TODO
 // arg1: base URI of the source
 // arg2: pattern for filtering
 // download location
@@ -32,7 +32,7 @@ func Rwget(ns, mask, ddir string) error {
 
 /// Single File Download ///
 // the 3 functions below have comparable performance
-// HttpFile() seems prone to failures in case of very large files of poor connctions
+// HttpFile() seems prone to failures in case of very large files or poor connections
 
 // from: https://siongui.github.io/2018/03/04/go-run-wget-via-shell-command/
 // NB: preserves the time stamp !!
@@ -44,11 +44,10 @@ func WgetFile(strs ...string) (err error) {
 		url = strs[0]
 		pth := strs[1]
 		cmd = exec.Command("wget", "-q", url, "-O", pth) // Attn: all flags separately!
-	} else if n == 1 {
-		url = strs[0]
-		cmd = exec.Command("wget", "-q", url, "-O", "-") // Attn: all flags separately!
+		// sending to background with "-b" or "&" does not work here !
+		// set pth to "-" for sending the content to STDOUT
 	} else {
-		panic(errors.New(fmt.Sprintf("Expexting 1 or 2 args, got: %d", n)))
+		panic(errors.New(fmt.Sprintf("Expexting 2 args, got: %d", n)))
 	}
 	cmd.Stdout = os.Stdout
 	cmd.Stderr = os.Stderr
@@ -59,6 +58,7 @@ func WgetFile(strs ...string) (err error) {
 // write as it downloads and not load the whole file into memory.
 // from: https://golangcode.com/download-a-file-from-a-url/
 func HttpFile(url string, wpth string) (*bytes.Buffer, error) {
+	// 2023-10-19: used only for ontologies
 	// Get the data; resp is a ponter to a struct; resp.Body: io.ReadCloser
 	buf := new(bytes.Buffer)
 	resp, err := http.Get(url)
@@ -82,6 +82,7 @@ func HttpFile(url string, wpth string) (*bytes.Buffer, error) {
 }
 
 func GetFile(uri, key0, val0, wpth string) (*bytes.Buffer, error) {
+	// 2023-10-19: used only for OMIM
 	// Get the data; resp is a ponter to a struct; resp.Body: io.ReadCloser
 	// TODO generalize
 	// the field 'Header' is needed only for gpa files
@@ -113,19 +114,30 @@ func GetFile(uri, key0, val0, wpth string) (*bytes.Buffer, error) {
 
 /// Single Taxon Download ///
 
-func saveOneUniprot(txid string, datdir string) error {
-	// "https://www.uniprot.org/uniprot/?query=organism:9606&columns=id,entry%20name,genes(PREFERRED),genes(ALTERNATIVE),organism,organism-id,protein%20names,proteome,citation&format=tab" -O 9606.upt
-	uri := "https://www.uniprot.org/uniprot/?query=organism:" + txid + "&columns=id,entry%20name,genes(PREFERRED),genes(ALTERNATIVE),organism,organism-id,protein%20names,proteome,citation,annotation%20score,database(GeneID)&format=tab"
-	subdir := "uniprot/"
-	ext := ".upt"
-	wpth := fmt.Sprintf("%s%s%s%s", datdir, subdir, txid, ext)
-	//if err := HttpFile(uri, wpth); err != nil {
-	if _, err := GetFile(uri, "Accept", "text", wpth); err != nil {
-		log.Println("saveOneUniprot(): Warning: Failed to download data for:", txid, err)
+func saveOneIdmap(txid, pome, datdir string) error {
+	// Never use the 'ftp:' protocol hear !!!
+	ns := "https://ftp.uniprot.org/pub/databases/uniprot/current_release/knowledgebase/reference_proteomes/Eukaryota/"
+		subdir := "idmapping/"
+		ext :=  ".idmapping.gz"
+		file := fmt.Sprintf("%s_%s%s", pome, txid, ext)
+		wpth := fmt.Sprintf("%s%s%s", datdir, subdir, file)
+		uri := fmt.Sprintf("%s%s/%s", ns, pome, file)
+		// HttpFile() cannot be used here!
+		if err := WgetFile(uri, wpth); err != nil {
+		log.Println("saveOneIdmap(): Warning: Failed to download data for:", txid, err)
 		return err
 	}
 	return nil
 }
+
+func saveOneUniprot(txid string, datdir string) error {
+	var cmd *exec.Cmd
+	cmd = exec.Command("/usr/bin/python3", "/home/mironov/repos/bgw3/scripts/download1up.py", txid, datdir, "&")
+	cmd.Stdout = os.Stdout
+	cmd.Stderr = os.Stderr
+	return cmd.Run()
+}
+
 
 // TODO change file names
 func saveOneSignor(txid string, datdir string) error {
@@ -169,6 +181,7 @@ func saveOneIntact(txid string, datdir string) error {
 
 func saveOneGaf(txid string, datdir string, gafpome string) error {
 	// NB: this site is NOT recognised by https !!
+	// Note: txid is used only in saved file names
 	uri := "http://ftp.ebi.ac.uk/pub/databases/GO/goa/proteomes/" + gafpome
 	subdir := "goa/"
 	ext := ".gaf"
@@ -199,37 +212,44 @@ func saveOneGpa(txid string, datdir string) error {
 	return nil
 }
 
+func saveOneTflink(uri, txid, datdir string) error {
+	subdir := "tflink/"
+	ext := ".tsv.gz"
+	wpth := fmt.Sprintf("%s%s%s%s", datdir, subdir, txid, ext)
+	if err := WgetFile(uri, wpth); err != nil {
+		log.Println("saveOneTflink(): Warning: Failed to download data for:", txid, err)
+		return err
+	}
+	return nil
+}
+
 /// Multiple Taxa Download ///
 
-// very slow, why ??
-func saveAllIdmap(datdir string, txmap util.Set2D) {
-	ns := "ftp://ftp.uniprot.org/pub/databases/uniprot/current_release/knowledgebase/reference_proteomes/Eukaryota/"
-	for txid := range txmap {
-		mask := fmt.Sprintf("_%s%s", txid, ".idmapping.gz")
-		subdir := "idmapping/"
-		ddir := datdir + subdir
-		if err := Rwget(ns, mask, ddir); err != nil {
+func saveAllIdmap(datdir string, txn2prm util.Set2D) {
+	for txid := range txn2prm {
+		pome := txn2prm[txid].Keys()[0]
+		if err := saveOneIdmap(txid, pome, datdir); err != nil {
 			log.Println("Warning: Failed to download data for:", txid, err)
 		}
 	}
 }
 
-func saveAllUniprot(datdir string, txmap util.Set2D) {
-	for txid := range txmap {
+func saveAllUniprot(datdir string, txn2prm util.Set2D) {
+	for txid := range txn2prm {
 		if err := saveOneUniprot(txid, datdir); err != nil {
 			log.Println("Warning: Failed to download data for:", txid, err)
 		}
 	}
 }
 
-func saveAllIntact(datdir string, txmap util.Set2D) {
-	for txid := range txmap {
+func saveAllIntact(datdir string, txn2prm util.Set2D) {
+	for txid := range txn2prm {
 		saveOneIntact(txid, datdir)
 	}
 }
 
-func saveAllGaf(datdir string, txmap, gafmap util.Set2D) {
-	for txid := range txmap {
+func saveAllGaf(datdir string, txn2prm, gafmap util.Set2D) {
+	for txid := range txn2prm {
 		gpomes := gafmap[txid].Keys()
 		if len(gpomes) != 1 {
 			continue
@@ -238,9 +258,17 @@ func saveAllGaf(datdir string, txmap, gafmap util.Set2D) {
 	}
 }
 
-func saveAllGpa(datdir string, txmap util.Set2D) {
-	for txid := range txmap {
+func saveAllGpa(datdir string, txn2prm util.Set2D) {
+	for txid := range txn2prm {
 		saveOneGpa(txid, datdir)
+	}
+}
+
+func saveAllTflink(datdir string) {
+	ns := "https://cdn.netbiol.org/tflink/download_files/TFLink_"
+	for txid := range bgw.Tflink {
+		uri := ns + bgw.Tflink[txid]
+		saveOneTflink(uri, txid, datdir)
 	}
 }
 
@@ -296,25 +324,6 @@ func saveAllOnto(datdir string) {
 	}
 }
 
-func saveOneTflink(uri, txid, datdir string) error {
-	subdir := "tflink/"
-	ext := ".tsv.gz"
-	wpth := fmt.Sprintf("%s%s%s%s", datdir, subdir, txid, ext)
-	if err := WgetFile(uri, wpth); err != nil {
-		log.Println("saveOneTflink(): Warning: Failed to download data for:", txid, err)
-		return err
-	}
-	return nil
-}
-
-func saveAllTflink(datdir string) {
-	ns := "https://cdn.netbiol.org/tflink/download_files/TFLink_"
-	for txid := range bgw.Tflink {
-		uri := ns + bgw.Tflink[txid]
-		saveOneTflink(uri, txid, datdir)
-	}
-}
-
 func main() {
 	aP := flag.Bool("a", false, "download [a]ll") // should not normally be used
 	oP := flag.Bool("o", false, "download [o]ntologies")
@@ -326,7 +335,7 @@ func main() {
 	sP := flag.Bool("s", false, "download [s]ignor data")
 	lP := flag.Bool("l", false, "download tf[l]ink data")
 	gP := flag.Bool("g", false, "download [g]ene ontology annotations")
-	tP := flag.String("t", "./taxa.tls", "selected [t]axa")
+	tP := flag.String("t", "./prm_txn.txt", "selected [t]axa")
 	var cnt int
 	flag.Parse()
 	if !flag.Parsed() {
@@ -339,9 +348,19 @@ func main() {
 	}
 	datdir := args[0] // path to data directory (with a trailing '/')
 	//pth1 := *lP     // read list of Reference Proteomes TODO write at Step0
-	pthx := *tP // path to a list of selected taxa
 	log.Println("Started with args:", args)
 	n := 0
+	pthx := *tP // path to a list of selected taxa
+	// txn2prm, err := util.MakeMap(pthx, 0, 1, ".") // txnid -> "nt", silly TODO
+	txn2prm, err := util.MakeMap(pthx, 1, 0, "_") // txnID -> proteomeID
+	if err != nil {
+		log.Fatalln("main:", err)
+	}
+	n = len(txn2prm)
+	if n == 0 {
+		log.Fatalln("main:Empty map:", pthx)
+	}
+	log.Println("txn2prm:", n)
 
 	/// Step0 ///
 	// independent
@@ -364,34 +383,13 @@ func main() {
 		log.Println("Done with Signor in", time.Since(start))
 	}
 
-	txnmap, err := util.MakeMap(pthx, 0, 1, ".")
-	if err != nil {
-		log.Fatalln("main:", err)
-	}
-	n = len(txnmap)
-	if n == 0 {
-		log.Fatalln("main:Empty map:", pthx)
-	}
-	log.Println("txnmap:", n)
 	/////////////////////////////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////////////////
 
 	/// Step1 ///
 	if (*aP || *mP) && !*MP {
 		start := time.Now()
-		ns := "ftp://ftp.uniprot.org/pub/databases/uniprot/current_release/knowledgebase/reference_proteomes/Eukaryota/"
-		mask := "idmapping.gz"
-		subdir := "idmapping/"
-		ddir := datdir + subdir
-		err := Rwget(ns, mask, ddir)
-		if err != nil {
-			panic(err)
-		}
-		/*
-			terrrible slow this way
-			~5h for 20 taxa vs ~1h for ~1500 taxa
-			saveAllIdmap(datdir, txnmap)
-		*/
+		saveAllIdmap(datdir, txn2prm)
 		log.Println("Done with idmappings in", time.Since(start))
 	}
 
@@ -400,7 +398,7 @@ func main() {
 	/// Step2 ///
 	if *aP || *iP {
 		start := time.Now()
-		saveAllIntact(datdir, txnmap)
+		saveAllIntact(datdir, txn2prm)
 		log.Println("Done with IntAct in", time.Since(start))
 	}
 
@@ -415,7 +413,7 @@ func main() {
 			panic(err)
 		}
 
-		//		saveAllUniprot(datdir, txnmap)
+		saveAllUniprot(datdir, txn2prm)
 		log.Println("Done with UniProt in", time.Since(start))
 	}
 
@@ -437,8 +435,8 @@ func main() {
 			panic(errors.New(msg))
 		}
 		log.Println("gafmap:", n)
-		saveAllGaf(datdir, txnmap, gafmap)
-		// saveAllGpa(datdir, txnmap) // 10000 lines limit, do NOT use !
+		saveAllGaf(datdir, txn2prm, gafmap)
+		// saveAllGpa(datdir, txn2prm) // 10000 lines limit, do NOT use !
 		log.Println("Done with Goa in", time.Since(start))
 	}
 }
