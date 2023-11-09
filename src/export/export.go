@@ -1,4 +1,5 @@
 package export
+
 // TODO GLOBAL SIO_000253 -> evidenceOrigin
 
 import (
@@ -77,8 +78,8 @@ func Prot2prot(d *bgw.Dat4bridge, x *bgw.Xmap, wdir string) error {
 		"stm",
 	}
 	var srcs = map[string]string{
-		"uniprot":     "http://uniprot.org/uniprot",
-	"intact":      "http://identifiers.org/intact",
+		"uniprot": "http://uniprot.org/uniprot",
+		"intact":  "http://identifiers.org/intact",
 	}
 	nss := rdf.Nss // BGW URI name spaces
 	d4b := *d
@@ -274,7 +275,7 @@ func Rgr2trg(d *bgw.Dat4bridge, x *bgw.Xmap, wdir string) error {
 	entAns := nss["uniprot"]                                        // sic, never changes
 	entBns := nss["uniprot"]                                        // sic, never changes
 	bgwNS := "http://rdf.biogateway.eu/"
-	flags := make(util.Set1D)                                       // for printing the header only once per file
+	flags := make(util.Set1D) // for printing the header only once per file
 	for _, duokey := range duos.Keys() {
 		duo := duos[duokey]
 		oriAid := duo["Aid"].Keys()[0] // justly assuming a single value
@@ -408,11 +409,11 @@ func Rgr2trg(d *bgw.Dat4bridge, x *bgw.Xmap, wdir string) error {
 					for _, key := range duo["score"].Keys() {
 						sb.WriteString(rdf.FormT(insU, ourUs["evd2lvl"], rdf.FormL(key)))
 					}
-		/// detection methods
-		for _, key := range duo["mtd"].Keys() {
-			myU := rdf.CompU(nss["obo"], strings.Replace(key, ":", "_", 1))
-			sb.WriteString(rdf.FormT(insU, ourUs["sth2mtd"], myU))
-		}
+					/// detection methods
+					for _, key := range duo["mtd"].Keys() {
+						myU := rdf.CompU(nss["obo"], strings.Replace(key, ":", "_", 1))
+						sb.WriteString(rdf.FormT(insU, ourUs["sth2mtd"], myU))
+					}
 
 				} // entBid
 			} // entAid
@@ -511,8 +512,8 @@ func Tfac2gene(d *bgw.Dat4bridge, x *bgw.Xmap, wdir string) error {
 	}
 
 	duos := d4b.Duos
-	entAns := nss["uniprot"]  // sic, never changes
-	entBns := nss["gene"]     // sic, never changes
+	entAns := nss["uniprot"] // sic, never changes
+	entBns := nss["gene"]    // sic, never changes
 	bgwNS := "http://rdf.biogateway.eu/"
 	flags := make(util.Set1D) // for printing the header only once per file
 	for _, duokey := range duos.Keys() {
@@ -660,7 +661,7 @@ func SigPways(d *bgw.Dat4bridge, x *bgw.Xmap, wdir string) error {
 		"ins2cls",
 		"sth2src",
 		"sth2evd",
-		"mi2loc", // 'occurs in'; pways specific
+		"mi2loc",    // 'occurs in'; pways specific
 		"step2pway", // 'part of'; pways specific
 	}
 	keys4b["Apys"] = []string{
@@ -688,7 +689,7 @@ func SigPways(d *bgw.Dat4bridge, x *bgw.Xmap, wdir string) error {
 	entAns := nss["uniprot"]                                   // sic, never changes
 	entBns := nss["uniprot"]                                   // sic, never changes
 	bgwNS := "http://rdf.biogateway.eu/"
-	flags := make(util.Set1D)                                  // for printing the header only once per file
+	flags := make(util.Set1D) // for printing the header only once per file
 	for _, duokey := range duos.Keys() {
 		duo := duos[duokey]
 		// if duo["txid"].Keys()[0] != txid {continue} // filtering by host
@@ -1233,7 +1234,7 @@ func Gene2phen(duos, gsym2bgw util.Set3D, wpth string) (int, error) {
 		"stm",
 	}
 	var srcs = map[string]string{
-		"uniprot":     "http://uniprot.org/uniprot",
+		"uniprot": "http://uniprot.org/uniprot",
 	}
 	srcU := rdf.FormU(srcs[srck])
 	clsU := rdf.CompU(nss["owl"], "Class")
@@ -1330,11 +1331,11 @@ func Gene2phen(duos, gsym2bgw util.Set3D, wpth string) (int, error) {
 		sb.WriteString(rdf.FormT(insU, ourUs["sth2src"], srcU))
 		nln++
 		// metadata
-//		for _, upca := range upcas { // sorted above
-//			myU := rdf.CompU(nss["uniprot"], upca)
-//			sb.WriteString(rdf.FormT(insU, ourUs["sth2ori"], myU))
-//			nln++
-//		}
+		//		for _, upca := range upcas { // sorted above
+		//			myU := rdf.CompU(nss["uniprot"], upca)
+		//			sb.WriteString(rdf.FormT(insU, ourUs["sth2ori"], myU))
+		//			nln++
+		//		}
 		cntD++
 		wfh.Write([]byte(sb.String()))
 		sb.Reset()
@@ -1403,8 +1404,8 @@ func Prot2go(duos, upac2bgw util.Set3D, wpth string) (int, error) {
 	// graph := bits[len(bits)-2]
 	// graphU := fmt.Sprintf("<http://rdf.biogateway.eu/graph/%s>", graph)
 	// sb.WriteString(rdf.FormT(graphU, ourUs["sth2src"], srcU))
-		// myori := "https://www.ebi.ac.uk/QuickGO/services/annotation/downloadSearch?taxonId=" + "9606" // TODO implement
-		// oriU := rdf.FormU(myori)
+	// myori := "https://www.ebi.ac.uk/QuickGO/services/annotation/downloadSearch?taxonId=" + "9606" // TODO implement
+	// oriU := rdf.FormU(myori)
 	nln = 0
 
 	stmNS := "http://rdf.biogateway.eu/prot-onto/"
@@ -1531,9 +1532,9 @@ func Ortho(duos util.Set3D, wpth string) (int, error) {
 		"stm",
 	}
 	var srcs = map[string]string{
-		"uniprot":     "http://uniprot.org/uniprot",
-		"keggortho":   "http://identifiers.org/kegg.orthology",
-		"orthodb":     "https://www.orthodb.org",
+		"uniprot":   "http://uniprot.org/uniprot",
+		"keggortho": "http://identifiers.org/kegg.orthology",
+		"orthodb":   "https://www.orthodb.org",
 	}
 	clsU := rdf.CompU(nss["owl"], "Class")
 	// ortho graph ini

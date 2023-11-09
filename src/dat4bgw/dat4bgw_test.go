@@ -39,17 +39,20 @@ func Test_saveOneUniprot(t *testing.T) {
 	type tt struct {
 		arg1 string
 		arg2 string
+		arg3 string
 		val1 error
 	}
 	pth := "../../tdata/"
+
+	rpthS := "../../scripts/download1up.py"
+	datdir := pth + "dat4bgw/"
 	txids := [...]string{"36329"}
-	datdirs := [...]string{pth + "dat4bgw/"}
 	tts := []tt{
-		{txids[0], datdirs[0], nil},
+		{txids[0], datdir, rpthS, nil},
 		//{txids[1], datdirs[1], nil},
 	}
 	for i, tt := range tts {
-		err := saveOneUniprot(tt.arg1, tt.arg2)
+		err := saveOneUniprot(tt.arg1, tt.arg2, tt.arg3)
 		if err != tt.val1 {
 			t.Error(
 				"For test", i+1, ": ",

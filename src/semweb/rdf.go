@@ -13,8 +13,8 @@ var Nss = map[string]string{
 	"owl":         "http://www.w3.org/2002/07/owl#",
 	"skos":        "http://www.w3.org/2004/02/skos/core#",
 	"schema":      "http://schema.org/",
-	"sd":	"http://www.w3.org/ns/sparql-service-description#", // Dataset, Graph, NamedGraph etc.
-	"biolink":     "https://w3id.org/biolink/vocab/", // TODO implement
+	"sd":          "http://www.w3.org/ns/sparql-service-description#", // Dataset, Graph, NamedGraph etc.
+	"biolink":     "https://w3id.org/biolink/vocab/",                  // TODO implement
 	"obo":         "http://purl.obolibrary.org/obo/",
 	"sio":         "http://semanticscience.org/resource/",
 	"uniprot":     "http://uniprot.org/uniprot/", // accepts both UPID and UPAC
@@ -41,15 +41,14 @@ var Nss = map[string]string{
 	// "prot":        "http://rdf.biogateway.eu/prot/",
 }
 
-
 // Object Properties
 var Opys = util.SliceSet{
 	"sub2cls": {"rdfs", "subClassOf", "is subclass of"},
 	"sub2ppy": {"rdfs", "subPropertyOf", "is subproperty of"},
-	"sth2evd": {"sio", "SIO_000772", "has evidence"},               // PubMed only: ALL
-	"sth2ori": {"schema", "evidenceOrigin", "has evidence origin"}, // object: an external entity, currently used only by Juan
+	"sth2evd": {"sio", "SIO_000772", "has evidence"},                                                                                          // PubMed only: ALL
+	"sth2ori": {"schema", "evidenceOrigin", "has evidence origin"},                                                                            // object: an external entity, currently used only by Juan
 	"sth2src": {"sio", "SIO_000253", "has source", "has source is a relation between an entity and another entity from which it stems from."}, // is this the right property for linking instances to databases? TODO
-	//"sth2src":   {"biolink", "provided_by", "is provided by"}, 
+	//"sth2src":   {"biolink", "provided_by", "is provided by"},
 	//"sth2src":   {"biolink", "supporting_data_source", "has supporting data source"}, //  better choice, used already by Juan
 	"sth2eqv": {"owl", "sameAs", "is equivalent to"},
 	"sth2clm": {"skos", "closeMatch", "has close match"},
@@ -57,8 +56,8 @@ var Opys = util.SliceSet{
 	"sub2set": {"obo", "BFO_0000050", "is part of"},
 	//"gn2txn":  {"obo", "RO_0000052", "characteristic of"},
 	//"gp2txn":  {"obo", "RO_0000052", "characteristic of"},
-	"be2txn":  {"obo", "RO_0002162", "in taxon"}, // confusing definition
-	//"be2txn":	{"biolink", "in_taxon", "is characteristic of taxon"} // declared equivalent to RO_0002162 
+	"be2txn": {"obo", "RO_0002162", "in taxon"}, // confusing definition
+	//"be2txn":	{"biolink", "in_taxon", "is characteristic of taxon"} // declared equivalent to RO_0002162
 	"mbr2lst": {"schema", "memberOf", "is member of"},
 	"ins2cls": {"rdf", "type", "is instance of"},
 	"stm2sbj": {"rdf", "subject", "has subject"},
@@ -76,8 +75,8 @@ var Opys = util.SliceSet{
 	"reg2ntrg":  {"obo", "RO_0002430", "involved in negative regulation of"},
 	"sth2mtd":   {"rdfs", "isDefinedBy", "is defined by"},
 	"orl2orl":   {"sio", "SIO_000558", "is orthologous to"},
-	"mi2bp":   {"obo", "RO_0002331", "involved in"},
-	"mi2loc":   {"obo", "BFO_0000066", "occurs in"}, // sigpways only
+	"mi2bp":     {"obo", "RO_0002331", "involved in"},
+	"mi2loc":    {"obo", "BFO_0000066", "occurs in"}, // sigpways only
 	"step2pway": {"obo", "BFO_0000050", "is part of"},
 	"reg2dtrg":  {"obo", "RO_0002578", "directly regulates"},
 	"reg2itrg":  {"obo", "RO_0012012", "indirectly regulates"},
@@ -250,4 +249,3 @@ func Capita(rdfmap util.SliceSet) (string, int) {
 	util.CheckStrings(sb.String())
 	return sb.String(), nln
 }
-

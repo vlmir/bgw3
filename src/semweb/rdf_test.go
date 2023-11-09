@@ -66,4 +66,3 @@ func Test_Capita(t *testing.T) {
 		}
 	}
 }
-

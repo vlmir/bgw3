@@ -227,7 +227,7 @@ func SignorParseConf() ([]Column, []Column) {
 	vals := []Column{
 		{0, "|", 0, "|", 0, "Aid"},     // single value; Attn: diverse formats !!
 		{1, "|", 0, "|", 0, "Bid"},     // single value; Attn: diverse formats !!
-		{6, "|", 1, "\"", 1, "mtd"},      // psi-mi ids
+		{6, "|", 1, "\"", 1, "mtd"},    // psi-mi ids
 		{8, "|", 1, ":", -1, "pubmed"}, // filtering by "pubmed"
 		{11, "|", 1, "\"", 0, "typeABid"},
 		{11, "|", 2, "\"", 0, "typeABlbl"},

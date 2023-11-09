@@ -31,6 +31,7 @@ func Rwget(ns, mask, ddir string) error {
 }
 
 /// Single File Download ///
+
 // the 3 functions below have comparable performance
 // HttpFile() seems prone to failures in case of very large files or poor connections
 
@@ -47,7 +48,7 @@ func WgetFile(strs ...string) (err error) {
 		// sending to background with "-b" or "&" does not work here !
 		// set pth to "-" for sending the content to STDOUT
 	} else {
-		panic(errors.New(fmt.Sprintf("Expexting 2 args, got: %d", n)))
+		panic(errors.New(fmt.Sprintf("Expexting at least 2 args, got: %d", n)))
 	}
 	cmd.Stdout = os.Stdout
 	cmd.Stderr = os.Stderr
@@ -57,7 +58,7 @@ func WgetFile(strs ...string) (err error) {
 // HttpFile will download a url to a local file. It's efficient because it will
 // write as it downloads and not load the whole file into memory.
 // from: https://golangcode.com/download-a-file-from-a-url/
-func HttpFile(url string, wpth string) (*bytes.Buffer, error) {
+func HttpFile(url, wpth string) (*bytes.Buffer, error) {
 	// 2023-10-19: used only for ontologies
 	// Get the data; resp is a ponter to a struct; resp.Body: io.ReadCloser
 	buf := new(bytes.Buffer)
@@ -117,27 +118,26 @@ func GetFile(uri, key0, val0, wpth string) (*bytes.Buffer, error) {
 func saveOneIdmap(txid, pome, datdir string) error {
 	// Never use the 'ftp:' protocol hear !!!
 	ns := "https://ftp.uniprot.org/pub/databases/uniprot/current_release/knowledgebase/reference_proteomes/Eukaryota/"
-		subdir := "idmapping/"
-		ext :=  ".idmapping.gz"
-		file := fmt.Sprintf("%s_%s%s", pome, txid, ext)
-		wpth := fmt.Sprintf("%s%s%s", datdir, subdir, file)
-		uri := fmt.Sprintf("%s%s/%s", ns, pome, file)
-		// HttpFile() cannot be used here!
-		if err := WgetFile(uri, wpth); err != nil {
+	subdir := "idmapping/"
+	ext := ".idmapping.gz"
+	file := fmt.Sprintf("%s_%s%s", pome, txid, ext)
+	wpth := fmt.Sprintf("%s%s%s", datdir, subdir, file)
+	uri := fmt.Sprintf("%s%s/%s", ns, pome, file)
+	// HttpFile() cannot be used here!
+	if err := WgetFile(uri, wpth); err != nil {
 		log.Println("saveOneIdmap(): Warning: Failed to download data for:", txid, err)
 		return err
 	}
 	return nil
 }
 
-func saveOneUniprot(txid string, datdir string) error {
+func saveOneUniprot(txid, datdir, rpthS string) error {
 	var cmd *exec.Cmd
-	cmd = exec.Command("/usr/bin/python3", "/home/mironov/repos/bgw3/scripts/download1up.py", txid, datdir, "&")
+	cmd = exec.Command("/usr/bin/python3", rpthS, txid, datdir, "&")
 	cmd.Stdout = os.Stdout
 	cmd.Stderr = os.Stderr
 	return cmd.Run()
 }
-
 
 // TODO change file names
 func saveOneSignor(txid string, datdir string) error {
@@ -234,9 +234,9 @@ func saveAllIdmap(datdir string, txn2prm util.Set2D) {
 	}
 }
 
-func saveAllUniprot(datdir string, txn2prm util.Set2D) {
+func saveAllUniprot(datdir string, txn2prm util.Set2D, rpthS string) {
 	for txid := range txn2prm {
-		if err := saveOneUniprot(txid, datdir); err != nil {
+		if err := saveOneUniprot(txid, datdir, rpthS); err != nil {
 			log.Println("Warning: Failed to download data for:", txid, err)
 		}
 	}
@@ -313,7 +313,6 @@ func saveAllOnto(datdir string) {
 		"go-basic":  "http://purl.obolibrary.org/obo/go/",
 	}
 	ext = ".owl"
-	//for _, onto := range [...]string{"sio"} {
 	for onto, ns := range nss {
 		uri := fmt.Sprintf("%s%s%s", ns, onto, ext)
 		wpth := fmt.Sprintf("%s%s%s%s", datdir, subdir, onto, ext)
@@ -335,30 +334,26 @@ func main() {
 	sP := flag.Bool("s", false, "download [s]ignor data")
 	lP := flag.Bool("l", false, "download tf[l]ink data")
 	gP := flag.Bool("g", false, "download [g]ene ontology annotations")
-	tP := flag.String("t", "./prm_txn.txt", "selected [t]axa")
-	var cnt int
 	flag.Parse()
 	if !flag.Parsed() {
 		log.Fatalln("failed to parse flags")
 	}
 	args := flag.Args()
-	cnt = len(args)
-	if cnt < 1 {
+	cnt := len(args)
+	if cnt < 3 {
 		log.Fatalln("Expecting more arguments than ", cnt)
 	}
-	datdir := args[0] // path to data directory (with a trailing '/')
-	//pth1 := *lP     // read list of Reference Proteomes TODO write at Step0
 	log.Println("Started with args:", args)
-	n := 0
-	pthx := *tP // path to a list of selected taxa
-	// txn2prm, err := util.MakeMap(pthx, 0, 1, ".") // txnid -> "nt", silly TODO
-	txn2prm, err := util.MakeMap(pthx, 1, 0, "_") // txnID -> proteomeID
+	datdir := args[0]                              // path to data directory (with a trailing '/')
+	rpthT := args[1]                               // path to a list of selected taxa and proteomes
+	rpthS := args[2]                               // path to the script for downloading UP for one taxon
+	txn2prm, err := util.MakeMap(rpthT, 1, 0, "_") // txnID -> proteomeID
 	if err != nil {
 		log.Fatalln("main:", err)
 	}
-	n = len(txn2prm)
+	n := len(txn2prm)
 	if n == 0 {
-		log.Fatalln("main:Empty map:", pthx)
+		log.Fatalln("main:Empty map:", rpthT)
 	}
 	log.Println("txn2prm:", n)
 
@@ -413,7 +408,7 @@ func main() {
 			panic(err)
 		}
 
-		saveAllUniprot(datdir, txn2prm)
+		saveAllUniprot(datdir, txn2prm, rpthS)
 		log.Println("Done with UniProt in", time.Since(start))
 	}
 

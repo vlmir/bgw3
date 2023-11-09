@@ -454,6 +454,7 @@ func ortho(datdir, bgwdir string, txn2prm util.Set2D) (int, error) {
 func main() {
 	// TODO for all functions: add taxa and proteome lists as arguments !
 	start := time.Now()
+	// pointers:
 	aP := flag.Bool("a", false, "export [a]ll")
 	eP := flag.Bool("e", false, "export gene and protein [e]ntities")
 	iP := flag.Bool("i", false, "export molecular [i]nteractions")
@@ -461,8 +462,8 @@ func main() {
 	gP := flag.Bool("g", false, "export [g]ene ontology annotations")
 	rP := flag.Bool("r", false, "export [r]egulatory associations")
 	oP := flag.Bool("o", false, "export [o]rthology relateions")
-	pP := flag.String("p", "./proteomes.pls", "[p]roteome list")
-	tP := flag.String("t", "./taxa.tls", "selected [t]axa")
+	// tP := flag.String("t", "./prm_txn.txt", "selected [t]axa")
+
 	var n int
 	flag.Parse()
 	if !flag.Parsed() {
@@ -471,39 +472,20 @@ func main() {
 	}
 	args := flag.Args()
 	n = len(args)
-	m := 2
+	m := 3
 	if n < m {
 		msg := fmt.Sprintf("Want at least: %d args have: %d", m, n)
 		panic(errors.New(msg))
 	}
 	datdir := args[0] // path to data directory (with a trailing '/')
 	bgwdir := args[1] // path to rdf directory (with a trailing '/')
-	rpthP := *pP      // path to list of RefProts
-	rpthT := *tP      // path to a list of selected taxa
+	rpthT := args[2]  // path to a list of selected taxa and proteomes
 	log.Println("Started rdf4bgw with args:", args)
 	/////////////////////////////////////////////////////////////////////////////
-	tx2pm, err := util.MakeMap(rpthP, 1, 0, "_") // only for building txn2prm below
-	util.CheckE(err)
-	log.Println("AllRefProteomes:", len(tx2pm))
-	////////////////////////////////////////////////////////////////////////////
-	taxa4bgw, err := util.MakeMap(rpthT, 0, 1, ".") // only for building txn2prm below
-	util.CheckE(err)
-	log.Println("TaxaForBgw:", len(taxa4bgw))
-	/////////////////////////////////////////////////////////////////////////////
-	txn2prm := make(util.Set2D)
-	for txid, _ := range taxa4bgw {
-		prms, ok := tx2pm[txid]
-		if !ok {
-			continue
-		} // filtering by ReferenceProteomes
-		if l := len(prms); l != 1 {
-			msg := fmt.Sprintf("main:%s: %d ReferenceProteomes", txid, l)
-			panic(errors.New(msg))
-		} // 20200531 download: never happens
-		txn2prm.Add(txid, prms.Keys()[0])
-	}
+	txn2prm, err := util.MakeMap(rpthT, 1, 0, "_") // txnID -> proteomeID
+
 	if len(txn2prm) == 0 {
-		msg := fmt.Sprintf("%s: NoProteomes", rpthP)
+		msg := fmt.Sprintf("%s: NoProteomes", rpthT)
 		panic(errors.New(msg))
 	}
 	/////////////////////////////////////////////////////////////////////////////
