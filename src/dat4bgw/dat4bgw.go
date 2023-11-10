@@ -225,6 +225,29 @@ func saveOneTflink(uri, txid, datdir string) error {
 
 /// Multiple Taxa Download ///
 
+func saveAllCtdb(datdir string) error {
+	// no filtering by taxon - data for all species in single files
+	var uris = map[string]string{
+		"chem2gene":	"https://ctdbase.org/reports/CTD_chem_gene_ixns.tsv.gz",
+		"chem2dise":	"https://ctdbase.org/reports/CTD_chemicals_diseases.tsv.gz",
+		"gene2dise":	"https://ctdbase.org/reports/CTD_genes_diseases.tsv.gz",
+		"gene2path":	"https://ctdbase.org/reports/CTD_genes_pathways.tsv.gz",
+		"dise2path":	"https://ctdbase.org/reports/CTD_diseases_pathways.tsv.gz",
+		"chem2phen":	"https://ctdbase.org/reports/CTD_pheno_term_ixns.tsv.gz",
+	}
+	subdir := "ctdb/"
+	ext := ".tsv.gz"
+	for lbl := range uris{
+		uri := uris[lbl]
+		wpth := fmt.Sprintf("%s%s%s%s", datdir, subdir, lbl, ext)
+		if err := WgetFile(uri, wpth); err != nil {
+			log.Println("saveOneCtdb(): Warning: Failed to download data for:", lbl, err)
+			return err
+		}
+	} // for lbl
+	return nil
+}
+
 func saveAllIdmap(datdir string, txn2prm util.Set2D) {
 	for txid := range txn2prm {
 		pome := txn2prm[txid].Keys()[0]
@@ -334,6 +357,7 @@ func main() {
 	sP := flag.Bool("s", false, "download [s]ignor data")
 	lP := flag.Bool("l", false, "download tf[l]ink data")
 	gP := flag.Bool("g", false, "download [g]ene ontology annotations")
+	cP := flag.Bool("c", false, "download [c]tdb data")
 	flag.Parse()
 	if !flag.Parsed() {
 		log.Fatalln("failed to parse flags")
@@ -378,28 +402,29 @@ func main() {
 		log.Println("Done with Signor in", time.Since(start))
 	}
 
+	if *aP || *cP {
+		start := time.Now()
+		if err := saveAllCtdb(datdir); err != nil {
+			panic(err)
+		}
+		log.Println("Done with CTDbase in", time.Since(start))
+	}
+
 	/////////////////////////////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////////////////
 
-	/// Step1 ///
 	if (*aP || *mP) && !*MP {
 		start := time.Now()
 		saveAllIdmap(datdir, txn2prm)
 		log.Println("Done with idmappings in", time.Since(start))
 	}
 
-	// Attn: Full stop here !!
-
-	/// Step2 ///
 	if *aP || *iP {
 		start := time.Now()
 		saveAllIntact(datdir, txn2prm)
 		log.Println("Done with IntAct in", time.Since(start))
 	}
 
-	// Attn: Full stop here !!
-
-	/// Step3 ///
 	if *aP || *uP {
 		start := time.Now()
 		uri := "http://ftp.uniprot.org/pub/databases/uniprot/current_release/knowledgebase/variants/humsavar.txt"
