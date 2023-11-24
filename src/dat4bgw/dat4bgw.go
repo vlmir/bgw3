@@ -131,9 +131,17 @@ func saveOneIdmap(txid, pome, datdir string) error {
 	return nil
 }
 
-func saveOneUniprot(txid, datdir, rpthS string) error {
+func saveOneUniprot(txid, datdir, script string) error {
 	var cmd *exec.Cmd
-	cmd = exec.Command("/usr/bin/python3", rpthS, txid, datdir, "&")
+	cmd = exec.Command("/usr/bin/python3", script, txid, datdir, "&")
+	cmd.Stdout = os.Stdout
+	cmd.Stderr = os.Stderr
+	return cmd.Run()
+}
+
+func saveOneCtri(txlbl, datdir, script string) error {
+	var cmd *exec.Cmd
+	cmd = exec.Command(script, txlbl, datdir, "&")
 	cmd.Stdout = os.Stdout
 	cmd.Stderr = os.Stderr
 	return cmd.Run()
@@ -228,16 +236,16 @@ func saveOneTflink(uri, txid, datdir string) error {
 func saveAllCtdb(datdir string) error {
 	// no filtering by taxon - data for all species in single files
 	var uris = map[string]string{
-		"chem2gene":	"https://ctdbase.org/reports/CTD_chem_gene_ixns.tsv.gz",
-		"chem2dise":	"https://ctdbase.org/reports/CTD_chemicals_diseases.tsv.gz",
-		"gene2dise":	"https://ctdbase.org/reports/CTD_genes_diseases.tsv.gz",
-		"gene2path":	"https://ctdbase.org/reports/CTD_genes_pathways.tsv.gz",
-		"dise2path":	"https://ctdbase.org/reports/CTD_diseases_pathways.tsv.gz",
-		"chem2phen":	"https://ctdbase.org/reports/CTD_pheno_term_ixns.tsv.gz",
+		"chem2gene": "https://ctdbase.org/reports/CTD_chem_gene_ixns.tsv.gz",
+		"chem2dise": "https://ctdbase.org/reports/CTD_chemicals_diseases.tsv.gz",
+		"gene2dise": "https://ctdbase.org/reports/CTD_genes_diseases.tsv.gz",
+		"gene2path": "https://ctdbase.org/reports/CTD_genes_pathways.tsv.gz",
+		"dise2path": "https://ctdbase.org/reports/CTD_diseases_pathways.tsv.gz",
+		"chem2phen": "https://ctdbase.org/reports/CTD_pheno_term_ixns.tsv.gz",
 	}
 	subdir := "ctdb/"
 	ext := ".tsv.gz"
-	for lbl := range uris{
+	for lbl := range uris {
 		uri := uris[lbl]
 		wpth := fmt.Sprintf("%s%s%s%s", datdir, subdir, lbl, ext)
 		if err := WgetFile(uri, wpth); err != nil {
@@ -257,9 +265,22 @@ func saveAllIdmap(datdir string, txn2prm util.Set2D) {
 	}
 }
 
-func saveAllUniprot(datdir string, txn2prm util.Set2D, rpthS string) {
+func saveAllCtri(datdir, scrdir string) {
+	var taxa = map[string]string{
+		"9606": "human",
+	}
+	script := scrdir + "download1ctri.py"
+	for txid := range taxa {
+		if err := saveOneCtri(taxa[txid], datdir, script); err != nil {
+			log.Println("Warning: Failed to download data for:", txid, err)
+		}
+	}
+}
+
+func saveAllUniprot(datdir string, txn2prm util.Set2D, scrdir string) {
+	script := scrdir + "download1up.py"
 	for txid := range txn2prm {
-		if err := saveOneUniprot(txid, datdir, rpthS); err != nil {
+		if err := saveOneUniprot(txid, datdir, script); err != nil {
 			log.Println("Warning: Failed to download data for:", txid, err)
 		}
 	}
@@ -358,6 +379,7 @@ func main() {
 	lP := flag.Bool("l", false, "download tf[l]ink data")
 	gP := flag.Bool("g", false, "download [g]ene ontology annotations")
 	cP := flag.Bool("c", false, "download [c]tdb data")
+	tP := flag.Bool("t", false, "download collec[t]ri data")
 	flag.Parse()
 	if !flag.Parsed() {
 		log.Fatalln("failed to parse flags")
@@ -370,7 +392,7 @@ func main() {
 	log.Println("Started with args:", args)
 	datdir := args[0]                              // path to data directory (with a trailing '/')
 	rpthT := args[1]                               // path to a list of selected taxa and proteomes
-	rpthS := args[2]                               // path to the script for downloading UP for one taxon
+	scrdir := args[2]                              // path to the script for downloading UP for one taxon
 	txn2prm, err := util.MakeMap(rpthT, 1, 0, "_") // txnID -> proteomeID
 	if err != nil {
 		log.Fatalln("main:", err)
@@ -385,7 +407,6 @@ func main() {
 	// independent
 	if (*aP || *oP) && !*OP {
 		start := time.Now()
-		// Done with ontos in 54m5.856446087s - What's that ???
 		saveAllOnto(datdir)
 		log.Println("Done with ontos in", time.Since(start))
 	}
@@ -422,7 +443,13 @@ func main() {
 	if *aP || *iP {
 		start := time.Now()
 		saveAllIntact(datdir, txn2prm)
-		log.Println("Done with IntAct in", time.Since(start))
+		log.Println("Done with Intact in", time.Since(start))
+	}
+
+	if *aP || *tP {
+		start := time.Now()
+		saveAllCtri(datdir, scrdir)
+		log.Println("Done with Ctri in", time.Since(start))
 	}
 
 	if *aP || *uP {
@@ -433,7 +460,7 @@ func main() {
 			panic(err)
 		}
 
-		saveAllUniprot(datdir, txn2prm, rpthS)
+		saveAllUniprot(datdir, txn2prm, scrdir)
 		log.Println("Done with UniProt in", time.Since(start))
 	}
 

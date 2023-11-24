@@ -70,12 +70,12 @@ func addSubFields(pval, pk string, v bgw.Column, out util.Set3D) {
 	ind2 := v.Ind2
 	sk := v.Key // secondary key explicitely specified
 	for i, sval := range svals {
-		if ind2 >= 0 && i != ind2 {
-			continue // only one subfield is used
-		}
 		sval = strings.TrimSpace(svals[i])
 		if len(sval) == 0 {
 			continue
+		}
+		if ind2 >= 0 && i != ind2 {
+			continue // only one subfield is used
 		}
 		// db:id
 		// skipping dbs other that specified in v.Key
@@ -169,7 +169,7 @@ func Idmap(rpth string, idmkeys map[string]string, i1, i2, i3 int) (util.Set3D, 
 // val.Key - the string to be used as the seondary key in the output maps
 // val.Ind3 - integer used for controling the output
 // if Ind3 == -1 val.Key is used for filteering the values
-func Tab2struct(rpth string, keys, vals []bgw.Column, p *bgw.Dat4bridge) (err error) {
+func Tab2struct(rpth string, keys, vals []bgw.Column, p *bgw.Dat4bridge, dlm string) (err error) {
 	// NO empty values added to Dat4bridge !
 	// the value in val.Ind1 is split by val.Dlm1, ALL subfilds are processed by addSubFields()
 	// if Ind2 < 0 all subfields are used, otherwise only the one in val.Ind2
@@ -217,7 +217,7 @@ func Tab2struct(rpth string, keys, vals []bgw.Column, p *bgw.Dat4bridge) (err er
 		if string(line[0]) == "#" {
 			continue
 		}
-		cells := strings.Split(line, "\t") // fields
+		cells := strings.Split(line, dlm) // fields
 		if len(cells) < maxind+1 {
 			msg := fmt.Sprintf("%s:%d: TooFetFields: want %d have %d", rpth, ln, maxind+1, len(cells))
 			//panic(errors.New(msg))

@@ -46,6 +46,7 @@ func Test_Tab2struct(t *testing.T) {
 		arg2 []bgw.Column
 		arg3 []bgw.Column
 		arg4 *bgw.Dat4bridge
+		arg5 string
 		val  int
 	}
 	d4bs := make([]bgw.Dat4bridge, 0, 5)
@@ -53,31 +54,35 @@ func Test_Tab2struct(t *testing.T) {
 	keys1, vals1 := bgw.TftgParseConf()
 	keys2, vals2 := bgw.SignorParseConf()
 	keys3, vals3 := bgw.TflinkParseConf()
+	keys4, vals4 := bgw.CtriParseConf()
 	var d4b0 bgw.Dat4bridge
 	var d4b1 bgw.Dat4bridge
 	var d4b2 bgw.Dat4bridge
 	var d4b3 bgw.Dat4bridge
+	var d4b4 bgw.Dat4bridge
 	d4b0.New()
 	d4b1.New()
 	d4b2.New()
 	d4b3.New()
-	d4bs = append(d4bs, d4b0, d4b1, d4b2, d4b3)
+	d4b4.New()
+	d4bs = append(d4bs, d4b0, d4b1, d4b2, d4b3, d4b4)
 	pth := "../../tdata/"
 	tts := []tt{
-		{pth + "intact/9606.mi25", keys0, vals0, &d4bs[0], 7}, // 8? TODO
-		{pth + "static/tfacts/9606.f2g", keys1, vals1, &d4bs[1], 5},
-		{pth + "signor/9606.mi28", keys2, vals2, &d4bs[2], 16}, // 15->16 - added mtd field
-		{pth + "tflink/9606.tsv", keys3, vals3, &d4bs[3], 6},
+		{pth + "intact/9606.mi25", keys0, vals0, &d4bs[0], "\t", 7}, // 8? TODO
+		{pth + "static/tfacts/9606.f2g", keys1, vals1, &d4bs[1], "\t", 5},
+		{pth + "signor/9606.mi28", keys2, vals2, &d4bs[2], "\t", 16}, // 15->16 - added mtd field
+		{pth + "tflink/9606.tsv", keys3, vals3, &d4bs[3], "\t", 6},
+		{pth + "coltri/human.csv", keys4, vals4, &d4bs[4], ",", 8},
 	}
 	keys := []string{
 		"P04637--P04637",
 		"AP1--SPP1",
 		"uniprotkb:Q9BTC0--uniprotkb:P08648",
-		//		"uniprot:Q9H9S0--geneid:22943",
 		"NANOG--DKK1",
+		"Q16254--Q01094",
 	}
 	for i, tt := range tts {
-		_ = Tab2struct(tt.arg1, tt.arg2, tt.arg3, tt.arg4)
+		_ = Tab2struct(tt.arg1, tt.arg2, tt.arg3, tt.arg4, tt.arg5)
 		if len(d4bs[i].Duos[keys[i]]) != tt.val {
 			t.Error(
 				"For test", i+1, ": ", tt.arg1, tt.arg2, tt.arg3,

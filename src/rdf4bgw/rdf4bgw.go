@@ -80,7 +80,7 @@ func reg2pway(datdir, bgwdir string, txn2prm util.Set2D) (util.Set2D, error) {
 				rpth = fmt.Sprintf("%s%s%s%s%s", datdir, srck, "/", "pathways", ext)
 			}
 			log.Println("Rdf4bgw.reg2pway(): processing", rpth)
-			err := parse.Tab2struct(rpth, keys, vals, &d4b)
+			err := parse.Tab2struct(rpth, keys, vals, &d4b, "\t")
 			if err != nil {
 				log.Printf("%s%s", "reg2pway:parse.Tab2struct: ", err)
 				continue // sic!
@@ -157,7 +157,7 @@ func rgr2trg(datdir, bgwdir string, txn2prm util.Set2D) (util.Set2D, error) {
 				rpth = fmt.Sprintf("%s%s%s%s%s", datdir, srck, "/", txid, ext)
 			}
 			log.Println("Rdf4bgw.rgr2trg(): processing", rpth)
-			err := parse.Tab2struct(rpth, keys, vals, &d4b)
+			err := parse.Tab2struct(rpth, keys, vals, &d4b, "\t")
 			if err != nil {
 				log.Printf("%s%s", "rgr2trg:parse.Tab2struct: ", err)
 				continue // sic!
@@ -230,7 +230,7 @@ func tfac2gene(datdir, bgwdir string, txn2prm util.Set2D) (util.Set2D, error) {
 				rpth = fmt.Sprintf("%s%s%s%s%s%s", datdir, "static/", srck, "/", txid, ".f2g")
 			}
 			// log.Println("Rdf4bgw.tfac2gene(): processing", rpth)
-			err := parse.Tab2struct(rpth, keys, vals, &d4b)
+			err := parse.Tab2struct(rpth, keys, vals, &d4b, "\t")
 			if err != nil { // normal
 				// log.Printf("%s%s", "tfac2gene:parse.Tab2struct: ", err)
 				continue // sic!
@@ -289,7 +289,7 @@ func prot2prot(datdir, bgwdir string, txn2prm util.Set2D) (util.Set2D, error) {
 		var d4b bgw.Dat4bridge
 		d4b.New()
 		keys, vals := bgw.IntactParseConf()
-		err = parse.Tab2struct(rpth, keys, vals, &d4b)
+		err = parse.Tab2struct(rpth, keys, vals, &d4b, "\t")
 		if err != nil {
 			msg := fmt.Sprintf("rdf4bgw.go:main.prot2prot():%s: %s", err, txid)
 			log.Println(msg)

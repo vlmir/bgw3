@@ -1,3 +1,9 @@
+#! /usr/bin/python3
+# downloads UniProt data for one taxon
+# Args:
+# 1 NCBI taxon ID
+# 2 path to the data download directory (with a trailing '/')
+
 import sys
 import re
 import requests

@@ -178,6 +178,24 @@ func TftgParseConf() ([]Column, []Column) {
 	return keys, vals
 } // TftgParseConf
 
+func CtriParseConf() ([]Column, []Column) {
+	keys := []Column{
+		{0, ";", 0, "--", 0, ""},
+		{1, ";", 0, "--", 0, ""},
+	}
+	vals := []Column{
+		{0, ";", 0, "|", 0, "upsrc"},
+		{1, ";", 0, "|", 0, "uptrg"},
+		{2, ";", 0, "|", 0, "gnsrc"},
+		{3, ";", 0, "|", 0, "gntrg"},
+		{5, ";", 0, ";", 0, "posi"},
+		{6, ";", 0, ";", 0, "nega"},
+		{15, ";", 0, ";", 0, "score"},   // number of refs
+		{16, ";", -1, ";", 0, "pubmed"}, // ALL refs
+	}
+	return keys, vals
+} // CtriParseConf
+
 func TflinkParseConf() ([]Column, []Column) {
 	keys := []Column{
 		{4, "\"", 1, "--", 0, ""},

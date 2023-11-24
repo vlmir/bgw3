@@ -30,10 +30,42 @@ func Test_Init(t *testing.T) {
 	if err := os.MkdirAll(filepath.Join(dpth, "signor/"), 0755); err != nil {
 		log.Println(err)
 	}
+	if err := os.MkdirAll(filepath.Join(dpth, "ctri/"), 0755); err != nil {
+		log.Println(err)
+	}
 }
 
 /*
  */
+func Test_saveOneCtri(t *testing.T) {
+	mystart := time.Now()
+	type tt struct {
+		arg1 string
+		arg2 string
+		arg3 string
+		val1 error
+	}
+	pth := "../../tdata/"
+
+	script := "../../scripts/download1ctri.py"
+	datdir := pth + "dat4bgw/"
+	txlbls := [...]string{"human"}
+	tts := []tt{
+		{txlbls[0], datdir, script, nil},
+	}
+	for i, tt := range tts {
+		err := saveOneCtri(tt.arg1, tt.arg2, tt.arg3)
+		if err != tt.val1 {
+			t.Error(
+				"For test", i+1, ": ",
+				"\n\twant", tt.val1,
+				"\n\thave", err,
+			)
+		}
+	}
+	log.Println("Done with saveOneCtri in", time.Since(mystart))
+}
+
 func Test_saveOneUniprot(t *testing.T) {
 	mystart := time.Now()
 	type tt struct {
@@ -44,11 +76,11 @@ func Test_saveOneUniprot(t *testing.T) {
 	}
 	pth := "../../tdata/"
 
-	rpthS := "../../scripts/download1up.py"
+	script := "../../scripts/download1up.py"
 	datdir := pth + "dat4bgw/"
 	txids := [...]string{"36329"}
 	tts := []tt{
-		{txids[0], datdir, rpthS, nil},
+		{txids[0], datdir, script, nil},
 		//{txids[1], datdirs[1], nil},
 	}
 	for i, tt := range tts {

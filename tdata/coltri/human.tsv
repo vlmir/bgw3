@@ -1,0 +1,3 @@
+source	target	source_genesymbol	target_genesymbol	is_directed	is_stimulation	is_inhibition	consensus_direction	consensus_stimulation	consensus_inhibition	curation_effort	references	sources	n_sources	n_primary_sources	n_references	references_stripped
+Q16254	Q01094	E2F4	E2F1	False	False	True	True	False	True	8	CollecTRI:10208422;CollecTRI:14576826	CollecTRI;DoRothEA-A_CollecTRI;ExTRI_CollecTRI;HTRI_CollecTRI;NTNU.Curated_CollecTRI;TFactS_CollecTRI	6	1	2	10208422;14576826
+P04637	Q16254	TP53	E2F4	False	True	False	True	True	False	5	CollecTRI:10619603;CollecTRI:11032828	CollecTRI;ExTRI_CollecTRI;GEREDB_CollecTRI	3	1	2	10619603;11032828
