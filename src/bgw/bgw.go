@@ -289,3 +289,14 @@ func SigPwaysParseConf() ([]Column, []Column) {
 	}
 	return keys, vals
 } // SigPwaysParseConf
+
+func SigMapParseConf() ([]Column, []Column) {
+	keys := []Column{
+		{0, ";", 0, "", 0, ""},
+	}
+	vals := []Column{
+		{2, ";", -1, ";", 0, "ids"}, // no iso-form present 23-12-04
+	}
+	return keys, vals
+} // SigFamiliesParseConf
+

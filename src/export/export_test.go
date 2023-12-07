@@ -119,29 +119,24 @@ func TestSigPways(t *testing.T) {
 	keys, vals := bgw.SigPwaysParseConf()
 	var d4b0 bgw.Dat4bridge
 	d4b0.New()
-	_ = parse.Tab2struct(pth+"signor/sigpcrels.tsv", keys, vals, &d4b0, "\t")
+	_ = parse.Tab2struct(pth+"signor/pathways.tsv", keys, vals, &d4b0, "\t")
 	var xmap bgw.Xmap
 	xmap.New()
-	xmap.Upac.Add("O15393", "bgwp", "O15393")
-	xmap.Upac.Add("P14210", "bgwp", "P14210")
-	xmap.Upac.Add("P08581", "bgwp", "P08581")
-	xmap.Upac.Add("P10275", "bgwp", "P10275")
-	xmap.Upac.Add("P31749", "bgwp", "P31749") // PF24
-	xmap.Upac.Add("P31751", "bgwp", "P31751") // PF24
+	// sorted
+	xmap.Upac.Add("O15393", "bgwp", "O15393") // needed
+	xmap.Upac.Add("P10275", "bgwp", "P10275") // needed for PF24
+	xmap.Upac.Add("P31749", "bgwp", "P31749") // PF24 // needed
+	xmap.Upac.Add("P31751", "bgwp", "P31751") // PF24 // needed
 	/// exporting
 	srcs := []string{"signor"}
 
 	// for Signor complexes and protein families
-	sigmap := make(util.Set3D)
-	subdir := "signor/"
-	dpth := pth + subdir
-	ss0 := []string{dpth + "complexes.map", dpth + "families.map"}
-	parse.Sig2up(sigmap, ss0)
+	sigmap, _ := parse.Sigmap(pth)
 	xmap.Signor = sigmap
 
 	tts := []tt{
 		// {&d4b0, &xmap, pth + "OUT/export/", 6}, // 3 if filtered by the host
-		{&d4b0, &xmap, pth + "OUT/export/", 5},
+		{&d4b0, &xmap, pth + "OUT/export/", 3}, // with updatted test files for complexes and families
 	}
 	pdck := "reg2utrg"
 	for i, tt := range tts {
@@ -174,27 +169,21 @@ func TestRgr2trg(t *testing.T) {
 	_ = parse.Tab2struct(pth+"signor/9606.mi28", keys, vals, &d4b0, "\t")
 	var xmap bgw.Xmap
 	xmap.New()
-	xmap.Upac.Add("P27361", "bgwp", "P27361")
-	xmap.Upac.Add("P48431", "bgwp", "P48431") // for testing isoforms
-	xmap.Upac.Add("Q9BTC0", "bgwp", "Q9BTC0")
-	xmap.Upac.Add("P08648", "bgwp", "P08648")
-	xmap.Bgwp.Add("P08648", "bgwg", "9606/GENEX")
-	xmap.Upac.Add("P10275", "bgwp", "P10275")
-	xmap.Upac.Add("P04637", "bgwp", "P04637")
-	xmap.Upac.Add("Q01081", "bgwp", "Q01081")
+	// sorted
+	xmap.Upac.Add("P10275", "bgwp", "P10275") // needed
+	xmap.Upac.Add("P19838", "bgwp", "P19838") // C13 // needed
+	xmap.Upac.Add("P24385", "bgwp", "P24385") // needed for C13
+	xmap.Upac.Add("P27361", "bgwp", "P27361") // PF1 // needed
+	xmap.Upac.Add("P48431", "bgwp", "P48431") // for testing isoforms // needed
 	/// exporting
 	srcs := []string{"signor"}
 
 	// for Signor complexes and protein families
-	sigmap := make(util.Set3D)
-	subdir := "signor/"
-	dpth := pth + subdir
-	ss0 := []string{dpth + "complexes.map", dpth + "families.map"}
-	parse.Sig2up(sigmap, ss0)
+	sigmap, _ := parse.Sigmap(pth)
 	xmap.Signor = sigmap
 
 	tts := []tt{
-		{&d4b0, &xmap, pth + "OUT/export/", 4},
+		{&d4b0, &xmap, pth + "OUT/export/", 3},
 	}
 	pdck := "reg2utrg"
 	for i, tt := range tts {

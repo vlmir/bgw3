@@ -36,7 +36,6 @@ func Test_Init(t *testing.T) {
 }
 
 /*
- */
 func Test_saveOneCtri(t *testing.T) {
 	mystart := time.Now()
 	type tt struct {
@@ -228,6 +227,7 @@ func Test_saveOneGpa(t *testing.T) {
 	}
 	log.Println("Done with saveOneGpa in", time.Since(mystart))
 }
+*/
 
 func Test_HttpFile(t *testing.T) {
 	mystart := time.Now()

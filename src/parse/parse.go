@@ -76,8 +76,8 @@ func addSubFields(pval, pk string, v bgw.Column, out util.Set3D) {
 		}
 		if ind2 >= 0 && i != ind2 {
 			continue // only one subfield is used
-		}
-		// db:id
+		} // othgerwise all subfields are used
+		// pecial case b:id
 		// skipping dbs other that specified in v.Key
 		if v.Ind3 == -1 {
 			if strings.TrimSpace(svals[0]) != sk {
@@ -90,6 +90,7 @@ func addSubFields(pval, pk string, v bgw.Column, out util.Set3D) {
 
 // Sig2up() parses mapping files provided by Signor and returns a map structure
 func Sig2up(sigmap util.Set3D, pths []string) error {
+	// not used anymore, kept just as an example of using encoding/csv
 	for _, pth := range pths {
 
 		// Open the file
@@ -131,6 +132,30 @@ func Sig2up(sigmap util.Set3D, pths []string) error {
 		}
 	}
 	return nil
+}
+
+// TODO generalize, improve error handling
+func Sigmap(datdir string) (util.Set3D, error) {
+	// replacement for Sig2up accomodating tab-delimited files
+	sigmap := make(util.Set3D)
+	rdir := fmt.Sprintf("%s%s%s", datdir, "signor", "/")
+	smpths := []string{
+		rdir + "complexes.tsv",
+		rdir + "families.tsv",
+	}
+	keys, vals := bgw.SigMapParseConf()
+	for _, rpth := range smpths {
+		out, err := Tab2set3D(rpth, keys, vals)
+		if err != nil {
+			log.Printf("%s%s", "parse.Sigmap():parse.Tab2set3D(): ", err)
+			// continue // sic!
+			return out, err
+		}
+		for k, v := range out {
+			sigmap[k] = v
+		}
+	}
+	return sigmap, nil
 }
 
 func Idmap(rpth string, idmkeys map[string]string, i1, i2, i3 int) (util.Set3D, error) {
@@ -312,7 +337,9 @@ func Tab2set3D(rpth string, keys, vals []bgw.Column) (out util.Set3D, err error)
 		}
 		if len(cells) < maxind+1 {
 			msg := fmt.Sprintf("%s:%d: TooFewFields", rpth, ln)
-			panic(errors.New(msg))
+			log.Printf("%s%s", "parse.Tab2set3D():", msg)
+			// panic(errors.New(msg))
+			continue
 		}
 		/// primary key
 		// pk := strings.Split(primaryKey(cells, keys), "--")[0]

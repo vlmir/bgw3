@@ -147,8 +147,8 @@ func saveOneCtri(txlbl, datdir, script string) error {
 	return cmd.Run()
 }
 
-// TODO change file names
 func saveOneSignor(txid string, datdir string) error {
+// TODO see if all the files are limited to human data
 	subdir := "signor/"
 	ext := ".mi28"
 	uri := "https://signor.uniroma2.it/getData.php?type=causalTab"
@@ -157,17 +157,23 @@ func saveOneSignor(txid string, datdir string) error {
 		log.Println("saveOneSignor(): Warning: Failed to download data for:", txid, err)
 		return err
 	}
-	ext = ".map"
-	uri = "https://signor.uniroma2.it/getPathwayData.php?relations"
-	wpth = fmt.Sprintf("%s%s%s%s%s", datdir, subdir, "pathway-rels-", txid, ext)
+	ext = ".tsv"
+	uri = "https://signor.uniroma2.it/API/getComplexData.php"
+	wpth = fmt.Sprintf("%s%s%s%s", datdir, subdir, "complexes", ext)
 	if err := WgetFile(uri, wpth); err != nil {
-		log.Println("saveOneSignor(): Warning: Failed to download pathway relations for:", txid, err)
+		log.Println("saveOneSignor(): Warning: Failed to download protein complexes: ", err)
 		return err
 	}
-	uri = "https://signor.uniroma2.it/getPathwayData.php?description"
-	wpth = fmt.Sprintf("%s%s%s%s%s", datdir, subdir, "pathway-descs-", txid, ext)
+	uri = "https://signor.uniroma2.it/API/getProteinFamilyData.php"
+	wpth = fmt.Sprintf("%s%s%s%s", datdir, subdir, "families", ext)
 	if err := WgetFile(uri, wpth); err != nil {
-		log.Println("saveOneSignor(): Warning: Failed to download pathway descriptions for:", txid, err)
+		log.Println("saveOneSignor(): Warning: Failed to download protein families: ", err)
+		return err
+	}
+	uri = "https://signor.uniroma2.it/getPathwayData.php?relations"
+	wpth = fmt.Sprintf("%s%s%s%s%s", datdir, subdir, "pathways", txid, ext)
+	if err := WgetFile(uri, wpth); err != nil {
+		log.Println("saveOneSignor(): Warning: Failed to download pathway relations for:", txid, err)
 		return err
 	}
 	return nil

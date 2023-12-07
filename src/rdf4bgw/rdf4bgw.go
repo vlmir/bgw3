@@ -52,7 +52,7 @@ func geneprot(datdir, bgwdir string, txn2prm util.Set2D) (err error) {
 } // geneprot()
 
 func reg2pway(datdir, bgwdir string, txn2prm util.Set2D) (util.Set2D, error) {
-	log.Println("\n\reg2pway for:", "all")
+	log.Println("\n\treg2pway for:", "all")
 	cnts := make(util.Set2D)
 	var pdcks = []string{
 		"reg2ptrg",
@@ -97,6 +97,7 @@ func reg2pway(datdir, bgwdir string, txn2prm util.Set2D) (util.Set2D, error) {
 			if srck == "signor" {
 				// generating map signor-id -> entitity-ids
 
+				/*
 				sigmap := make(util.Set3D)
 				rdir := fmt.Sprintf("%s%s%s", datdir, srck, "/")
 				smpths := []string{
@@ -108,6 +109,8 @@ func reg2pway(datdir, bgwdir string, txn2prm util.Set2D) (util.Set2D, error) {
 					log.Printf("%s%s", "parse.Sig2up: ", err)
 					continue // sic!
 				}
+				*/
+				sigmap, _ := parse.Sigmap(datdir)
 				xmap.Signor = sigmap
 			}
 
@@ -174,6 +177,7 @@ func rgr2trg(datdir, bgwdir string, txn2prm util.Set2D) (util.Set2D, error) {
 			if srck == "signor" {
 				// generating map signor-id -> entitity-ids
 
+				/*
 				sigmap := make(util.Set3D)
 				rdir := fmt.Sprintf("%s%s%s", datdir, srck, "/")
 				smpths := []string{
@@ -185,6 +189,8 @@ func rgr2trg(datdir, bgwdir string, txn2prm util.Set2D) (util.Set2D, error) {
 					log.Printf("%s%s", "parse.Sig2up: ", err)
 					continue // sic!
 				}
+				*/
+				sigmap, _ := parse.Sigmap(datdir)
 				xmap.Signor = sigmap
 			}
 

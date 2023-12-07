@@ -3,42 +3,8 @@ package parse
 import (
 	"github.com/vlmir/bgw3/src/bgw"
 	"github.com/vlmir/bgw3/src/util"
-	"log"
 	"testing"
-	"time"
 )
-
-func Test_Sig2up(t *testing.T) {
-	mystart := time.Now()
-	type tt struct {
-		arg1 util.Set3D
-		arg2 []string
-		val1 error
-	}
-
-	mp := make(util.Set3D)
-	mps := [...]util.Set3D{mp}
-	pth := "../../tdata/"
-	subdir := "signor/"
-	dpth := pth + subdir
-	ss0 := []string{dpth + "complexes.map", dpth + "families.map"}
-	sss := [...][]string{ss0}
-
-	tts := []tt{
-		{mps[0], sss[0], nil},
-	}
-	for i, tt := range tts {
-		err := Sig2up(tt.arg1, tt.arg2)
-		if err != tt.val1 {
-			t.Error(
-				"For test", i+1, ": ",
-				"\n\twant", tt.val1,
-				"\n\thave", err,
-			)
-		}
-	}
-	log.Println("Done with Sig2up() in", time.Since(mystart))
-}
 
 func Test_Tab2struct(t *testing.T) {
 	type tt struct {
@@ -109,15 +75,20 @@ func Test_Tab2set3D(t *testing.T) {
 		{8, "|", 1, ":", -1, "pubmed"},
 	}
 	arg2_2, arg3_2 := bgw.TftgParseConf()
+	arg2_3, arg3_3 := bgw.SigMapParseConf()
+	arg2_4, arg3_4 := bgw.SigMapParseConf()
 	pth := "../../tdata/"
 	tts := []tt{
 		{pth + "intact/9606.mi25", arg2_1, arg3_1, 2},
 		{pth + "static/tfacts/9606.f2g", arg2_2, arg3_2, 5},
+		{pth + "signor/complexes.tsv", arg2_3, arg3_3, 1},
+		{pth + "signor/families.tsv", arg2_4, arg3_4, 1},
 	}
 	keys := []string{
 		"P04637--P04637",
 		"AP1--SPP1",
-		"uniprotkb:Q9BTC0--uniprotkb:P08648",
+		"SIGNOR-C1",
+		"SIGNOR-PF1",
 	}
 	for i, tt := range tts {
 		out, _ := Tab2set3D(tt.arg1, tt.arg2, tt.arg3)
