@@ -257,7 +257,8 @@ func Rgr2trg(d *bgw.Dat4bridge, x *bgw.Xmap, wdir string) error {
 	ourUs := rdf.FmtURIs(keys4b)
 	nss := rdf.Nss // BGW URI name spaces
 	//srcns := nss[srck] // fully qualified namespace
-	srcU := rdf.FormU(rdf.Uris4tftg[srck])
+	// srcU := rdf.FormU(rdf.Uris4tftg[srck])
+	srcU :=  "http://signor.uniroma2.it"
 	rdfns := nss["rdf"]
 	// graphns := fmt.Sprintf("%s%s", nss["bgw"], "graph/")
 	header, nln := rdf.Capita(keys4b)
@@ -456,6 +457,8 @@ func Tfac2gene(d *bgw.Dat4bridge, x *bgw.Xmap, wdir string) error {
 	modes.Add("ntnu", "-", n2t)
 	modes.Add("tflink", "activator", p2t)
 	modes.Add("tflink", "repressor", n2t)
+	modes.Add("coltri", "pos", p2t)
+	modes.Add("coltri", "neg", n2t)
 	sdir := "tfac2gene"
 	wpths := map[string]string{
 		p2t: fmt.Sprintf("%s%s/%s-%s-%s.nt", wdir, sdir, "p", srck, txid),
@@ -502,6 +505,7 @@ func Tfac2gene(d *bgw.Dat4bridge, x *bgw.Xmap, wdir string) error {
 	ourUs := rdf.FmtURIs(keys4b)
 	nss := rdf.Nss // BGW URI name spaces
 	//srcns := nss[srck] // fully qualified namespace
+	fmt.Println("srck:", srck)
 	srcU := rdf.FormU(rdf.Uris4tftg[srck])
 	rdfns := nss["rdf"]
 	// graphns := fmt.Sprintf("%s%s", nss["bgw"], "graph/")
@@ -518,24 +522,44 @@ func Tfac2gene(d *bgw.Dat4bridge, x *bgw.Xmap, wdir string) error {
 	flags := make(util.Set1D) // for printing the header only once per file
 	for _, duokey := range duos.Keys() {
 		duo := duos[duokey]
-		oriAB := strings.Split(duokey, "--")
-		oriBid := oriAB[1] // gene symbol
+		// oriAB := strings.Split(duokey, "--") // TODO see if needed
+		// oriBid := oriAB[1] // gene symbol // TODO see if needed
 
 		var allAids []string // UP canonical ACs for one duokey
 		var allBids []string // gene symbols for one duokey
 		allAids = duo["uniprot"].Keys()
 		allBids = duo["ncbig"].Keys() // NCBI GeneID, single
-		allBids = append(allBids, oriBid)
-		// now allAids are all UP AC
+		// for coltri
+		if len(allAids) == 0 {
+			allAids = duo["Aupca"].Keys()
+		}
+		if len(allBids) == 0 {
+			allBids = duo["Bglbl"].Keys()
+		}
+		if len(allAids) == 0 || len(allBids) == 0 {
+			continue
+		}
+		// allBids = append(allBids, oriBid) // TODO see if this makes a difference
 
 		// converting allAids to Bgwids
 		bgwAids := upac2bgwp(allAids, xmap)
 		// converting allBids to Bgwids; BGW genes
+		// TODO implement upac2bgwg()
 		bgwBids := gene2bgwg(allBids, xmap)
 		if len(bgwAids) == 0 || len(bgwBids) == 0 {
 			continue
 		}
 
+		coltrimodes := []string{
+			"pos",
+			"neg",
+		}
+		for _, mode := range coltrimodes{
+			if len(duo[mode].Keys()) != 0 {
+				val := duo[mode].Keys()[0]
+				if val == "True" {duo.Add("mode", mode)}
+			}
+		}
 		//  assigning predicate depending of  the direction of regulation
 		pdcks := []string{u2t} // all predicate keys for one duokey, u2t first
 		for _, onemod := range duo["mode"].Keys() {
@@ -549,11 +573,11 @@ func Tfac2gene(d *bgw.Dat4bridge, x *bgw.Xmap, wdir string) error {
 			var sb strings.Builder
 			//sb.WriteString(rdf.FormT(graphU, ourUs["sth2src"], srcU))
 			for _, entAid := range bgwAids {
+				entAU := rdf.CompU(entAns, entAid)
 				for _, entBid := range bgwBids {
 					cnts.Add(pdck, srck)
 					clsid := fmt.Sprintf("uniprot!%s--gene!%s", entAid, entBid)
 					clsU := rdf.CompU(clsns, clsid)
-					entAU := rdf.CompU(entAns, entAid)
 					entBU := rdf.CompU(entBns, entBid)
 					sb.WriteString(rdf.FormT(clsU, ourUs["ins2cls"], rdf.CompU(nss["owl"], "Class")))
 					sb.WriteString(rdf.FormT(clsU, ourUs["sub2cls"], ourUs["stm"]))
@@ -564,6 +588,8 @@ func Tfac2gene(d *bgw.Dat4bridge, x *bgw.Xmap, wdir string) error {
 					sb.WriteString(rdf.FormT(clsU, rdf.CompU(rdfns, "subject"), entAU))
 					sb.WriteString(rdf.FormT(clsU, rdf.CompU(rdfns, "object"), entBU))
 					sb.WriteString(rdf.FormT(entAU, ourUs[pdck], entBU))
+					id := "MI_2247" // transcriptional regulation
+					sb.WriteString(rdf.FormT(clsU, ourUs["mi2bp"], rdf.CompU(nss["obo"], id)))
 
 					/// INSTANCES
 					insid := fmt.Sprintf("%s#%s", clsid, srck)
@@ -571,9 +597,6 @@ func Tfac2gene(d *bgw.Dat4bridge, x *bgw.Xmap, wdir string) error {
 					sb.WriteString(rdf.FormT(insU, ourUs["ins2cls"], clsU))
 					sb.WriteString(rdf.FormT(insU, ourUs["sth2lbl"], rdf.FormL(clsid)))
 					sb.WriteString(rdf.FormT(insU, ourUs["sth2src"], srcU))
-					id := "MI:2247" // transcriptional regulation
-					id = strings.Replace(id, ":", "_", 1)
-					sb.WriteString(rdf.FormT(insU, ourUs["mi2bp"], rdf.CompU(nss["obo"], id)))
 					for _, id := range duo["mtdid"].Keys() {
 						id = strings.Replace(id, ":", "_", 1)
 						sb.WriteString(rdf.FormT(insU, ourUs["sth2mtd"], rdf.CompU(nss["obo"], id)))
@@ -674,8 +697,9 @@ func SigPways(d *bgw.Dat4bridge, x *bgw.Xmap, wdir string) error {
 	}
 	ourUs := rdf.FmtURIs(keys4b)
 	nss := rdf.Nss // BGW URI name spaces
-	//srcns := nss[srck] // fully qualified namespace
-	srcU := rdf.FormU(rdf.Uris4tftg[srck])
+	// srcns := nss[srck] // fully qualified namespace
+	// srcU := rdf.FormU(rdf.Uris4tftg[srck])
+	srcU :=  "http://signor.uniroma2.it"
 	rdfns := nss["rdf"]
 	// graphns := fmt.Sprintf("%s%s", nss["bgw"], "graph/")
 	header, nln := rdf.Capita(keys4b)

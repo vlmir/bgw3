@@ -124,16 +124,17 @@ var Uris4rgrtrg = map[string]string{
 }
 
 var Uris4tftg = map[string]string{
-	"extri":  "http://www.extri.org",
-	"htri":   "http://www.lbbc.ibb.unesp.br/htri",
-	"intact": "https://www.ebi.ac.uk/intact/interactomes",
-	"ntnu":   "NTNU",
-	"signor": "http://signor.uniroma2.it",
-	"tfacts": "http://www.tfacts.org",
-	"trrust": "http://www.grnpedia.org/trrust",
-	"cytreg": "https://www.fuxmanlab.com",
-	"geredb": "http://www.thua45.cn/geredb",
+//	"extri":  "http://www.extri.org",
+//	"htri":   "http://www.lbbc.ibb.unesp.br/htri",
+//	"intact": "https://www.ebi.ac.uk/intact/interactomes",
+//	"ntnu":   "NTNU",
+//	"tfacts": "http://www.tfacts.org",
+//	"trrust": "http://www.grnpedia.org/trrust",
+//	"cytreg": "https://www.fuxmanlab.com",
+//	"geredb": "http://www.thua45.cn/geredb",
+//	"signor": "http://signor.uniroma2.it",
 	"tflink": "https://tflink.net",
+	"coltri": "https://github.com/saezlab/CollecTRI",
 }
 
 /// Functions

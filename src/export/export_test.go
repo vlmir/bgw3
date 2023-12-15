@@ -271,24 +271,29 @@ func Test_Tfac2gene(t *testing.T) {
 	d4b2.New()
 	keys, vals = bgw.TflinkParseConf()
 	_ = parse.Tab2struct(pth+"tflink/9606.tsv", keys, vals, &d4b2, "\t")
+	var d4b3 bgw.Dat4bridge
+	d4b3.New()
+	keys, vals = bgw.ColtriParseConf()
+	_ = parse.Tab2struct(pth+"coltri/9606.csv", keys, vals, &d4b3, ",")
 	var xmap bgw.Xmap
 	xmap.New()
 	xmap.Upac.Add("P01100", "bgwp", "P01100")
 	xmap.Upac.Add("P04637", "bgwp", "P04637")
 	xmap.Upac.Add("P37231", "bgwp", "P37231") // for tflink
+	xmap.Upac.Add("Q16254", "bgwp", "Q16254") // for coltri
 	xmap.Ncbig.Add("4322", "bgwg", "9606/MMP13")
 	xmap.Ncbig.Add("7157", "bgwg", "9606/TP53")
 	xmap.Ncbig.Add("5915", "bgwg", "9606/RARB") // for tflink
 	xmap.Bgwg.Add("9606/MMP13", "bgwp", "P01100")
 	xmap.Bgwg.Add("9606/TP53", "bgwp", "P04637")
-	xmap.Bgwg.Add("9606/RARB", "bgwp", "P10826") // for tflink
+	xmap.Lblg.Add( "E2F4", "bgwg","9606/E2F4") // for coltri
+	xmap.Lblg.Add( "TP53", "bgwg","9606/TP53") // for coltri
 	/// exporting
-	srcs := []string{"tfacts", "ntnu", "tflink"}
+	srcs := []string{"tflink", "coltri"}
 
 	tts := []tt{
-		{&d4b0, &xmap, pth + "OUT/export/", 2},
-		{&d4b1, &xmap, pth + "OUT/export/", 1},
 		{&d4b2, &xmap, pth + "OUT/export/", 1}, // sic!
+		{&d4b3, &xmap, pth + "OUT/export/", 2}, // sic!
 	}
 	pdck := "reg2utrg"
 	for i, tt := range tts {

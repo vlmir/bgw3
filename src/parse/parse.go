@@ -62,8 +62,8 @@ func primaryKey(cells []string, keys []bgw.Column) string {
 	return pk
 }
 
-// addSubFields() splits a value in a tab-delimited file on the delimiter
-// specified in bgw.Column and adds the values to util.Set3D
+// addSubFields() splits a string (pval) on the delimiter
+// specified in a bgw.Column (v) and adds the values to util.Set3D (out)
 func addSubFields(pval, pk string, v bgw.Column, out util.Set3D) {
 	// Dlm2: secondary delimiter
 	svals := strings.Split(pval, v.Dlm2)
@@ -78,7 +78,7 @@ func addSubFields(pval, pk string, v bgw.Column, out util.Set3D) {
 			continue // only one subfield is used
 		} // othgerwise all subfields are used
 		// pecial case b:id
-		// skipping dbs other that specified in v.Key
+		// skipping dbs other than that specified in v.Key
 		if v.Ind3 == -1 {
 			if strings.TrimSpace(svals[0]) != sk {
 				continue
@@ -187,18 +187,20 @@ func Idmap(rpth string, idmkeys map[string]string, i1, i2, i3 int) (util.Set3D, 
 	return out, nil
 }
 
-// val.Ind1 - column index
-// val.Dlm1 - primary separator of multiple values
-// val.Dlm2 - secondary separator of multiple values
-// val.Ind2 - the index of the value to use after splitting on Dlm2, if < 0 all values
-// val.Key - the string to be used as the seondary key in the output maps
-// val.Ind3 - integer used for controling the output
-// if Ind3 == -1 val.Key is used for filteering the values
+// vals.Ind1 - column index (split on an arbitrary string)
+// vals.Dlm1 - primary separator for multiple values, all values used
+// vals.Ind2 - the index of the value to use after splitting on Dlm2, if < 0 all values
+// the 3 fields below used only by addSubFields()
+// vals.Dlm2 - secondary separator for multiple values
+// vals.Key - the string to be used as the seondary key in the output maps
+// vals.Ind3 - integer used for controling the output
+// if Ind3 == -1 vals.Key is used for filteering the values by addSubFields()
 func Tab2struct(rpth string, keys, vals []bgw.Column, p *bgw.Dat4bridge, dlm string) (err error) {
 	// NO empty values added to Dat4bridge !
-	// the value in val.Ind1 is split by val.Dlm1, ALL subfilds are processed by addSubFields()
-	// if Ind2 < 0 all subfields are used, otherwise only the one in val.Ind2
-	// if Ind3 == -1 subfields are filtered by val.Key
+	// the value in vals.Ind1 is split by vals.Dlm1, ALL subfilds are processed by addSubFields()
+	// addSubFields() is NOT concerned with Ind1 and Dlm1
+	// if Ind2 < 0 all subfields are used, otherwise only the one in vals.Ind2
+	// if Ind3 == -1 subfields are filtered by vals.Key
 	d4b := *p
 	maxind := 0
 	// finding the  maximal index in keys+vlals

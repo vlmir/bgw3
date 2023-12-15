@@ -12,9 +12,20 @@ import (
 	"net/http"
 	"os"
 	"os/exec"
+	"path/filepath"
 	"strings"
 	"time"
 )
+
+// did not work TODO
+func gunzip(pth string) error {
+	var cmd *exec.Cmd
+	// Attn: all flags separately!
+	cmd = exec.Command("gunzip", pth)
+	cmd.Stdout = os.Stdout
+	cmd.Stderr = os.Stderr
+	return cmd.Run()
+}
 
 // function Rwget() recursively identifies target files and downloads in a slecified location
 // irreproducible set of downloaded files. TODO
@@ -139,9 +150,9 @@ func saveOneUniprot(txid, datdir, script string) error {
 	return cmd.Run()
 }
 
-func saveOneCtri(txlbl, datdir, script string) error {
+func saveOneColtri(txid, datdir, script string) error {
 	var cmd *exec.Cmd
-	cmd = exec.Command(script, txlbl, datdir, "&")
+	cmd = exec.Command(script, txid, datdir, "&")
 	cmd.Stdout = os.Stdout
 	cmd.Stderr = os.Stderr
 	return cmd.Run()
@@ -171,7 +182,7 @@ func saveOneSignor(txid string, datdir string) error {
 		return err
 	}
 	uri = "https://signor.uniroma2.it/getPathwayData.php?relations"
-	wpth = fmt.Sprintf("%s%s%s%s%s", datdir, subdir, "pathways", txid, ext)
+	wpth = fmt.Sprintf("%s%s%s%s", datdir, subdir, "pathways", ext)
 	if err := WgetFile(uri, wpth); err != nil {
 		log.Println("saveOneSignor(): Warning: Failed to download pathway relations for:", txid, err)
 		return err
@@ -240,6 +251,11 @@ func saveOneTflink(uri, txid, datdir string) error {
 /// Multiple Taxa Download ///
 
 func saveAllCtdb(datdir string) error {
+	subdir := "ctdb/"
+	if err := os.MkdirAll(filepath.Join(datdir, subdir), 0755); err != nil {
+		log.Println(err)
+	}
+	ext := ".tsv.gz"
 	// no filtering by taxon - data for all species in single files
 	var uris = map[string]string{
 		"chem2gene": "https://ctdbase.org/reports/CTD_chem_gene_ixns.tsv.gz",
@@ -249,8 +265,6 @@ func saveAllCtdb(datdir string) error {
 		"dise2path": "https://ctdbase.org/reports/CTD_diseases_pathways.tsv.gz",
 		"chem2phen": "https://ctdbase.org/reports/CTD_pheno_term_ixns.tsv.gz",
 	}
-	subdir := "ctdb/"
-	ext := ".tsv.gz"
 	for lbl := range uris {
 		uri := uris[lbl]
 		wpth := fmt.Sprintf("%s%s%s%s", datdir, subdir, lbl, ext)
@@ -259,10 +273,17 @@ func saveAllCtdb(datdir string) error {
 			return err
 		}
 	} // for lbl
+	files := "*.gz"
+	pth := fmt.Sprintf("%s%s%s", datdir, subdir, files)
+	gunzip(pth)
 	return nil
 }
 
 func saveAllIdmap(datdir string, txn2prm util.Set2D) {
+	subdir := "idmapping"
+	if err := os.MkdirAll(filepath.Join(datdir, subdir), 0755); err != nil {
+		log.Println(err)
+	}
 	for txid := range txn2prm {
 		pome := txn2prm[txid].Keys()[0]
 		if err := saveOneIdmap(txid, pome, datdir); err != nil {
@@ -271,19 +292,25 @@ func saveAllIdmap(datdir string, txn2prm util.Set2D) {
 	}
 }
 
-func saveAllCtri(datdir, scrdir string) {
-	var taxa = map[string]string{
-		"9606": "human",
+func saveAllColtri(datdir, scrdir string) {
+	subdir := "coltri/"
+	if err := os.MkdirAll(filepath.Join(datdir, subdir), 0755); err != nil {
+		log.Println(err)
 	}
+	taxa := bgw.Coltri
 	script := scrdir + "download1ctri.py"
 	for txid := range taxa {
-		if err := saveOneCtri(taxa[txid], datdir, script); err != nil {
+		if err := saveOneColtri(txid, datdir, script); err != nil {
 			log.Println("Warning: Failed to download data for:", txid, err)
 		}
 	}
 }
 
 func saveAllUniprot(datdir string, txn2prm util.Set2D, scrdir string) {
+	subdir := "uniprot/"
+	if err := os.MkdirAll(filepath.Join(datdir, subdir), 0755); err != nil {
+		log.Println(err)
+	}
 	script := scrdir + "download1up.py"
 	for txid := range txn2prm {
 		if err := saveOneUniprot(txid, datdir, script); err != nil {
@@ -293,12 +320,36 @@ func saveAllUniprot(datdir string, txn2prm util.Set2D, scrdir string) {
 }
 
 func saveAllIntact(datdir string, txn2prm util.Set2D) {
+	subdir := "intact/"
+	if err := os.MkdirAll(filepath.Join(datdir, subdir), 0755); err != nil {
+		log.Println(err)
+	}
 	for txid := range txn2prm {
 		saveOneIntact(txid, datdir)
 	}
 }
 
-func saveAllGaf(datdir string, txn2prm, gafmap util.Set2D) {
+func saveAllGaf(datdir string, txn2prm util.Set2D) {
+	subdir := "goa/"
+	if err := os.MkdirAll(filepath.Join(datdir, subdir), 0755); err != nil {
+		log.Println(err)
+	}
+		uri := "http://ftp.ebi.ac.uk/pub/databases/GO/goa/proteomes/proteome2taxid"
+		wpth := datdir + "goa/gafpomes.tsv"
+		if _, err := HttpFile(uri, wpth); err != nil {
+			panic(err)
+		}
+		gafmap, err := util.MakeMap(wpth, 1, 2, "\t") // counting from 0
+		if err != nil {
+			//log.Fatalln("main:", err)
+			panic(err)
+		}
+		n := len(gafmap)
+		if n == 0 {
+			msg := fmt.Sprintf("Empty map: %s", wpth)
+			panic(errors.New(msg))
+		}
+		log.Println("gafmap:", n)
 	for txid := range txn2prm {
 		gpomes := gafmap[txid].Keys()
 		if len(gpomes) != 1 {
@@ -309,12 +360,20 @@ func saveAllGaf(datdir string, txn2prm, gafmap util.Set2D) {
 }
 
 func saveAllGpa(datdir string, txn2prm util.Set2D) {
+	subdir := "goa/"
+	if err := os.MkdirAll(filepath.Join(datdir, subdir), 0755); err != nil {
+		log.Println(err)
+	}
 	for txid := range txn2prm {
 		saveOneGpa(txid, datdir)
 	}
 }
 
 func saveAllTflink(datdir string) {
+	subdir := "tflink/"
+	if err := os.MkdirAll(filepath.Join(datdir, subdir), 0755); err != nil {
+		log.Println(err)
+	}
 	ns := "https://cdn.netbiol.org/tflink/download_files/TFLink_"
 	for txid := range bgw.Tflink {
 		uri := ns + bgw.Tflink[txid]
@@ -328,6 +387,9 @@ func saveAllOnto(datdir string) {
 	subdir := "onto/"
 	ext := ""
 	ns := ""
+	if err := os.MkdirAll(filepath.Join(datdir, subdir), 0755); err != nil {
+		log.Println(err)
+	}
 
 	ns = "https://data.bioontology.org/ontologies/"
 	key := "/download?apikey=8b5b7825-538d-40e0-9e9e-5ab9274a9aeb"
@@ -454,8 +516,8 @@ func main() {
 
 	if *aP || *tP {
 		start := time.Now()
-		saveAllCtri(datdir, scrdir)
-		log.Println("Done with Ctri in", time.Since(start))
+		saveAllColtri(datdir, scrdir)
+		log.Println("Done with Coltri in", time.Since(start))
 	}
 
 	if *aP || *uP {
@@ -472,23 +534,7 @@ func main() {
 
 	if *aP || *gP {
 		start := time.Now()
-		uri := "http://ftp.ebi.ac.uk/pub/databases/GO/goa/proteomes/proteome2taxid"
-		wpth := datdir + "goa/gafpomes.tsv"
-		if _, err := HttpFile(uri, wpth); err != nil {
-			panic(err)
-		}
-		gafmap, err := util.MakeMap(wpth, 1, 2, "\t") // counting from 0
-		if err != nil {
-			//log.Fatalln("main:", err)
-			panic(err)
-		}
-		n = len(gafmap)
-		if n == 0 {
-			msg := fmt.Sprintf("Empty map: %s", wpth)
-			panic(errors.New(msg))
-		}
-		log.Println("gafmap:", n)
-		saveAllGaf(datdir, txn2prm, gafmap)
+		saveAllGaf(datdir, txn2prm)
 		// saveAllGpa(datdir, txn2prm) // 10000 lines limit, do NOT use !
 		log.Println("Done with Goa in", time.Since(start))
 	}

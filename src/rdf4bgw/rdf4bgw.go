@@ -224,22 +224,30 @@ func tfac2gene(datdir, bgwdir string, txn2prm util.Set2D) (util.Set2D, error) {
 		var vals []bgw.Column
 		var keys []bgw.Column
 		rpth := ""
+		dlm := "\t"
 
+		// looping over all taxa present inTflink
 		for txid := range bgw.Tflink {
 			var d4b bgw.Dat4bridge // one source, one taxon
 			d4b.New()
 			if srck == "tflink" {
 				keys, vals = bgw.TflinkParseConf()
 				rpth = fmt.Sprintf("%s%s%s%s%s", datdir, srck, "/", txid, ".tsv")
+			} else if srck == "coltri" {
+				keys, vals = bgw.ColtriParseConf()
+				dlm = "," // re-defining
+				if txid != "9606" {continue}
+				// TODO txlbl=>txid in dat4bgw
+				rpth = fmt.Sprintf("%s%s%s%s%s", datdir, srck, "/", txid, ".csv")
 			} else {
 				keys, vals = bgw.TftgParseConf()
 				rpth = fmt.Sprintf("%s%s%s%s%s%s", datdir, "static/", srck, "/", txid, ".f2g")
 			}
 			// log.Println("Rdf4bgw.tfac2gene(): processing", rpth)
-			err := parse.Tab2struct(rpth, keys, vals, &d4b, "\t")
+			err := parse.Tab2struct(rpth, keys, vals, &d4b, dlm)
 			if err != nil { // normal
 				// log.Printf("%s%s", "tfac2gene:parse.Tab2struct: ", err)
-				continue // sic!
+				continue // next taxon
 			}
 			/// d4b is now loaded with data
 

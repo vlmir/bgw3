@@ -20,7 +20,7 @@ func Test_Tab2struct(t *testing.T) {
 	keys1, vals1 := bgw.TftgParseConf()
 	keys2, vals2 := bgw.SignorParseConf()
 	keys3, vals3 := bgw.TflinkParseConf()
-	keys4, vals4 := bgw.CtriParseConf()
+	keys4, vals4 := bgw.ColtriParseConf()
 	var d4b0 bgw.Dat4bridge
 	var d4b1 bgw.Dat4bridge
 	var d4b2 bgw.Dat4bridge
@@ -38,7 +38,7 @@ func Test_Tab2struct(t *testing.T) {
 		{pth + "static/tfacts/9606.f2g", keys1, vals1, &d4bs[1], "\t", 5},
 		{pth + "signor/9606.mi28", keys2, vals2, &d4bs[2], "\t", 16}, // 15->16 - added mtd field
 		{pth + "tflink/9606.tsv", keys3, vals3, &d4bs[3], "\t", 6},
-		{pth + "coltri/human.csv", keys4, vals4, &d4bs[4], ",", 8},
+		{pth + "coltri/human.csv", keys4, vals4, &d4bs[4], ",", 9},
 	}
 	keys := []string{
 		"P04637--P04637",

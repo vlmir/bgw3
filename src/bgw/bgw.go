@@ -8,6 +8,12 @@ import (
 
 var CV = "3.3.0"
 
+var Coltri = map[string]string{
+	"9606":   "human",
+	"10090":  "mouse",
+	"10116":  "rat",
+}
+
 var Tflink = map[string]string{
 	"6239":   "Caenorhabditis_elegans_interactions_All_mitab_v1.0.tsv.gz",
 	"7955":   "Danio_rerio_interactions_All_mitab_v1.0.tsv.gz",
@@ -178,23 +184,24 @@ func TftgParseConf() ([]Column, []Column) {
 	return keys, vals
 } // TftgParseConf
 
-func CtriParseConf() ([]Column, []Column) {
+func ColtriParseConf() ([]Column, []Column) {
 	keys := []Column{
 		{0, ";", 0, "--", 0, ""},
 		{1, ";", 0, "--", 0, ""},
 	}
 	vals := []Column{
-		{0, ";", 0, "|", 0, "upsrc"},
-		{1, ";", 0, "|", 0, "uptrg"},
-		{2, ";", 0, "|", 0, "gnsrc"},
-		{3, ";", 0, "|", 0, "gntrg"},
-		{5, ";", 0, ";", 0, "posi"},
-		{6, ";", 0, ";", 0, "nega"},
+		{0, ";", 0, ":", 0, "Aupca"}, // no iso-form present 23-11-17
+		{1, ";", 0, ":", 0, "Bupca"}, // no iso-form present 23-11-17
+		{2, ";", 0, ":", 0, "Aglbl"}, // single values
+		{3, ";", 0, ":", 0, "Bglbl"}, // single values
+		{5, ";", 0, ":", 0, "pos"}, // single values, True|False
+		{6, ";", 0, ":", 0, "neg"}, // single values, True|False
+		{11, ";", 1, ":", -1, "CollecTRI"}, // all filtered
 		{15, ";", 0, ";", 0, "score"},   // number of refs
-		{16, ";", -1, ";", 0, "pubmed"}, // ALL refs
+		{16, ";", 0, ":", 0, "pubmed"}, // all refs
 	}
 	return keys, vals
-} // CtriParseConf
+} // ColtriParseConf
 
 func TflinkParseConf() ([]Column, []Column) {
 	keys := []Column{
@@ -298,5 +305,5 @@ func SigMapParseConf() ([]Column, []Column) {
 		{2, ";", -1, ";", 0, "ids"}, // no iso-form present 23-12-04
 	}
 	return keys, vals
-} // SigFamiliesParseConf
+} // SigMapParseConf
 

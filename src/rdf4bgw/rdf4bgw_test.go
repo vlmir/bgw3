@@ -97,10 +97,11 @@ func Test_tfac2gene(t *testing.T) {
 	tts := []tt{
 		// {pth, wpth, arg3[0], 2},
 		// {pth, wpth, arg3[0], 4}, // new tests
-		{pth, wpth, arg3[0], 3}, // new tests
+		{pth, wpth, arg3[0], 1}, // new tests
 	}
 	pdck := "reg2ptrg"
-	srck := "tfacts"
+	// srck := "tfacts"
+	srck := "coltri"
 	// srck := "tflink" // no interactions after filtering by xmap
 	for i, tt := range tts {
 		cnts, _ := tfac2gene(tt.arg1, tt.arg2, tt.arg3) // process ALL files in srck dir
