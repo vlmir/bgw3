@@ -17,7 +17,6 @@ import (
 	"time"
 )
 
-// did not work TODO
 func gunzip(pth string) error {
 	var cmd *exec.Cmd
 	// Attn: all flags separately!
@@ -139,6 +138,10 @@ func saveOneIdmap(txid, pome, datdir string) error {
 		log.Println("saveOneIdmap(): Warning: Failed to download data for:", txid, err)
 		return err
 	}
+	if err := gunzip(wpth); err != nil {
+		log.Println("saveOneIdmap(): Warning: Failed to gunzip data for:", txid, err)
+		return err
+	}
 	return nil
 }
 
@@ -250,10 +253,10 @@ func saveOneTflink(uri, txid, datdir string) error {
 
 /// Multiple Taxa Download ///
 
-func saveAllCtdb(datdir string) error {
+func saveAllCtdb(datdir string) {
 	subdir := "ctdb/"
 	if err := os.MkdirAll(filepath.Join(datdir, subdir), 0755); err != nil {
-		log.Println(err)
+		panic(err)
 	}
 	ext := ".tsv.gz"
 	// no filtering by taxon - data for all species in single files
@@ -270,19 +273,17 @@ func saveAllCtdb(datdir string) error {
 		wpth := fmt.Sprintf("%s%s%s%s", datdir, subdir, lbl, ext)
 		if err := WgetFile(uri, wpth); err != nil {
 			log.Println("saveOneCtdb(): Warning: Failed to download data for:", lbl, err)
-			return err
+		}
+		if err := gunzip(wpth); err != nil {
+			log.Println("saveOneIdmap(): Warning: Failed to gunzip data for:", lbl, err)
 		}
 	} // for lbl
-	files := "*.gz"
-	pth := fmt.Sprintf("%s%s%s", datdir, subdir, files)
-	gunzip(pth)
-	return nil
 }
 
-func saveAllIdmap(datdir string, txn2prm util.Set2D) {
+func saveAllIdmap(datdir string, txn2prm util.Set2D)  {
 	subdir := "idmapping"
 	if err := os.MkdirAll(filepath.Join(datdir, subdir), 0755); err != nil {
-		log.Println(err)
+		panic(err)
 	}
 	for txid := range txn2prm {
 		pome := txn2prm[txid].Keys()[0]
@@ -295,7 +296,7 @@ func saveAllIdmap(datdir string, txn2prm util.Set2D) {
 func saveAllColtri(datdir, scrdir string) {
 	subdir := "coltri/"
 	if err := os.MkdirAll(filepath.Join(datdir, subdir), 0755); err != nil {
-		log.Println(err)
+		panic(err)
 	}
 	taxa := bgw.Coltri
 	script := scrdir + "download1ctri.py"
@@ -309,7 +310,7 @@ func saveAllColtri(datdir, scrdir string) {
 func saveAllUniprot(datdir string, txn2prm util.Set2D, scrdir string) {
 	subdir := "uniprot/"
 	if err := os.MkdirAll(filepath.Join(datdir, subdir), 0755); err != nil {
-		log.Println(err)
+		panic(err)
 	}
 	script := scrdir + "download1up.py"
 	for txid := range txn2prm {
@@ -322,7 +323,7 @@ func saveAllUniprot(datdir string, txn2prm util.Set2D, scrdir string) {
 func saveAllIntact(datdir string, txn2prm util.Set2D) {
 	subdir := "intact/"
 	if err := os.MkdirAll(filepath.Join(datdir, subdir), 0755); err != nil {
-		log.Println(err)
+		panic(err)
 	}
 	for txid := range txn2prm {
 		saveOneIntact(txid, datdir)
@@ -332,7 +333,7 @@ func saveAllIntact(datdir string, txn2prm util.Set2D) {
 func saveAllGaf(datdir string, txn2prm util.Set2D) {
 	subdir := "goa/"
 	if err := os.MkdirAll(filepath.Join(datdir, subdir), 0755); err != nil {
-		log.Println(err)
+		panic(err)
 	}
 		uri := "http://ftp.ebi.ac.uk/pub/databases/GO/goa/proteomes/proteome2taxid"
 		wpth := datdir + "goa/gafpomes.tsv"
@@ -362,7 +363,7 @@ func saveAllGaf(datdir string, txn2prm util.Set2D) {
 func saveAllGpa(datdir string, txn2prm util.Set2D) {
 	subdir := "goa/"
 	if err := os.MkdirAll(filepath.Join(datdir, subdir), 0755); err != nil {
-		log.Println(err)
+		panic(err)
 	}
 	for txid := range txn2prm {
 		saveOneGpa(txid, datdir)
@@ -372,7 +373,7 @@ func saveAllGpa(datdir string, txn2prm util.Set2D) {
 func saveAllTflink(datdir string) {
 	subdir := "tflink/"
 	if err := os.MkdirAll(filepath.Join(datdir, subdir), 0755); err != nil {
-		log.Println(err)
+		panic(err)
 	}
 	ns := "https://cdn.netbiol.org/tflink/download_files/TFLink_"
 	for txid := range bgw.Tflink {
@@ -388,7 +389,7 @@ func saveAllOnto(datdir string) {
 	ext := ""
 	ns := ""
 	if err := os.MkdirAll(filepath.Join(datdir, subdir), 0755); err != nil {
-		log.Println(err)
+		panic(err)
 	}
 
 	ns = "https://data.bioontology.org/ontologies/"
@@ -493,9 +494,7 @@ func main() {
 
 	if *aP || *cP {
 		start := time.Now()
-		if err := saveAllCtdb(datdir); err != nil {
-			panic(err)
-		}
+		saveAllCtdb(datdir)
 		log.Println("Done with CTDbase in", time.Since(start))
 	}
 
