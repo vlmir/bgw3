@@ -12,10 +12,23 @@ import (
 	"github.com/vlmir/bgw3/src/util"
 	"log"
 	"os"
+	"path/filepath"
 	"time"
 )
 
 func geneprot(datdir, bgwdir string, txn2prm util.Set2D) (err error) {
+	subdir := "gene/"
+	if err := os.MkdirAll(filepath.Join(bgwdir, subdir), 0755); err != nil {
+		log.Println(err)
+	}
+	subdir = "prot/"
+	if err := os.MkdirAll(filepath.Join(bgwdir, subdir), 0755); err != nil {
+		log.Println(err)
+	}
+	subdir = "xmap/"
+	if err := os.MkdirAll(filepath.Join(bgwdir, subdir), 0755); err != nil {
+		log.Println(err)
+	}
 	for _, txid := range txn2prm.Keys() {
 		log.Println("\n\tgeneprot for:", txid)
 		ext := ".upt"
@@ -52,6 +65,10 @@ func geneprot(datdir, bgwdir string, txn2prm util.Set2D) (err error) {
 } // geneprot()
 
 func reg2pway(datdir, bgwdir string, txn2prm util.Set2D) (util.Set2D, error) {
+	subdir := "sigpways/"
+	if err := os.MkdirAll(filepath.Join(bgwdir, subdir), 0755); err != nil {
+		log.Println(err)
+	}
 	log.Println("\n\treg2pway for:", "all")
 	cnts := make(util.Set2D)
 	var pdcks = []string{
@@ -132,6 +149,10 @@ func reg2pway(datdir, bgwdir string, txn2prm util.Set2D) (util.Set2D, error) {
 } // reg2pway
 
 func rgr2trg(datdir, bgwdir string, txn2prm util.Set2D) (util.Set2D, error) {
+	subdir := "reg2targ/"
+	if err := os.MkdirAll(filepath.Join(bgwdir, subdir), 0755); err != nil {
+		log.Println(err)
+	}
 	log.Println("\n\trgr2trg for:", "all")
 	cnts := make(util.Set2D)
 	var pdcks = []string{
@@ -212,6 +233,10 @@ func rgr2trg(datdir, bgwdir string, txn2prm util.Set2D) (util.Set2D, error) {
 } // rgr2trg
 
 func tfac2gene(datdir, bgwdir string, txn2prm util.Set2D) (util.Set2D, error) {
+	subdir := "tfac2gene/"
+	if err := os.MkdirAll(filepath.Join(bgwdir, subdir), 0755); err != nil {
+		log.Println(err)
+	}
 	log.Println("\n\ttfac2gene for:", "all")
 	cnts := make(util.Set2D)
 	var pdcks = []string{
@@ -276,6 +301,10 @@ func tfac2gene(datdir, bgwdir string, txn2prm util.Set2D) (util.Set2D, error) {
 } // tfac2gene
 
 func prot2prot(datdir, bgwdir string, txn2prm util.Set2D) (util.Set2D, error) {
+	subdir := "prot2prot/"
+	if err := os.MkdirAll(filepath.Join(bgwdir, subdir), 0755); err != nil {
+		log.Println(err)
+	}
 	log.Println("\n\tprot2prot for:", "all")
 	cnts := make(util.Set2D)
 	var pdcks = []string{
@@ -326,6 +355,10 @@ func prot2prot(datdir, bgwdir string, txn2prm util.Set2D) (util.Set2D, error) {
 } // prot2prot()
 
 func gene2phen(datdir, bgwdir string, txn2prm util.Set2D) (int, error) {
+	subdir := "gene2phen/"
+	if err := os.MkdirAll(filepath.Join(bgwdir, subdir), 0755); err != nil {
+		log.Println(err)
+	}
 	// TODO interface similar to tfac2gene etc.
 	log.Println("\n\tgene2phen for:", "all") // is not printed TODO
 	nln := 0
@@ -369,6 +402,18 @@ func gene2phen(datdir, bgwdir string, txn2prm util.Set2D) (int, error) {
 } // gene2phen()
 
 func prot2go(datdir, bgwdir string, txn2prm util.Set2D, fx string) (int, error) {
+	subdir := "prot2bp/"
+	if err := os.MkdirAll(filepath.Join(bgwdir, subdir), 0755); err != nil {
+		log.Println(err)
+	}
+	subdir = "prot2cc/"
+	if err := os.MkdirAll(filepath.Join(bgwdir, subdir), 0755); err != nil {
+		log.Println(err)
+	}
+	subdir = "prot2mf/"
+	if err := os.MkdirAll(filepath.Join(bgwdir, subdir), 0755); err != nil {
+		log.Println(err)
+	}
 	// TODO interface similar to tfac2gene etc.
 	log.Println("\n\tprot2go for:", "all") // is not printed TODO
 	nln := 0
@@ -433,6 +478,10 @@ func prot2go(datdir, bgwdir string, txn2prm util.Set2D, fx string) (int, error) 
 
 // ///////////////////////////////////////////////////////////////////////////
 func ortho(datdir, bgwdir string, txn2prm util.Set2D) (int, error) {
+	subdir := "ortho/"
+	if err := os.MkdirAll(filepath.Join(bgwdir, subdir), 0755); err != nil {
+		log.Println(err)
+	}
 	// TODO interface similar to tfac2gene etc.
 	log.Println("\n\tortho for:", "all")
 	nln := 0
@@ -475,7 +524,7 @@ func main() {
 	dP := flag.Bool("d", false, "export [d]isease associations")
 	gP := flag.Bool("g", false, "export [g]ene ontology annotations")
 	rP := flag.Bool("r", false, "export [r]egulatory associations")
-	oP := flag.Bool("o", false, "export [o]rthology relateions")
+	oP := flag.Bool("o", false, "export [o]rthology relations")
 	// tP := flag.String("t", "./prm_txn.txt", "selected [t]axa")
 
 	var n int

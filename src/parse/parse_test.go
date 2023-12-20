@@ -38,7 +38,7 @@ func Test_Tab2struct(t *testing.T) {
 		{pth + "static/tfacts/9606.f2g", keys1, vals1, &d4bs[1], "\t", 5},
 		{pth + "signor/9606.mi28", keys2, vals2, &d4bs[2], "\t", 16}, // 15->16 - added mtd field
 		{pth + "tflink/9606.tsv", keys3, vals3, &d4bs[3], "\t", 6},
-		{pth + "coltri/human.csv", keys4, vals4, &d4bs[4], ",", 9},
+		{pth + "coltri/9606.csv", keys4, vals4, &d4bs[4], ",", 9},
 	}
 	keys := []string{
 		"P04637--P04637",

@@ -505,7 +505,6 @@ func Tfac2gene(d *bgw.Dat4bridge, x *bgw.Xmap, wdir string) error {
 	ourUs := rdf.FmtURIs(keys4b)
 	nss := rdf.Nss // BGW URI name spaces
 	//srcns := nss[srck] // fully qualified namespace
-	fmt.Println("srck:", srck)
 	srcU := rdf.FormU(rdf.Uris4tftg[srck])
 	rdfns := nss["rdf"]
 	// graphns := fmt.Sprintf("%s%s", nss["bgw"], "graph/")

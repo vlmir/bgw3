@@ -53,6 +53,35 @@ func Test_gene2phen(t *testing.T) {
 	// TODO
 }
 
+func Test_reg2pway(t *testing.T) {
+	type tt struct {
+		arg1 string
+		arg2 string
+		arg3 util.Set2D
+		val  int
+	}
+	pth := "../../tdata/"
+	wpth := pth + "OUT/rdf4bgw/"
+	var arg3 [5]util.Set2D // txmap
+	arg3[0] = make(util.Set2D)
+	arg3[0].Add("9606", "testprome")
+	tts := []tt{
+		{pth, wpth, arg3[0], 0}, // all interactions eliminated due to xmap TODO
+	}
+	pdck := "reg2ntrg"
+	srck := "signor"
+	for i, tt := range tts {
+		cnts, _ := reg2pway(tt.arg1, tt.arg2, tt.arg3) // process ALL files in srck dir
+		if cnts[pdck][srck] != tt.val {
+			t.Error(
+				"For test", i+1, ": ", tt.arg1, tt.arg2, tt.arg3,
+				"\n\twant", tt.val,
+				"\n\thave", cnts[pdck][srck],
+			)
+		}
+	}
+}
+
 func Test_rgr2trg(t *testing.T) {
 	type tt struct {
 		arg1 string
@@ -66,9 +95,9 @@ func Test_rgr2trg(t *testing.T) {
 	arg3[0] = make(util.Set2D)
 	arg3[0].Add("9606", "testprome")
 	tts := []tt{
-		{pth, wpth, arg3[0], 0}, // used to be '1' TODO
+		{pth, wpth, arg3[0], 0}, // Q01081--P04637 eliminated due to xmap TODO
 	}
-	pdck := "reg2ntrg" // sic! positive interactions eliminated due to xmap
+	pdck := "reg2utrg"
 	srck := "signor"
 	for i, tt := range tts {
 		cnts, _ := rgr2trg(tt.arg1, tt.arg2, tt.arg3) // process ALL files in srck dir
