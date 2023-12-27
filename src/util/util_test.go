@@ -251,7 +251,7 @@ func Test_MakeMap(t *testing.T) {
 		val1 int
 	}
 	tts := []tt{
-		{pth + "UP000005640_9606.idmapping", 0, 1, "\t", 5},
+		{pth + "UP000005640_9606.idmapping", 0, 1, "\t", 8},
 	}
 	for i, tt := range tts {
 		r, _ := MakeMap(tt.arg1, tt.arg2, tt.arg3, tt.arg4)

@@ -1,0 +1,49 @@
+<http://www.w3.org/2004/02/skos/core#definition> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#AnnotationProperty> .
+<http://www.w3.org/2004/02/skos/core#definition> <http://www.w3.org/2004/02/skos/core#prefLabel> "has definition" .
+<http://www.w3.org/2004/02/skos/core#prefLabel> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#AnnotationProperty> .
+<http://www.w3.org/2004/02/skos/core#prefLabel> <http://www.w3.org/2004/02/skos/core#prefLabel> "has name" .
+<http://schema.org/evidenceLevel> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#AnnotationProperty> .
+<http://schema.org/evidenceLevel> <http://www.w3.org/2004/02/skos/core#prefLabel> "has evidence level" .
+<http://www.w3.org/2000/01/rdf-schema#subClassOf> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#ObjectProperty> .
+<http://www.w3.org/2000/01/rdf-schema#subClassOf> <http://www.w3.org/2004/02/skos/core#prefLabel> "is subclass of" .
+<http://www.w3.org/1999/02/22-rdf-syntax-ns#subject> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#ObjectProperty> .
+<http://www.w3.org/1999/02/22-rdf-syntax-ns#subject> <http://www.w3.org/2004/02/skos/core#prefLabel> "has subject" .
+<http://www.w3.org/1999/02/22-rdf-syntax-ns#object> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#ObjectProperty> .
+<http://www.w3.org/1999/02/22-rdf-syntax-ns#object> <http://www.w3.org/2004/02/skos/core#prefLabel> "has object" .
+<http://www.w3.org/1999/02/22-rdf-syntax-ns#predicate> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#ObjectProperty> .
+<http://www.w3.org/1999/02/22-rdf-syntax-ns#predicate> <http://www.w3.org/2004/02/skos/core#prefLabel> "has predicate" .
+<http://purl.obolibrary.org/obo/RO_0002429> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#ObjectProperty> .
+<http://purl.obolibrary.org/obo/RO_0002429> <http://www.w3.org/2004/02/skos/core#prefLabel> "involved in positive regulation of" .
+<http://purl.obolibrary.org/obo/RO_0002430> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#ObjectProperty> .
+<http://purl.obolibrary.org/obo/RO_0002430> <http://www.w3.org/2004/02/skos/core#prefLabel> "involved in negative regulation of" .
+<http://purl.obolibrary.org/obo/RO_0002428> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#ObjectProperty> .
+<http://purl.obolibrary.org/obo/RO_0002428> <http://www.w3.org/2004/02/skos/core#prefLabel> "involved in regulation of" .
+<http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#ObjectProperty> .
+<http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2004/02/skos/core#prefLabel> "is instance of" .
+<http://semanticscience.org/resource/SIO_000253> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#ObjectProperty> .
+<http://semanticscience.org/resource/SIO_000253> <http://www.w3.org/2004/02/skos/core#prefLabel> "has source" .
+<http://semanticscience.org/resource/SIO_000772> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#ObjectProperty> .
+<http://semanticscience.org/resource/SIO_000772> <http://www.w3.org/2004/02/skos/core#prefLabel> "has evidence" .
+<http://www.w3.org/2000/01/rdf-schema#isDefinedBy> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#ObjectProperty> .
+<http://www.w3.org/2000/01/rdf-schema#isDefinedBy> <http://www.w3.org/2004/02/skos/core#prefLabel> "is defined by" .
+<http://purl.obolibrary.org/obo/RO_0002331> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#ObjectProperty> .
+<http://purl.obolibrary.org/obo/RO_0002331> <http://www.w3.org/2004/02/skos/core#prefLabel> "involved in" .
+<http://www.w3.org/2004/02/skos/core#relatedMatch> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#ObjectProperty> .
+<http://www.w3.org/2004/02/skos/core#relatedMatch> <http://www.w3.org/2004/02/skos/core#prefLabel> "has related match" .
+<http://www.w3.org/1999/02/22-rdf-syntax-ns#Statement> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#Class> .
+<http://www.w3.org/1999/02/22-rdf-syntax-ns#Statement> <http://www.w3.org/2004/02/skos/core#prefLabel> "Triple" .
+<http://rdf.biogateway.eu/reg2utrg/uniprot!P04637--uniprot!P10415> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#Class> .
+<http://rdf.biogateway.eu/reg2utrg/uniprot!P04637--uniprot!P10415> <http://www.w3.org/2000/01/rdf-schema#subClassOf> <http://www.w3.org/1999/02/22-rdf-syntax-ns#Statement> .
+<http://rdf.biogateway.eu/reg2utrg/uniprot!P04637--uniprot!P10415> <http://www.w3.org/2004/02/skos/core#prefLabel> "uniprot!P04637--uniprot!P10415" .
+<http://rdf.biogateway.eu/reg2utrg/uniprot!P04637--uniprot!P10415> <http://www.w3.org/2004/02/skos/core#definition> "P04637 involved in regulation of P10415" .
+<http://rdf.biogateway.eu/reg2utrg/uniprot!P04637--uniprot!P10415> <http://www.w3.org/1999/02/22-rdf-syntax-ns#predicate> <http://purl.obolibrary.org/obo/RO_0002428> .
+<http://rdf.biogateway.eu/reg2utrg/uniprot!P04637--uniprot!P10415> <http://www.w3.org/1999/02/22-rdf-syntax-ns#subject> <http://uniprot.org/uniprot/P04637> .
+<http://rdf.biogateway.eu/reg2utrg/uniprot!P04637--uniprot!P10415> <http://www.w3.org/1999/02/22-rdf-syntax-ns#object> <http://uniprot.org/uniprot/P10415> .
+<http://uniprot.org/uniprot/P04637> <http://purl.obolibrary.org/obo/RO_0002428> <http://uniprot.org/uniprot/P10415> .
+<http://rdf.biogateway.eu/reg2utrg/uniprot!P04637--uniprot!P10415#signor> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://rdf.biogateway.eu/reg2utrg/uniprot!P04637--uniprot!P10415> .
+<http://rdf.biogateway.eu/reg2utrg/uniprot!P04637--uniprot!P10415#signor> <http://www.w3.org/2004/02/skos/core#prefLabel> "uniprot!P04637--uniprot!P10415" .
+<http://rdf.biogateway.eu/reg2utrg/uniprot!P04637--uniprot!P10415#signor> <http://semanticscience.org/resource/SIO_000253> http://signor.uniroma2.it .
+<http://rdf.biogateway.eu/reg2utrg/uniprot!P04637--uniprot!P10415#signor> <http://www.w3.org/2004/02/skos/core#relatedMatch> <http://purl.obolibrary.org/obo/MI_0915> .
+<http://rdf.biogateway.eu/reg2utrg/uniprot!P04637--uniprot!P10415#signor> <http://semanticscience.org/resource/SIO_000772> <http://identifiers.org/pubmed/19007744> .
+<http://rdf.biogateway.eu/reg2utrg/uniprot!P04637--uniprot!P10415#signor> <http://schema.org/evidenceLevel> "0.739" .
+<http://rdf.biogateway.eu/reg2utrg/uniprot!P04637--uniprot!P10415#signor> <http://www.w3.org/2000/01/rdf-schema#isDefinedBy> <http://purl.obolibrary.org/obo/MI_0364> .

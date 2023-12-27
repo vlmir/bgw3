@@ -357,17 +357,18 @@ func Rgr2trg(d *bgw.Dat4bridge, x *bgw.Xmap, wdir string) error {
 		}
 
 		//  assigning predicate depending of  the direction of regulation
-		pdcks := []string{u2t} // all predicate keys for one duokey, u2t first
+		pdcks := make(util.Set1D) // all predicate keys for one duokey, u2t first
+		pdcks.Add(u2t)
 		for _, onemod := range duo["modelbl"].Keys() {
 			onemod = util.StripParQuots(onemod)
 			onemod = strings.Split(onemod, " ")[0]
 			// keys for predicates
 			for _, pdck := range modes[srck][onemod].Keys() {
-				pdcks = append(pdcks, pdck)
+				pdcks.Add(pdck)
 			}
 		} // onemod
 
-		for _, pdck := range pdcks {
+		for _, pdck := range pdcks.Keys() {
 			clsns := fmt.Sprintf("%s%s/", bgwNS, pdck)
 			var sb strings.Builder
 			//sb.WriteString(rdf.FormT(graphU, ourUs["sth2src"], srcU))
@@ -443,6 +444,7 @@ func Tfac2gene(d *bgw.Dat4bridge, x *bgw.Xmap, wdir string) error {
 	n2t := "reg2ntrg"
 	u2t := "reg2utrg"
 	modes := make(util.Set3D)
+	/*
 	modes.Add("signor", "UP", p2t)
 	modes.Add("signor", "DOWN", n2t)
 	modes.Add("cytreg", "Activation", p2t)
@@ -455,6 +457,7 @@ func Tfac2gene(d *bgw.Dat4bridge, x *bgw.Xmap, wdir string) error {
 	modes.Add("tfacts", "DOWN", n2t)
 	modes.Add("ntnu", "+", p2t)
 	modes.Add("ntnu", "-", n2t)
+	*/
 	modes.Add("tflink", "activator", p2t)
 	modes.Add("tflink", "repressor", n2t)
 	modes.Add("coltri", "pos", p2t)
@@ -560,14 +563,16 @@ func Tfac2gene(d *bgw.Dat4bridge, x *bgw.Xmap, wdir string) error {
 			}
 		}
 		//  assigning predicate depending of  the direction of regulation
-		pdcks := []string{u2t} // all predicate keys for one duokey, u2t first
+		pdcks := make(util.Set1D) // all predicate keys for one duokey, u2t first
+		pdcks.Add(u2t)
 		for _, onemod := range duo["mode"].Keys() {
 			// keys for predicates
 			for _, pdck := range modes[srck][onemod].Keys() {
-				pdcks = append(pdcks, pdck)
+				pdcks.Add(pdck)
 			}
 		} // onemod
-		for _, pdck := range pdcks {
+
+		for _, pdck := range pdcks.Keys() {
 			clsns := fmt.Sprintf("%s%s/", bgwNS, pdck)
 			var sb strings.Builder
 			//sb.WriteString(rdf.FormT(graphU, ourUs["sth2src"], srcU))
@@ -772,16 +777,17 @@ func SigPways(d *bgw.Dat4bridge, x *bgw.Xmap, wdir string) error {
 		}
 
 		//  assigning predicate depending of  the direction of regulation
-		pdcks := []string{u2t} // all predicate keys for one duokey, u2t first
+		pdcks := make(util.Set1D) // all predicate keys for one duokey, u2t first
+		pdcks.Add(u2t)
 		for _, onemod := range duo["modelbl"].Keys() {
 			onemod = strings.Split(onemod, " ")[0]
 			// keys for predicates
 			for _, pdck := range modes[srck][onemod].Keys() {
-				pdcks = append(pdcks, pdck)
+				pdcks.Add(pdck)
 			}
 		} // onemod
 
-		for _, pdck := range pdcks {
+		for _, pdck := range pdcks.Keys() {
 			clsns := fmt.Sprintf("%s%s/", bgwNS, pdck)
 			var sb strings.Builder
 			//sb.WriteString(rdf.FormT(graphU, ourUs["sth2src"], srcU))

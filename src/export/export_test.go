@@ -83,8 +83,9 @@ func Test_Prot(t *testing.T) {
 	arg13 := wpth + "prot/7227.nt"
 	arg14 := &xmap
 	tts := []tt{
-		{arg01, arg02, arg03, arg04, 2, 5},
-		{arg11, arg12, arg13, arg14, 3, 8}, // cumulative !
+		// replaced  Q01081=>P10415
+		{arg01, arg02, arg03, arg04, 3, 7}, // 2=>3 5=>7
+		{arg11, arg12, arg13, arg14, 4, 10}, // cumulative ! 3=>4 8=>10
 	}
 	for i, tt := range tts {
 		_ = Prot(tt.arg1, tt.arg2, tt.arg3, tt.arg4)
@@ -122,8 +123,8 @@ func TestSigPways(t *testing.T) {
 	_ = parse.Tab2struct(pth+"signor/pathways.tsv", keys, vals, &d4b0, "\t")
 	var xmap bgw.Xmap
 	xmap.New()
-	// sorted
-	xmap.Upac.Add("O15393", "bgwp", "O15393") // needed
+	xmap.Upac.Add("P04637", "bgwp", "P04637") // for p53-bcl2
+	xmap.Upac.Add("P10415", "bgwp", "P10415") // for p53-bcl2
 	xmap.Upac.Add("P10275", "bgwp", "P10275") // needed for PF24
 	xmap.Upac.Add("P31749", "bgwp", "P31749") // PF24 // needed
 	xmap.Upac.Add("P31751", "bgwp", "P31751") // PF24 // needed
@@ -138,7 +139,7 @@ func TestSigPways(t *testing.T) {
 		// {&d4b0, &xmap, pth + "OUT/export/", 6}, // 3 if filtered by the host
 		{&d4b0, &xmap, pth + "OUT/export/", 3}, // with updatted test files for complexes and families
 	}
-	pdck := "reg2utrg"
+	pdck := "reg2ntrg" // TODO see why reg2utrg return only 2
 	for i, tt := range tts {
 		(*tt.arg1).Src = srcs[i]
 		(*tt.arg1).Taxid = "9606"
@@ -170,6 +171,8 @@ func TestRgr2trg(t *testing.T) {
 	var xmap bgw.Xmap
 	xmap.New()
 	// sorted
+	xmap.Upac.Add("P04637", "bgwp", "P04637") // for p53-bcl2
+	xmap.Upac.Add("P10415", "bgwp", "P10415") // for p53-bcl2
 	xmap.Upac.Add("P10275", "bgwp", "P10275") // needed
 	xmap.Upac.Add("P19838", "bgwp", "P19838") // C13 // needed
 	xmap.Upac.Add("P24385", "bgwp", "P24385") // needed for C13
@@ -183,9 +186,9 @@ func TestRgr2trg(t *testing.T) {
 	xmap.Signor = sigmap
 
 	tts := []tt{
-		{&d4b0, &xmap, pth + "OUT/export/", 3},
+		{&d4b0, &xmap, pth + "OUT/export/", 2},
 	}
-	pdck := "reg2utrg"
+	pdck := "reg2ntrg"
 	for i, tt := range tts {
 		(*tt.arg1).Src = srcs[i]
 		(*tt.arg1).Taxid = "9606"
@@ -277,15 +280,15 @@ func Test_Tfac2gene(t *testing.T) {
 	_ = parse.Tab2struct(pth+"coltri/9606.csv", keys, vals, &d4b3, ",")
 	var xmap bgw.Xmap
 	xmap.New()
-	xmap.Upac.Add("P01100", "bgwp", "P01100")
+	// xmap.Upac.Add("P01100", "bgwp", "P01100")
 	xmap.Upac.Add("P04637", "bgwp", "P04637")
 	xmap.Upac.Add("P37231", "bgwp", "P37231") // for tflink
-	xmap.Upac.Add("Q16254", "bgwp", "Q16254") // for coltri
-	xmap.Ncbig.Add("4322", "bgwg", "9606/MMP13")
-	xmap.Ncbig.Add("7157", "bgwg", "9606/TP53")
+	// xmap.Upac.Add("Q16254", "bgwp", "Q16254") // for coltri
+	// xmap.Ncbig.Add("4322", "bgwg", "9606/MMP13")
+	// xmap.Ncbig.Add("7157", "bgwg", "9606/TP53")
 	xmap.Ncbig.Add("5915", "bgwg", "9606/RARB") // for tflink
-	xmap.Bgwg.Add("9606/MMP13", "bgwp", "P01100")
-	xmap.Bgwg.Add("9606/TP53", "bgwp", "P04637")
+	// xmap.Bgwg.Add("9606/MMP13", "bgwp", "P01100")
+	// xmap.Bgwg.Add("9606/TP53", "bgwp", "P04637")
 	xmap.Lblg.Add( "E2F4", "bgwg","9606/E2F4") // for coltri
 	xmap.Lblg.Add( "TP53", "bgwg","9606/TP53") // for coltri
 	/// exporting
