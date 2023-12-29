@@ -13,17 +13,41 @@ import (
 	"os"
 	"os/exec"
 	"path/filepath"
-	"strings"
 	"time"
+	"strings"
 )
 
 func gunzip(pth string) error {
+	// TODO tests
 	var cmd *exec.Cmd
 	// Attn: all flags separately!
-	cmd = exec.Command("gunzip", pth)
+	cmd = exec.Command("gunzip", pth) // struct
 	cmd.Stdout = os.Stdout
 	cmd.Stderr = os.Stderr
-	return cmd.Run()
+	return cmd.Run() // returns error
+}
+
+func rdfpipe(strs ...string) error {
+	// TODO tests
+	// TODO capture stdin and write as in:
+	// https://www.sohamkamani.com/golang/exec-shell-command/
+	var cmd *exec.Cmd
+	// Attn: all flags separately!
+	rpth := strs[0]
+	ifmt := strs[1]
+	ofmt := strs[2]
+	wpth := strs[3]
+	cmd = exec.Command("rdfpipe", "-i", ifmt, "-o", ofmt, rpth)
+		out, err := cmd.Output()
+		if err != nil {
+			return err
+		}
+		wfh, err := os.Create(wpth)
+		util.CheckE(err)
+		defer wfh.Close()
+		wfh.Write([]byte(out))
+	return nil
+	// return cmd.Run()
 }
 
 // function Rwget() recursively identifies target files and downloads in a slecified location
@@ -384,56 +408,68 @@ func saveAllTflink(datdir string) {
 
 /// Ontologies Download ///
 
-func saveAllOnto(datdir string) {
+func saveAllOnto(datdir string) error {
+	// TODO BioLink
 	subdir := "onto/"
-	ext := ""
-	ns := ""
 	if err := os.MkdirAll(filepath.Join(datdir, subdir), 0755); err != nil {
 		panic(err)
 	}
 
-	ns = "https://data.bioontology.org/ontologies/"
-	key := "/download?apikey=8b5b7825-538d-40e0-9e9e-5ab9274a9aeb"
-	//	ff := "&download_format=rdf"
-	//	ext = ".xml"
-	//	 for _, onto := range [...]string{"BFO", "OBOREL", "MI", "ECO", "GO", } {
-	//		uri := fmt.Sprintf("%s%s%s%s", ns, onto, key, ff)
-	//		pth := fmt.Sprintf("%s%s%s%s", datdir, subdir, strings.ToLower(onto), ext)
-	//		if err := HttpFile(uri, pth); err != nil {
-	//			log.Println("main.saveAllOnto:", err)
-	//		}
-	//	}
-	// Attn: needs to be updated prior each download!
-	var subms = map[string]string{
-		"OMIM": "/submissions/23", // 2023-03-07
-	}
-	ext = ".ttl"
-	for onto, subm := range subms {
+	// from BioPortal
+	ontos := make(util.Set3D)
+	// Attn: "OMIM" not "omim" !!
+	ontos.Add("OMIM", "ext", ".ttl")
+	ontos.Add("OMIM", "ns", "https://data.bioontology.org/ontologies/")
+	ontos.Add("OMIM", "subm", "/submissions/23") // to be updated prior each download!
+	ontos.Add("OMIM", "key", "/download?apikey=8b5b7825-538d-40e0-9e9e-5ab9274a9aeb")
+	for onto, vals := range ontos {
+		/*
+		*/
+		ext := vals["ext"].Keys()[0]
+		ns := vals["ns"].Keys()[0]
+		key := vals["key"].Keys()[0]
+		subm := vals["subm"].Keys()[0]
 		uri := fmt.Sprintf("%s%s%s%s", ns, onto, subm, key)
 		wpth := fmt.Sprintf("%s%s%s%s", datdir, subdir, strings.ToLower(onto), ext)
 		//if err := HttpFile(uri, wpth); err != nil {
 		if _, err := GetFile(uri, "Accept", "text", wpth); err != nil {
 			log.Println("main.saveAllOnto:", err)
+			return err
+		}
+		opth := fmt.Sprintf("%s%s%s%s", datdir, subdir, strings.ToLower(onto), ".nt")
+		if err := rdfpipe(wpth, "turtle", "nt", opth); err != nil {
+			log.Println("main.rdfpipe(): Warning: Failed to convert data for:", onto, wpth, opth, err)
+			return err
 		}
 	}
 
+	// from OBO Foundry
 	var nss = map[string]string{
-		"sio":       "http://semanticscience.org/ontology/",
+		/*
+		*/
+		"bfo":       "http://purl.obolibrary.org/obo/",
+		"go-basic":  "http://purl.obolibrary.org/obo/go/",
+		"mi":        "http://purl.obolibrary.org/obo/",
 		"ncbitaxon": "http://purl.obolibrary.org/obo/",
 		"ro":        "http://purl.obolibrary.org/obo/",
-		"bfo":       "http://purl.obolibrary.org/obo/",
-		"mi":        "http://purl.obolibrary.org/obo/",
-		"go-basic":  "http://purl.obolibrary.org/obo/go/",
+		"sio":       "http://semanticscience.org/ontology/",
 	}
-	ext = ".owl"
+	ext := ".owl"
 	for onto, ns := range nss {
-		uri := fmt.Sprintf("%s%s%s", ns, onto, ext)
 		wpth := fmt.Sprintf("%s%s%s%s", datdir, subdir, onto, ext)
+		/*
+		*/
+		uri := fmt.Sprintf("%s%s%s", ns, onto, ext)
 		if _, err := HttpFile(uri, wpth); err != nil {
-			// NB: GetFile() failes to download ncbitaxon.owl !
-			log.Println("main.saveAllOnto:", err)
+			log.Println("main.saveAllOnto:", onto,  err)
+		}
+		opth := fmt.Sprintf("%s%s%s%s", datdir, subdir, onto, ".nt")
+		if err := rdfpipe(wpth, "application/rdf+xml", "nt", opth); err != nil {
+			log.Println("main.rdfpipe(): Failed to convert data for:", onto, wpth, opth, err)
+			return err
 		}
 	}
+	return nil
 }
 
 func main() {

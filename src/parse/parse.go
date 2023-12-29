@@ -93,7 +93,7 @@ func Sig2up(sigmap util.Set3D, pths []string) error {
 	// not used anymore, kept just as an example of using encoding/csv
 	for _, pth := range pths {
 
-		// Open the file
+		// open the file
 		csvfile, err := os.Open(pth)
 		if err != nil {
 			log.Fatalln("Couldn't open the csv file", err)
