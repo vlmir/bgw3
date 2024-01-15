@@ -1,4 +1,5 @@
-package main
+// package main
+package dat4bgw
 
 import (
 	"log"

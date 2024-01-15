@@ -1,4 +1,5 @@
-package main
+// package main
+package rdf4bgw
 
 import (
 	"encoding/json"
@@ -64,7 +65,7 @@ func geneprot(datdir, bgwdir string, txn2prm util.Set2D) (err error) {
 	return nil
 } // geneprot()
 
-func reg2pway(datdir, bgwdir string, txn2prm util.Set2D) (util.Set2D, error) {
+func Reg2pway(datdir, bgwdir string, txn2prm util.Set2D) (util.Set2D, error) {
 	subdir := "sigpways/"
 	if err := os.MkdirAll(filepath.Join(bgwdir, subdir), 0755); err != nil {
 		log.Println(err)
@@ -148,7 +149,7 @@ func reg2pway(datdir, bgwdir string, txn2prm util.Set2D) (util.Set2D, error) {
 	return cnts, nil
 } // reg2pway
 
-func rgr2trg(datdir, bgwdir string, txn2prm util.Set2D) (util.Set2D, error) {
+func Rgr2trg(datdir, bgwdir string, txn2prm util.Set2D) (util.Set2D, error) {
 	subdir := "reg2targ/"
 	if err := os.MkdirAll(filepath.Join(bgwdir, subdir), 0755); err != nil {
 		log.Println(err)
@@ -582,10 +583,10 @@ func main() {
 		tfac2gene(datdir, bgwdir, txn2prm)
 		log.Println("Done with tfac2gene in", time.Since(mystart))
 		mystart = time.Now()
-		rgr2trg(datdir, bgwdir, txn2prm)
+		Rgr2trg(datdir, bgwdir, txn2prm)
 		log.Println("Done with rgr2trg in", time.Since(mystart))
 		mystart = time.Now()
-		reg2pway(datdir, bgwdir, txn2prm)
+		Reg2pway(datdir, bgwdir, txn2prm)
 		log.Println("Done with reg2pway in", time.Since(mystart))
 	}
 	if *aP || *oP {

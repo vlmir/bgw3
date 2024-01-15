@@ -1,4 +1,5 @@
-package main
+// package main
+package dat4bgw
 
 import (
 	"bytes"
@@ -50,7 +51,7 @@ func rdfpipe(strs ...string) error {
 	// return cmd.Run()
 }
 
-// function Rwget() recursively identifies target files and downloads in a slecified location
+// function Rwget() recursively identifies target files and downloads in a specified location
 // irreproducible set of downloaded files. TODO
 // arg1: base URI of the source
 // arg2: pattern for filtering
@@ -185,7 +186,7 @@ func saveOneColtri(txid, datdir, script string) error {
 	return cmd.Run()
 }
 
-func saveOneSignor(txid string, datdir string) error {
+func SaveOneSignor(txid string, datdir string) error {
 // TODO see if all the files are limited to human data
 	subdir := "signor/"
 	ext := ".mi28"
@@ -524,7 +525,7 @@ func main() {
 
 	if *aP || *sP {
 		start := time.Now()
-		saveOneSignor("9606", datdir)
+		SaveOneSignor("9606", datdir)
 		log.Println("Done with Signor in", time.Since(start))
 	}
 

@@ -1,4 +1,5 @@
-package main
+// package main
+package rdf4bgw
 
 import (
 	"github.com/vlmir/bgw3/src/util" // pkg 'util'
@@ -53,7 +54,7 @@ func Test_gene2phen(t *testing.T) {
 	// TODO
 }
 
-func Test_reg2pway(t *testing.T) {
+func Test_Reg2pway(t *testing.T) {
 	type tt struct {
 		arg1 string
 		arg2 string
@@ -82,7 +83,7 @@ func Test_reg2pway(t *testing.T) {
 	}
 }
 
-func Test_rgr2trg(t *testing.T) {
+func Test_Rgr2trg(t *testing.T) {
 	type tt struct {
 		arg1 string
 		arg2 string

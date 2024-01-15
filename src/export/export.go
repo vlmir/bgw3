@@ -258,7 +258,7 @@ func Rgr2trg(d *bgw.Dat4bridge, x *bgw.Xmap, wdir string) error {
 	nss := rdf.Nss // BGW URI name spaces
 	//srcns := nss[srck] // fully qualified namespace
 	// srcU := rdf.FormU(rdf.Uris4tftg[srck])
-	srcU :=  "http://signor.uniroma2.it"
+	srcU := rdf.FormU("http://signor.uniroma2.it")
 	rdfns := nss["rdf"]
 	// graphns := fmt.Sprintf("%s%s", nss["bgw"], "graph/")
 	header, nln := rdf.Capita(keys4b)
@@ -703,7 +703,7 @@ func SigPways(d *bgw.Dat4bridge, x *bgw.Xmap, wdir string) error {
 	nss := rdf.Nss // BGW URI name spaces
 	// srcns := nss[srck] // fully qualified namespace
 	// srcU := rdf.FormU(rdf.Uris4tftg[srck])
-	srcU :=  "http://signor.uniroma2.it"
+	srcU := rdf.FormU("http://signor.uniroma2.it")
 	rdfns := nss["rdf"]
 	// graphns := fmt.Sprintf("%s%s", nss["bgw"], "graph/")
 	header, nln := rdf.Capita(keys4b)
