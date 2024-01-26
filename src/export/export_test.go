@@ -84,7 +84,7 @@ func Test_Prot(t *testing.T) {
 	arg14 := &xmap
 	tts := []tt{
 		// replaced  Q01081=>P10415
-		{arg01, arg02, arg03, arg04, 3, 7}, // 2=>3 5=>7
+		{arg01, arg02, arg03, arg04, 3, 7},  // 2=>3 5=>7
 		{arg11, arg12, arg13, arg14, 4, 10}, // cumulative ! 3=>4 8=>10
 	}
 	for i, tt := range tts {
@@ -289,8 +289,8 @@ func Test_Tfac2gene(t *testing.T) {
 	xmap.Ncbig.Add("5915", "bgwg", "9606/RARB") // for tflink
 	// xmap.Bgwg.Add("9606/MMP13", "bgwp", "P01100")
 	// xmap.Bgwg.Add("9606/TP53", "bgwp", "P04637")
-	xmap.Lblg.Add( "E2F4", "bgwg","9606/E2F4") // for coltri
-	xmap.Lblg.Add( "TP53", "bgwg","9606/TP53") // for coltri
+	xmap.Lblg.Add("E2F4", "bgwg", "9606/E2F4") // for coltri
+	xmap.Lblg.Add("TP53", "bgwg", "9606/TP53") // for coltri
 	/// exporting
 	srcs := []string{"tflink", "coltri"}
 

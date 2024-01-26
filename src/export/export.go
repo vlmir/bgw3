@@ -445,18 +445,18 @@ func Tfac2gene(d *bgw.Dat4bridge, x *bgw.Xmap, wdir string) error {
 	u2t := "reg2utrg"
 	modes := make(util.Set3D)
 	/*
-	modes.Add("signor", "UP", p2t)
-	modes.Add("signor", "DOWN", n2t)
-	modes.Add("cytreg", "Activation", p2t)
-	modes.Add("cytreg", "Repression", n2t)
-	modes.Add("trrust", "Activation", p2t)
-	modes.Add("trrust", "Repression", n2t)
-	modes.Add("geredb", "positive", p2t)
-	modes.Add("geredb", "negative", n2t)
-	modes.Add("tfacts", "UP", p2t)
-	modes.Add("tfacts", "DOWN", n2t)
-	modes.Add("ntnu", "+", p2t)
-	modes.Add("ntnu", "-", n2t)
+		modes.Add("signor", "UP", p2t)
+		modes.Add("signor", "DOWN", n2t)
+		modes.Add("cytreg", "Activation", p2t)
+		modes.Add("cytreg", "Repression", n2t)
+		modes.Add("trrust", "Activation", p2t)
+		modes.Add("trrust", "Repression", n2t)
+		modes.Add("geredb", "positive", p2t)
+		modes.Add("geredb", "negative", n2t)
+		modes.Add("tfacts", "UP", p2t)
+		modes.Add("tfacts", "DOWN", n2t)
+		modes.Add("ntnu", "+", p2t)
+		modes.Add("ntnu", "-", n2t)
 	*/
 	modes.Add("tflink", "activator", p2t)
 	modes.Add("tflink", "repressor", n2t)
@@ -556,10 +556,12 @@ func Tfac2gene(d *bgw.Dat4bridge, x *bgw.Xmap, wdir string) error {
 			"pos",
 			"neg",
 		}
-		for _, mode := range coltrimodes{
+		for _, mode := range coltrimodes {
 			if len(duo[mode].Keys()) != 0 {
 				val := duo[mode].Keys()[0]
-				if val == "True" {duo.Add("mode", mode)}
+				if val == "True" {
+					duo.Add("mode", mode)
+				}
 			}
 		}
 		//  assigning predicate depending of  the direction of regulation

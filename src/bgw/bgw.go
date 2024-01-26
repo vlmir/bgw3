@@ -9,9 +9,9 @@ import (
 var CV = "3.3.0"
 
 var Coltri = map[string]string{
-	"9606":   "human",
-	"10090":  "mouse",
-	"10116":  "rat",
+	"9606":  "human",
+	"10090": "mouse",
+	"10116": "rat",
 }
 
 var Tflink = map[string]string{
@@ -190,15 +190,15 @@ func ColtriParseConf() ([]Column, []Column) {
 		{1, ";", 0, "--", 0, ""},
 	}
 	vals := []Column{
-		{0, ";", 0, ":", 0, "Aupca"}, // no iso-form present 23-11-17
-		{1, ";", 0, ":", 0, "Bupca"}, // no iso-form present 23-11-17
-		{2, ";", 0, ":", 0, "Aglbl"}, // single values
-		{3, ";", 0, ":", 0, "Bglbl"}, // single values
-		{5, ";", 0, ":", 0, "pos"}, // single values, True|False
-		{6, ";", 0, ":", 0, "neg"}, // single values, True|False
+		{0, ";", 0, ":", 0, "Aupca"},       // no iso-form present 23-11-17
+		{1, ";", 0, ":", 0, "Bupca"},       // no iso-form present 23-11-17
+		{2, ";", 0, ":", 0, "Aglbl"},       // single values
+		{3, ";", 0, ":", 0, "Bglbl"},       // single values
+		{5, ";", 0, ":", 0, "pos"},         // single values, True|False
+		{6, ";", 0, ":", 0, "neg"},         // single values, True|False
 		{11, ";", 1, ":", -1, "CollecTRI"}, // all filtered
-		{15, ";", 0, ";", 0, "score"},   // number of refs
-		{16, ";", 0, ":", 0, "pubmed"}, // all refs
+		{15, ";", 0, ";", 0, "score"},      // number of refs
+		{16, ";", 0, ":", 0, "pubmed"},     // all refs
 	}
 	return keys, vals
 } // ColtriParseConf
@@ -306,4 +306,3 @@ func SigMapParseConf() ([]Column, []Column) {
 	}
 	return keys, vals
 } // SigMapParseConf
-

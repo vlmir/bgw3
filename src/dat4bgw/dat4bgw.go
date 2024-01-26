@@ -14,8 +14,8 @@ import (
 	"os"
 	"os/exec"
 	"path/filepath"
-	"time"
 	"strings"
+	"time"
 )
 
 func gunzip(pth string) error {
@@ -39,14 +39,14 @@ func rdfpipe(strs ...string) error {
 	ofmt := strs[2]
 	wpth := strs[3]
 	cmd = exec.Command("rdfpipe", "-i", ifmt, "-o", ofmt, rpth)
-		out, err := cmd.Output()
-		if err != nil {
-			return err
-		}
-		wfh, err := os.Create(wpth)
-		util.CheckE(err)
-		defer wfh.Close()
-		wfh.Write([]byte(out))
+	out, err := cmd.Output()
+	if err != nil {
+		return err
+	}
+	wfh, err := os.Create(wpth)
+	util.CheckE(err)
+	defer wfh.Close()
+	wfh.Write([]byte(out))
 	return nil
 	// return cmd.Run()
 }
@@ -187,7 +187,7 @@ func saveOneColtri(txid, datdir, script string) error {
 }
 
 func SaveOneSignor(txid string, datdir string) error {
-// TODO see if all the files are limited to human data
+	// TODO see if all the files are limited to human data
 	subdir := "signor/"
 	ext := ".mi28"
 	uri := "https://signor.uniroma2.it/getData.php?type=causalTab"
@@ -273,12 +273,13 @@ func saveOneTflink(uri, txid, datdir string) error {
 		log.Println("saveOneTflink(): Warning: Failed to download data for:", txid, err)
 		return err
 	}
+	gunzip(wpth)
 	return nil
 }
 
 /// Multiple Taxa Download ///
 
-func saveAllCtdb(datdir string) {
+func SaveAllCtdb(datdir string) {
 	subdir := "ctdb/"
 	if err := os.MkdirAll(filepath.Join(datdir, subdir), 0755); err != nil {
 		panic(err)
@@ -305,7 +306,7 @@ func saveAllCtdb(datdir string) {
 	} // for lbl
 }
 
-func saveAllIdmap(datdir string, txn2prm util.Set2D)  {
+func SaveAllIdmap(datdir string, txn2prm util.Set2D) {
 	subdir := "idmapping"
 	if err := os.MkdirAll(filepath.Join(datdir, subdir), 0755); err != nil {
 		panic(err)
@@ -318,7 +319,7 @@ func saveAllIdmap(datdir string, txn2prm util.Set2D)  {
 	}
 }
 
-func saveAllColtri(datdir, scrdir string) {
+func SaveAllColtri(datdir, scrdir string) {
 	subdir := "coltri/"
 	if err := os.MkdirAll(filepath.Join(datdir, subdir), 0755); err != nil {
 		panic(err)
@@ -332,7 +333,7 @@ func saveAllColtri(datdir, scrdir string) {
 	}
 }
 
-func saveAllUniprot(datdir string, txn2prm util.Set2D, scrdir string) {
+func SaveAllUniprot(datdir string, txn2prm util.Set2D, scrdir string) {
 	subdir := "uniprot/"
 	if err := os.MkdirAll(filepath.Join(datdir, subdir), 0755); err != nil {
 		panic(err)
@@ -345,7 +346,7 @@ func saveAllUniprot(datdir string, txn2prm util.Set2D, scrdir string) {
 	}
 }
 
-func saveAllIntact(datdir string, txn2prm util.Set2D) {
+func SaveAllIntact(datdir string, txn2prm util.Set2D) {
 	subdir := "intact/"
 	if err := os.MkdirAll(filepath.Join(datdir, subdir), 0755); err != nil {
 		panic(err)
@@ -355,27 +356,27 @@ func saveAllIntact(datdir string, txn2prm util.Set2D) {
 	}
 }
 
-func saveAllGaf(datdir string, txn2prm util.Set2D) {
+func SaveAllGaf(datdir string, txn2prm util.Set2D) {
 	subdir := "goa/"
 	if err := os.MkdirAll(filepath.Join(datdir, subdir), 0755); err != nil {
 		panic(err)
 	}
-		uri := "http://ftp.ebi.ac.uk/pub/databases/GO/goa/proteomes/proteome2taxid"
-		wpth := datdir + "goa/gafpomes.tsv"
-		if _, err := HttpFile(uri, wpth); err != nil {
-			panic(err)
-		}
-		gafmap, err := util.MakeMap(wpth, 1, 2, "\t") // counting from 0
-		if err != nil {
-			//log.Fatalln("main:", err)
-			panic(err)
-		}
-		n := len(gafmap)
-		if n == 0 {
-			msg := fmt.Sprintf("Empty map: %s", wpth)
-			panic(errors.New(msg))
-		}
-		log.Println("gafmap:", n)
+	uri := "http://ftp.ebi.ac.uk/pub/databases/GO/goa/proteomes/proteome2taxid"
+	wpth := datdir + "goa/gafpomes.tsv"
+	if _, err := HttpFile(uri, wpth); err != nil {
+		panic(err)
+	}
+	gafmap, err := util.MakeMap(wpth, 1, 2, "\t") // counting from 0
+	if err != nil {
+		//log.Fatalln("main:", err)
+		panic(err)
+	}
+	n := len(gafmap)
+	if n == 0 {
+		msg := fmt.Sprintf("Empty map: %s", wpth)
+		panic(errors.New(msg))
+	}
+	log.Println("gafmap:", n)
 	for txid := range txn2prm {
 		gpomes := gafmap[txid].Keys()
 		if len(gpomes) != 1 {
@@ -385,7 +386,7 @@ func saveAllGaf(datdir string, txn2prm util.Set2D) {
 	}
 }
 
-func saveAllGpa(datdir string, txn2prm util.Set2D) {
+func SaveAllGpa(datdir string, txn2prm util.Set2D) {
 	subdir := "goa/"
 	if err := os.MkdirAll(filepath.Join(datdir, subdir), 0755); err != nil {
 		panic(err)
@@ -395,7 +396,7 @@ func saveAllGpa(datdir string, txn2prm util.Set2D) {
 	}
 }
 
-func saveAllTflink(datdir string) {
+func SaveAllTflink(datdir string) {
 	subdir := "tflink/"
 	if err := os.MkdirAll(filepath.Join(datdir, subdir), 0755); err != nil {
 		panic(err)
@@ -409,7 +410,7 @@ func saveAllTflink(datdir string) {
 
 /// Ontologies Download ///
 
-func saveAllOnto(datdir string) error {
+func SaveAllOnto(datdir string) error {
 	// TODO BioLink
 	subdir := "onto/"
 	if err := os.MkdirAll(filepath.Join(datdir, subdir), 0755); err != nil {
@@ -425,7 +426,7 @@ func saveAllOnto(datdir string) error {
 	ontos.Add("OMIM", "key", "/download?apikey=8b5b7825-538d-40e0-9e9e-5ab9274a9aeb")
 	for onto, vals := range ontos {
 		/*
-		*/
+		 */
 		ext := vals["ext"].Keys()[0]
 		ns := vals["ns"].Keys()[0]
 		key := vals["key"].Keys()[0]
@@ -434,7 +435,7 @@ func saveAllOnto(datdir string) error {
 		wpth := fmt.Sprintf("%s%s%s%s", datdir, subdir, strings.ToLower(onto), ext)
 		//if err := HttpFile(uri, wpth); err != nil {
 		if _, err := GetFile(uri, "Accept", "text", wpth); err != nil {
-			log.Println("main.saveAllOnto:", err)
+			log.Println("main.SaveAllOnto:", err)
 			return err
 		}
 		opth := fmt.Sprintf("%s%s%s%s", datdir, subdir, strings.ToLower(onto), ".nt")
@@ -447,7 +448,7 @@ func saveAllOnto(datdir string) error {
 	// from OBO Foundry
 	var nss = map[string]string{
 		/*
-		*/
+		 */
 		"bfo":       "http://purl.obolibrary.org/obo/",
 		"go-basic":  "http://purl.obolibrary.org/obo/go/",
 		"mi":        "http://purl.obolibrary.org/obo/",
@@ -459,10 +460,10 @@ func saveAllOnto(datdir string) error {
 	for onto, ns := range nss {
 		wpth := fmt.Sprintf("%s%s%s%s", datdir, subdir, onto, ext)
 		/*
-		*/
+		 */
 		uri := fmt.Sprintf("%s%s%s", ns, onto, ext)
 		if _, err := HttpFile(uri, wpth); err != nil {
-			log.Println("main.saveAllOnto:", onto,  err)
+			log.Println("main.SaveAllOnto:", onto, err)
 		}
 		opth := fmt.Sprintf("%s%s%s%s", datdir, subdir, onto, ".nt")
 		if err := rdfpipe(wpth, "application/rdf+xml", "nt", opth); err != nil {
@@ -513,13 +514,13 @@ func main() {
 	// independent
 	if (*aP || *oP) && !*OP {
 		start := time.Now()
-		saveAllOnto(datdir)
+		SaveAllOnto(datdir)
 		log.Println("Done with ontos in", time.Since(start))
 	}
 
 	if *aP || *lP {
 		start := time.Now()
-		saveAllTflink(datdir)
+		SaveAllTflink(datdir)
 		log.Println("Done with TFlink in", time.Since(start))
 	}
 
@@ -531,7 +532,7 @@ func main() {
 
 	if *aP || *cP {
 		start := time.Now()
-		saveAllCtdb(datdir)
+		SaveAllCtdb(datdir)
 		log.Println("Done with CTDbase in", time.Since(start))
 	}
 
@@ -540,19 +541,19 @@ func main() {
 
 	if (*aP || *mP) && !*MP {
 		start := time.Now()
-		saveAllIdmap(datdir, txn2prm)
+		SaveAllIdmap(datdir, txn2prm)
 		log.Println("Done with idmappings in", time.Since(start))
 	}
 
 	if *aP || *iP {
 		start := time.Now()
-		saveAllIntact(datdir, txn2prm)
+		SaveAllIntact(datdir, txn2prm)
 		log.Println("Done with Intact in", time.Since(start))
 	}
 
 	if *aP || *tP {
 		start := time.Now()
-		saveAllColtri(datdir, scrdir)
+		SaveAllColtri(datdir, scrdir)
 		log.Println("Done with Coltri in", time.Since(start))
 	}
 
@@ -564,14 +565,14 @@ func main() {
 			panic(err)
 		}
 
-		saveAllUniprot(datdir, txn2prm, scrdir)
+		SaveAllUniprot(datdir, txn2prm, scrdir)
 		log.Println("Done with UniProt in", time.Since(start))
 	}
 
 	if *aP || *gP {
 		start := time.Now()
-		saveAllGaf(datdir, txn2prm)
-		// saveAllGpa(datdir, txn2prm) // 10000 lines limit, do NOT use !
+		SaveAllGaf(datdir, txn2prm)
+		// SaveAllGpa(datdir, txn2prm) // 10000 lines limit, do NOT use !
 		log.Println("Done with Goa in", time.Since(start))
 	}
 }

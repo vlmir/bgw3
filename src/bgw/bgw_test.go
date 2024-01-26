@@ -90,7 +90,7 @@ func Test_Unmarshal(t *testing.T) {
 	pth := "../../tdata/"
 	tts := []tt{
 		// {pth + "OUT/export/xmap/9606.json", 7},
-		{pth + "OUT/rdf4bgw/xmap/9606.json", 3}, // rdf4bgw.geneprot() new
+		{pth + "OUT/rdf4bgw/xmap/9606.json", 3}, // rdf4bgw.Geneprot() new
 	}
 	for i, tt := range tts {
 		var xmap Xmap

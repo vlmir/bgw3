@@ -17,7 +17,7 @@ import (
 	"time"
 )
 
-func geneprot(datdir, bgwdir string, txn2prm util.Set2D) (err error) {
+func Geneprot(datdir, bgwdir string, txn2prm util.Set2D) (err error) {
 	subdir := "gene/"
 	if err := os.MkdirAll(filepath.Join(bgwdir, subdir), 0755); err != nil {
 		log.Println(err)
@@ -31,7 +31,7 @@ func geneprot(datdir, bgwdir string, txn2prm util.Set2D) (err error) {
 		log.Println(err)
 	}
 	for _, txid := range txn2prm.Keys() {
-		log.Println("\n\tgeneprot for:", txid)
+		log.Println("\n\tGeneprot for:", txid)
 		ext := ".upt"
 		subdir := "uniprot/"
 		rpthu := fmt.Sprintf("%s%s%s%s", datdir, subdir, txid, ext)
@@ -63,7 +63,7 @@ func geneprot(datdir, bgwdir string, txn2prm util.Set2D) (err error) {
 		wfhX.Write(j)
 	}
 	return nil
-} // geneprot()
+} // Geneprot()
 
 func Reg2pway(datdir, bgwdir string, txn2prm util.Set2D) (util.Set2D, error) {
 	subdir := "sigpways/"
@@ -114,20 +114,6 @@ func Reg2pway(datdir, bgwdir string, txn2prm util.Set2D) (util.Set2D, error) {
 
 			if srck == "signor" {
 				// generating map signor-id -> entitity-ids
-
-				/*
-				sigmap := make(util.Set3D)
-				rdir := fmt.Sprintf("%s%s%s", datdir, srck, "/")
-				smpths := []string{
-					rdir + "complexes.map",
-					rdir + "families.map",
-				}
-				err := parse.Sig2up(sigmap, smpths)
-				if err != nil {
-					log.Printf("%s%s", "parse.Sig2up: ", err)
-					continue // sic!
-				}
-				*/
 				sigmap, _ := parse.Sigmap(datdir)
 				xmap.Signor = sigmap
 			}
@@ -198,20 +184,6 @@ func Rgr2trg(datdir, bgwdir string, txn2prm util.Set2D) (util.Set2D, error) {
 
 			if srck == "signor" {
 				// generating map signor-id -> entitity-ids
-
-				/*
-				sigmap := make(util.Set3D)
-				rdir := fmt.Sprintf("%s%s%s", datdir, srck, "/")
-				smpths := []string{
-					rdir + "complexes.map",
-					rdir + "families.map",
-				}
-				err := parse.Sig2up(sigmap, smpths)
-				if err != nil {
-					log.Printf("%s%s", "parse.Sig2up: ", err)
-					continue // sic!
-				}
-				*/
 				sigmap, _ := parse.Sigmap(datdir)
 				xmap.Signor = sigmap
 			}
@@ -262,7 +234,9 @@ func tfac2gene(datdir, bgwdir string, txn2prm util.Set2D) (util.Set2D, error) {
 			} else if srck == "coltri" {
 				keys, vals = bgw.ColtriParseConf()
 				dlm = "," // re-defining
-				if txid != "9606" {continue}
+				if txid != "9606" {
+					continue
+				}
 				// TODO txlbl=>txid in dat4bgw
 				rpth = fmt.Sprintf("%s%s%s%s%s", datdir, srck, "/", txid, ".csv")
 			} else {
@@ -301,7 +275,7 @@ func tfac2gene(datdir, bgwdir string, txn2prm util.Set2D) (util.Set2D, error) {
 	return cnts, nil
 } // tfac2gene
 
-func prot2prot(datdir, bgwdir string, txn2prm util.Set2D) (util.Set2D, error) {
+func Prot2prot(datdir, bgwdir string, txn2prm util.Set2D) (util.Set2D, error) {
 	subdir := "prot2prot/"
 	if err := os.MkdirAll(filepath.Join(bgwdir, subdir), 0755); err != nil {
 		log.Println(err)
@@ -335,7 +309,7 @@ func prot2prot(datdir, bgwdir string, txn2prm util.Set2D) (util.Set2D, error) {
 		keys, vals := bgw.IntactParseConf()
 		err = parse.Tab2struct(rpth, keys, vals, &d4b, "\t")
 		if err != nil {
-			msg := fmt.Sprintf("rdf4bgw.go:main.prot2prot():%s: %s", err, txid)
+			msg := fmt.Sprintf("rdf4bgw.go:main.Prot2prot():%s: %s", err, txid)
 			log.Println(msg)
 		} // NoData
 		/////////////////////////////////////////////////////////////////////////////
@@ -343,7 +317,7 @@ func prot2prot(datdir, bgwdir string, txn2prm util.Set2D) (util.Set2D, error) {
 		d4b.Taxid = txid
 		err = export.Prot2prot(&d4b, &xmap, bgwdir)
 		if err != nil {
-			msg := fmt.Sprintf("rdf4bgw.go:main.prot2prot():%s: %s", err, txid)
+			msg := fmt.Sprintf("rdf4bgw.go:main.Prot2prot():%s: %s", err, txid)
 			log.Println(msg)
 			continue
 		}
@@ -353,21 +327,21 @@ func prot2prot(datdir, bgwdir string, txn2prm util.Set2D) (util.Set2D, error) {
 		}
 	} // taxid
 	return cnts, nil
-} // prot2prot()
+} // Prot2prot()
 
-func gene2phen(datdir, bgwdir string, txn2prm util.Set2D) (int, error) {
+func Gene2phen(datdir, bgwdir string, txn2prm util.Set2D) (int, error) {
 	subdir := "gene2phen/"
 	if err := os.MkdirAll(filepath.Join(bgwdir, subdir), 0755); err != nil {
 		log.Println(err)
 	}
 	// TODO interface similar to tfac2gene etc.
-	log.Println("\n\tgene2phen for:", "all") // is not printed TODO
+	log.Println("\n\tGene2phen for:", "all") // is not printed TODO
 	nln := 0
 	for txid := range txn2prm {
 		if txid != "9606" {
 			continue
 		}
-		log.Println("\n\tgene2phen for:", txid)
+		log.Println("\n\tGene2phen for:", txid)
 		subdir := "uniprot/"
 		ext := ".var"
 		rpth := fmt.Sprintf("%s%s%s%s", datdir, subdir, txid, ext)
@@ -387,22 +361,22 @@ func gene2phen(datdir, bgwdir string, txn2prm util.Set2D) (int, error) {
 		//duos, err := parse.UpVar(rpth, gsym2bgw) // the second arg is optional
 		duos, err := parse.UpVar(rpth)
 		if err != nil {
-			msg := fmt.Sprintf("rdf4bgw.go:main.gene2phen():%s: %s", err, txid)
+			msg := fmt.Sprintf("rdf4bgw.go:main.Gene2phen():%s: %s", err, txid)
 			log.Println(msg)
 		}
 		/////////////////////////////////////////////////////////////////////////////
 		nts, err := export.Gene2phen(duos, gsym2bgw, wpth)
 		if err != nil {
-			msg := fmt.Sprintf("rdf4bgw.go:main.gene2phen():%s: %s", err, txid)
+			msg := fmt.Sprintf("rdf4bgw.go:main.Gene2phen():%s: %s", err, txid)
 			log.Println(msg)
 			continue
 		}
 		nln += nts
 	}
 	return nln, nil
-} // gene2phen()
+} // Gene2phen()
 
-func prot2go(datdir, bgwdir string, txn2prm util.Set2D, fx string) (int, error) {
+func Prot2go(datdir, bgwdir string, txn2prm util.Set2D, fx string) (int, error) {
 	subdir := "prot2bp/"
 	if err := os.MkdirAll(filepath.Join(bgwdir, subdir), 0755); err != nil {
 		log.Println(err)
@@ -416,13 +390,13 @@ func prot2go(datdir, bgwdir string, txn2prm util.Set2D, fx string) (int, error) 
 		log.Println(err)
 	}
 	// TODO interface similar to tfac2gene etc.
-	log.Println("\n\tprot2go for:", "all") // is not printed TODO
+	log.Println("\n\tProt2go for:", "all") // is not printed TODO
 	nln := 0
 	for _, txid := range txn2prm.Keys() {
 		if txid == "9031" {
 			continue
 		}
-		log.Println("\n\tprot2go for:", txid)
+		log.Println("\n\tProt2go for:", txid)
 		subdir := "goa/"
 		rpth := fmt.Sprintf("%s%s%s%s", datdir, subdir, txid, fx) // read Goa data
 		subdir = "xmap/"
@@ -444,12 +418,12 @@ func prot2go(datdir, bgwdir string, txn2prm util.Set2D, fx string) (int, error) 
 			bps, ccs, mfs, err = parse.Gaf(rpth)
 		} else {
 			msg := fmt.Sprintf("%s: UnrecognizedFileExtension: %s", txid, fx)
-			log.Println("rdf4bgw.prot2go():", msg)
+			log.Println("rdf4bgw.Prot2go():", msg)
 			continue // TODO test this
 			// panic(errors.New(msg))
 		}
 		if err != nil {
-			msg := fmt.Sprintf("rdf4bgw.go:main.prot2go():%s: %s", err, txid)
+			msg := fmt.Sprintf("rdf4bgw.go:main.Prot2go():%s: %s", err, txid)
 			log.Println(msg)
 		}
 		/////////////////////////////////////////////////////////////////////////////
@@ -475,7 +449,7 @@ func prot2go(datdir, bgwdir string, txn2prm util.Set2D, fx string) (int, error) 
 		nln += nts
 	}
 	return nln, nil
-} // prot2go()
+} // Prot2go()
 
 // ///////////////////////////////////////////////////////////////////////////
 func ortho(datdir, bgwdir string, txn2prm util.Set2D) (int, error) {
@@ -517,7 +491,6 @@ func ortho(datdir, bgwdir string, txn2prm util.Set2D) (int, error) {
 // //////////////////////////////////////////////////////////////////////////
 func main() {
 	// TODO for all functions: add taxa and proteome lists as arguments !
-	start := time.Now()
 	// pointers:
 	aP := flag.Bool("a", false, "export [a]ll")
 	eP := flag.Bool("e", false, "export gene and protein [e]ntities")
@@ -527,6 +500,7 @@ func main() {
 	rP := flag.Bool("r", false, "export [r]egulatory associations")
 	oP := flag.Bool("o", false, "export [o]rthology relations")
 	// tP := flag.String("t", "./prm_txn.txt", "selected [t]axa")
+	start := time.Now()
 
 	var n int
 	flag.Parse()
@@ -554,49 +528,49 @@ func main() {
 	}
 	/////////////////////////////////////////////////////////////////////////////
 	if *aP || *eP {
-		mystart := time.Now()
-		geneprot(datdir, bgwdir, txn2prm) // MUST be run before the others !!!
-		log.Println("Done with geneprot in", time.Since(mystart))
+		start := time.Now()
+		Geneprot(datdir, bgwdir, txn2prm) // MUST be run before the others !!!
+		log.Println("Done with Geneprot in", time.Since(start))
 	}
 	if *aP || *dP {
-		mystart := time.Now()
-		gene2phen(datdir, bgwdir, txn2prm)
-		log.Println("Done with gene2phen in", time.Since(mystart))
+		start := time.Now()
+		Gene2phen(datdir, bgwdir, txn2prm)
+		log.Println("Done with Gene2phen in", time.Since(start))
 	}
 	if *aP || *gP {
-		mystart := time.Now()
+		start := time.Now()
 		ext := ".gaf"
-		_, err = prot2go(datdir, bgwdir, txn2prm, ext)
+		_, err = Prot2go(datdir, bgwdir, txn2prm, ext)
 		if err != nil {
 			log.Println(err)
 		} else {
-			log.Println("Done with prot2go in", time.Since(mystart))
+			log.Println("Done with Prot2go in", time.Since(start))
 		}
 	}
 	if *aP || *iP {
-		mystart := time.Now()
-		prot2prot(datdir, bgwdir, txn2prm)
-		log.Println("Done with prot2prot in", time.Since(mystart))
+		start := time.Now()
+		Prot2prot(datdir, bgwdir, txn2prm)
+		log.Println("Done with Prot2prot in", time.Since(start))
 	}
 	if *aP || *rP {
-		mystart := time.Now()
+		start := time.Now()
 		tfac2gene(datdir, bgwdir, txn2prm)
-		log.Println("Done with tfac2gene in", time.Since(mystart))
-		mystart = time.Now()
+		log.Println("Done with tfac2gene in", time.Since(start))
+		start = time.Now()
 		Rgr2trg(datdir, bgwdir, txn2prm)
-		log.Println("Done with rgr2trg in", time.Since(mystart))
-		mystart = time.Now()
+		log.Println("Done with Rgr2trg in", time.Since(start))
+		start = time.Now()
 		Reg2pway(datdir, bgwdir, txn2prm)
-		log.Println("Done with reg2pway in", time.Since(mystart))
-	}
+		log.Println("Done with Reg2pway in", time.Since(start))
+	} // rP
 	if *aP || *oP {
-		mystart := time.Now()
+		start := time.Now()
 		_, err := ortho(datdir, bgwdir, txn2prm)
 		if err != nil {
 			log.Println(err)
 		} else {
-			log.Println("Done with ortho in", time.Since(mystart))
+			log.Println("Done with ortho in", time.Since(start))
 		}
 	}
 	log.Println("Done with rdf4bgw in", time.Since(start))
-}
+} // main()

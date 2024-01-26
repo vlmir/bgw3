@@ -7,7 +7,7 @@ import (
 )
 
 // must be the first one !
-func Test_geneprot(t *testing.T) {
+func Test_Geneprot(t *testing.T) {
 	type tt struct {
 		arg1 string
 		arg2 string
@@ -28,7 +28,7 @@ func Test_geneprot(t *testing.T) {
 	}
 
 	for i, tt := range tts {
-		err := geneprot(tt.arg1, tt.arg2, tt.arg3)
+		err := Geneprot(tt.arg1, tt.arg2, tt.arg3)
 		if err != tt.val1 {
 			t.Error(
 				"For test", i+1, ": ", tt.arg1, tt.arg2, tt.arg3,
@@ -46,11 +46,11 @@ func Test_geneprot(t *testing.T) {
 	}
 }
 
-func Test_prot2pro(t *testing.T) {
+func Test_Prot2go(t *testing.T) {
 	// TODO
 }
 
-func Test_gene2phen(t *testing.T) {
+func Test_Gene2phen(t *testing.T) {
 	// TODO
 }
 
@@ -72,7 +72,7 @@ func Test_Reg2pway(t *testing.T) {
 	pdck := "reg2ntrg"
 	srck := "signor"
 	for i, tt := range tts {
-		cnts, _ := reg2pway(tt.arg1, tt.arg2, tt.arg3) // process ALL files in srck dir
+		cnts, _ := Reg2pway(tt.arg1, tt.arg2, tt.arg3) // process ALL files in srck dir
 		if cnts[pdck][srck] != tt.val {
 			t.Error(
 				"For test", i+1, ": ", tt.arg1, tt.arg2, tt.arg3,
@@ -101,7 +101,7 @@ func Test_Rgr2trg(t *testing.T) {
 	pdck := "reg2ntrg"
 	srck := "signor"
 	for i, tt := range tts {
-		cnts, _ := rgr2trg(tt.arg1, tt.arg2, tt.arg3) // process ALL files in srck dir
+		cnts, _ := Rgr2trg(tt.arg1, tt.arg2, tt.arg3) // process ALL files in srck dir
 		if cnts[pdck][srck] != tt.val {
 			t.Error(
 				"For test", i+1, ": ", tt.arg1, tt.arg2, tt.arg3,
@@ -145,7 +145,7 @@ func Test_tfac2gene(t *testing.T) {
 	}
 }
 
-func Test_prot2prot(t *testing.T) {
+func Test_Prot2prot(t *testing.T) {
 	type tt struct {
 		arg1 string
 		arg2 string
@@ -163,7 +163,7 @@ func Test_prot2prot(t *testing.T) {
 	pdck := "tlp2tlp"
 	srck := "intact"
 	for i, tt := range tts {
-		cnts, _ := prot2prot(tt.arg1, tt.arg2, tt.arg3) // process ALL files in srck dir
+		cnts, _ := Prot2prot(tt.arg1, tt.arg2, tt.arg3) // process ALL files in srck dir
 		if cnts[pdck][srck] != tt.val {
 			t.Error(
 				"For test", i+1, ": ", tt.arg1, tt.arg2, tt.arg3,
