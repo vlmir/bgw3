@@ -66,11 +66,11 @@ func Geneprot(datdir, bgwdir string, txn2prm util.Set2D) (err error) {
 } // Geneprot()
 
 func Reg2pway(datdir, bgwdir string, txn2prm util.Set2D) (util.Set2D, error) {
-	subdir := "sigpways/"
+	subdir := "reg2pway/"
 	if err := os.MkdirAll(filepath.Join(bgwdir, subdir), 0755); err != nil {
 		log.Println(err)
 	}
-	log.Println("\n\treg2pway for:", "all")
+	log.Println("\n\trdf4bgw.Reg2pway for:", "all")
 	cnts := make(util.Set2D)
 	var pdcks = []string{
 		"reg2ptrg",
@@ -97,10 +97,10 @@ func Reg2pway(datdir, bgwdir string, txn2prm util.Set2D) (util.Set2D, error) {
 			if srck == "signor" {
 				rpth = fmt.Sprintf("%s%s%s%s%s", datdir, srck, "/", "pathways", ext)
 			}
-			log.Println("Rdf4bgw.reg2pway(): processing", rpth)
+			log.Println("rdf4bgw.Reg2pway(): processing", rpth)
 			err := parse.Tab2struct(rpth, keys, vals, &d4b, "\t")
 			if err != nil {
-				log.Printf("%s%s", "reg2pway:parse.Tab2struct: ", err)
+				log.Printf("%s%s", "rdf4bgw.Reg2pway:parse.Tab2struct: ", err)
 				continue // sic!
 			}
 			// d4b is now loaded with data
@@ -133,14 +133,14 @@ func Reg2pway(datdir, bgwdir string, txn2prm util.Set2D) (util.Set2D, error) {
 		}
 	}
 	return cnts, nil
-} // reg2pway
+} // Reg2pway
 
-func Rgr2trg(datdir, bgwdir string, txn2prm util.Set2D) (util.Set2D, error) {
+func Reg2targ(datdir, bgwdir string, txn2prm util.Set2D) (util.Set2D, error) {
 	subdir := "reg2targ/"
 	if err := os.MkdirAll(filepath.Join(bgwdir, subdir), 0755); err != nil {
 		log.Println(err)
 	}
-	log.Println("\n\trgr2trg for:", "all")
+	log.Println("\n\trdf4bgw.Reg2targ for:", "all")
 	cnts := make(util.Set2D)
 	var pdcks = []string{
 		"reg2ptrg",
@@ -167,10 +167,10 @@ func Rgr2trg(datdir, bgwdir string, txn2prm util.Set2D) (util.Set2D, error) {
 			if srck == "signor" {
 				rpth = fmt.Sprintf("%s%s%s%s%s", datdir, srck, "/", txid, ext)
 			}
-			log.Println("Rdf4bgw.rgr2trg(): processing", rpth)
+			log.Println("rdf4bgw.Reg2targ(): processing", rpth)
 			err := parse.Tab2struct(rpth, keys, vals, &d4b, "\t")
 			if err != nil {
-				log.Printf("%s%s", "rgr2trg:parse.Tab2struct: ", err)
+				log.Printf("%s%s", "rdf4bgw.Reg2targ:parse.Tab2struct: ", err)
 				continue // sic!
 			}
 			// d4b is now loaded with data
@@ -190,7 +190,7 @@ func Rgr2trg(datdir, bgwdir string, txn2prm util.Set2D) (util.Set2D, error) {
 
 			d4b.Src = srck
 			d4b.Taxid = txid
-			err = export.Rgr2trg(&d4b, &xmap, bgwdir)
+			err = export.Reg2targ(&d4b, &xmap, bgwdir)
 			if err != nil {
 				//panic(err)
 				log.Println(err)
@@ -203,14 +203,14 @@ func Rgr2trg(datdir, bgwdir string, txn2prm util.Set2D) (util.Set2D, error) {
 		}
 	}
 	return cnts, nil
-} // rgr2trg
+} // Reg2targ
 
-func tfac2gene(datdir, bgwdir string, txn2prm util.Set2D) (util.Set2D, error) {
+func Tfac2gene(datdir, bgwdir string, txn2prm util.Set2D) (util.Set2D, error) {
 	subdir := "tfac2gene/"
 	if err := os.MkdirAll(filepath.Join(bgwdir, subdir), 0755); err != nil {
 		log.Println(err)
 	}
-	log.Println("\n\ttfac2gene for:", "all")
+	log.Println("\n\trdf4bgw.Tfac2gene for:", "all")
 	cnts := make(util.Set2D)
 	var pdcks = []string{
 		"reg2ptrg",
@@ -243,10 +243,10 @@ func tfac2gene(datdir, bgwdir string, txn2prm util.Set2D) (util.Set2D, error) {
 				keys, vals = bgw.TftgParseConf()
 				rpth = fmt.Sprintf("%s%s%s%s%s%s", datdir, "static/", srck, "/", txid, ".f2g")
 			}
-			// log.Println("Rdf4bgw.tfac2gene(): processing", rpth)
+			// log.Println("rdf4bgw.Tfac2gene(): processing", rpth)
 			err := parse.Tab2struct(rpth, keys, vals, &d4b, dlm)
 			if err != nil { // normal
-				// log.Printf("%s%s", "tfac2gene:parse.Tab2struct: ", err)
+				// log.Printf("%s%s", "Tfac2gene:parse.Tab2struct: ", err)
 				continue // next taxon
 			}
 			/// d4b is now loaded with data
@@ -273,7 +273,7 @@ func tfac2gene(datdir, bgwdir string, txn2prm util.Set2D) (util.Set2D, error) {
 		} // txid
 	} // srck
 	return cnts, nil
-} // tfac2gene
+} // Tfac2gene
 
 func Prot2prot(datdir, bgwdir string, txn2prm util.Set2D) (util.Set2D, error) {
 	subdir := "prot2prot/"
@@ -334,7 +334,7 @@ func Gene2phen(datdir, bgwdir string, txn2prm util.Set2D) (int, error) {
 	if err := os.MkdirAll(filepath.Join(bgwdir, subdir), 0755); err != nil {
 		log.Println(err)
 	}
-	// TODO interface similar to tfac2gene etc.
+	// TODO interface similar to Tfac2gene etc.
 	log.Println("\n\tGene2phen for:", "all") // is not printed TODO
 	nln := 0
 	for txid := range txn2prm {
@@ -389,7 +389,7 @@ func Prot2go(datdir, bgwdir string, txn2prm util.Set2D, fx string) (int, error) 
 	if err := os.MkdirAll(filepath.Join(bgwdir, subdir), 0755); err != nil {
 		log.Println(err)
 	}
-	// TODO interface similar to tfac2gene etc.
+	// TODO interface similar to Tfac2gene etc.
 	log.Println("\n\tProt2go for:", "all") // is not printed TODO
 	nln := 0
 	for _, txid := range txn2prm.Keys() {
@@ -452,12 +452,12 @@ func Prot2go(datdir, bgwdir string, txn2prm util.Set2D, fx string) (int, error) 
 } // Prot2go()
 
 // ///////////////////////////////////////////////////////////////////////////
-func ortho(datdir, bgwdir string, txn2prm util.Set2D) (int, error) {
+func Ortho(datdir, bgwdir string, txn2prm util.Set2D) (int, error) {
 	subdir := "ortho/"
 	if err := os.MkdirAll(filepath.Join(bgwdir, subdir), 0755); err != nil {
 		log.Println(err)
 	}
-	// TODO interface similar to tfac2gene etc.
+	// TODO interface similar to Tfac2gene etc.
 	log.Println("\n\tortho for:", "all")
 	nln := 0
 	for _, txidL := range txn2prm.Keys() {
@@ -468,7 +468,7 @@ func ortho(datdir, bgwdir string, txn2prm util.Set2D) (int, error) {
 			txids := [2]string{txidL, txidR}
 			duos, err := parse.OrthoDuo(datdir, txidL, txidR, txn2prm)
 			if err != nil {
-				msg := fmt.Sprintf("rdf4bgw.go:main.ortho():%s:%v", err, txids)
+				msg := fmt.Sprintf("rdf4bgw.Ortho():%s:%v", err, txids)
 				log.Println(msg)
 			} // NoData
 			/////////////////////////////////////////////////////////////////////////////
@@ -478,7 +478,7 @@ func ortho(datdir, bgwdir string, txn2prm util.Set2D) (int, error) {
 			wpth := fmt.Sprintf("%s%s%s", bgwdir, subdir, file)
 			nts, err := export.Ortho(duos, wpth)
 			if err != nil {
-				msg := fmt.Sprintf("rdf4bgw.go:main.ortho():%s:%v", err, txids)
+				msg := fmt.Sprintf("rdf4bgw.Ortho():%s:%v", err, txids)
 				log.Println(msg)
 				continue
 			}
@@ -554,22 +554,22 @@ func main() {
 	}
 	if *aP || *rP {
 		start := time.Now()
-		tfac2gene(datdir, bgwdir, txn2prm)
-		log.Println("Done with tfac2gene in", time.Since(start))
+		Tfac2gene(datdir, bgwdir, txn2prm)
+		log.Println("Done with rdf4bgw.Tfac2gene in", time.Since(start))
 		start = time.Now()
-		Rgr2trg(datdir, bgwdir, txn2prm)
-		log.Println("Done with Rgr2trg in", time.Since(start))
+		Reg2targ(datdir, bgwdir, txn2prm)
+		log.Println("Done with rdf4bgw.Reg2targ in", time.Since(start))
 		start = time.Now()
 		Reg2pway(datdir, bgwdir, txn2prm)
-		log.Println("Done with Reg2pway in", time.Since(start))
+		log.Println("Done with rdf4bgw.Reg2pway in", time.Since(start))
 	} // rP
 	if *aP || *oP {
 		start := time.Now()
-		_, err := ortho(datdir, bgwdir, txn2prm)
+		_, err := Ortho(datdir, bgwdir, txn2prm)
 		if err != nil {
 			log.Println(err)
 		} else {
-			log.Println("Done with ortho in", time.Since(start))
+			log.Println("Done with rdf4bgw.Ortho in", time.Since(start))
 		}
 	}
 	log.Println("Done with rdf4bgw in", time.Since(start))

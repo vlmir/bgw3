@@ -83,7 +83,7 @@ func Test_Reg2pway(t *testing.T) {
 	}
 }
 
-func Test_Rgr2trg(t *testing.T) {
+func Test_Reg2targ(t *testing.T) {
 	type tt struct {
 		arg1 string
 		arg2 string
@@ -101,7 +101,7 @@ func Test_Rgr2trg(t *testing.T) {
 	pdck := "reg2ntrg"
 	srck := "signor"
 	for i, tt := range tts {
-		cnts, _ := Rgr2trg(tt.arg1, tt.arg2, tt.arg3) // process ALL files in srck dir
+		cnts, _ := Reg2targ(tt.arg1, tt.arg2, tt.arg3) // process ALL files in srck dir
 		if cnts[pdck][srck] != tt.val {
 			t.Error(
 				"For test", i+1, ": ", tt.arg1, tt.arg2, tt.arg3,
@@ -112,7 +112,7 @@ func Test_Rgr2trg(t *testing.T) {
 	}
 }
 
-func Test_tfac2gene(t *testing.T) {
+func Test_Tfac2gene(t *testing.T) {
 	type tt struct {
 		arg1 string
 		arg2 string
@@ -134,7 +134,7 @@ func Test_tfac2gene(t *testing.T) {
 	srck := "coltri"
 	// srck := "tflink" // no interactions after filtering by xmap
 	for i, tt := range tts {
-		cnts, _ := tfac2gene(tt.arg1, tt.arg2, tt.arg3) // process ALL files in srck dir
+		cnts, _ := Tfac2gene(tt.arg1, tt.arg2, tt.arg3) // process ALL files in srck dir
 		if cnts[pdck][srck] != tt.val {
 			t.Error(
 				"For test", i+1, ": ", tt.arg1, tt.arg2, tt.arg3,
@@ -191,7 +191,7 @@ func Test_ortho(t *testing.T) {
 		{pth, wpth, arg3[0], 28},
 	}
 	for i, tt := range tts {
-		n, _ := ortho(tt.arg1, tt.arg2, tt.arg3)
+		n, _ := Ortho(tt.arg1, tt.arg2, tt.arg3)
 		if n != tt.val1 {
 			t.Error(
 				"For test", i+1, ": ", tt.arg3,

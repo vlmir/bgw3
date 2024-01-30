@@ -6,8 +6,6 @@ import (
 	"github.com/vlmir/bgw3/src/rdf4bgw"
 	"github.com/vlmir/bgw3/src/util"
 	"log"
-	"os"
-	"path/filepath"
 	"time"
 )
 
@@ -41,36 +39,28 @@ func main() {
 
 	if *aP || *dP {
 		start := time.Now()
-		subdir := "idmapping/"
-		if err := os.MkdirAll(filepath.Join(datdir, subdir), 0755); err != nil {
-			panic(err)
-		}
 		dat4bgw.SaveAllIdmap(datdir, txn2prm)
 		log.Println("Done with idmapping in", time.Since(start))
-
-		subdir = "uniprot/"
-		if err := os.MkdirAll(filepath.Join(datdir, subdir), 0755); err != nil {
-			panic(err)
-		}
-
-		uri := "http://ftp.uniprot.org/pub/databases/uniprot/current_release/knowledgebase/variants/humsavar.txt"
-		wpth := datdir + "uniprot/9606.var"
-		if _, err := dat4bgw.HttpFile(uri, wpth); err != nil {
-			panic(err)
-		}
-
-		dat4bgw.SaveAllUniprot(datdir, txn2prm, scrdir)
+		start = time.Now()
+		dat4bgw.SaveAllUniprot(datdir, txn2prm, scrdir) // including 'humsavar.txt'
 		log.Println("Done with uniprot in", time.Since(start))
 	}
 
 	if *aP || *eP {
-		/*
-		 */
 		start := time.Now()
-		rdf4bgw.Geneprot(datdir, bgwdir, txn2prm) // MUST be run before the others !!!
-		log.Println("Done with Geneprot in", time.Since(start))
-		start = time.Now()
-		rdf4bgw.Gene2phen(datdir, bgwdir, txn2prm)
-		log.Println("Done with Gene2phen in", time.Since(start))
+		/*
+			rdf4bgw.Geneprot(datdir, bgwdir, txn2prm) // MUST be run before the others !!!
+			log.Println("Done with Geneprot in", time.Since(start))
+			start = time.Now()
+			rdf4bgw.Gene2phen(datdir, bgwdir, txn2prm)
+			log.Println("Done with Gene2phen in", time.Since(start))
+			start = time.Now()
+		*/
+		_, err := rdf4bgw.Ortho(datdir, bgwdir, txn2prm)
+		if err != nil {
+			log.Println(err)
+		} else {
+			log.Println("Done with rdf4bgw.Ortho in", time.Since(start))
+		}
 	}
 }

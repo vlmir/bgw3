@@ -155,7 +155,7 @@ func TestSigPways(t *testing.T) {
 	}
 } // TestSigPways
 
-func TestRgr2trg(t *testing.T) {
+func TestReg2targ(t *testing.T) {
 	type tt struct {
 		arg1 *bgw.Dat4bridge
 		arg2 *bgw.Xmap
@@ -192,7 +192,7 @@ func TestRgr2trg(t *testing.T) {
 	for i, tt := range tts {
 		(*tt.arg1).Src = srcs[i]
 		(*tt.arg1).Taxid = "9606"
-		Rgr2trg(tt.arg1, tt.arg2, tt.arg3)
+		Reg2targ(tt.arg1, tt.arg2, tt.arg3)
 		cnts := (*tt.arg1).Cnts
 		if cnts[pdck][srcs[i]] != tt.val1 {
 			t.Error(
@@ -202,7 +202,7 @@ func TestRgr2trg(t *testing.T) {
 			)
 		}
 	}
-} // TestRgr2trg
+} // TestReg2targ
 
 func Test_Prot2prot(t *testing.T) {
 	type tt struct {

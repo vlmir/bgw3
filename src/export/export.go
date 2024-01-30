@@ -198,7 +198,7 @@ func Prot2prot(d *bgw.Dat4bridge, x *bgw.Xmap, wdir string) error {
 	return nil
 } // Prot2prot
 
-func Rgr2trg(d *bgw.Dat4bridge, x *bgw.Xmap, wdir string) error {
+func Reg2targ(d *bgw.Dat4bridge, x *bgw.Xmap, wdir string) error {
 	d4b := *d
 	xmap := *x
 	srck := d4b.Src
@@ -318,11 +318,11 @@ func Rgr2trg(d *bgw.Dat4bridge, x *bgw.Xmap, wdir string) error {
 		}
 		// skipping pairs with ambiguous entyty types - never happens
 		if len(typeAs) > 1 {
-			fmt.Printf("%s%s %s %s", "export.Rgr2trg(): multiple entity A types, skipping: ", srck, duokey, typeAs)
+			fmt.Printf("%s%s %s %s", "export.Reg2targ(): multiple entity A types, skipping: ", srck, duokey, typeAs)
 			continue
 		}
 		if len(typeBs) > 1 {
-			fmt.Printf("%s%s %s %s", "export.Rgr2trg(): multiple entity B types, skipping: ", srck, duokey, typeBs)
+			fmt.Printf("%s%s %s %s", "export.Reg2targ(): multiple entity B types, skipping: ", srck, duokey, typeBs)
 			continue
 		}
 		typeA := typeAs[0] // assuming a single vwlue
@@ -430,9 +430,9 @@ func Rgr2trg(d *bgw.Dat4bridge, x *bgw.Xmap, wdir string) error {
 			}
 		} // pdck
 	} // duokey
-	log.Println("export.Rgr2trg():", srck, txid, cnts)
+	log.Println("export.Reg2targ():", srck, txid, cnts)
 	return nil
-} // Rgr2trg
+} // Reg2targ
 
 func Tfac2gene(d *bgw.Dat4bridge, x *bgw.Xmap, wdir string) error {
 	d4b := *d
@@ -656,7 +656,7 @@ func SigPways(d *bgw.Dat4bridge, x *bgw.Xmap, wdir string) error {
 	modes := make(util.Set3D)
 	modes.Add("signor", "up-regulates", p2t)
 	modes.Add("signor", "down-regulates", n2t)
-	sdir := "sigpways"
+	sdir := "reg2pway"
 	wpths := map[string]string{
 		p2t: fmt.Sprintf("%s%s/%s-%s-%s.nt", wdir, sdir, "p", srck, txid),
 		n2t: fmt.Sprintf("%s%s/%s-%s-%s.nt", wdir, sdir, "n", srck, txid),

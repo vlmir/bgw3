@@ -338,6 +338,13 @@ func SaveAllUniprot(datdir string, txn2prm util.Set2D, scrdir string) {
 	if err := os.MkdirAll(filepath.Join(datdir, subdir), 0755); err != nil {
 		panic(err)
 	}
+
+	uri := "http://ftp.uniprot.org/pub/databases/uniprot/current_release/knowledgebase/variants/humsavar.txt"
+	wpth := datdir + "uniprot/9606.var"
+	if _, err := HttpFile(uri, wpth); err != nil {
+		panic(err)
+	}
+
 	script := scrdir + "download1up.py"
 	for txid := range txn2prm {
 		if err := saveOneUniprot(txid, datdir, script); err != nil {

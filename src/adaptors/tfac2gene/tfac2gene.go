@@ -6,8 +6,6 @@ import (
 	"github.com/vlmir/bgw3/src/rdf4bgw"
 	"github.com/vlmir/bgw3/src/util"
 	"log"
-	"os"
-	"path/filepath"
 	"time"
 )
 
@@ -28,6 +26,7 @@ func main() {
 	datdir := args[0]                              // path to data directory (with a trailing '/')
 	bgwdir := args[1]                              // path to rdf directory (with a trailing '/')
 	rpthT := args[2]                               // path to a list of selected taxa and proteomes
+	scrdir := args[3]                              // path to scripts directory
 	txn2prm, err := util.MakeMap(rpthT, 1, 0, "_") // txnID -> proteomeID
 	if err != nil {
 		log.Fatalln("main:", err)
@@ -40,20 +39,16 @@ func main() {
 
 	if *aP || *dP {
 		start := time.Now()
-		subdir := "signor/"
-		if err := os.MkdirAll(filepath.Join(datdir, subdir), 0755); err != nil {
-			panic(err)
-		}
-		dat4bgw.SaveOneSignor("9606", datdir)
-		log.Println("Done with signor in", time.Since(start))
+		dat4bgw.SaveAllTflink(datdir)
+		log.Println("Done with tflink in", time.Since(start))
+		start = time.Now()
+		dat4bgw.SaveAllColtri(datdir, scrdir)
+		log.Println("Done with collectri in", time.Since(start))
 	}
 
 	if *aP || *eP {
 		start := time.Now()
-		rdf4bgw.Reg2targ(datdir, bgwdir, txn2prm)
-		log.Println("Done with rgr2trg in", time.Since(start))
-		start = time.Now()
-		rdf4bgw.Reg2pway(datdir, bgwdir, txn2prm)
-		log.Println("Done with reg2pway in", time.Since(start))
+		rdf4bgw.Tfac2gene(datdir, bgwdir, txn2prm)
+		log.Println("Done with tfac2gene in", time.Since(start))
 	}
 }
