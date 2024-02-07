@@ -13,9 +13,43 @@ import (
 	"github.com/vlmir/bgw3/src/util"
 	"log"
 	"os"
+	"os/exec"
 	"path/filepath"
 	"time"
 )
+
+func gzip(pth string) error {
+	// TODO tests
+	var cmd *exec.Cmd
+	// Attn: all flags separately!
+	cmd = exec.Command("gzip", "-f", pth) // struct
+	cmd.Stdout = os.Stdout
+	cmd.Stderr = os.Stderr
+	return cmd.Run() // returns error
+}
+
+func rdfpipe(strs ...string) error {
+	// TODO tests
+	// TODO capture stdin and write as in:
+	// https://www.sohamkamani.com/golang/exec-shell-command/
+	var cmd *exec.Cmd
+	// Attn: all flags separately!
+	rpth := strs[0]
+	ifmt := strs[1]
+	ofmt := strs[2]
+	wpth := strs[3]
+	cmd = exec.Command("rdfpipe", "-i", ifmt, "-o", ofmt, rpth)
+	out, err := cmd.Output()
+	if err != nil {
+		return err
+	}
+	wfh, err := os.Create(wpth)
+	util.CheckE(err)
+	defer wfh.Close()
+	wfh.Write([]byte(out))
+	return nil
+	// return cmd.Run()
+}
 
 func Geneprot(datdir, bgwdir string, txn2prm util.Set2D) (err error) {
 	subdir := "gene/"
@@ -487,6 +521,42 @@ func Ortho(datdir, bgwdir string, txn2prm util.Set2D) (int, error) {
 	} // txidL
 	return nln, nil
 } // end of orhto
+
+func Onto(datdir, bgwdir string) error {
+	var ontos = map[string]string{
+		"biolink-model": ".ttl",
+		"omim":          ".ttl",
+		"bfo":           ".owl",
+		"go-basic":      ".owl",
+		"mi":            ".owl",
+		"ncbitaxon":     ".owl",
+		"ro":            ".owl",
+		"sio":           ".owl",
+	}
+	subdir := "onto/"
+	if err := os.MkdirAll(filepath.Join(bgwdir, subdir), 0755); err != nil {
+		log.Fatal(err)
+	}
+	for onto, ext := range ontos {
+		rpth := fmt.Sprintf("%s%s%s%s", datdir, subdir, onto, ext)
+		wpth := fmt.Sprintf("%s%s%s%s", bgwdir, subdir, onto, ".nt")
+		ifmt := ""
+		if ext == ".ttl" {
+			ifmt = "turtle"
+		} else {
+			ifmt = "application/rdf+xml"
+		}
+		if err := rdfpipe(rpth, ifmt, "nt", wpth); err != nil {
+			log.Println("rdf4bgw.rdfpipe(): Failed to convert: ", rpth)
+			return err
+		}
+		if err := gzip(wpth); err != nil {
+			log.Println("rdf4bgw.gzip(): Failed to gzip:", wpth)
+			return err
+		}
+	}
+	return nil
+}
 
 // //////////////////////////////////////////////////////////////////////////
 func main() {

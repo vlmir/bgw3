@@ -19,7 +19,7 @@ func main() {
 	}
 	args := flag.Args()
 	cnt := len(args)
-	if cnt < 3 {
+	if cnt < 4 {
 		log.Fatalln("Expecting more arguments than ", cnt)
 	}
 	log.Println("Started with args:", args)

@@ -28,29 +28,6 @@ func gunzip(pth string) error {
 	return cmd.Run() // returns error
 }
 
-func rdfpipe(strs ...string) error {
-	// TODO tests
-	// TODO capture stdin and write as in:
-	// https://www.sohamkamani.com/golang/exec-shell-command/
-	var cmd *exec.Cmd
-	// Attn: all flags separately!
-	rpth := strs[0]
-	ifmt := strs[1]
-	ofmt := strs[2]
-	wpth := strs[3]
-	cmd = exec.Command("rdfpipe", "-i", ifmt, "-o", ofmt, rpth)
-	out, err := cmd.Output()
-	if err != nil {
-		return err
-	}
-	wfh, err := os.Create(wpth)
-	util.CheckE(err)
-	defer wfh.Close()
-	wfh.Write([]byte(out))
-	return nil
-	// return cmd.Run()
-}
-
 // function Rwget() recursively identifies target files and downloads in a specified location
 // irreproducible set of downloaded files. TODO
 // arg1: base URI of the source
@@ -417,7 +394,7 @@ func SaveAllTflink(datdir string) {
 
 /// Ontologies Download ///
 
-func SaveAllOnto(datdir string) error {
+func SaveAllOnto(datdir, year string) error {
 	// TODO BioLink
 	subdir := "onto/"
 	if err := os.MkdirAll(filepath.Join(datdir, subdir), 0755); err != nil {
@@ -429,39 +406,31 @@ func SaveAllOnto(datdir string) error {
 	// Attn: "OMIM" not "omim" !!
 	ontos.Add("OMIM", "ext", ".ttl")
 	ontos.Add("OMIM", "ns", "https://data.bioontology.org/ontologies/")
-	ontos.Add("OMIM", "subm", "/submissions/23") // to be updated prior each download!
+	ontos.Add("OMIM", "subm", "/submissions/"+year)
 	ontos.Add("OMIM", "key", "/download?apikey=8b5b7825-538d-40e0-9e9e-5ab9274a9aeb")
 	for onto, vals := range ontos {
-		/*
-		 */
 		ext := vals["ext"].Keys()[0]
 		ns := vals["ns"].Keys()[0]
 		key := vals["key"].Keys()[0]
 		subm := vals["subm"].Keys()[0]
 		uri := fmt.Sprintf("%s%s%s%s", ns, onto, subm, key)
 		wpth := fmt.Sprintf("%s%s%s%s", datdir, subdir, strings.ToLower(onto), ext)
-		//if err := HttpFile(uri, wpth); err != nil {
 		if _, err := GetFile(uri, "Accept", "text", wpth); err != nil {
-			log.Println("main.SaveAllOnto:", err)
+			log.Println("dat4bgw.SaveAllOnto:", err)
 			return err
 		}
-		opth := fmt.Sprintf("%s%s%s%s", datdir, subdir, strings.ToLower(onto), ".nt")
-		if err := rdfpipe(wpth, "turtle", "nt", opth); err != nil {
-			log.Println("main.rdfpipe(): Warning: Failed to convert data for:", onto, wpth, opth, err)
-			return err
-		}
+		/*
+		 */
 	}
 
 	// from OBO Foundry
 	var nss = map[string]string{
-		/*
-		 */
 		"bfo":       "http://purl.obolibrary.org/obo/",
 		"go-basic":  "http://purl.obolibrary.org/obo/go/",
 		"mi":        "http://purl.obolibrary.org/obo/",
-		"ncbitaxon": "http://purl.obolibrary.org/obo/",
 		"ro":        "http://purl.obolibrary.org/obo/",
 		"sio":       "http://semanticscience.org/ontology/",
+		"ncbitaxon": "http://purl.obolibrary.org/obo/",
 	}
 	ext := ".owl"
 	for onto, ns := range nss {
@@ -470,13 +439,10 @@ func SaveAllOnto(datdir string) error {
 		 */
 		uri := fmt.Sprintf("%s%s%s", ns, onto, ext)
 		if _, err := HttpFile(uri, wpth); err != nil {
-			log.Println("main.SaveAllOnto:", onto, err)
+			log.Println("dat4bgw.SaveAllOnto:", onto, err)
 		}
-		opth := fmt.Sprintf("%s%s%s%s", datdir, subdir, onto, ".nt")
-		if err := rdfpipe(wpth, "application/rdf+xml", "nt", opth); err != nil {
-			log.Println("main.rdfpipe(): Failed to convert data for:", onto, wpth, opth, err)
-			return err
-		}
+		/*
+		 */
 	}
 	return nil
 }
@@ -521,7 +487,7 @@ func main() {
 	// independent
 	if (*aP || *oP) && !*OP {
 		start := time.Now()
-		SaveAllOnto(datdir)
+		SaveAllOnto(datdir, "24")
 		log.Println("Done with ontos in", time.Since(start))
 	}
 
