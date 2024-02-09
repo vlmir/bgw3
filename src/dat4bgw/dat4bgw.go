@@ -166,6 +166,9 @@ func saveOneColtri(txid, datdir, script string) error {
 func SaveOneSignor(txid string, datdir string) error {
 	// TODO see if all the files are limited to human data
 	subdir := "signor/"
+		if err := os.MkdirAll(filepath.Join(datdir, subdir), 0755); err != nil {
+			panic(err)
+		}
 	ext := ".mi28"
 	uri := "https://signor.uniroma2.it/getData.php?type=causalTab"
 	wpth := fmt.Sprintf("%s%s%s%s", datdir, subdir, txid, ext)
@@ -347,7 +350,8 @@ func SaveAllGaf(datdir string, txn2prm util.Set2D) {
 	}
 	uri := "http://ftp.ebi.ac.uk/pub/databases/GO/goa/proteomes/proteome2taxid"
 	wpth := datdir + "goa/gafpomes.tsv"
-	if _, err := HttpFile(uri, wpth); err != nil {
+	// if _, err := HttpFile(uri, wpth); err != nil { // error
+	if err := WgetFile(uri, wpth); err != nil {
 		panic(err)
 	}
 	gafmap, err := util.MakeMap(wpth, 1, 2, "\t") // counting from 0

@@ -6,8 +6,6 @@ import (
 	"github.com/vlmir/bgw3/src/rdf4bgw"
 	"github.com/vlmir/bgw3/src/util"
 	"log"
-	"os"
-	"path/filepath"
 	"time"
 )
 
@@ -40,10 +38,6 @@ func main() {
 
 	if *aP || *dP {
 		start := time.Now()
-		subdir := "signor/"
-		if err := os.MkdirAll(filepath.Join(datdir, subdir), 0755); err != nil {
-			panic(err)
-		}
 		dat4bgw.SaveOneSignor("9606", datdir)
 		log.Println("Done with signor in", time.Since(start))
 	}

@@ -6,8 +6,6 @@ import (
 	"github.com/vlmir/bgw3/src/rdf4bgw"
 	"github.com/vlmir/bgw3/src/util"
 	"log"
-	"os"
-	"path/filepath"
 	"time"
 )
 
@@ -40,10 +38,6 @@ func main() {
 
 	if *aP || *dP {
 		start := time.Now()
-		subdir := "goa/"
-		if err := os.MkdirAll(filepath.Join(datdir, subdir), 0755); err != nil {
-			panic(err)
-		}
 		dat4bgw.SaveAllGaf(datdir, txn2prm)
 		log.Println("Done with goa in", time.Since(start))
 	}
