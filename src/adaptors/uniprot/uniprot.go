@@ -48,14 +48,21 @@ func main() {
 
 	if *aP || *eP {
 		start := time.Now()
-			rdf4bgw.Geneprot(datdir, bgwdir, txn2prm) // MUST be run before the others !!!
-			log.Println("Done with Geneprot in", time.Since(start))
-			start = time.Now()
-			rdf4bgw.Gene2phen(datdir, bgwdir, txn2prm)
-			log.Println("Done with Gene2phen in", time.Since(start))
-			start = time.Now()
+		// rdf4bgw.Geneprot(datdir, bgwdir, txn2prm) // MUST be run before the others !!!
+		if err := rdf4bgw.Geneprot(datdir, bgwdir, txn2prm); err != nil {
+			panic(err)
+		}
+		log.Println("Done with Geneprot in", time.Since(start))
+
+		start = time.Now()
+		if _, err := rdf4bgw.Gene2phen(datdir, bgwdir, txn2prm); err != nil {
+			panic(err)
+		}
+		log.Println("Done with Gene2phen in", time.Since(start))
+
+		start = time.Now()
 		/*
-		*/
+		 */
 		_, err := rdf4bgw.Ortho(datdir, bgwdir, txn2prm)
 		if err != nil {
 			log.Println(err)

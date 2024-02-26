@@ -5,6 +5,7 @@ import (
 	"errors"
 	"fmt"
 	"os"
+	"os/exec"
 	"sort"
 	"strings"
 )
@@ -314,4 +315,14 @@ func IsDigital(s string) bool {
 		}
 	}
 	return b
+}
+
+func Gzip(pth string) error {
+	// TODO tests
+	var cmd *exec.Cmd
+	// Attn: all flags separately!
+	cmd = exec.Command("gzip", "-f", pth) // struct
+	cmd.Stdout = os.Stdout
+	cmd.Stderr = os.Stderr
+	return cmd.Run() // returns error
 }

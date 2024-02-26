@@ -130,6 +130,11 @@ func TestSigPways(t *testing.T) {
 	xmap.Upac.Add("P31751", "bgwp", "P31751") // PF24 // needed
 	/// exporting
 	srcs := []string{"signor"}
+	wpths := map[string]string{
+		"reg2ntrg": "../../tdata/OUT/export/reg2pway/n-signor-9606.nt",
+		"reg2ptrg": "../../tdata/OUT/export/reg2pway/p-signor-9606.nt",
+		"reg2utrg": "../../tdata/OUT/export/reg2pway/u-signor-9606.nt",
+	}
 
 	// for Signor complexes and protein families
 	sigmap, _ := parse.Sigmap(pth)
@@ -143,6 +148,7 @@ func TestSigPways(t *testing.T) {
 	for i, tt := range tts {
 		(*tt.arg1).Src = srcs[i]
 		(*tt.arg1).Taxid = "9606"
+		(*tt.arg1).Out = wpths
 		SigPways(tt.arg1, tt.arg2, tt.arg3)
 		cnts := (*tt.arg1).Cnts
 		if cnts[pdck][srcs[i]] != tt.val1 {
@@ -180,6 +186,11 @@ func TestReg2targ(t *testing.T) {
 	xmap.Upac.Add("P48431", "bgwp", "P48431") // for testing isoforms // needed
 	/// exporting
 	srcs := []string{"signor"}
+	wpths := map[string]string{
+		"reg2ntrg": "../../tdata/OUT/export/reg2targ/n-signor-9606.nt",
+		"reg2ptrg": "../../tdata/OUT/export/reg2targ/p-signor-9606.nt",
+		"reg2utrg": "../../tdata/OUT/export/reg2targ/u-signor-9606.nt",
+	}
 
 	// for Signor complexes and protein families
 	sigmap, _ := parse.Sigmap(pth)
@@ -192,6 +203,8 @@ func TestReg2targ(t *testing.T) {
 	for i, tt := range tts {
 		(*tt.arg1).Src = srcs[i]
 		(*tt.arg1).Taxid = "9606"
+		(*tt.arg1).Out = wpths
+
 		Reg2targ(tt.arg1, tt.arg2, tt.arg3)
 		cnts := (*tt.arg1).Cnts
 		if cnts[pdck][srcs[i]] != tt.val1 {
@@ -298,10 +311,18 @@ func Test_Tfac2gene(t *testing.T) {
 		{&d4b2, &xmap, pth + "OUT/export/", 1}, // sic!
 		{&d4b3, &xmap, pth + "OUT/export/", 2}, // sic!
 	}
+
 	pdck := "reg2utrg"
 	for i, tt := range tts {
-		(*tt.arg1).Src = srcs[i]
+		srck := srcs[i]
+		(*tt.arg1).Src = srck
 		(*tt.arg1).Taxid = "9606"
+		wpths := map[string]string{
+			"reg2ntrg": "../../tdata/OUT/export/tfac2gene/n-" + srck + "-9606.nt",
+			"reg2ptrg": "../../tdata/OUT/export/tfac2gene/p-" + srck + "-9606.nt",
+			"reg2utrg": "../../tdata/OUT/export/tfac2gene/u-" + srck + "-9606.nt",
+		}
+		(*tt.arg1).Out = wpths
 		Tfac2gene(tt.arg1, tt.arg2, tt.arg3)
 		cnts := (*tt.arg1).Cnts
 		if cnts[pdck][srcs[i]] != tt.val1 {
@@ -312,7 +333,7 @@ func Test_Tfac2gene(t *testing.T) {
 			)
 		}
 	}
-}
+} // Tfac2gene
 
 func Test_UpVar(t *testing.T) {
 	type tt struct {

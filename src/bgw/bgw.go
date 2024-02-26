@@ -68,6 +68,7 @@ type Column struct {
 }
 
 type Dat4bridge struct {
+	Out   map[string]string
 	Src   string
 	Taxid string
 	Duos  util.Set3D
@@ -77,6 +78,7 @@ type Dat4bridge struct {
 
 func (p *Dat4bridge) New() {
 	d4b := *p
+	d4b.Out = map[string]string{}
 	d4b.Src = ""
 	d4b.Taxid = ""
 	d4b.Duos = make(util.Set3D)

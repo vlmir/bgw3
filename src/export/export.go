@@ -198,24 +198,21 @@ func Prot2prot(d *bgw.Dat4bridge, x *bgw.Xmap, wdir string) error {
 	return nil
 } // Prot2prot
 
+// TODO re-implement for a single property (pdck)
 func Reg2targ(d *bgw.Dat4bridge, x *bgw.Xmap, wdir string) error {
 	d4b := *d
 	xmap := *x
 	srck := d4b.Src
 	txid := d4b.Taxid
+	wpths := d4b.Out
 	cnts := d4b.Cnts // Set2D
+	// just sortcuts
 	p2t := "reg2ptrg"
 	n2t := "reg2ntrg"
 	u2t := "reg2utrg"
 	modes := make(util.Set3D)
 	modes.Add("signor", "up-regulates", p2t)
 	modes.Add("signor", "down-regulates", n2t)
-	sdir := "reg2targ"
-	wpths := map[string]string{
-		p2t: fmt.Sprintf("%s%s/%s-%s-%s.nt", wdir, sdir, "p", srck, txid),
-		n2t: fmt.Sprintf("%s%s/%s-%s-%s.nt", wdir, sdir, "n", srck, txid),
-		u2t: fmt.Sprintf("%s%s/%s-%s-%s.nt", wdir, sdir, "u", srck, txid),
-	}
 
 	fh4p, err := os.Create(wpths[p2t])
 	util.CheckE(err)
@@ -434,41 +431,23 @@ func Reg2targ(d *bgw.Dat4bridge, x *bgw.Xmap, wdir string) error {
 	return nil
 } // Reg2targ
 
+// TODO re-implement for a single property (pdck)
 func Tfac2gene(d *bgw.Dat4bridge, x *bgw.Xmap, wdir string) error {
 	d4b := *d
 	xmap := *x
 	srck := d4b.Src
 	txid := d4b.Taxid
+	wpths := d4b.Out
 	cnts := d4b.Cnts // Set2D
+	// just sortcuts
 	p2t := "reg2ptrg"
 	n2t := "reg2ntrg"
 	u2t := "reg2utrg"
 	modes := make(util.Set3D)
-	/*
-		modes.Add("signor", "UP", p2t)
-		modes.Add("signor", "DOWN", n2t)
-		modes.Add("cytreg", "Activation", p2t)
-		modes.Add("cytreg", "Repression", n2t)
-		modes.Add("trrust", "Activation", p2t)
-		modes.Add("trrust", "Repression", n2t)
-		modes.Add("geredb", "positive", p2t)
-		modes.Add("geredb", "negative", n2t)
-		modes.Add("tfacts", "UP", p2t)
-		modes.Add("tfacts", "DOWN", n2t)
-		modes.Add("ntnu", "+", p2t)
-		modes.Add("ntnu", "-", n2t)
-	*/
 	modes.Add("tflink", "activator", p2t)
 	modes.Add("tflink", "repressor", n2t)
 	modes.Add("coltri", "pos", p2t)
 	modes.Add("coltri", "neg", n2t)
-	sdir := "tfac2gene"
-	wpths := map[string]string{
-		p2t: fmt.Sprintf("%s%s/%s-%s-%s.nt", wdir, sdir, "p", srck, txid),
-		n2t: fmt.Sprintf("%s%s/%s-%s-%s.nt", wdir, sdir, "n", srck, txid),
-		u2t: fmt.Sprintf("%s%s/%s-%s-%s.nt", wdir, sdir, "u", srck, txid),
-	}
-
 	fh4p, err := os.Create(wpths[p2t])
 	util.CheckE(err)
 	defer fh4p.Close()
@@ -644,11 +623,13 @@ func Tfac2gene(d *bgw.Dat4bridge, x *bgw.Xmap, wdir string) error {
 	return nil
 } // Tfac2gene
 
+// TODO re-implement for a single property (pdck)
 func SigPways(d *bgw.Dat4bridge, x *bgw.Xmap, wdir string) error {
 	d4b := *d
 	xmap := *x
 	srck := d4b.Src
 	txid := d4b.Taxid
+	wpths := d4b.Out
 	cnts := d4b.Cnts // Set2D
 	p2t := "reg2ptrg"
 	n2t := "reg2ntrg"
@@ -656,12 +637,6 @@ func SigPways(d *bgw.Dat4bridge, x *bgw.Xmap, wdir string) error {
 	modes := make(util.Set3D)
 	modes.Add("signor", "up-regulates", p2t)
 	modes.Add("signor", "down-regulates", n2t)
-	sdir := "reg2pway"
-	wpths := map[string]string{
-		p2t: fmt.Sprintf("%s%s/%s-%s-%s.nt", wdir, sdir, "p", srck, txid),
-		n2t: fmt.Sprintf("%s%s/%s-%s-%s.nt", wdir, sdir, "n", srck, txid),
-		u2t: fmt.Sprintf("%s%s/%s-%s-%s.nt", wdir, sdir, "u", srck, txid),
-	}
 
 	fh4p, err := os.Create(wpths[p2t])
 	util.CheckE(err)
