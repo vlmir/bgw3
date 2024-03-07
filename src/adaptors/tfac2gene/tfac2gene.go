@@ -15,34 +15,37 @@ func main() {
 	eP := flag.Bool("e", false, "[e]xport")
 	flag.Parse()
 	if !flag.Parsed() {
-		log.Fatalln("failed to parse flags")
+		log.Fatalln("tfac2gene: failed to parse flags")
 	}
 	args := flag.Args()
 	cnt := len(args)
 	if cnt < 4 {
-		log.Fatalln("Expecting more arguments than ", cnt)
+		log.Fatalln("tfac2gene: Expecting more arguments than:", cnt)
 	}
-	log.Println("Started with args:", args)
+	log.Println("tfac2gene: Started with args:", args)
 	datdir := args[0]                              // path to data directory (with a trailing '/')
 	bgwdir := args[1]                              // path to rdf directory (with a trailing '/')
 	rpthT := args[2]                               // path to a list of selected taxa and proteomes
 	scrdir := args[3]                              // path to scripts directory
 	txn2prm, err := util.MakeMap(rpthT, 1, 0, "_") // txnID -> proteomeID
 	if err != nil {
-		log.Fatalln("main:", err)
+		log.Fatalln("tfac2gene: Failed to make map:", rpthT, err)
 	}
 	n := len(txn2prm)
 	if n == 0 {
 		log.Fatalln("main:Empty map:", rpthT)
 	}
-	log.Println("txn2prm:", n)
 
 	if *aP || *dP {
 		start := time.Now()
-		dat4bgw.SaveAllTflink(datdir)
+		if err := dat4bgw.SaveAllTflink(datdir); err != nil {
+			panic(err)
+		}
 		log.Println("Done with tflink in", time.Since(start))
 		start = time.Now()
-		dat4bgw.SaveAllColtri(datdir, scrdir)
+		if err := dat4bgw.SaveAllColtri(datdir, scrdir); err != nil {
+			panic(err)
+		}
 		log.Println("Done with collectri in", time.Since(start))
 	}
 

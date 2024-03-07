@@ -80,15 +80,15 @@ func Geneprot(datdir, bgwdir string, txn2prm util.Set2D) (err error) {
 		xmap.New()
 		err := export.Gene(rpthu, rpthi, wpthg, &xmap)
 		util.CheckE(err)
-				if err := util.Gzip(wpthg); err != nil {
-					panic(err)
-				}
+		if err := util.Gzip(wpthg); err != nil {
+			panic(err)
+		}
 
 		err = export.Prot(rpthu, rpthi, wpthp, &xmap)
 		util.CheckE(err)
-				if err := util.Gzip(wpthp); err != nil {
-					panic(err)
-				}
+		if err := util.Gzip(wpthp); err != nil {
+			panic(err)
+		}
 
 		// xmap export
 		wfhX, err := os.Create(wpthx)
@@ -561,10 +561,10 @@ func Ortho(datdir, bgwdir string, txn2prm util.Set2D) (int, error) {
 				log.Println(msg)
 				continue
 			}
-		if err = util.Gzip(wpth); err != nil {
-			log.Println("util.Gzip(): Failed to gzip:", wpth)
-			return nln, err
-		}
+			if err = util.Gzip(wpth); err != nil {
+				log.Println("util.Gzip(): Failed to gzip:", wpth)
+				return nln, err
+			}
 			nln += nts
 		} // txidR
 	} // txidL

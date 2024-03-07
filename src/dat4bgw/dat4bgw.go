@@ -22,11 +22,11 @@ func gunzip(pth string) error {
 	// TODO tests
 	var cmd *exec.Cmd
 	// Attn: all flags separately!
-	cmd = exec.Command("gunzip", pth) // struct
+	cmd = exec.Command("gunzip", "-f", pth) // struct
 	cmd.Stdout = os.Stdout
 	cmd.Stderr = os.Stderr
 	return cmd.Run() // returns error
-}
+} // gunzip
 
 // function Rwget() recursively identifies target files and downloads in a specified location
 // irreproducible set of downloaded files. TODO
@@ -40,7 +40,7 @@ func Rwget(ns, mask, ddir string) error {
 	cmd.Stdout = os.Stdout
 	cmd.Stderr = os.Stderr
 	return cmd.Run()
-}
+} // Rwget
 
 /// Single File Download ///
 
@@ -65,7 +65,7 @@ func WgetFile(strs ...string) (err error) {
 	cmd.Stdout = os.Stdout
 	cmd.Stderr = os.Stderr
 	return cmd.Run()
-}
+} // WgetFile
 
 // HttpFile will download a url to a local file. It's efficient because it will
 // write as it downloads and not load the whole file into memory.
@@ -92,7 +92,7 @@ func HttpFile(url, wpth string) (*bytes.Buffer, error) {
 		_, err = io.Copy(out, resp.Body)
 	}
 	return buf, err
-}
+} // HttpFile
 
 func GetFile(uri, key0, val0, wpth string) (*bytes.Buffer, error) {
 	// 2023-10-19: used only for OMIM
@@ -123,7 +123,7 @@ func GetFile(uri, key0, val0, wpth string) (*bytes.Buffer, error) {
 		_, err = io.Copy(out, resp.Body)
 	}
 	return buf, err
-}
+} // GetFile
 
 /// Single Taxon Download ///
 
@@ -137,15 +137,15 @@ func saveOneIdmap(txid, pome, datdir string) error {
 	uri := fmt.Sprintf("%s%s/%s", ns, pome, file)
 	// HttpFile() cannot be used here!
 	if err := WgetFile(uri, wpth); err != nil {
-		log.Println("saveOneIdmap(): Warning: Failed to download data for:", txid, err)
+		log.Println("saveOneIdmap(): Failed to download:", uri, err)
 		return err
 	}
 	if err := gunzip(wpth); err != nil {
-		log.Println("saveOneIdmap(): Warning: Failed to gunzip data for:", txid, err)
+		log.Println("saveOneIdmap(): Failed to gunzip:", wpth, err)
 		return err
 	}
 	return nil
-}
+} // saveOneIdmap
 
 func saveOneUniprot(txid, datdir, script string) error {
 	var cmd *exec.Cmd
@@ -153,7 +153,7 @@ func saveOneUniprot(txid, datdir, script string) error {
 	cmd.Stdout = os.Stdout
 	cmd.Stderr = os.Stderr
 	return cmd.Run()
-}
+} // saveOneUniprot
 
 func saveOneColtri(txid, datdir, script string) error {
 	var cmd *exec.Cmd
@@ -161,10 +161,11 @@ func saveOneColtri(txid, datdir, script string) error {
 	cmd.Stdout = os.Stdout
 	cmd.Stderr = os.Stderr
 	return cmd.Run()
-}
+} // saveOneColtri
 
 func SaveOneSignor(txid string, datdir string) error {
 	// TODO see if all the files are limited to human data
+	// TODO adding mouse and rat data ??
 	subdir := "signor/"
 	if err := os.MkdirAll(filepath.Join(datdir, subdir), 0755); err != nil {
 		panic(err)
@@ -173,30 +174,30 @@ func SaveOneSignor(txid string, datdir string) error {
 	uri := "https://signor.uniroma2.it/getData.php?type=causalTab"
 	wpth := fmt.Sprintf("%s%s%s%s", datdir, subdir, txid, ext)
 	if err := WgetFile(uri, wpth); err != nil {
-		log.Println("saveOneSignor(): Warning: Failed to download data for:", txid, err)
+		log.Println("saveOneSignor(): Failed to download:", uri, err)
 		return err
 	}
 	ext = ".tsv"
 	uri = "https://signor.uniroma2.it/API/getComplexData.php"
 	wpth = fmt.Sprintf("%s%s%s%s", datdir, subdir, "complexes", ext)
 	if err := WgetFile(uri, wpth); err != nil {
-		log.Println("saveOneSignor(): Warning: Failed to download protein complexes: ", err)
+		log.Println("saveOneSignor(): Failed to download:", uri, err)
 		return err
 	}
 	uri = "https://signor.uniroma2.it/API/getProteinFamilyData.php"
 	wpth = fmt.Sprintf("%s%s%s%s", datdir, subdir, "families", ext)
 	if err := WgetFile(uri, wpth); err != nil {
-		log.Println("saveOneSignor(): Warning: Failed to download protein families: ", err)
+		log.Println("saveOneSignor(): Failed to download:", uri, err)
 		return err
 	}
 	uri = "https://signor.uniroma2.it/getPathwayData.php?relations"
 	wpth = fmt.Sprintf("%s%s%s%s", datdir, subdir, "pathways", ext)
 	if err := WgetFile(uri, wpth); err != nil {
-		log.Println("saveOneSignor(): Warning: Failed to download pathway relations for:", txid, err)
+		log.Println("saveOneSignor(): Failed to download:", uri, err)
 		return err
 	}
 	return nil
-}
+} // SaveOneSignor
 
 func saveOneIntact(txid string, datdir string) error {
 	uri := "https://www.ebi.ac.uk/Tools/webservices/psicquic/intact/webservices/current/search/query/species:" + txid
@@ -206,11 +207,11 @@ func saveOneIntact(txid string, datdir string) error {
 	// NB: HttpFile() tends to fail here with large files !
 	if err := WgetFile(uri, wpth); err != nil {
 		//if _, err := GetFile(uri, "Accept", "text", wpth); err != nil {
-		log.Println("saveOneIntact(): Warning: Failed to download data for:", txid, err)
+		log.Println("saveOneIntact(): Failed to download:", uri, err)
 		return err
 	}
 	return nil
-}
+} // saveOneIntact
 
 func saveOneGaf(txid string, datdir string, gafpome string) error {
 	// NB: this site is NOT recognised by https !!
@@ -223,14 +224,15 @@ func saveOneGaf(txid string, datdir string, gafpome string) error {
 	//if _, err := HttpFile(uri, wpth); err != nil {
 	if err := WgetFile(uri, wpth); err != nil {
 		//if _, err := GetFile(uri, "Accept", "text", wpth); err != nil {
-		log.Println("txid:", txid)
-		panic(err)
+		log.Println("saveOneGaf(): Failed to download:", uri, err)
+		return err
 	}
 	return nil
-}
+} // saveOneGaf
 
 func saveOneGpa(txid string, datdir string) error {
 	// Attn: the result is limited to 10000 annotations !!
+	// pagination required
 	uri := "https://www.ebi.ac.uk/QuickGO/services/annotation/downloadSearch?taxonId=" + txid
 	subdir := "goa/"
 	ext := ".gpa"
@@ -239,27 +241,30 @@ func saveOneGpa(txid string, datdir string) error {
 	// "text/gaf" for GAF files
 	// Header is mandatory
 	if _, err := GetFile(uri, "Accept", "text/gpad", wpth); err != nil {
-		log.Println("saveOneGpa(): Warning: Failed to download data for:", txid, err)
+		log.Println("saveOneGpa(): Failed to download:", uri, err)
 		return err
 	}
 	return nil
-}
+} // saveOneGpa
 
 func saveOneTflink(uri, txid, datdir string) error {
 	subdir := "tflink/"
 	ext := ".tsv.gz"
 	wpth := fmt.Sprintf("%s%s%s%s", datdir, subdir, txid, ext)
 	if err := WgetFile(uri, wpth); err != nil {
-		log.Println("saveOneTflink(): Warning: Failed to download data for:", txid, err)
+		log.Println("saveOneTflink(): Failed to download:", uri, err)
 		return err
 	}
-	gunzip(wpth)
+	if err := gunzip(wpth); err != nil {
+		log.Println("saveOneTflink(): Failed to gunzip:", wpth, err)
+		return err
+	}
 	return nil
-}
+} // saveOneTflink
 
-/// Multiple Taxa Download ///
+/// All Taxa Download ///
 
-func SaveAllCtdb(datdir string) {
+func SaveAllCtdb(datdir string) error {
 	subdir := "ctdb/"
 	if err := os.MkdirAll(filepath.Join(datdir, subdir), 0755); err != nil {
 		panic(err)
@@ -278,15 +283,18 @@ func SaveAllCtdb(datdir string) {
 		uri := uris[lbl]
 		wpth := fmt.Sprintf("%s%s%s%s", datdir, subdir, lbl, ext)
 		if err := WgetFile(uri, wpth); err != nil {
-			log.Println("saveOneCtdb(): Warning: Failed to download data for:", lbl, err)
+			log.Println("SaveAllCtdb(): Failed to download:", uri, err)
+			return err
 		}
 		if err := gunzip(wpth); err != nil {
-			log.Println("saveOneIdmap(): Warning: Failed to gunzip data for:", lbl, err)
+			log.Println("SaveAllCtdb(): Failed to gunzip:", wpth, err)
+			return err
 		}
 	} // for lbl
-}
+	return nil
+} // SaveAllCtdb
 
-func SaveAllIdmap(datdir string, txn2prm util.Set2D) {
+func SaveAllIdmap(datdir string, txn2prm util.Set2D) error {
 	subdir := "idmapping"
 	if err := os.MkdirAll(filepath.Join(datdir, subdir), 0755); err != nil {
 		panic(err)
@@ -294,12 +302,14 @@ func SaveAllIdmap(datdir string, txn2prm util.Set2D) {
 	for txid := range txn2prm {
 		pome := txn2prm[txid].Keys()[0]
 		if err := saveOneIdmap(txid, pome, datdir); err != nil {
-			log.Println("Warning: Failed to download data for:", txid, err)
+			log.Println("SaveAllIdmap(): Failed to download data for:", pome, txid, err)
+			return err
 		}
 	}
-}
+	return nil
+} // SaveAllIdmap
 
-func SaveAllColtri(datdir, scrdir string) {
+func SaveAllColtri(datdir, scrdir string) error {
 	subdir := "coltri/"
 	if err := os.MkdirAll(filepath.Join(datdir, subdir), 0755); err != nil {
 		panic(err)
@@ -308,12 +318,14 @@ func SaveAllColtri(datdir, scrdir string) {
 	script := scrdir + "download1ctri.py"
 	for txid := range taxa {
 		if err := saveOneColtri(txid, datdir, script); err != nil {
-			log.Println("Warning: Failed to download data for:", txid, err)
+			log.Println("SaveAllColtri(): Failed to download data for:", txid, err)
+			return err
 		}
 	}
-}
+	return nil
+} // SaveAllColtri
 
-func SaveAllUniprot(datdir string, txn2prm util.Set2D, scrdir string) {
+func SaveAllUniprot(datdir string, txn2prm util.Set2D, scrdir string) error {
 	subdir := "uniprot/"
 	if err := os.MkdirAll(filepath.Join(datdir, subdir), 0755); err != nil {
 		panic(err)
@@ -322,28 +334,35 @@ func SaveAllUniprot(datdir string, txn2prm util.Set2D, scrdir string) {
 	uri := "http://ftp.uniprot.org/pub/databases/uniprot/current_release/knowledgebase/variants/humsavar.txt"
 	wpth := datdir + "uniprot/9606.var"
 	if _, err := HttpFile(uri, wpth); err != nil {
-		panic(err)
+		log.Println("SaveAllUniprot(): Failed to download:", uri, err)
+		return err
 	}
 
 	script := scrdir + "download1up.py"
 	for txid := range txn2prm {
 		if err := saveOneUniprot(txid, datdir, script); err != nil {
-			log.Println("Warning: Failed to download data for:", txid, err)
+			log.Println("SaveAllUniprot(): Failed to download data for:", txid, err)
+			return err
 		}
 	}
-}
+	return nil
+} // SaveAllUniprot
 
-func SaveAllIntact(datdir string, txn2prm util.Set2D) {
+func SaveAllIntact(datdir string, txn2prm util.Set2D) error {
 	subdir := "intact/"
 	if err := os.MkdirAll(filepath.Join(datdir, subdir), 0755); err != nil {
 		panic(err)
 	}
 	for txid := range txn2prm {
-		saveOneIntact(txid, datdir)
+		if err := saveOneIntact(txid, datdir); err != nil {
+			log.Println("SaveAllIntact(): Failed to download data for:", txid, err)
+			return err
+		}
 	}
+	return nil
 }
 
-func SaveAllGaf(datdir string, txn2prm util.Set2D) {
+func SaveAllGaf(datdir string, txn2prm util.Set2D) error {
 	subdir := "goa/"
 	if err := os.MkdirAll(filepath.Join(datdir, subdir), 0755); err != nil {
 		panic(err)
@@ -352,39 +371,49 @@ func SaveAllGaf(datdir string, txn2prm util.Set2D) {
 	wpth := datdir + "goa/gafpomes.tsv"
 	// if _, err := HttpFile(uri, wpth); err != nil { // error
 	if err := WgetFile(uri, wpth); err != nil {
-		panic(err)
+		log.Println("SaveAllGaf(): Failed to download:", uri, err)
+		return err
 	}
 	gafmap, err := util.MakeMap(wpth, 1, 2, "\t") // counting from 0
 	if err != nil {
-		//log.Fatalln("main:", err)
-		panic(err)
+		log.Println("SaveAllGaf(): Failed to make map:", wpth, err)
+		return err
 	}
 	n := len(gafmap)
 	if n == 0 {
 		msg := fmt.Sprintf("Empty map: %s", wpth)
-		panic(errors.New(msg))
+		err := errors.New(msg)
+		return err
 	}
-	log.Println("gafmap:", n)
 	for txid := range txn2prm {
 		gpomes := gafmap[txid].Keys()
 		if len(gpomes) != 1 {
-			continue
+			msg := fmt.Sprintf("Warning: Multiple goa proteomes for: %s, skipping", txid)
+			err := errors.New(msg)
+			return err
 		}
-		saveOneGaf(txid, datdir, gpomes[0])
-	}
-}
+		if err := saveOneGaf(txid, datdir, gpomes[0]); err != nil {
+			return err
+		}
+	} // txid
+	return nil
+} // SaveAllGaf
 
-func SaveAllGpa(datdir string, txn2prm util.Set2D) {
+func SaveAllGpa(datdir string, txn2prm util.Set2D) error {
+	// NOT used
 	subdir := "goa/"
 	if err := os.MkdirAll(filepath.Join(datdir, subdir), 0755); err != nil {
 		panic(err)
 	}
 	for txid := range txn2prm {
-		saveOneGpa(txid, datdir)
+		if err := saveOneGpa(txid, datdir); err != nil {
+			return err
+		}
 	}
-}
+	return nil
+} // SaveAllGpa
 
-func SaveAllTflink(datdir string) {
+func SaveAllTflink(datdir string) error {
 	subdir := "tflink/"
 	if err := os.MkdirAll(filepath.Join(datdir, subdir), 0755); err != nil {
 		panic(err)
@@ -392,9 +421,12 @@ func SaveAllTflink(datdir string) {
 	ns := "https://cdn.netbiol.org/tflink/download_files/TFLink_"
 	for txid := range bgw.Tflink {
 		uri := ns + bgw.Tflink[txid]
-		saveOneTflink(uri, txid, datdir)
+		if err := saveOneTflink(uri, txid, datdir); err != nil {
+			return err
+		}
 	}
-}
+	return nil
+} // SaveAllTflink
 
 /// Ontologies Download ///
 
@@ -407,7 +439,6 @@ func SaveAllOnto(datdir, year string) error {
 
 	// from BioPortal
 	ontos := make(util.Set3D)
-	// Attn: "OMIM" not "omim" !!
 	ontos.Add("OMIM", "ext", ".ttl")
 	ontos.Add("OMIM", "ns", "https://data.bioontology.org/ontologies/")
 	ontos.Add("OMIM", "subm", "/submissions/"+year)
@@ -420,7 +451,7 @@ func SaveAllOnto(datdir, year string) error {
 		uri := fmt.Sprintf("%s%s%s%s", ns, onto, subm, key)
 		wpth := fmt.Sprintf("%s%s%s%s", datdir, subdir, strings.ToLower(onto), ext)
 		if _, err := GetFile(uri, "Accept", "text", wpth); err != nil {
-			log.Println("dat4bgw.SaveAllOnto:", err)
+			log.Println("SaveAllOnto(): Failed to download:", uri, err)
 			return err
 		}
 		/*
@@ -443,13 +474,14 @@ func SaveAllOnto(datdir, year string) error {
 		 */
 		uri := fmt.Sprintf("%s%s%s", ns, onto, ext)
 		if _, err := HttpFile(uri, wpth); err != nil {
-			log.Println("dat4bgw.SaveAllOnto:", onto, err)
+			log.Println("SaveAllOnto(): Failed to download:", uri, err)
+			return err
 		}
 		/*
 		 */
 	}
 	return nil
-}
+} // SaveAllOnto
 
 func main() {
 	aP := flag.Bool("a", false, "download [a]ll") // should not normally be used

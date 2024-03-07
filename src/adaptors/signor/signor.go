@@ -15,30 +15,31 @@ func main() {
 	eP := flag.Bool("e", false, "[e]xport")
 	flag.Parse()
 	if !flag.Parsed() {
-		log.Fatalln("failed to parse flags")
+		log.Fatalln("signor: Failed to parse flags")
 	}
 	args := flag.Args()
 	cnt := len(args)
 	if cnt < 3 {
-		log.Fatalln("Expecting more arguments than ", cnt)
+		log.Fatalln("signor: Expecting more arguments than:", cnt)
 	}
-	log.Println("Started with args:", args)
+	log.Println("signor: Started with args:", args)
 	datdir := args[0]                              // path to data directory (with a trailing '/')
 	bgwdir := args[1]                              // path to rdf directory (with a trailing '/')
 	rpthT := args[2]                               // path to a list of selected taxa and proteomes
 	txn2prm, err := util.MakeMap(rpthT, 1, 0, "_") // txnID -> proteomeID
 	if err != nil {
-		log.Fatalln("main:", err)
+		log.Fatalln("signor: Failed to make map:", rpthT, err)
 	}
 	n := len(txn2prm)
 	if n == 0 {
-		log.Fatalln("main:Empty map:", rpthT)
+		log.Fatalln("signor: Empty map:", rpthT)
 	}
-	log.Println("txn2prm:", n)
 
 	if *aP || *dP {
 		start := time.Now()
-		dat4bgw.SaveOneSignor("9606", datdir)
+		if err := dat4bgw.SaveOneSignor("9606", datdir); err != nil {
+			panic(err)
+		}
 		log.Println("Done with signor in", time.Since(start))
 	}
 

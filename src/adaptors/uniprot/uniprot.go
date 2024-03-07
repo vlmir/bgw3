@@ -15,34 +15,37 @@ func main() {
 	eP := flag.Bool("e", false, "[e]xport")
 	flag.Parse()
 	if !flag.Parsed() {
-		log.Fatalln("failed to parse flags")
+		log.Fatalln("uniprot: Failed to parse flags")
 	}
 	args := flag.Args()
 	cnt := len(args)
 	if cnt < 4 {
-		log.Fatalln("Expecting more arguments than ", cnt)
+		log.Fatalln("uniprot: Expecting more arguments than:", cnt)
 	}
-	log.Println("Started with args:", args)
+	log.Println("uniprot: Started with args:", args)
 	datdir := args[0]                              // path to data directory (with a trailing '/')
 	bgwdir := args[1]                              // path to rdf directory (with a trailing '/')
 	rpthT := args[2]                               // path to a list of selected taxa and proteomes
 	scrdir := args[3]                              // path to scripts directory
 	txn2prm, err := util.MakeMap(rpthT, 1, 0, "_") // txnID -> proteomeID
 	if err != nil {
-		log.Fatalln("main:", err)
+		log.Fatalln("uniprot: Failed to make map:", rpthT, err)
 	}
 	n := len(txn2prm)
 	if n == 0 {
-		log.Fatalln("main:Empty map:", rpthT)
+		log.Fatalln("uniprot: Empty map:", rpthT)
 	}
-	log.Println("txn2prm:", n)
 
 	if *aP || *dP {
 		start := time.Now()
-		dat4bgw.SaveAllIdmap(datdir, txn2prm)
+		if err := dat4bgw.SaveAllIdmap(datdir, txn2prm); err != nil {
+			panic(err)
+		}
 		log.Println("Done with idmapping in", time.Since(start))
-		start = time.Now()
-		dat4bgw.SaveAllUniprot(datdir, txn2prm, scrdir) // including 'humsavar.txt'
+		start = time.Now() // including 'humsavar.txt'
+		if err := dat4bgw.SaveAllUniprot(datdir, txn2prm, scrdir); err != nil {
+			panic(err)
+		}
 		log.Println("Done with uniprot in", time.Since(start))
 	}
 

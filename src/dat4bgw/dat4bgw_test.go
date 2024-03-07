@@ -75,7 +75,7 @@ func Test_HttpFile(t *testing.T) {
 			t.Error(
 				"For test", i+1, ": ",
 				"\n\twant", tt.val2,
-				"\n\thave", buf,
+				"\n\thave", len(buf.String()),
 			)
 		}
 	}
@@ -166,7 +166,7 @@ func Test_WgetFile(t *testing.T) {
 		}
 	}
 	log.Println("Done with WgetFile in", time.Since(mystart))
-}
+} // WgetFile
 
 /*
 func Test_Rwget(t *testing.T) {

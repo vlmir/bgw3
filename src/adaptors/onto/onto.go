@@ -14,22 +14,24 @@ func main() {
 	eP := flag.Bool("e", false, "[e]xport")
 	flag.Parse()
 	if !flag.Parsed() {
-		log.Fatalln("failed to parse flags")
+		log.Fatalln("onto: Failed to parse flags")
 	}
 	args := flag.Args()
 	cnt := len(args)
 	if cnt < 3 {
-		log.Fatalln("Expecting more arguments than ", cnt)
+		log.Fatalln("onto: Expecting more arguments than:", cnt)
 	}
-	log.Println("Started with args:", args)
+	log.Println("onto: Started with args:", args)
 	datdir := args[0] // path to data directory (with a trailing '/')
 	bgwdir := args[1] // path to rdf directory (with a trailing '/')
 	year := args[2]   // path to a list of selected taxa and proteomes
 
 	if *aP || *dP {
 		start := time.Now()
-		dat4bgw.SaveAllOnto(datdir, year)
-		log.Println("Done with ontologies in", time.Since(start))
+		if err := dat4bgw.SaveAllOnto(datdir, year); err != nil {
+			panic(err)
+		}
+		log.Println("Done with onto in", time.Since(start))
 	}
 
 	if *aP || *eP {
