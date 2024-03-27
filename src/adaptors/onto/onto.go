@@ -24,21 +24,21 @@ func main() {
 	log.Println("onto: Started with args:", args)
 	datdir := args[0] // path to data directory (with a trailing '/')
 	bgwdir := args[1] // path to rdf directory (with a trailing '/')
-	year := args[2]   // path to a list of selected taxa and proteomes
+	year := args[2]   // 
 
 	if *aP || *dP {
 		start := time.Now()
 		if err := dat4bgw.SaveAllOnto(datdir, year); err != nil {
 			panic(err)
 		}
-		log.Println("Done with onto in", time.Since(start))
+		log.Println("onto: Downloaded in", time.Since(start))
 	}
 
 	if *aP || *eP {
 		start := time.Now()
 		if err := rdf4bgw.Onto(datdir, bgwdir); err != nil {
-			log.Fatal(err)
+			panic(err)
 		}
-		log.Println("Done with ontologies in", time.Since(start))
+		log.Println("onto: Exported in", time.Since(start))
 	}
 }

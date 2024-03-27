@@ -41,12 +41,12 @@ func main() {
 		if err := dat4bgw.SaveAllIdmap(datdir, txn2prm); err != nil {
 			panic(err)
 		}
-		log.Println("Done with idmapping in", time.Since(start))
+		log.Println("uniprot: Downloaded idmapping in", time.Since(start))
 		start = time.Now() // including 'humsavar.txt'
 		if err := dat4bgw.SaveAllUniprot(datdir, txn2prm, scrdir); err != nil {
 			panic(err)
 		}
-		log.Println("Done with uniprot in", time.Since(start))
+		log.Println("uniprot: Downloaded uniprot in", time.Since(start))
 	}
 
 	if *aP || *eP {
@@ -55,22 +55,16 @@ func main() {
 		if err := rdf4bgw.Geneprot(datdir, bgwdir, txn2prm); err != nil {
 			panic(err)
 		}
-		log.Println("Done with Geneprot in", time.Since(start))
-
+		log.Println("uniprot: Exported gene, prot, xmap in", time.Since(start))
 		start = time.Now()
 		if _, err := rdf4bgw.Gene2phen(datdir, bgwdir, txn2prm); err != nil {
 			panic(err)
 		}
-		log.Println("Done with Gene2phen in", time.Since(start))
-
+		log.Println("uniprot: Exported gene2phen in", time.Since(start))
 		start = time.Now()
-		/*
-		 */
-		_, err := rdf4bgw.Ortho(datdir, bgwdir, txn2prm)
-		if err != nil {
-			log.Println(err)
-		} else {
-			log.Println("Done with rdf4bgw.Ortho in", time.Since(start))
+		if _, err := rdf4bgw.Ortho(datdir, bgwdir, txn2prm); err != nil {
+			panic(err)
 		}
+		log.Println("uniprot: Exported ortho in", time.Since(start))
 	}
 }

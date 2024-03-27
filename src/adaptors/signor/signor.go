@@ -40,15 +40,19 @@ func main() {
 		if err := dat4bgw.SaveOneSignor("9606", datdir); err != nil {
 			panic(err)
 		}
-		log.Println("Done with signor in", time.Since(start))
+		log.Println("signor: Downloaded in", time.Since(start))
 	}
 
 	if *aP || *eP {
 		start := time.Now()
-		rdf4bgw.Reg2targ(datdir, bgwdir, txn2prm)
-		log.Println("Done with rgr2trg in", time.Since(start))
+		if _, err := rdf4bgw.Reg2targ(datdir, bgwdir, txn2prm); err != nil{
+			panic(err)
+		}
+		log.Println("signor: Exported reg2targ in", time.Since(start))
 		start = time.Now()
-		rdf4bgw.Reg2pway(datdir, bgwdir, txn2prm)
-		log.Println("Done with reg2pway in", time.Since(start))
+		if _, err := rdf4bgw.Reg2pway(datdir, bgwdir, txn2prm); err != nil{
+			panic(err)
+		}
+		log.Println("signor: Exported reg2pway in", time.Since(start))
 	}
 }

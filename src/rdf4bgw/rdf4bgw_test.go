@@ -46,6 +46,9 @@ func Test_Geneprot(t *testing.T) {
 	}
 }
 
+func Test_rdfpipe(t *testing.T) {
+}
+
 func Test_Prot2go(t *testing.T) {
 	// TODO
 }

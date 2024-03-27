@@ -34,11 +34,12 @@ func rdfpipe(strs ...string) error {
 		return err
 	}
 	wfh, err := os.Create(wpth)
-	util.CheckE(err)
+	if err != nil {
+		return err
+	}
 	defer wfh.Close()
 	wfh.Write([]byte(out))
 	return nil
-	// return cmd.Run()
 }
 
 func Geneprot(datdir, bgwdir string, txn2prm util.Set2D) (err error) {
@@ -79,22 +80,29 @@ func Geneprot(datdir, bgwdir string, txn2prm util.Set2D) (err error) {
 		var xmap bgw.Xmap
 		xmap.New()
 		err := export.Gene(rpthu, rpthi, wpthg, &xmap)
-		util.CheckE(err)
+		if err != nil {
+			return err
+		}
 		if err := util.Gzip(wpthg); err != nil {
-			panic(err)
+			return err
 		}
 
 		err = export.Prot(rpthu, rpthi, wpthp, &xmap)
-		util.CheckE(err)
+		if err != nil {
+			return err
+		}
 		if err := util.Gzip(wpthp); err != nil {
-			panic(err)
+			return err
 		}
 
-		// xmap export
 		wfhX, err := os.Create(wpthx)
-		util.CheckE(err)
+		if err != nil {
+			return err
+		}
 		j, err := json.MarshalIndent(&xmap, "", " ")
-		util.CheckE(err)
+		if err != nil {
+			return err
+		}
 		wfhX.Write(j)
 	} // txid
 	return nil
@@ -146,7 +154,9 @@ func Reg2pway(datdir, bgwdir string, txn2prm util.Set2D) (util.Set2D, error) {
 			ext := ".json"
 			rpthx := fmt.Sprintf("%s%s%s%s", bgwdir, subdir, txid, ext) // read BGW map json
 			err = xmap.Unmarshal(rpthx)
-			util.CheckE(err)
+			if err != nil {
+				return cnts, err
+			}
 
 			if srck == "signor" {
 				// generating map signor-id -> entitity-ids
@@ -158,13 +168,11 @@ func Reg2pway(datdir, bgwdir string, txn2prm util.Set2D) (util.Set2D, error) {
 			d4b.Taxid = txid
 			err = export.SigPways(&d4b, &xmap, bgwdir)
 			if err != nil {
-				//panic(err)
-				log.Println(err)
-				continue
+				return cnts, err
 			}
 			for pdck, wpth := range wpths {
 				if err := util.Gzip(wpth); err != nil {
-					panic(err)
+				return cnts, err
 				}
 				cnts.Add(pdck, srck)
 				cnts[pdck][srck] = d4b.Cnts[pdck][srck]
@@ -181,16 +189,6 @@ func Reg2targ(datdir, bgwdir string, txn2prm util.Set2D) (util.Set2D, error) {
 	}
 	log.Println("\n\trdf4bgw.Reg2targ for:", "all")
 	cnts := make(util.Set2D)
-	/*
-		var pdcks = []string{
-			"reg2ptrg",
-			"reg2ntrg",
-			"reg2utrg",
-		}
-		p2t := "reg2ptrg"
-		n2t := "reg2ntrg"
-		u2t := "reg2utrg"
-	*/
 	for srck, _ := range rdf.Uris4rgrtrg {
 		// define keys and vals for parsing
 		var vals []bgw.Column
@@ -221,7 +219,7 @@ func Reg2targ(datdir, bgwdir string, txn2prm util.Set2D) (util.Set2D, error) {
 			err := parse.Tab2struct(rpth, keys, vals, &d4b, "\t")
 			if err != nil {
 				log.Printf("%s%s", "rdf4bgw.Reg2targ:parse.Tab2struct: ", err)
-				continue // sic!
+				return cnts, err
 			}
 			// d4b is now loaded with data
 			var xmap bgw.Xmap
@@ -230,7 +228,9 @@ func Reg2targ(datdir, bgwdir string, txn2prm util.Set2D) (util.Set2D, error) {
 			ext := ".json"
 			rpthx := fmt.Sprintf("%s%s%s%s", bgwdir, subdir, txid, ext) // read BGW map json
 			err = xmap.Unmarshal(rpthx)
-			util.CheckE(err)
+			if err != nil {
+				return cnts, err
+			}
 
 			if srck == "signor" {
 				// generating map signor-id -> entitity-ids
@@ -243,13 +243,12 @@ func Reg2targ(datdir, bgwdir string, txn2prm util.Set2D) (util.Set2D, error) {
 			d4b.Out = wpths
 			err = export.Reg2targ(&d4b, &xmap, bgwdir)
 			if err != nil {
-				//panic(err)
-				log.Println(err)
-				continue
+				return cnts, err
 			}
 			for pdck, wpth := range wpths {
-				if err := util.Gzip(wpth); err != nil {
-					panic(err)
+				err := util.Gzip(wpth)
+				if err != nil {
+					return cnts, err
 				}
 				cnts.Add(pdck, srck)
 				cnts[pdck][srck] = d4b.Cnts[pdck][srck]
@@ -273,29 +272,27 @@ func Tfac2gene(datdir, bgwdir string, txn2prm util.Set2D) (util.Set2D, error) {
 		rpth := ""
 		dlm := "\t"
 
-		// looping over all taxa present inTflink
+		// looping over all taxa present in Tflink
 		for txid := range bgw.Tflink {
 			var d4b bgw.Dat4bridge // one source, one taxon
 			d4b.New()
 			if srck == "tflink" {
 				keys, vals = bgw.TflinkParseConf()
 				rpth = fmt.Sprintf("%s%s%s%s%s", datdir, srck, "/", txid, ".tsv")
-			} else if srck == "coltri" {
+			}
+			if srck == "coltri" {
 				keys, vals = bgw.ColtriParseConf()
 				dlm = "," // re-defining
 				if txid != "9606" {
 					continue
 				}
-				// TODO txlbl=>txid in dat4bgw
 				rpth = fmt.Sprintf("%s%s%s%s%s", datdir, srck, "/", txid, ".csv")
-			} else {
-				keys, vals = bgw.TftgParseConf()
-				rpth = fmt.Sprintf("%s%s%s%s%s%s", datdir, "static/", srck, "/", txid, ".f2g")
 			}
 			// log.Println("rdf4bgw.Tfac2gene(): processing", rpth)
 			err := parse.Tab2struct(rpth, keys, vals, &d4b, dlm)
 			if err != nil { // normal
-				// log.Printf("%s%s", "Tfac2gene:parse.Tab2struct: ", err)
+				log.Printf("%s%s", "Tfac2gene:parse.Tab2struct: ", err)
+				// return cnts, err // tests fail !!
 				continue // next taxon
 			}
 			/// d4b is now loaded with data
@@ -311,19 +308,20 @@ func Tfac2gene(datdir, bgwdir string, txn2prm util.Set2D) (util.Set2D, error) {
 			subdir := "xmap/"
 			rpthx := fmt.Sprintf("%s%s%s%s", bgwdir, subdir, txid, ".json") // read BGW map json
 			err = xmap.Unmarshal(rpthx)
-			util.CheckE(err)
+			if err != nil {
+				return cnts, err
+			}
 
 			d4b.Src = srck
 			d4b.Taxid = txid
 			err = export.Tfac2gene(&d4b, &xmap, bgwdir)
 			if err != nil {
-				//panic(err)
-				log.Println(err)
-				continue
+				return cnts, err
 			}
 			for pdck, wpth := range wpths {
-				if err := util.Gzip(wpth); err != nil {
-					panic(err)
+				err := util.Gzip(wpth)
+				if err != nil {
+					return cnts, err
 				}
 				cnts.Add(pdck, srck)
 				cnts[pdck][srck] = d4b.Cnts[pdck][srck]
@@ -360,7 +358,9 @@ func Prot2prot(datdir, bgwdir string, txn2prm util.Set2D) (util.Set2D, error) {
 		var xmap bgw.Xmap
 		xmap.New()
 		err := xmap.Unmarshal(rpthx)
-		util.CheckE(err)
+		if err != nil {
+			return cnts, err
+		}
 		/////////////////////////////////////////////////////////////////////////////
 		//duos, err := parse.MiTab(rpth, upac2bgw)
 		var d4b bgw.Dat4bridge
@@ -378,7 +378,8 @@ func Prot2prot(datdir, bgwdir string, txn2prm util.Set2D) (util.Set2D, error) {
 		if err != nil {
 			msg := fmt.Sprintf("rdf4bgw.go:main.Prot2prot():%s: %s", err, txid)
 			log.Println(msg)
-			continue
+			// continue
+			return cnts, err
 		}
 		for _, pdck := range pdcks {
 			cnts.Add(pdck, srck)
@@ -386,7 +387,7 @@ func Prot2prot(datdir, bgwdir string, txn2prm util.Set2D) (util.Set2D, error) {
 		}
 		if err = util.Gzip(wpth); err != nil {
 			log.Println("util.Gzip(): Failed to gzip:", wpth)
-			panic(err)
+			return cnts, err
 		}
 	} // taxid
 	return cnts, nil
@@ -418,7 +419,9 @@ func Gene2phen(datdir, bgwdir string, txn2prm util.Set2D) (int, error) {
 		var xmap bgw.Xmap
 		xmap.New()
 		err := xmap.Unmarshal(rpthx)
-		util.CheckE(err)
+		if err != nil {
+			return 0, err
+		}
 		gsym2bgw := xmap.Lblg
 		/////////////////////////////////////////////////////////////////////////////
 		//duos, err := parse.UpVar(rpth, gsym2bgw) // the second arg is optional
@@ -432,12 +435,12 @@ func Gene2phen(datdir, bgwdir string, txn2prm util.Set2D) (int, error) {
 		if err != nil {
 			msg := fmt.Sprintf("rdf4bgw.go:main.Gene2phen():%s: %s", err, wpth)
 			log.Println(msg)
-			return nts, err
+			return 0, err
 		}
 		nln += nts
 		if err = util.Gzip(wpth); err != nil {
 			log.Println("util.Gzip(): Failed to gzip:", wpth)
-			panic(err)
+			return 0, err
 		}
 	} // txid
 	return nln, nil
@@ -446,23 +449,20 @@ func Gene2phen(datdir, bgwdir string, txn2prm util.Set2D) (int, error) {
 func Prot2go(datdir, bgwdir string, txn2prm util.Set2D, fx string) (int, error) {
 	subdir := "prot2bp/"
 	if err := os.MkdirAll(filepath.Join(bgwdir, subdir), 0755); err != nil {
-		log.Println(err)
+			return 0, err
 	}
 	subdir = "prot2cc/"
 	if err := os.MkdirAll(filepath.Join(bgwdir, subdir), 0755); err != nil {
-		log.Println(err)
+			return 0, err
 	}
 	subdir = "prot2mf/"
 	if err := os.MkdirAll(filepath.Join(bgwdir, subdir), 0755); err != nil {
-		log.Println(err)
+			return 0, err
 	}
 	// TODO interface similar to Tfac2gene etc.
 	log.Println("\n\tProt2go for:", "all") // is not printed TODO
 	nln := 0
 	for _, txid := range txn2prm.Keys() {
-		if txid == "9031" {
-			continue
-		}
 		log.Println("\n\tProt2go for:", txid)
 		subdir := "goa/"
 		rpth := fmt.Sprintf("%s%s%s%s", datdir, subdir, txid, fx) // read Goa data
@@ -472,7 +472,9 @@ func Prot2go(datdir, bgwdir string, txn2prm util.Set2D, fx string) (int, error) 
 		var xmap bgw.Xmap
 		xmap.New()
 		err := xmap.Unmarshal(rpthx)
-		util.CheckE(err)
+		if err != nil {
+			return 0, err
+		}
 		upac2bgw := xmap.Upac
 		/////////////////////////////////////////////////////////////////////////////
 		bps := make(util.Set3D)
@@ -480,18 +482,14 @@ func Prot2go(datdir, bgwdir string, txn2prm util.Set2D, fx string) (int, error) 
 		mfs := make(util.Set3D)
 		if fx == ".gpa" {
 			//out := parse.Gpa(rpth, upac2bgw) // TODO
-		} else if fx == ".gaf" {
-			//bps, ccs, mfs, err = parse.Gaf(rpth, upac2bgw)
-			bps, ccs, mfs, err = parse.Gaf(rpth)
-		} else {
-			msg := fmt.Sprintf("%s: UnrecognizedFileExtension: %s", txid, fx)
-			log.Println("rdf4bgw.Prot2go():", msg)
-			continue // TODO test this
-			// panic(errors.New(msg))
 		}
+		if fx == ".gaf" {
+			bps, ccs, mfs, err = parse.Gaf(rpth)
 		if err != nil {
 			msg := fmt.Sprintf("rdf4bgw.go:main.Prot2go():%s: %s", err, txid)
 			log.Println(msg)
+			return 0, err
+		}
 		}
 		/////////////////////////////////////////////////////////////////////////////
 		wpth := ""
@@ -499,34 +497,32 @@ func Prot2go(datdir, bgwdir string, txn2prm util.Set2D, fx string) (int, error) 
 		subdir = "prot2bp/"
 		wpth = fmt.Sprintf("%s%s%s%s", bgwdir, subdir, txid, ext) // write goa nt
 		ntp, err := export.Prot2go(bps, upac2bgw, wpth)
-		util.CheckE(err)
 		if err = util.Gzip(wpth); err != nil {
 			log.Println("util.Gzip(): Failed to gzip:", wpth)
-			return nln, err
+			return 0, err
 		}
 		subdir = "prot2cc/"
 		wpth = fmt.Sprintf("%s%s%s%s", bgwdir, subdir, txid, ext) // write goa nt
 		ntc, err := export.Prot2go(ccs, upac2bgw, wpth)
-		util.CheckE(err)
 		if err = util.Gzip(wpth); err != nil {
 			log.Println("util.Gzip(): Failed to gzip:", wpth)
-			return nln, err
+			return 0, err
 		}
 		subdir = "prot2mf/"
 		wpth = fmt.Sprintf("%s%s%s%s", bgwdir, subdir, txid, ext) // write goa nt
 		ntf, err := export.Prot2go(mfs, upac2bgw, wpth)
-		util.CheckE(err)
 		if err = util.Gzip(wpth); err != nil {
 			log.Println("util.Gzip(): Failed to gzip:", wpth)
-			return nln, err
+			return 0, err
 		}
+
 		nts := ntp + ntc + ntf
 		if nts == 0 {
 			msg := fmt.Sprintf("%s: NoTriples", txid)
-			panic(errors.New(msg))
+			return 0, errors.New(msg)
 		}
 		nln += nts
-	}
+	} // txid
 	return nln, nil
 } // Prot2go()
 
@@ -557,9 +553,9 @@ func Ortho(datdir, bgwdir string, txn2prm util.Set2D) (int, error) {
 			wpth := fmt.Sprintf("%s%s%s", bgwdir, subdir, file)
 			nts, err := export.Ortho(duos, wpth)
 			if err != nil {
-				msg := fmt.Sprintf("rdf4bgw.Ortho():%s:%v", err, txids)
+				msg := fmt.Sprintf("rdf4bgw.Ortho(): %v: %s", txids, err)
 				log.Println(msg)
-				continue
+				return 0, err
 			}
 			if err = util.Gzip(wpth); err != nil {
 				log.Println("util.Gzip(): Failed to gzip:", wpth)
@@ -573,14 +569,16 @@ func Ortho(datdir, bgwdir string, txn2prm util.Set2D) (int, error) {
 
 func Onto(datdir, bgwdir string) error {
 	var ontos = map[string]string{
-		"biolink-model": ".ttl",
 		"omim":          ".ttl",
+		/*
+		"biolink-model": ".ttl",
 		"bfo":           ".owl",
 		"go-basic":      ".owl",
 		"mi":            ".owl",
 		"ncbitaxon":     ".owl",
 		"ro":            ".owl",
 		"sio":           ".owl",
+		*/
 	}
 	subdir := "onto/"
 	if err := os.MkdirAll(filepath.Join(bgwdir, subdir), 0755); err != nil {

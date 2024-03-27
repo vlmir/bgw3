@@ -40,19 +40,15 @@ func main() {
 		if err := dat4bgw.SaveAllGaf(datdir, txn2prm); err != nil {
 			panic(err)
 		}
-		log.Println("Done with goa in", time.Since(start))
+		log.Println("goa: Downloaded in", time.Since(start))
 	}
 
 	if *aP || *eP {
-		/*
-		 */
 		start := time.Now()
 		ext := ".gaf"
-		_, err = rdf4bgw.Prot2go(datdir, bgwdir, txn2prm, ext)
-		if err != nil {
-			log.Println(err)
-		} else {
-			log.Println("Done with goa in", time.Since(start))
+		if _, err := rdf4bgw.Prot2go(datdir, bgwdir, txn2prm, ext); err != nil {
+			panic(err)
 		}
+		log.Println("goa: Exported in", time.Since(start))
 	}
 }

@@ -40,14 +40,14 @@ func main() {
 		if err := dat4bgw.SaveAllIntact(datdir, txn2prm); err != nil {
 			panic(err)
 		}
-		log.Println("Done with intact in", time.Since(start))
+		log.Println("intact: Downloaded in", time.Since(start))
 	}
 
 	if *aP || *eP {
-		/*
-		 */
 		start := time.Now()
-		rdf4bgw.Prot2prot(datdir, bgwdir, txn2prm)
-		log.Println("Done with intact in", time.Since(start))
+		if _, err := rdf4bgw.Prot2prot(datdir, bgwdir, txn2prm); err != nil {
+			panic(err)
+		}
+		log.Println("intact: Exported in", time.Since(start))
 	}
 }

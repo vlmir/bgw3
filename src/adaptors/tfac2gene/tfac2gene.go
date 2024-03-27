@@ -33,7 +33,7 @@ func main() {
 	}
 	n := len(txn2prm)
 	if n == 0 {
-		log.Fatalln("main:Empty map:", rpthT)
+		log.Fatalln("tfac2gene: Empty map:", rpthT)
 	}
 
 	if *aP || *dP {
@@ -41,17 +41,19 @@ func main() {
 		if err := dat4bgw.SaveAllTflink(datdir); err != nil {
 			panic(err)
 		}
-		log.Println("Done with tflink in", time.Since(start))
+		log.Println("tfac2gene: Downloaded tflink in", time.Since(start))
 		start = time.Now()
 		if err := dat4bgw.SaveAllColtri(datdir, scrdir); err != nil {
 			panic(err)
 		}
-		log.Println("Done with collectri in", time.Since(start))
+		log.Println("tfac2gene: Downloaded collectri in", time.Since(start))
 	}
 
 	if *aP || *eP {
 		start := time.Now()
-		rdf4bgw.Tfac2gene(datdir, bgwdir, txn2prm)
-		log.Println("Done with tfac2gene in", time.Since(start))
+		if _, err := rdf4bgw.Tfac2gene(datdir, bgwdir, txn2prm); err != nil {
+			panic(err)
+		}
+		log.Println("tfac2gene: Exported in", time.Since(start))
 	}
 }

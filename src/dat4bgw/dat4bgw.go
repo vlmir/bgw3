@@ -19,7 +19,6 @@ import (
 )
 
 func gunzip(pth string) error {
-	// TODO tests
 	var cmd *exec.Cmd
 	// Attn: all flags separately!
 	cmd = exec.Command("gunzip", "-f", pth) // struct
@@ -39,7 +38,7 @@ func Rwget(ns, mask, ddir string) error {
 	cmd = exec.Command("wget", "-q", "-r", "-nd", "-A", mask, "-P", ddir, ns)
 	cmd.Stdout = os.Stdout
 	cmd.Stderr = os.Stderr
-	return cmd.Run()
+	return cmd.Run() // returns error
 } // Rwget
 
 /// Single File Download ///
@@ -64,16 +63,18 @@ func WgetFile(strs ...string) (err error) {
 	}
 	cmd.Stdout = os.Stdout
 	cmd.Stderr = os.Stderr
-	return cmd.Run()
+	return cmd.Run() // returns error
 } // WgetFile
 
 // HttpFile will download a url to a local file. It's efficient because it will
 // write as it downloads and not load the whole file into memory.
-// from: https://golangcode.com/download-a-file-from-a-url/
 func HttpFile(url, wpth string) (*bytes.Buffer, error) {
+// from: https://golangcode.com/download-a-file-from-a-url/
 	// 2023-10-19: used only for ontologies
+
 	// Get the data; resp is a ponter to a struct; resp.Body: io.ReadCloser
-	buf := new(bytes.Buffer)
+	buf := new(bytes.Buffer) // needed only if no wpth provided
+	// get response
 	resp, err := http.Get(url)
 	if err != nil {
 		return buf, err
@@ -97,29 +98,39 @@ func HttpFile(url, wpth string) (*bytes.Buffer, error) {
 func GetFile(uri, key0, val0, wpth string) (*bytes.Buffer, error) {
 	// 2023-10-19: used only for OMIM
 	// Get the data; resp is a ponter to a struct; resp.Body: io.ReadCloser
-	// TODO generalize
+	// TODO generalize ?
 	// the field 'Header' is needed only for gpa files
 	// with key0="Accept" and val0="text/gpad" works with saveOne*(), why ??
-	buf := new(bytes.Buffer)
-	req, err := http.NewRequest("GET", uri, nil)
+
+	buf := new(bytes.Buffer) // needed only if no wpth provided
+	// func NewRequest(method, url string, body io.Reader) (*Request, error)
+	// GET requests have no body
+	// http.MethodGet constant can be used iso "GET"
+	req, err := http.NewRequest("GET", uri, nil) // type Request struct
 	if err != nil {
 		return buf, err
 	}
 	req.Header.Set(key0, val0)
-	client := &http.Client{}
-	resp, err := client.Do(req)
+	
+	client := &http.Client{} // type Client struct
+	// get response
+	// func (c *Client) Do(req *Request) (*Response, error)
+	// Do sends an HTTP request and returns an HTTP response
+	resp, err := client.Do(req) // type Response struct
 	if err != nil {
 		return buf, err
 	}
-	defer resp.Body.Close()
+	defer resp.Body.Close() // Body io.ReadCloser
 	if wpth == "" {
 		buf.ReadFrom(resp.Body)
 	} else {
+		// Create the file
 		out, err := os.Create(wpth)
 		if err != nil {
 			return buf, err
 		}
 		defer out.Close()
+		// Write the body to file
 		_, err = io.Copy(out, resp.Body)
 	}
 	return buf, err
@@ -152,7 +163,7 @@ func saveOneUniprot(txid, datdir, script string) error {
 	cmd = exec.Command("/usr/bin/python3", script, txid, datdir, "&")
 	cmd.Stdout = os.Stdout
 	cmd.Stderr = os.Stderr
-	return cmd.Run()
+	return cmd.Run() // returns error
 } // saveOneUniprot
 
 func saveOneColtri(txid, datdir, script string) error {
@@ -160,7 +171,7 @@ func saveOneColtri(txid, datdir, script string) error {
 	cmd = exec.Command(script, txid, datdir, "&")
 	cmd.Stdout = os.Stdout
 	cmd.Stderr = os.Stderr
-	return cmd.Run()
+	return cmd.Run() // returns error
 } // saveOneColtri
 
 func SaveOneSignor(txid string, datdir string) error {
@@ -454,8 +465,6 @@ func SaveAllOnto(datdir, year string) error {
 			log.Println("SaveAllOnto(): Failed to download:", uri, err)
 			return err
 		}
-		/*
-		 */
 	}
 
 	// from OBO Foundry
@@ -470,16 +479,14 @@ func SaveAllOnto(datdir, year string) error {
 	ext := ".owl"
 	for onto, ns := range nss {
 		wpth := fmt.Sprintf("%s%s%s%s", datdir, subdir, onto, ext)
-		/*
-		 */
 		uri := fmt.Sprintf("%s%s%s", ns, onto, ext)
 		if _, err := HttpFile(uri, wpth); err != nil {
 			log.Println("SaveAllOnto(): Failed to download:", uri, err)
 			return err
 		}
+	}
 		/*
 		 */
-	}
 	return nil
 } // SaveAllOnto
 

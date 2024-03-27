@@ -1626,13 +1626,9 @@ func Ortho(duos util.Set3D, wpth string) (int, error) {
 	msg := ""
 	msg = fmt.Sprintf("export.Ortho(): Pairs: added: %d dropped: %d", cntD, len(duos)-cntD)
 	log.Println(msg)
-	/*
-		msg = fmt.Sprintf("export.Ortho(): Prots: added: %d dropped: %d", len(cnt["addP"]), len(cnt["dropP"]))
-		log.Println(msg)
-	*/
-	if nln == 0 {
-		msg := fmt.Sprintf("export.Ortho(): NoContent")
-		return nln, errors.New(msg)
-	}
+//	if nln == 0 { // happens for some pairs of taxa !
+//	msg := fmt.Sprintf("export.Ortho(): NoContent")
+//	return nln, errors.New(msg)
+//	}
 	return nln, nil
 } // Ortho
