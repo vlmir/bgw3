@@ -481,7 +481,7 @@ func Prot2go(datdir, bgwdir string, txn2prm util.Set2D, fx string) (int, error) 
 		ccs := make(util.Set3D)
 		mfs := make(util.Set3D)
 		if fx == ".gpa" {
-			//out := parse.Gpa(rpth, upac2bgw) // TODO
+			//out := parse.Gpa(rpth) // TODO
 		}
 		if fx == ".gaf" {
 			bps, ccs, mfs, err = parse.Gaf(rpth)

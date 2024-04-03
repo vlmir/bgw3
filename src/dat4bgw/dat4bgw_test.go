@@ -211,7 +211,7 @@ func Test_Cleanup(t *testing.T) {
 	}
 }
 
-// tests below take too long, uncomment if needed
+// the tests below take too long, uncomment if needed
 /*
 func Test_saveOneColtri(t *testing.T) {
 	mystart := time.Now()
@@ -223,7 +223,7 @@ func Test_saveOneColtri(t *testing.T) {
 	}
 	pth := "../../tdata/"
 
-	script := "../../scripts/download1ctri.py"
+	script := "../../misc/download1ctri.py"
 	datdir := pth + "dat4bgw/"
 	tts := []tt{
 		{"9606", datdir, script, nil},
@@ -251,7 +251,7 @@ func Test_saveOneUniprot(t *testing.T) {
 	}
 	pth := "../../tdata/"
 
-	script := "../../scripts/download1up.py"
+	script := "../../misc/download1up.py"
 	datdir := pth + "dat4bgw/"
 	txids := [...]string{"36329"}
 	tts := []tt{

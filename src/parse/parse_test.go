@@ -105,20 +105,17 @@ func Test_Tab2set3D(t *testing.T) {
 func Test_UpVar(t *testing.T) {
 	type tt struct {
 		arg1 string
-		arg2 util.Set3D
 		val1 int
 	}
 	pth := "../../tdata/"
-	upvar := make(util.Set3D)
 	upvars := []tt{
-		{pth + "uniprot/P04637.var", upvar, 1},
+		{pth + "uniprot/P04637.var", 1},
 	}
 	for i, tt := range upvars {
-		tt.arg2.Add("TP53", "test", "t")
-		set1, _ := UpVar(tt.arg1, tt.arg2)
+		set1, _ := UpVar(tt.arg1)
 		if len(set1) != tt.val1 {
 			t.Error(
-				"For test", i+1, ": ", tt.arg1, tt.arg2,
+				"For test", i+1, ": ", tt.arg1,
 				"\n\twant", tt.val1,
 				"\n\thave", len(set1),
 			)
@@ -129,37 +126,34 @@ func Test_UpVar(t *testing.T) {
 func Test_Gaf(t *testing.T) {
 	type tt struct {
 		arg1 string
-		arg2 util.Set3D
 		val1 int
 		val2 int
 		val3 int
 	}
 	pth := "../../tdata/"
-	var set = make(util.Set3D)
 	var gafs = []tt{
 		// {pth + "goa/9606.gaf", set, 150, 17, 39},
-		{pth + "goa/9606.gaf", set, 1, 1, 1},
+		{pth + "goa/9606.gaf", 1, 1, 1},
 	}
 	for i, tt := range gafs {
-		tt.arg2.Add("P04637", "test", "t")
-		set1, set2, set3, _ := Gaf(tt.arg1, tt.arg2)
+		set1, set2, set3, _ := Gaf(tt.arg1)
 		if len(set1) != tt.val1 {
 			t.Error(
-				"For test", i+1, ": ", tt.arg1, tt.arg2,
+				"For test", i+1, ": ", tt.arg1,
 				"\n\twant", tt.val1,
 				"\n\thave", len(set1),
 			)
 		}
 		if len(set2) != tt.val2 {
 			t.Error(
-				"For test", i+1, ": ", tt.arg1, tt.arg2,
+				"For test", i+1, ": ", tt.arg1,
 				"\n\twant", tt.val2,
 				"\n\thave", len(set2),
 			)
 		}
 		if len(set3) != tt.val3 {
 			t.Error(
-				"For test", i+1, ": ", tt.arg1, tt.arg2,
+				"For test", i+1, ": ", tt.arg1,
 				"\n\twant", tt.val3,
 				"\n\thave", len(set3),
 			)

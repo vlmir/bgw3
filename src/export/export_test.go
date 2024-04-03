@@ -378,7 +378,7 @@ func Test_Prot2go(t *testing.T) {
 	arg2 := make(util.Set3D)
 	arg2.Add("P04637", "bgwp", "P04637")
 	// no isoforms in gaf files
-	bps, ccs, mfs, _ := parse.Gaf(pth+"goa/9606.gaf", arg2)
+	bps, ccs, mfs, _ := parse.Gaf(pth+"goa/9606.gaf")
 	out := [3]string{"prot2bp/9606.nt", "prot2cc/9606.nt", "prot2mf/9606.nt"}
 	tts := []tt{
 		{bps, arg2, wpth + out[0], 13},

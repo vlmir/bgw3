@@ -15,6 +15,7 @@ import (
 )
 
 func counter(s []string, c util.Set2D, a, d, v string) (l int) {
+	// used only in Gene2phen and Prot2go
 	l = len(s)
 	if l == 0 {
 		c.Add(d, v)
@@ -25,6 +26,7 @@ func counter(s []string, c util.Set2D, a, d, v string) (l int) {
 }
 
 func gene2bgwg(genes []string, xmap bgw.Xmap) []string {
+	// used only in Tfac2gene
 	set := make(util.Set2D)
 	for _, gene := range genes {
 		for _, bgwg := range xmap.Ncbig[gene]["bgwg"].Keys() {
@@ -45,6 +47,7 @@ func gene2bgwg(genes []string, xmap bgw.Xmap) []string {
 }
 
 func upac2bgwp(upacs []string, xmap bgw.Xmap) []string {
+	// used in Reg2targ, SigPways, Tfac2gene
 	set := make(util.Set2D)
 	for _, upac := range upacs {
 		upca := strings.Split(upac, "-")[0]
@@ -834,7 +837,6 @@ func SigPways(d *bgw.Dat4bridge, x *bgw.Xmap, wdir string) error {
 	return nil
 } // SigPways
 
-// func Gene(rpthI string, wpthG string, p *bgw.Xmap) error {
 func Gene(rpthUP, rpthI, wpthG string, p *bgw.Xmap) error {
 	xmap := *p
 	// Reference proteome IDs:

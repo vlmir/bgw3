@@ -19,13 +19,15 @@ type Set4D map[string]Set3D
 type SliceSet map[string][]string
 
 // TODO return error instead of panicing ?
-func CheckStrings(s ...string) {
+func CheckStrings(s ...string) error {
 	// just checks, does ot trim
 	for i, v := range s {
 		if strings.TrimSpace(v) == "" {
-			panic(errors.New(fmt.Sprintf("%v: index: %d: EmptyString", s, i)))
+			// panic(errors.New(fmt.Sprintf("%v: index: %d: EmptyString", s, i)))
+			return errors.New(fmt.Sprintf("%v: index: %d: EmptyString", s, i))
 		}
 	}
+	return nil
 }
 
 func (m Set1D) Add(key0 string) {

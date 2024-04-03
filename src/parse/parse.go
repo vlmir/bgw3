@@ -14,38 +14,28 @@ import (
 	"strings"
 )
 
-func checkID(id string, filter util.Set3D, counter util.Set1D) (out int) {
-	out = 0
-	_, ok := filter[id]
-	if !ok {
-		out++
-		_, ok := counter[id]
-		if !ok {
-			out++
-			counter[id]++
-		}
-	}
-	return out
-}
-
 func primaryKey(cells []string, keys []bgw.Column) string {
+	// cells: values after splitting on the primary delimiter
 	pkbits := make([]string, 0) // sic, for appending values
 	//var pkbits = []string{} // equvalent
 	dlm := keys[0].Dlm2
 	var pk string
 	for _, k := range keys {
-		// k: bgw.Column
-		kcell := strings.TrimSpace(cells[k.Ind1])
+		// k: bgw.Column, k.Key (the last field) may contain empty strings
+		// func TrimSpace(s string) string (no error returned)
+		kcell := strings.TrimSpace(cells[k.Ind1]) // any value possible
 		if kcell == "" {
 			return ""
 		}
+		// special case, does occur
 		if kcell == "-" {
-			continue
-		} // skipping a component of the primary key
-		kbits := strings.Split(kcell, k.Dlm1) // sub-fields if len(kbits) < k.Ind2 + 1 {return ""}
+			continue // skipping a component of the primary key
+		}
+		kbits := strings.Split(kcell, k.Dlm1) // sub-fields 
+		if len(kbits) < k.Ind2 + 1 {return ""}
 		if k.Key != "" && kbits[0] != k.Key {
-			return ""
-		} // filtering by the type of data specified by k.Key
+			return "" // filtering by the type of data specified by k.Key
+		}
 		kval := strings.TrimSpace(kbits[k.Ind2])
 		if kval == "" {
 			return ""
@@ -59,33 +49,33 @@ func primaryKey(cells []string, keys []bgw.Column) string {
 		}
 	}
 	pk = strings.Join(pkbits, dlm)
-	return pk
+	return pk // OK to return string
 }
 
 // addSubFields() splits a string (pval) on the delimiter
-// specified in a bgw.Column (v) and adds the values to util.Set3D (out)
-func addSubFields(pval, pk string, v bgw.Column, out util.Set3D) {
+// specified in a bgw.Column (v) and adds the values to util.Set3D (subfields)
+func addSubFields(pval, pk string, v bgw.Column, subfields util.Set3D) {
 	// Dlm2: secondary delimiter
 	svals := strings.Split(pval, v.Dlm2)
-	ind2 := v.Ind2
-	sk := v.Key // secondary key explicitely specified
-	for i, sval := range svals {
-		sval = strings.TrimSpace(svals[i])
+	for ind, sval := range svals {
+		sval = strings.TrimSpace(svals[ind])
 		if len(sval) == 0 {
 			continue
 		}
-		if ind2 >= 0 && i != ind2 {
+		if v.Ind2 >= 0 && ind != v.Ind2 {
 			continue // only one subfield is used
 		} // othgerwise all subfields are used
-		// pecial case b:id
+		// special case db:id
 		// skipping dbs other than that specified in v.Key
 		if v.Ind3 == -1 {
-			if strings.TrimSpace(svals[0]) != sk {
+			src := strings.TrimSpace(svals[0]) // Attn: src != sval !!
+			if src != v.Key {
 				continue
 			}
 		}
-		out.Add(pk, sk, sval)
-	}
+		subfields.Add(pk, v.Key, sval) // the args are non-empty strings
+	} // sval
+	// no need to return any values
 }
 
 // Sig2up() parses mapping files provided by Signor and returns a map structure
@@ -344,7 +334,6 @@ func Tab2set3D(rpth string, keys, vals []bgw.Column) (out util.Set3D, err error)
 			continue
 		}
 		/// primary key
-		// pk := strings.Split(primaryKey(cells, keys), "--")[0]
 		pk := primaryKey(cells, keys)
 		if pk == "" {
 			continue
@@ -370,9 +359,8 @@ func Tab2set3D(rpth string, keys, vals []bgw.Column) (out util.Set3D, err error)
 	return out, nil
 } // Tab2set3D()
 
-func UpVar(rpth string, filters ...util.Set3D) (duos util.Set3D, err error) {
+func UpVar(rpth string) (duos util.Set3D, err error) {
 	// NO empty values in Set3D
-	// filters is used only for filtering
 	/*
 	 AARS	  P49588	 VAR_063527  p.Arg329His	Disease	   rs267606621 Charcot-Marie-Tooth disease 2N(CMT2N) [MIM:613287]
 	  0  => 0 gene name
@@ -390,7 +378,6 @@ func UpVar(rpth string, filters ...util.Set3D) (duos util.Set3D, err error) {
 	defer fhR.Close()
 	scanner := bufio.NewScanner(fhR)
 	duos = make(util.Set3D)
-	notInBgw := make(util.Set1D)
 	for scanner.Scan() { // by default scans for '\n'
 		line := scanner.Text()
 		if len(line) < 74 {
@@ -402,11 +389,6 @@ func UpVar(rpth string, filters ...util.Set3D) (duos util.Set3D, err error) {
 		upca := strings.TrimSpace(line[10:20])
 		symG := strings.TrimSpace(line[0:9])
 		oriL := symG
-		if len(filters) == 1 {
-			if out := checkID(oriL, filters[0], notInBgw); out != 0 {
-				continue
-			}
-		}
 		idL := fmt.Sprintf("%s%s%s", nsL, "!", oriL)
 		dfn := strings.TrimSpace(line[72:])
 		// only one definition per line
@@ -435,11 +417,6 @@ func UpVar(rpth string, filters ...util.Set3D) (duos util.Set3D, err error) {
 		duos.Add(pairid, "dfn", strings.TrimSpace(bits[0]))
 		duos.Add(pairid, "upca", upca) // upca trimmed
 	}
-	if len(filters) == 1 {
-		msg := fmt.Sprintf("parse.UpVar():%s: NotInBgw: %d", rpth, len(notInBgw))
-		log.Println(msg)
-		//fmt.Printf("%s\n", msg)
-	}
 	if len(duos) == 0 {
 		msg := fmt.Sprintf("parse.UpVar():%s: NoData", rpth)
 		return duos, errors.New(msg)
@@ -457,7 +434,7 @@ NOT|contributes_to
 colocalizes_with
 contributes_to
 */
-func Gaf(rpth string, filters ...util.Set3D) (bp, cc, mf util.Set3D, err error) {
+func Gaf(rpth string) (bp, cc, mf util.Set3D, err error) {
 	// TODO replace with Tab2struct()
 	ourppys := map[string]string{
 		"C": "gp2cc",
@@ -473,7 +450,6 @@ func Gaf(rpth string, filters ...util.Set3D) (bp, cc, mf util.Set3D, err error) 
 	util.CheckE(err)
 	defer fhR.Close()
 	scanner := bufio.NewScanner(fhR)
-	notInBgw := make(util.Set1D)
 	for scanner.Scan() { // by default scans for '\n'
 		cells := strings.Split(scanner.Text(), "\t")
 		upac := ""
@@ -481,12 +457,6 @@ func Gaf(rpth string, filters ...util.Set3D) (bp, cc, mf util.Set3D, err error) 
 			upac = cells[1]
 		} else {
 			continue
-		}
-		// filtering by RefProt
-		if len(filters) == 1 {
-			if out := checkID(upac, filters[0], notInBgw); out != 0 {
-				continue
-			}
 		}
 		goid := strings.Replace(cells[4], ":", "_", 1)
 		if cells[3] == "NOT" {
@@ -528,11 +498,6 @@ func Gaf(rpth string, filters ...util.Set3D) (bp, cc, mf util.Set3D, err error) 
 				cc.Add(pairid, "ref", ref)
 			}
 		}
-	}
-	if len(filters) == 1 {
-		msg := fmt.Sprintf("parse.Gaf():%s: NotInBgw: %d", rpth, len(notInBgw))
-		log.Println(msg)
-		//fmt.Printf("%s\n", msg)
 	}
 	if len(bp)+len(cc)+len(mf) == 0 {
 		msg := fmt.Sprintf("parse.Gaf():%s: NoData", rpth)
@@ -584,7 +549,7 @@ part_of
 		5: []string{"eco", "|"},
 	}
 */
-func Gpa(rpth string, filters ...util.Set3D) (duos util.Set3D) {
+func Gpa(rpth string) (duos util.Set3D) {
 	// TODO replace with Tab2struct()
 	ourppys := map[string]string{
 		"part_of":     "gp2cc",
@@ -598,7 +563,6 @@ func Gpa(rpth string, filters ...util.Set3D) (duos util.Set3D) {
 	util.CheckE(err)
 	defer fhR.Close()
 	scanner := bufio.NewScanner(fhR)
-	notInBgw := make(util.Set1D)
 	for scanner.Scan() { // by default scans for '\n'
 		cells := strings.Split(scanner.Text(), "\t")
 		upac := ""
@@ -606,12 +570,6 @@ func Gpa(rpth string, filters ...util.Set3D) (duos util.Set3D) {
 			upac = cells[1]
 		} else {
 			continue
-		}
-		// filtering by RefProt
-		if len(filters) == 1 {
-			if out := checkID(upac, filters[0], notInBgw); out != 0 {
-				continue
-			}
 		}
 		goid := strings.Replace(cells[3], ":", "_", 1)
 		qlrs := strings.Split(cells[2], "|")
@@ -640,11 +598,6 @@ func Gpa(rpth string, filters ...util.Set3D) (duos util.Set3D) {
 		for _, ref := range refs {
 			duos.Add(pairid, "ref", ref)
 		}
-	}
-	if len(filters) == 1 {
-		msg := fmt.Sprintf("parse.Gpa():%s: NotInBgw: %d", rpth, len(notInBgw))
-		log.Println(msg)
-		//fmt.Printf("%s\n", msg)
 	}
 	return duos
 } // Gpa()
