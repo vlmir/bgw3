@@ -1,0 +1,78 @@
+<http://www.w3.org/2004/02/skos/core#definition> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#AnnotationProperty> .
+<http://www.w3.org/2004/02/skos/core#definition> <http://www.w3.org/2004/02/skos/core#prefLabel> "has definition" .
+<http://www.w3.org/2004/02/skos/core#prefLabel> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#AnnotationProperty> .
+<http://www.w3.org/2004/02/skos/core#prefLabel> <http://www.w3.org/2004/02/skos/core#prefLabel> "has name" .
+<http://www.w3.org/2004/02/skos/core#altLabel> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#AnnotationProperty> .
+<http://www.w3.org/2004/02/skos/core#altLabel> <http://www.w3.org/2004/02/skos/core#prefLabel> "has synonym" .
+<http://semanticscience.org/resource/SIO_010078> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#ObjectProperty> .
+<http://semanticscience.org/resource/SIO_010078> <http://www.w3.org/2004/02/skos/core#prefLabel> "encodes" .
+<http://purl.obolibrary.org/obo/RO_0002162> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#ObjectProperty> .
+<http://purl.obolibrary.org/obo/RO_0002162> <http://www.w3.org/2004/02/skos/core#prefLabel> "in taxon" .
+<http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#ObjectProperty> .
+<http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2004/02/skos/core#prefLabel> "is instance of" .
+<http://www.w3.org/2004/02/skos/core#closeMatch> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#ObjectProperty> .
+<http://www.w3.org/2004/02/skos/core#closeMatch> <http://www.w3.org/2004/02/skos/core#prefLabel> "has close match" .
+<http://semanticscience.org/resource/SIO_000253> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#ObjectProperty> .
+<http://semanticscience.org/resource/SIO_000253> <http://www.w3.org/2004/02/skos/core#prefLabel> "has source" .
+<http://www.w3.org/2000/01/rdf-schema#subClassOf> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#ObjectProperty> .
+<http://www.w3.org/2000/01/rdf-schema#subClassOf> <http://www.w3.org/2004/02/skos/core#prefLabel> "is subclass of" .
+<http://semanticscience.org/resource/SIO_010035> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#Class> .
+<http://semanticscience.org/resource/SIO_010035> <http://www.w3.org/2004/02/skos/core#prefLabel> "Gene" .
+<http://rdf.biogateway.eu/gene/> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#Class> .
+<http://rdf.biogateway.eu/gene/> <http://www.w3.org/2004/02/skos/core#definition> "Set of genes in Biogateway" .
+<http://rdf.biogateway.eu/gene/> <http://www.w3.org/2004/02/skos/core#prefLabel> "gene" .
+<http://rdf.biogateway.eu/gene/9606/BAR> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#Class> .
+<http://rdf.biogateway.eu/gene/9606/BAR> <http://www.w3.org/2000/01/rdf-schema#subClassOf> <http://semanticscience.org/resource/SIO_010035> .
+<http://rdf.biogateway.eu/gene/9606/BAR> <http://purl.obolibrary.org/obo/RO_0002162> <http://purl.obolibrary.org/obo/NCBITaxon_9606> .
+<http://rdf.biogateway.eu/gene/9606/BAR> <http://semanticscience.org/resource/SIO_010078> <http://uniprot.org/uniprot/FOOBAR> .
+<http://rdf.biogateway.eu/gene/9606/BAR> <http://www.w3.org/2004/02/skos/core#definition> "gene 9606/BAR encoding [P53_GHOST]" .
+<http://rdf.biogateway.eu/gene/9606/BAR> <http://www.w3.org/2004/02/skos/core#prefLabel> "BAR" .
+<http://rdf.biogateway.eu/gene/9606/BAR> <http://www.w3.org/2004/02/skos/core#altLabel> "FOO" .
+<http://rdf.biogateway.eu/gene/9606/BAR> <http://www.w3.org/2004/02/skos/core#altLabel> "TP53" .
+<http://rdf.biogateway.eu/gene/9606/BAR> <http://www.w3.org/2004/02/skos/core#closeMatch> <http://identifiers.org/ensembl/ENSG00000141510> .
+<http://rdf.biogateway.eu/gene/9606/BAR#ENSG00000141510> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://rdf.biogateway.eu/gene/9606/BAR> .
+<http://rdf.biogateway.eu/gene/9606/BAR#ENSG00000141510> <http://www.w3.org/2004/02/skos/core#prefLabel> "Ensembl#ENSG00000141510" .
+<http://rdf.biogateway.eu/gene/9606/BAR> <http://www.w3.org/2004/02/skos/core#closeMatch> <http://identifiers.org/ncbigene/7157> .
+<http://rdf.biogateway.eu/gene/9606/BAR#7157> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://rdf.biogateway.eu/gene/9606/BAR> .
+<http://rdf.biogateway.eu/gene/9606/BAR#7157> <http://www.w3.org/2004/02/skos/core#prefLabel> "GeneID#7157" .
+<http://rdf.biogateway.eu/gene/9606/BCL2> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#Class> .
+<http://rdf.biogateway.eu/gene/9606/BCL2> <http://www.w3.org/2000/01/rdf-schema#subClassOf> <http://semanticscience.org/resource/SIO_010035> .
+<http://rdf.biogateway.eu/gene/9606/BCL2> <http://purl.obolibrary.org/obo/RO_0002162> <http://purl.obolibrary.org/obo/NCBITaxon_9606> .
+<http://rdf.biogateway.eu/gene/9606/BCL2> <http://semanticscience.org/resource/SIO_010078> <http://uniprot.org/uniprot/P10415> .
+<http://rdf.biogateway.eu/gene/9606/BCL2> <http://www.w3.org/2004/02/skos/core#definition> "gene 9606/BCL2 encoding [BCL2_HUMAN]" .
+<http://rdf.biogateway.eu/gene/9606/BCL2> <http://www.w3.org/2004/02/skos/core#prefLabel> "BCL2" .
+<http://rdf.biogateway.eu/gene/9606/BCL2> <http://www.w3.org/2004/02/skos/core#closeMatch> <http://identifiers.org/ensembl/ENSG00000171791.14> .
+<http://rdf.biogateway.eu/gene/9606/BCL2#ENSG00000171791.14> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://rdf.biogateway.eu/gene/9606/BCL2> .
+<http://rdf.biogateway.eu/gene/9606/BCL2#ENSG00000171791.14> <http://www.w3.org/2004/02/skos/core#prefLabel> "Ensembl#ENSG00000171791.14" .
+<http://rdf.biogateway.eu/gene/9606/BCL2> <http://www.w3.org/2004/02/skos/core#closeMatch> <http://identifiers.org/ncbigene/596> .
+<http://rdf.biogateway.eu/gene/9606/BCL2#596> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://rdf.biogateway.eu/gene/9606/BCL2> .
+<http://rdf.biogateway.eu/gene/9606/BCL2#596> <http://www.w3.org/2004/02/skos/core#prefLabel> "GeneID#596" .
+<http://rdf.biogateway.eu/gene/9606/FOO> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#Class> .
+<http://rdf.biogateway.eu/gene/9606/FOO> <http://www.w3.org/2000/01/rdf-schema#subClassOf> <http://semanticscience.org/resource/SIO_010035> .
+<http://rdf.biogateway.eu/gene/9606/FOO> <http://purl.obolibrary.org/obo/RO_0002162> <http://purl.obolibrary.org/obo/NCBITaxon_9606> .
+<http://rdf.biogateway.eu/gene/9606/FOO> <http://semanticscience.org/resource/SIO_010078> <http://uniprot.org/uniprot/FOOBAR> .
+<http://rdf.biogateway.eu/gene/9606/FOO> <http://www.w3.org/2004/02/skos/core#definition> "gene 9606/FOO encoding [P53_GHOST]" .
+<http://rdf.biogateway.eu/gene/9606/FOO> <http://www.w3.org/2004/02/skos/core#prefLabel> "FOO" .
+<http://rdf.biogateway.eu/gene/9606/FOO> <http://www.w3.org/2004/02/skos/core#altLabel> "BAR" .
+<http://rdf.biogateway.eu/gene/9606/FOO> <http://www.w3.org/2004/02/skos/core#altLabel> "TP53" .
+<http://rdf.biogateway.eu/gene/9606/FOO> <http://www.w3.org/2004/02/skos/core#closeMatch> <http://identifiers.org/ensembl/ENSG00000141510> .
+<http://rdf.biogateway.eu/gene/9606/FOO#ENSG00000141510> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://rdf.biogateway.eu/gene/9606/FOO> .
+<http://rdf.biogateway.eu/gene/9606/FOO#ENSG00000141510> <http://www.w3.org/2004/02/skos/core#prefLabel> "Ensembl#ENSG00000141510" .
+<http://rdf.biogateway.eu/gene/9606/FOO> <http://www.w3.org/2004/02/skos/core#closeMatch> <http://identifiers.org/ncbigene/7157> .
+<http://rdf.biogateway.eu/gene/9606/FOO#7157> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://rdf.biogateway.eu/gene/9606/FOO> .
+<http://rdf.biogateway.eu/gene/9606/FOO#7157> <http://www.w3.org/2004/02/skos/core#prefLabel> "GeneID#7157" .
+<http://rdf.biogateway.eu/gene/9606/TP53> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#Class> .
+<http://rdf.biogateway.eu/gene/9606/TP53> <http://www.w3.org/2000/01/rdf-schema#subClassOf> <http://semanticscience.org/resource/SIO_010035> .
+<http://rdf.biogateway.eu/gene/9606/TP53> <http://purl.obolibrary.org/obo/RO_0002162> <http://purl.obolibrary.org/obo/NCBITaxon_9606> .
+<http://rdf.biogateway.eu/gene/9606/TP53> <http://semanticscience.org/resource/SIO_010078> <http://uniprot.org/uniprot/FOOBAR> .
+<http://rdf.biogateway.eu/gene/9606/TP53> <http://semanticscience.org/resource/SIO_010078> <http://uniprot.org/uniprot/P04637> .
+<http://rdf.biogateway.eu/gene/9606/TP53> <http://www.w3.org/2004/02/skos/core#definition> "gene 9606/TP53 encoding [P53_GHOST P53_HUMAN]" .
+<http://rdf.biogateway.eu/gene/9606/TP53> <http://www.w3.org/2004/02/skos/core#prefLabel> "TP53" .
+<http://rdf.biogateway.eu/gene/9606/TP53> <http://www.w3.org/2004/02/skos/core#altLabel> "BAR" .
+<http://rdf.biogateway.eu/gene/9606/TP53> <http://www.w3.org/2004/02/skos/core#altLabel> "FOO" .
+<http://rdf.biogateway.eu/gene/9606/TP53> <http://www.w3.org/2004/02/skos/core#closeMatch> <http://identifiers.org/ensembl/ENSG00000141510> .
+<http://rdf.biogateway.eu/gene/9606/TP53#ENSG00000141510> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://rdf.biogateway.eu/gene/9606/TP53> .
+<http://rdf.biogateway.eu/gene/9606/TP53#ENSG00000141510> <http://www.w3.org/2004/02/skos/core#prefLabel> "Ensembl#ENSG00000141510" .
+<http://rdf.biogateway.eu/gene/9606/TP53> <http://www.w3.org/2004/02/skos/core#closeMatch> <http://identifiers.org/ncbigene/7157> .
+<http://rdf.biogateway.eu/gene/9606/TP53#7157> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://rdf.biogateway.eu/gene/9606/TP53> .
+<http://rdf.biogateway.eu/gene/9606/TP53#7157> <http://www.w3.org/2004/02/skos/core#prefLabel> "GeneID#7157" .

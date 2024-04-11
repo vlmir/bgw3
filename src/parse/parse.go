@@ -237,7 +237,6 @@ func Tab2struct(rpth string, keys, vals []bgw.Column, p *bgw.Dat4bridge, dlm str
 		cells := strings.Split(line, dlm) // fields
 		if len(cells) < maxind+1 {
 			msg := fmt.Sprintf("%s:%d: TooFetFields: want %d have %d", rpth, ln, maxind+1, len(cells))
-			//panic(errors.New(msg))
 			log.Println(msg)
 			continue
 		}
@@ -330,7 +329,6 @@ func Tab2set3D(rpth string, keys, vals []bgw.Column) (out util.Set3D, err error)
 		if len(cells) < maxind+1 {
 			msg := fmt.Sprintf("%s:%d: TooFewFields", rpth, ln)
 			log.Printf("%s%s", "parse.Tab2set3D():", msg)
-			// panic(errors.New(msg))
 			continue
 		}
 		/// primary key
@@ -633,7 +631,7 @@ func orthosolo(datdir, txid string, txn2prm util.Set2D) (util.Set3D, error) {
 		count += len(solos[idmk])
 	}
 	if count == 0 {
-		msg := fmt.Sprintf("parse.orthosolo:%s: NoData", txid)
+		msg := fmt.Sprintf("parse.orthosolo(): NoDataForTaxon: %s", txid)
 		return solos, errors.New(msg)
 	} // no orthology in any of the sources
 	return solos, nil
@@ -682,7 +680,7 @@ func OrthoDuo(datdir, txidL, txidR string, txn2prm util.Set2D) (util.Set3D, erro
 		} // id: external cluster ID
 	}
 	if len(duos) == 0 {
-		msg := fmt.Sprintf("parse.OrthoDuo():%s--%s: NoData", txidL, txidR)
+		msg := fmt.Sprintf("parse.OrthoDuo(): NoDataForTaxa: %s--%s", txidL, txidR)
 		return duos, errors.New(msg)
 	} // 20200531: none Note: no filtering by BGW
 	return duos, nil

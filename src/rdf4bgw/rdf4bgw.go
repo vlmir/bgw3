@@ -543,8 +543,11 @@ func Ortho(datdir, bgwdir string, txn2prm util.Set2D) (int, error) {
 			txids := [2]string{txidL, txidR}
 			duos, err := parse.OrthoDuo(datdir, txidL, txidR, txn2prm)
 			if err != nil {
-				msg := fmt.Sprintf("rdf4bgw.Ortho():%s:%v", err, txids)
+				// OrthoDuo returns error if no orthology data for one of the taxa (occurs)
+				// OR no orthologues found for a pair of taxa (never occured so far)
+				msg := fmt.Sprintf("rdf4bgw.Ortho(): %s: ", err)
 				log.Println(msg)
+				continue // TODO test
 			} // NoData
 			/////////////////////////////////////////////////////////////////////////////
 			subdir := "ortho/"
@@ -565,7 +568,7 @@ func Ortho(datdir, bgwdir string, txn2prm util.Set2D) (int, error) {
 		} // txidR
 	} // txidL
 	return nln, nil
-} // end of orhto
+} // end of Orhto
 
 func Onto(datdir, bgwdir string) error {
 	var ontos = map[string]string{

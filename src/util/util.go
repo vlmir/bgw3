@@ -30,6 +30,15 @@ func CheckStrings(s ...string) error {
 	return nil
 }
 
+func TrimString (p *string) error {
+	*p = strings.TrimSpace(*p)
+		if *p == "" {
+	msg := fmt.Sprintf("util.TrimString(): EmptyString")
+			return errors.New(msg)
+		}
+	return nil
+}
+
 func (m Set1D) Add(key0 string) {
 	CheckStrings(key0)
 	_, ok := m[key0]

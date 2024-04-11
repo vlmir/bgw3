@@ -1,0 +1,113 @@
+<http://schema.org/evidenceLevel> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#AnnotationProperty> .
+<http://schema.org/evidenceLevel> <http://www.w3.org/2004/02/skos/core#prefLabel> "has evidence level" .
+<http://www.w3.org/2004/02/skos/core#definition> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#AnnotationProperty> .
+<http://www.w3.org/2004/02/skos/core#definition> <http://www.w3.org/2004/02/skos/core#prefLabel> "has definition" .
+<http://www.w3.org/2004/02/skos/core#prefLabel> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#AnnotationProperty> .
+<http://www.w3.org/2004/02/skos/core#prefLabel> <http://www.w3.org/2004/02/skos/core#prefLabel> "has name" .
+<http://www.w3.org/2004/02/skos/core#altLabel> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#AnnotationProperty> .
+<http://www.w3.org/2004/02/skos/core#altLabel> <http://www.w3.org/2004/02/skos/core#prefLabel> "has synonym" .
+<http://purl.obolibrary.org/obo/RO_0002162> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#ObjectProperty> .
+<http://purl.obolibrary.org/obo/RO_0002162> <http://www.w3.org/2004/02/skos/core#prefLabel> "in taxon" .
+<http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#ObjectProperty> .
+<http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2004/02/skos/core#prefLabel> "is instance of" .
+<http://www.w3.org/2004/02/skos/core#closeMatch> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#ObjectProperty> .
+<http://www.w3.org/2004/02/skos/core#closeMatch> <http://www.w3.org/2004/02/skos/core#prefLabel> "has close match" .
+<http://semanticscience.org/resource/SIO_000772> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#ObjectProperty> .
+<http://semanticscience.org/resource/SIO_000772> <http://www.w3.org/2004/02/skos/core#prefLabel> "has evidence" .
+<http://www.w3.org/2000/01/rdf-schema#subClassOf> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#ObjectProperty> .
+<http://www.w3.org/2000/01/rdf-schema#subClassOf> <http://www.w3.org/2004/02/skos/core#prefLabel> "is subclass of" .
+<http://semanticscience.org/resource/SIO_010043> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#Class> .
+<http://semanticscience.org/resource/SIO_010043> <http://www.w3.org/2004/02/skos/core#prefLabel> "Protein" .
+<http://uniprot.org/uniprot/FOOBAR> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#Class> .
+<http://uniprot.org/uniprot/FOOBAR> <http://www.w3.org/2000/01/rdf-schema#subClassOf> <http://semanticscience.org/resource/SIO_010043> .
+<http://uniprot.org/uniprot/FOOBAR> <http://purl.obolibrary.org/obo/RO_0002162> <http://purl.obolibrary.org/obo/NCBITaxon_9606> .
+<http://uniprot.org/uniprot/FOOBAR> <http://www.w3.org/2004/02/skos/core#definition> "Cellular tumor antigen p53" .
+<http://uniprot.org/uniprot/FOOBAR> <http://www.w3.org/2004/02/skos/core#prefLabel> "P53_GHOST" .
+<http://uniprot.org/uniprot/FOOBAR> <http://www.w3.org/2004/02/skos/core#altLabel> "FOOBAR" .
+<http://uniprot.org/uniprot/FOOBAR> <http://schema.org/evidenceLevel> "1" .
+<http://uniprot.org/uniparc/UPI000002ED67> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://uniprot.org/uniprot/FOOBAR> .
+<http://uniprot.org/uniparc/UPI000002ED67> <http://www.w3.org/2004/02/skos/core#prefLabel> "instance of P53_GHOST" .
+<http://uniprot.org/uniparc/UPI000002ED67> <http://www.w3.org/2004/02/skos/core#altLabel> "FOOBAR" .
+<http://uniprot.org/uniparc/UPI000002ED67> <http://www.w3.org/2004/02/skos/core#altLabel> "FOOBAR-2" .
+<http://uniprot.org/uniprot/P04637> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#Class> .
+<http://uniprot.org/uniprot/P04637> <http://www.w3.org/2000/01/rdf-schema#subClassOf> <http://semanticscience.org/resource/SIO_010043> .
+<http://uniprot.org/uniprot/P04637> <http://purl.obolibrary.org/obo/RO_0002162> <http://purl.obolibrary.org/obo/NCBITaxon_9606> .
+<http://uniprot.org/uniprot/P04637> <http://www.w3.org/2004/02/skos/core#definition> "Cellular tumor antigen p53 (Antigen NY-CO-13) (Phosphoprotein p53) (Tumor suppressor p53)" .
+<http://uniprot.org/uniprot/P04637> <http://www.w3.org/2004/02/skos/core#prefLabel> "P53_HUMAN" .
+<http://uniprot.org/uniprot/P04637> <http://www.w3.org/2004/02/skos/core#altLabel> "FOO" .
+<http://uniprot.org/uniprot/P04637> <http://www.w3.org/2004/02/skos/core#altLabel> "P04637" .
+<http://uniprot.org/uniprot/P04637> <http://www.w3.org/2004/02/skos/core#altLabel> "P53" .
+<http://uniprot.org/uniprot/P04637> <http://www.w3.org/2004/02/skos/core#altLabel> "TP53" .
+<http://uniprot.org/uniprot/P04637> <http://schema.org/evidenceLevel> "5" .
+<http://uniprot.org/uniprot/P04637> <http://semanticscience.org/resource/SIO_000772> <http://identifiers.org/pubmed/25732823> .
+<http://uniprot.org/uniprot/P04637> <http://semanticscience.org/resource/SIO_000772> <http://identifiers.org/pubmed/4006916> .
+<http://uniprot.org/uniparc/UPI000002ED67> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://uniprot.org/uniprot/P04637> .
+<http://uniprot.org/uniparc/UPI000002ED67> <http://www.w3.org/2004/02/skos/core#prefLabel> "instance of P53_HUMAN" .
+<http://uniprot.org/uniparc/UPI000002ED67> <http://www.w3.org/2004/02/skos/core#altLabel> "P04637" .
+<http://uniprot.org/uniparc/UPI0000456A12> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://uniprot.org/uniprot/P04637> .
+<http://uniprot.org/uniparc/UPI0000456A12> <http://www.w3.org/2004/02/skos/core#prefLabel> "instance of P53_HUMAN" .
+<http://uniprot.org/uniparc/UPI0000456A12> <http://www.w3.org/2004/02/skos/core#altLabel> "P04637-2" .
+<http://uniprot.org/uniprot/P04637> <http://www.w3.org/2004/02/skos/core#closeMatch> <http://identifiers.org/ensembl/ENSP00000391127> .
+<http://uniprot.org/uniprot/P04637> <http://www.w3.org/2004/02/skos/core#closeMatch> <http://identifiers.org/ensembl/ENSP00000482258> .
+<http://uniprot.org/uniprot/P04637> <http://www.w3.org/2004/02/skos/core#closeMatch> <http://identifiers.org/refseq/NP_001119586.1> .
+<http://uniprot.org/uniprot/P04637> <http://www.w3.org/2004/02/skos/core#closeMatch> <http://identifiers.org/refseq/NP_001263626.1> .
+<http://uniprot.org/uniprot/P04637> <http://www.w3.org/2004/02/skos/core#closeMatch> <http://identifiers.org/refseq/NP_001263627.1> .
+<http://uniprot.org/uniprot/P04637> <http://www.w3.org/2004/02/skos/core#closeMatch> <http://identifiers.org/refseq/NP_001263628.1> .
+<http://uniprot.org/uniprot/P10415> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#Class> .
+<http://uniprot.org/uniprot/P10415> <http://www.w3.org/2000/01/rdf-schema#subClassOf> <http://semanticscience.org/resource/SIO_010043> .
+<http://uniprot.org/uniprot/P10415> <http://purl.obolibrary.org/obo/RO_0002162> <http://purl.obolibrary.org/obo/NCBITaxon_9606> .
+<http://uniprot.org/uniprot/P10415> <http://www.w3.org/2004/02/skos/core#definition> "Apoptosis regulator Bcl-2" .
+<http://uniprot.org/uniprot/P10415> <http://www.w3.org/2004/02/skos/core#prefLabel> "BCL2_HUMAN" .
+<http://uniprot.org/uniprot/P10415> <http://www.w3.org/2004/02/skos/core#altLabel> "BCL2" .
+<http://uniprot.org/uniprot/P10415> <http://www.w3.org/2004/02/skos/core#altLabel> "P10415" .
+<http://uniprot.org/uniprot/P10415> <http://schema.org/evidenceLevel> "5.0" .
+<http://uniprot.org/uniprot/P10415> <http://semanticscience.org/resource/SIO_000772> <http://identifiers.org/pubmed/10567572> .
+<http://uniprot.org/uniprot/P10415> <http://semanticscience.org/resource/SIO_000772> <http://identifiers.org/pubmed/11248023> .
+<http://uniprot.org/uniprot/P10415> <http://semanticscience.org/resource/SIO_000772> <http://identifiers.org/pubmed/11368354> .
+<http://uniprot.org/uniprot/P10415> <http://semanticscience.org/resource/SIO_000772> <http://identifiers.org/pubmed/11463391> .
+<http://uniprot.org/uniprot/P10415> <http://semanticscience.org/resource/SIO_000772> <http://identifiers.org/pubmed/12901880> .
+<http://uniprot.org/uniprot/P10415> <http://semanticscience.org/resource/SIO_000772> <http://identifiers.org/pubmed/1339299> .
+<http://uniprot.org/uniprot/P10415> <http://semanticscience.org/resource/SIO_000772> <http://identifiers.org/pubmed/1508712> .
+<http://uniprot.org/uniprot/P10415> <http://semanticscience.org/resource/SIO_000772> <http://identifiers.org/pubmed/15489334> .
+<http://uniprot.org/uniprot/P10415> <http://semanticscience.org/resource/SIO_000772> <http://identifiers.org/pubmed/15547950> .
+<http://uniprot.org/uniprot/P10415> <http://semanticscience.org/resource/SIO_000772> <http://identifiers.org/pubmed/15733859> .
+<http://uniprot.org/uniprot/P10415> <http://semanticscience.org/resource/SIO_000772> <http://identifiers.org/pubmed/15849194> .
+<http://uniprot.org/uniprot/P10415> <http://semanticscience.org/resource/SIO_000772> <http://identifiers.org/pubmed/15902208> .
+<http://uniprot.org/uniprot/P10415> <http://semanticscience.org/resource/SIO_000772> <http://identifiers.org/pubmed/16177791> .
+<http://uniprot.org/uniprot/P10415> <http://semanticscience.org/resource/SIO_000772> <http://identifiers.org/pubmed/17090549> .
+<http://uniprot.org/uniprot/P10415> <http://semanticscience.org/resource/SIO_000772> <http://identifiers.org/pubmed/17256834> .
+<http://uniprot.org/uniprot/P10415> <http://semanticscience.org/resource/SIO_000772> <http://identifiers.org/pubmed/17418785> .
+<http://uniprot.org/uniprot/P10415> <http://semanticscience.org/resource/SIO_000772> <http://identifiers.org/pubmed/18570871> .
+<http://uniprot.org/uniprot/P10415> <http://semanticscience.org/resource/SIO_000772> <http://identifiers.org/pubmed/19228691> .
+<http://uniprot.org/uniprot/P10415> <http://semanticscience.org/resource/SIO_000772> <http://identifiers.org/pubmed/19706769> .
+<http://uniprot.org/uniprot/P10415> <http://semanticscience.org/resource/SIO_000772> <http://identifiers.org/pubmed/20849813> .
+<http://uniprot.org/uniprot/P10415> <http://semanticscience.org/resource/SIO_000772> <http://identifiers.org/pubmed/20889974> .
+<http://uniprot.org/uniprot/P10415> <http://semanticscience.org/resource/SIO_000772> <http://identifiers.org/pubmed/21358617> .
+<http://uniprot.org/uniprot/P10415> <http://semanticscience.org/resource/SIO_000772> <http://identifiers.org/pubmed/2250705> .
+<http://uniprot.org/uniprot/P10415> <http://semanticscience.org/resource/SIO_000772> <http://identifiers.org/pubmed/23055042> .
+<http://uniprot.org/uniprot/P10415> <http://semanticscience.org/resource/SIO_000772> <http://identifiers.org/pubmed/23431138> .
+<http://uniprot.org/uniprot/P10415> <http://semanticscience.org/resource/SIO_000772> <http://identifiers.org/pubmed/25609812> .
+<http://uniprot.org/uniprot/P10415> <http://semanticscience.org/resource/SIO_000772> <http://identifiers.org/pubmed/25944712> .
+<http://uniprot.org/uniprot/P10415> <http://semanticscience.org/resource/SIO_000772> <http://identifiers.org/pubmed/2834197> .
+<http://uniprot.org/uniprot/P10415> <http://semanticscience.org/resource/SIO_000772> <http://identifiers.org/pubmed/2875799> .
+<http://uniprot.org/uniprot/P10415> <http://semanticscience.org/resource/SIO_000772> <http://identifiers.org/pubmed/29020630> .
+<http://uniprot.org/uniprot/P10415> <http://semanticscience.org/resource/SIO_000772> <http://identifiers.org/pubmed/31206022> .
+<http://uniprot.org/uniprot/P10415> <http://semanticscience.org/resource/SIO_000772> <http://identifiers.org/pubmed/3285301> .
+<http://uniprot.org/uniprot/P10415> <http://semanticscience.org/resource/SIO_000772> <http://identifiers.org/pubmed/3523487> .
+<http://uniprot.org/uniprot/P10415> <http://semanticscience.org/resource/SIO_000772> <http://identifiers.org/pubmed/8183370> .
+<http://uniprot.org/uniprot/P10415> <http://semanticscience.org/resource/SIO_000772> <http://identifiers.org/pubmed/8668206> .
+<http://uniprot.org/uniprot/P10415> <http://semanticscience.org/resource/SIO_000772> <http://identifiers.org/pubmed/9305631> .
+<http://uniprot.org/uniprot/P10415> <http://semanticscience.org/resource/SIO_000772> <http://identifiers.org/pubmed/9395403> .
+<http://uniprot.org/uniparc/UPI000000D90E> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://uniprot.org/uniprot/P10415> .
+<http://uniprot.org/uniparc/UPI000000D90E> <http://www.w3.org/2004/02/skos/core#prefLabel> "instance of BCL2_HUMAN" .
+<http://uniprot.org/uniparc/UPI000000D90E> <http://www.w3.org/2004/02/skos/core#altLabel> "P10415" .
+<http://uniprot.org/uniparc/UPI000000D90E> <http://www.w3.org/2004/02/skos/core#altLabel> "P10415-1" .
+<http://uniprot.org/uniparc/UPI0000201E41> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://uniprot.org/uniprot/P10415> .
+<http://uniprot.org/uniparc/UPI0000201E41> <http://www.w3.org/2004/02/skos/core#prefLabel> "instance of BCL2_HUMAN" .
+<http://uniprot.org/uniparc/UPI0000201E41> <http://www.w3.org/2004/02/skos/core#altLabel> "P10415-2" .
+<http://uniprot.org/uniprot/P10415> <http://www.w3.org/2004/02/skos/core#closeMatch> <http://identifiers.org/ensembl/ENSP00000329623.3> .
+<http://uniprot.org/uniprot/P10415> <http://www.w3.org/2004/02/skos/core#closeMatch> <http://identifiers.org/ensembl/ENSP00000381185.1> .
+<http://uniprot.org/uniprot/P10415> <http://www.w3.org/2004/02/skos/core#closeMatch> <http://identifiers.org/ensembl/ENSP00000466417.1> .
+<http://uniprot.org/uniprot/P10415> <http://www.w3.org/2004/02/skos/core#closeMatch> <http://identifiers.org/ensembl/ENSP00000504190.1> .
+<http://uniprot.org/uniprot/P10415> <http://www.w3.org/2004/02/skos/core#closeMatch> <http://identifiers.org/refseq/NP_000624.2> .
+<http://uniprot.org/uniprot/P10415> <http://www.w3.org/2004/02/skos/core#closeMatch> <http://identifiers.org/refseq/NP_000648.2> .

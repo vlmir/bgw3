@@ -177,7 +177,7 @@ func Test_Prot2prot(t *testing.T) {
 	}
 }
 
-func Test_ortho(t *testing.T) {
+func Test_Ortho(t *testing.T) {
 	type tt struct {
 		arg1 string
 		arg2 string
@@ -191,7 +191,7 @@ func Test_ortho(t *testing.T) {
 	arg3[0].Add("9606", "ortho")
 	arg3[0].Add("10090", "ortho")
 	tts := []tt{
-		{pth, wpth, arg3[0], 28},
+		{pth, wpth, arg3[0], 2},
 	}
 	for i, tt := range tts {
 		n, _ := Ortho(tt.arg1, tt.arg2, tt.arg3)
