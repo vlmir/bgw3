@@ -141,17 +141,22 @@ var Uris4tftg = map[string]string{
 
 func FormU(u string) string {
 	u = strings.TrimSpace(u)
-	if u == "" {return u}
+	if u == "" {
+		return u
+	}
 	return strings.Join([]string{"<", u, ">"}, "")
 }
+
 func CompU(ns string, ext string) string {
 	util.CheckStrings(ns, ext)
 	return strings.Join([]string{"<", ns, ext, ">"}, "")
 }
+
 func FormT(s string, p string, o string) string {
 	util.CheckStrings(s, p, o)
 	return strings.Join([]string{s, p, o, ".\n"}, " ")
 }
+
 func FormL(l string) string {
 	util.CheckStrings(l)
 	return strings.Join([]string{`"`, l, `"`}, "")

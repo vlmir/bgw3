@@ -24,7 +24,7 @@ func main() {
 	log.Println("onto: Started with args:", args)
 	datdir := args[0] // path to data directory (with a trailing '/')
 	bgwdir := args[1] // path to rdf directory (with a trailing '/')
-	year := args[2]   // 
+	year := args[2]   //
 
 	if *aP || *dP {
 		start := time.Now()

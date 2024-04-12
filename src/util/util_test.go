@@ -7,7 +7,9 @@ import (
 
 func Test_TrimString(t *testing.T) {
 	s := "\n\n"
-	if err := TrimString(&s); err != nil {fmt.Println(err)}
+	if err := TrimString(&s); err != nil {
+		fmt.Println(err)
+	}
 }
 
 func Test_Set1D_Add(t *testing.T) {

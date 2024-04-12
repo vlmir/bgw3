@@ -31,8 +31,10 @@ func primaryKey(cells []string, keys []bgw.Column) string {
 		if kcell == "-" {
 			continue // skipping a component of the primary key
 		}
-		kbits := strings.Split(kcell, k.Dlm1) // sub-fields 
-		if len(kbits) < k.Ind2 + 1 {return ""}
+		kbits := strings.Split(kcell, k.Dlm1) // sub-fields
+		if len(kbits) < k.Ind2+1 {
+			return ""
+		}
 		if k.Key != "" && kbits[0] != k.Key {
 			return "" // filtering by the type of data specified by k.Key
 		}
@@ -416,11 +418,11 @@ func UpVar(rpth string) (duos util.Set3D, err error) {
 		duos.Add(pairid, "upca", upca) // upca trimmed
 	}
 	if len(duos) == 0 {
-		msg := fmt.Sprintf("parse.UpVar():%s: NoData", rpth)
+		msg := fmt.Sprintf("parse.UpVar(%s): NoData", rpth)
 		return duos, errors.New(msg)
 	}
 	return duos, nil
-} // UpVar()
+} // UpVar
 
 /*
 fields:

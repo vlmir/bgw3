@@ -30,12 +30,12 @@ func CheckStrings(s ...string) error {
 	return nil
 }
 
-func TrimString (p *string) error {
+func TrimString(p *string) error {
 	*p = strings.TrimSpace(*p)
-		if *p == "" {
-	msg := fmt.Sprintf("util.TrimString(): EmptyString")
-			return errors.New(msg)
-		}
+	if *p == "" {
+		msg := fmt.Sprintf("util.TrimString(): EmptyString")
+		return errors.New(msg)
+	}
 	return nil
 }
 

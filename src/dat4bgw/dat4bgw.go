@@ -69,7 +69,7 @@ func WgetFile(strs ...string) (err error) {
 // HttpFile will download a url to a local file. It's efficient because it will
 // write as it downloads and not load the whole file into memory.
 func HttpFile(url, wpth string) (*bytes.Buffer, error) {
-// from: https://golangcode.com/download-a-file-from-a-url/
+	// from: https://golangcode.com/download-a-file-from-a-url/
 	// 2023-10-19: used only for ontologies
 
 	// Get the data; resp is a ponter to a struct; resp.Body: io.ReadCloser
@@ -111,7 +111,7 @@ func GetFile(uri, key0, val0, wpth string) (*bytes.Buffer, error) {
 		return buf, err
 	}
 	req.Header.Set(key0, val0)
-	
+
 	client := &http.Client{} // type Client struct
 	// get response
 	// func (c *Client) Do(req *Request) (*Response, error)
@@ -485,8 +485,8 @@ func SaveAllOnto(datdir, year string) error {
 			return err
 		}
 	}
-		/*
-		 */
+	/*
+	 */
 	return nil
 } // SaveAllOnto
 

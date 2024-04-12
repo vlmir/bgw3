@@ -172,7 +172,7 @@ func Reg2pway(datdir, bgwdir string, txn2prm util.Set2D) (util.Set2D, error) {
 			}
 			for pdck, wpth := range wpths {
 				if err := util.Gzip(wpth); err != nil {
-				return cnts, err
+					return cnts, err
 				}
 				cnts.Add(pdck, srck)
 				cnts[pdck][srck] = d4b.Cnts[pdck][srck]
@@ -396,11 +396,11 @@ func Prot2prot(datdir, bgwdir string, txn2prm util.Set2D) (util.Set2D, error) {
 func Gene2phen(datdir, bgwdir string, txn2prm util.Set2D) (int, error) {
 	subdir := "gene2phen/"
 	if err := os.MkdirAll(filepath.Join(bgwdir, subdir), 0755); err != nil {
-		log.Println(err)
+		msg := fmt.Sprintf("rdf4bgw.Gene2phen: Failed to make: %s %s", subdir, err)
+		return 0, errors.New(msg)
 	}
 	// TODO interface similar to Tfac2gene etc.
-	log.Println("\n\tGene2phen for:", "all") // is not printed TODO
-	nln := 0
+	cnt := 0
 	for txid := range txn2prm {
 		if txid != "9606" {
 			continue
@@ -424,40 +424,38 @@ func Gene2phen(datdir, bgwdir string, txn2prm util.Set2D) (int, error) {
 		}
 		gsym2bgw := xmap.Lblg
 		/////////////////////////////////////////////////////////////////////////////
-		//duos, err := parse.UpVar(rpth, gsym2bgw) // the second arg is optional
-		duos, err := parse.UpVar(rpth)
+		duos, err := parse.UpVar(rpth) // returns error if len(duos) == 0
 		if err != nil {
-			msg := fmt.Sprintf("rdf4bgw.go:main.Gene2phen():%s: %s", err, txid)
-			log.Println(msg)
+			msg := fmt.Sprintf("rdf4bgw.Gene2phen(): parse.UpVar(%s) %s: ", rpth, err)
+			return 0, errors.New(msg)
 		}
 		/////////////////////////////////////////////////////////////////////////////
-		nts, err := export.Gene2phen(duos, gsym2bgw, wpth)
+		nrel, err := export.Gene2phen(duos, gsym2bgw, wpth)
 		if err != nil {
-			msg := fmt.Sprintf("rdf4bgw.go:main.Gene2phen():%s: %s", err, wpth)
-			log.Println(msg)
-			return 0, err
+			msg := fmt.Sprintf("rdf4bgw.Gene2phen(): export.Gene2phen(_, _, %s): %s ", wpth, err)
+			return 0, errors.New(msg)
 		}
-		nln += nts
+		cnt += nrel
 		if err = util.Gzip(wpth); err != nil {
-			log.Println("util.Gzip(): Failed to gzip:", wpth)
-			return 0, err
+			msg := fmt.Sprintf("rdf4bgw.Gene2phen(): util.Gzip(%s): %s", wpth, err)
+			return 0, errors.New(msg)
 		}
 	} // txid
-	return nln, nil
-} // Gene2phen()
+	return cnt, nil
+} // Gene2phen
 
 func Prot2go(datdir, bgwdir string, txn2prm util.Set2D, fx string) (int, error) {
 	subdir := "prot2bp/"
 	if err := os.MkdirAll(filepath.Join(bgwdir, subdir), 0755); err != nil {
-			return 0, err
+		return 0, err
 	}
 	subdir = "prot2cc/"
 	if err := os.MkdirAll(filepath.Join(bgwdir, subdir), 0755); err != nil {
-			return 0, err
+		return 0, err
 	}
 	subdir = "prot2mf/"
 	if err := os.MkdirAll(filepath.Join(bgwdir, subdir), 0755); err != nil {
-			return 0, err
+		return 0, err
 	}
 	// TODO interface similar to Tfac2gene etc.
 	log.Println("\n\tProt2go for:", "all") // is not printed TODO
@@ -485,11 +483,11 @@ func Prot2go(datdir, bgwdir string, txn2prm util.Set2D, fx string) (int, error) 
 		}
 		if fx == ".gaf" {
 			bps, ccs, mfs, err = parse.Gaf(rpth)
-		if err != nil {
-			msg := fmt.Sprintf("rdf4bgw.go:main.Prot2go():%s: %s", err, txid)
-			log.Println(msg)
-			return 0, err
-		}
+			if err != nil {
+				msg := fmt.Sprintf("rdf4bgw.go:main.Prot2go():%s: %s", err, txid)
+				log.Println(msg)
+				return 0, err
+			}
 		}
 		/////////////////////////////////////////////////////////////////////////////
 		wpth := ""
@@ -534,53 +532,51 @@ func Ortho(datdir, bgwdir string, txn2prm util.Set2D) (int, error) {
 	}
 	// TODO interface similar to Tfac2gene etc.
 	log.Println("\n\tortho for:", "all")
-	nln := 0
+	cnt := 0
 	for _, txidL := range txn2prm.Keys() {
 		for _, txidR := range txn2prm.Keys() {
 			if txidL >= txidR {
 				continue
 			} // skipping symmetrical and digonal
-			txids := [2]string{txidL, txidR}
 			duos, err := parse.OrthoDuo(datdir, txidL, txidR, txn2prm)
 			if err != nil {
 				// OrthoDuo returns error if no orthology data for one of the taxa (occurs)
 				// OR no orthologues found for a pair of taxa (never occured so far)
-				msg := fmt.Sprintf("rdf4bgw.Ortho(): %s: ", err)
+				msg := fmt.Sprintf("rdf4bgw.Ortho(): parse.OrthoDuo(_, %s, %s, _): %s: ", txidL, txidR, err)
 				log.Println(msg)
-				continue // TODO test
+				continue // works as intended
 			} // NoData
 			/////////////////////////////////////////////////////////////////////////////
 			subdir := "ortho/"
 			ext := ".nt"
 			file := fmt.Sprintf("%s%s%s%s", txidL, "-", txidR, ext)
 			wpth := fmt.Sprintf("%s%s%s", bgwdir, subdir, file)
-			nts, err := export.Ortho(duos, wpth)
+			nrel, err := export.Ortho(duos, wpth)
 			if err != nil {
-				msg := fmt.Sprintf("rdf4bgw.Ortho(): %v: %s", txids, err)
-				log.Println(msg)
-				return 0, err
+				msg := fmt.Sprintf("rdf4bgw.Ortho(): export.Ortho(_, %s): %s", wpth, err)
+				return 0, errors.New(msg) // assuming duos is not empty
 			}
 			if err = util.Gzip(wpth); err != nil {
-				log.Println("util.Gzip(): Failed to gzip:", wpth)
-				return nln, err
+				msg := fmt.Sprintf("rdf4bgw.Ortho(): util.Gzip(%s): %s", wpth, err)
+				return 0, errors.New(msg)
 			}
-			nln += nts
+			cnt += nrel
 		} // txidR
 	} // txidL
-	return nln, nil
-} // end of Orhto
+	return cnt, nil
+} // Orhto
 
 func Onto(datdir, bgwdir string) error {
 	var ontos = map[string]string{
-		"omim":          ".ttl",
+		"omim": ".ttl",
 		/*
-		"biolink-model": ".ttl",
-		"bfo":           ".owl",
-		"go-basic":      ".owl",
-		"mi":            ".owl",
-		"ncbitaxon":     ".owl",
-		"ro":            ".owl",
-		"sio":           ".owl",
+			"biolink-model": ".ttl",
+			"bfo":           ".owl",
+			"go-basic":      ".owl",
+			"mi":            ".owl",
+			"ncbitaxon":     ".owl",
+			"ro":            ".owl",
+			"sio":           ".owl",
 		*/
 	}
 	subdir := "onto/"

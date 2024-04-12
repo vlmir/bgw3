@@ -1268,12 +1268,9 @@ func Gene2phen(duos, gsym2bgw util.Set3D, wpth string) (int, error) {
 		oriR := strings.Split(idR, "!")[1] // OMIM ID
 		duoU := rdf.CompU(stmNS, duoid)
 		sb.WriteString(rdf.FormT(duoU, ourUs["ins2cls"], clsU))
-		nln++
 		sb.WriteString(rdf.FormT(duoU, ourUs["sub2cls"], ourUs["stm"]))
-		nln++
 		clslbl := fmt.Sprintf("%s--%s", oriL, oriR)
 		sb.WriteString(rdf.FormT(duoU, ourUs["sth2lbl"], rdf.FormL(clslbl)))
-		nln++
 		upcas := duo["upca"].Keys()
 		if len(upcas) > 1 {
 			// msg := fmt.Sprintf("export.Gene2phen():%s: upcas: %v", duoid, upcas)
@@ -1288,37 +1285,32 @@ func Gene2phen(duos, gsym2bgw util.Set3D, wpth string) (int, error) {
 		dfn := strings.Join(dfns, "; ")
 		clsdfn := fmt.Sprintf("Association between gene %s and disease %v", oriL, dfn)
 		sb.WriteString(rdf.FormT(duoU, ourUs["sth2dfn"], rdf.FormL(clsdfn)))
-		nln++
 
 		// an attempt to get desease names in the App, to no avail
 		uriR := rdf.CompU(nss["omim"], oriR)
 		sb.WriteString(rdf.FormT(uriR, ourUs["sth2lbl"], rdf.FormL(dfn)))
-		nln++
 
 		pdc := "gn2phn"
 		sb.WriteString(rdf.FormT(duoU, rdf.CompU(rdfNS, "predicate"), ourUs[pdc]))
-		nln++
 		// multiple subjects (never happens)
 		for _, bgwL := range bgwLs { // sorted above
 			uriL := rdf.CompU(nss["gene"], bgwL)
 			sb.WriteString(rdf.FormT(duoU, rdf.CompU(rdfNS, "subject"), uriL))
-			nln++
 			sb.WriteString(rdf.FormT(uriL, ourUs[pdc], uriR))
-			nln++
 		}
 		sb.WriteString(rdf.FormT(duoU, rdf.CompU(rdfNS, "object"), uriR))
-		nln++
 
 		/// INSTANCES
 		insid := fmt.Sprintf("%s%s%s", duoid, "#", srck)
 		insU := rdf.CompU(stmNS, insid)
 		sb.WriteString(rdf.FormT(insU, ourUs["ins2cls"], duoU))
-		nln++
 		sb.WriteString(rdf.FormT(insU, ourUs["sth2src"], srcU))
-		nln++
-		cntD++
-		wfh.Write([]byte(sb.String()))
-		sb.Reset()
+		bytes := []byte(sb.String())
+		if len(bytes) != 0 {
+			wfh.Write(bytes)
+			sb.Reset()
+			cntD++
+		}
 	} // duoid
 	msg := ""
 	if cntD == 0 {
@@ -1329,7 +1321,7 @@ func Gene2phen(duos, gsym2bgw util.Set3D, wpth string) (int, error) {
 	log.Println(msg)
 	msg = fmt.Sprintf("export.Gene2phen(): Genes: added: %d dropped: %d", len(cnt["addG"]), len(cnt["dropG"]))
 	log.Println(msg)
-	return nln, nil
+	return cntD, nil
 } // Gene2phen
 
 // arg1: output of parse.Gaf or parse.Gpa
@@ -1525,8 +1517,8 @@ func Ortho(duos util.Set3D, wpth string) (int, error) {
 	stmNS := "http://rdf.biogateway.eu/ortho/"
 	rdfNS := nss["rdf"]
 	idmkeys := bgw.Orthokeys // currently only "OrthoDB": "orthodb", TODO move here?
-	cntD := 0 // number of orthology relations for a pair of taxa
-	nln = 0 // number of lines written for a pair of taxa
+	cntD := 0                // number of orthology relations for a pair of taxa
+	nln = 0                  // number of lines written for a pair of taxa
 	for _, duoid := range duos.Keys() {
 		duo := duos[duoid]
 		duoU := rdf.CompU(stmNS, duoid)
@@ -1534,28 +1526,19 @@ func Ortho(duos util.Set3D, wpth string) (int, error) {
 		oriL := strings.Split(bits[0], "!")[1] // UniProt Canonical Accession
 		oriR := strings.Split(bits[1], "!")[1] // UniProt Canonical Accession
 		sb.WriteString(rdf.FormT(duoU, ourUs["ins2cls"], clsU))
-		nln++
 		sb.WriteString(rdf.FormT(duoU, ourUs["sub2cls"], ourUs["stm"]))
-		nln++
 		clslbl := fmt.Sprintf("%s--%s", oriL, oriR)
 		sb.WriteString(rdf.FormT(duoU, ourUs["sth2lbl"], rdf.FormL(clslbl)))
-		nln++
 		clsdfn := fmt.Sprintf("Pair of orthologous proteins %s and %s", oriL, oriR)
 		sb.WriteString(rdf.FormT(duoU, ourUs["sth2dfn"], rdf.FormL(clsdfn)))
-		nln++
 		pdc := "orl2orl"
 		sb.WriteString(rdf.FormT(duoU, rdf.CompU(rdfNS, "predicate"), ourUs[pdc]))
-		nln++
 		uriL := rdf.CompU(nss["uniprot"], oriL)
 		sb.WriteString(rdf.FormT(duoU, rdf.CompU(rdfNS, "subject"), uriL))
-		nln++
 		uriR := rdf.CompU(nss["uniprot"], oriR)
 		sb.WriteString(rdf.FormT(duoU, rdf.CompU(rdfNS, "object"), uriR))
-		nln++
 		sb.WriteString(rdf.FormT(uriL, ourUs[pdc], uriR))
-		nln++
 		sb.WriteString(rdf.FormT(uriR, ourUs[pdc], uriL))
-		nln++
 
 		/// INSTANCES
 		for _, idmk := range duo.Keys() {
@@ -1566,35 +1549,30 @@ func Ortho(duos util.Set3D, wpth string) (int, error) {
 			insid := fmt.Sprintf("%s%s%s", duoid, "#", srck)
 			insU := rdf.CompU(stmNS, insid)
 			sb.WriteString(rdf.FormT(insU, ourUs["ins2cls"], duoU))
-			nln++
 			sb.WriteString(rdf.FormT(insU, ourUs["sth2lbl"], rdf.FormL(clslbl)))
 			srcU := rdf.FormU(srcs[srck])
 			sb.WriteString(rdf.FormT(insU, ourUs["sth2src"], srcU))
-			nln++
 			// looping over orthology clusters:
 			for _, setid := range duo[idmk].Keys() {
 				setU := rdf.FormU(fmt.Sprintf("%s%s", nss[srck], setid))
 				sb.WriteString(rdf.FormT(insU, ourUs["sub2set"], setU)) // part_of
-				nln++
 				sb.WriteString(rdf.FormT(uriL, ourUs["mbr2lst"], setU))
-				nln++
 				sb.WriteString(rdf.FormT(uriR, ourUs["mbr2lst"], setU))
-				nln++
 			}
 		}
 		bytes := []byte(sb.String())
 		if len(bytes) != 0 {
-		wfh.Write(bytes)
-		sb.Reset()
-		cntD++
+			wfh.Write(bytes)
+			sb.Reset()
+			cntD++
 		}
 	} // duoid
-// 	msg := ""
-// 	msg = fmt.Sprintf("export.Ortho(): Pairs: added: %d dropped: %d", cntD, len(duos)-cntD)
-// 	log.Println(msg)
-//	if nln == 0 { // happens for some pairs of taxa !
-//	msg := fmt.Sprintf("export.Ortho(): NoContent")
-//	return nln, errors.New(msg)
-//	}
+	// 	msg := ""
+	// 	msg = fmt.Sprintf("export.Ortho(): Pairs: added: %d dropped: %d", cntD, len(duos)-cntD)
+	// 	log.Println(msg)
+	//	if nln == 0 { // happens for some pairs of taxa !
+	//	msg := fmt.Sprintf("export.Ortho(): NoContent")
+	//	return nln, errors.New(msg)
+	//	}
 	return cntD, nil
 } // Ortho
