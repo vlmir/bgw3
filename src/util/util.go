@@ -18,18 +18,6 @@ type Set3D map[string]Set2D
 type Set4D map[string]Set3D
 type SliceSet map[string][]string
 
-// TODO return error instead of panicing ?
-func CheckStrings(s ...string) error {
-	// just checks, does ot trim
-	for i, v := range s {
-		if strings.TrimSpace(v) == "" {
-			// panic(errors.New(fmt.Sprintf("%v: index: %d: EmptyString", s, i)))
-			return errors.New(fmt.Sprintf("%v: index: %d: EmptyString", s, i))
-		}
-	}
-	return nil
-}
-
 func TrimString(p *string) error {
 	*p = strings.TrimSpace(*p)
 	if *p == "" {
@@ -40,10 +28,15 @@ func TrimString(p *string) error {
 }
 
 func (m Set1D) Add(key0 string) {
-	CheckStrings(key0)
-	_, ok := m[key0]
+	p0 := &key0
+	err := TrimString(p0)
+	if err != nil {
+		msg := fmt.Sprintf("util.(Set1D)Add(%s): %s", "key0", err)
+		panic(errors.New(msg))
+	}
+	_, ok := m[*p0]
 	if !ok {
-		m[key0]++
+		m[*p0]++
 	}
 }
 
@@ -57,13 +50,24 @@ func (m Set1D) Keys() []string {
 }
 
 func (m Set2D) Add(key0, key1 string) {
-	CheckStrings(key0, key1)
-	mm, ok := m[key0]
+	p0 := &key0
+	err := TrimString(p0)
+	if err != nil {
+		msg := fmt.Sprintf("util.(Set2D)Add(%s, _): %s", "key0", err)
+		panic(errors.New(msg))
+	}
+	p1 := &key1
+	err = TrimString(p1)
+	if err != nil {
+		msg := fmt.Sprintf("util.(Set2D)Add(_, %s): %s", "key1", err)
+		panic(errors.New(msg))
+	}
+	mm, ok := m[*p0]
 	if !ok {
 		mm = make(map[string]int)
-		m[key0] = mm
+		m[*p0] = mm
 	}
-	mm[key1]++
+	mm[*p1]++
 }
 
 func (m SliceSet) Keys() []string {
@@ -85,38 +89,78 @@ func (m Set2D) Keys() []string {
 }
 
 func (m Set3D) Add(key0, key1, key2 string) {
-	CheckStrings(key0, key1, key2)
-	mm, ok := m[key0]
+	p0 := &key0
+	err := TrimString(p0)
+	if err != nil {
+		msg := fmt.Sprintf("util.(Set3D)Add(%s, _, _): %s", "key0", err)
+		panic(errors.New(msg))
+	}
+	p1 := &key1
+	err = TrimString(p1)
+	if err != nil {
+		msg := fmt.Sprintf("util.(Set3D)Add(_, %s, _): %s", "key1", err)
+		panic(errors.New(msg))
+	}
+	p2 := &key2
+	err = TrimString(p2)
+	if err != nil {
+		msg := fmt.Sprintf("util.(Set3D)Add(_, _, %s): %s", "key2", err)
+		panic(errors.New(msg))
+	}
+	mm, ok := m[*p0]
 	if !ok {
 		mm = make(Set2D)
-		m[key0] = mm
+		m[*p0] = mm
 	}
-	mmm, ok := mm[key1]
+	mmm, ok := mm[*p1]
 	if !ok {
 		mmm = make(Set1D)
-		mm[key1] = mmm
+		mm[*p1] = mmm
 	}
-	mmm[key2]++
+	mmm[*p2]++
 }
 
 func (m Set4D) Add(key0, key1, key2, key3 string) {
-	CheckStrings(key0, key1, key2, key3)
-	mm, ok := m[key0]
+	p0 := &key0
+	err := TrimString(p0)
+	if err != nil {
+		msg := fmt.Sprintf("util.(Set4D)Add(%s, _, _, _): %s", "key0", err)
+		panic(errors.New(msg))
+	}
+	p1 := &key1
+	err = TrimString(p1)
+	if err != nil {
+		msg := fmt.Sprintf("util.(Set4D)Add(_, %s, _, _): %s", "key1", err)
+		panic(errors.New(msg))
+	}
+	p2 := &key2
+	err = TrimString(p2)
+	if err != nil {
+		msg := fmt.Sprintf("util.(Set4D)Add(_, _, %s, _): %s", "key2", err)
+		panic(errors.New(msg))
+	}
+	p3 := &key3
+	err = TrimString(p3)
+	if err != nil {
+		msg := fmt.Sprintf("util.(Set4D)Add(_, _, _, %s): %s", "key3", err)
+		panic(errors.New(msg))
+	}
+	mm, ok := m[*p0]
 	if !ok {
 		mm = make(Set3D)
-		m[key0] = mm
+		m[*p0] = mm
 	}
-	mmm, ok := mm[key1]
+	mmm, ok := mm[*p1]
 	if !ok {
 		mmm = make(Set2D)
-		mm[key1] = mmm
+		mm[*p1] = mmm
 	}
-	mmmm, ok := mmm[key2]
+	mmmm, ok := mmm[*p2]
 	if !ok {
 		mmmm = make(Set1D)
-		mmm[key2] = mmmm
+		mmm[*p2] = mmmm
 	}
-	mmmm[key3]++
+	mmmm[*p3]++
 }
 
 func (m Set4D) Keys() []string {

@@ -139,44 +139,83 @@ var Uris4tftg = map[string]string{
 
 /// Functions
 
-func FormU(u string) string {
-	u = strings.TrimSpace(u)
-	if u == "" {
-		return u
+func FormL(s0 string) string {
+	p0 := &s0
+	err := util.TrimString(p0)
+	if err != nil {
+		msg := fmt.Sprintf("rdf.FormL(%s): %s", "s0", err)
+		panic(errors.New(msg))
 	}
-	return strings.Join([]string{"<", u, ">"}, "")
+	return strings.Join([]string{`"`, *p0, `"`}, "")
 }
 
-func CompU(ns string, ext string) string {
-	util.CheckStrings(ns, ext)
-	return strings.Join([]string{"<", ns, ext, ">"}, "")
+func FormU(s0 string) string {
+	p0 := &s0
+	err := util.TrimString(p0)
+	if err != nil {
+		msg := fmt.Sprintf("rdf.FormU(%s): %s", "s0", err)
+		panic(errors.New(msg))
+	}
+	return strings.Join([]string{"<", *p0, ">"}, "")
 }
 
-func FormT(s string, p string, o string) string {
-	util.CheckStrings(s, p, o)
-	return strings.Join([]string{s, p, o, ".\n"}, " ")
+func CompU(s0, s1 string) string {
+	p0 := &s0
+	err := util.TrimString(p0)
+	if err != nil {
+		msg := fmt.Sprintf("rdf.CompU(%s, _): %s", "s0", err)
+		panic(errors.New(msg))
+	}
+	p1 := &s1
+	err = util.TrimString(p1)
+	if err != nil {
+		msg := fmt.Sprintf("rdf.CompU(_, %s): %s", "s1", err)
+		panic(errors.New(msg))
+	}
+	return strings.Join([]string{"<", *p0, *p1, ">"}, "")
 }
 
-func FormL(l string) string {
-	util.CheckStrings(l)
-	return strings.Join([]string{`"`, l, `"`}, "")
+func FormT(s0, s1, s2 string) string {
+	p0 := &s0
+	err := util.TrimString(p0)
+	if err != nil {
+		msg := fmt.Sprintf("rdf.FormT(%s, _, _): %s", "s0", err)
+		panic(errors.New(msg))
+	}
+	p1 := &s1
+	err = util.TrimString(p1)
+	if err != nil {
+		msg := fmt.Sprintf("rdf.FormT(_, %s, _): %s", "s1", err)
+		panic(errors.New(msg))
+	}
+	p2 := &s2
+	err = util.TrimString(p2)
+	if err != nil {
+		msg := fmt.Sprintf("rdf.FormT(_, _, %s): %s", "s2", err)
+		panic(errors.New(msg))
+	}
+	return strings.Join([]string{*p0, *p1, *p2, ".\n"}, " ")
 }
 
 // arg1: a map for filtering
 func FmtURIs(rdfmap util.SliceSet) map[string]string {
-	dic := make(util.SliceSet)
+	set := make(util.SliceSet)
 	fmtURIs := make(map[string]string)
 	for group, urikeys := range rdfmap { // urikeys - slice of tokens
+		if len(urikeys) == 0 {
+			msg := fmt.Sprintf("rdf.FmtURIs(): NoKeys")
+			panic(errors.New(msg))
+		}
 		switch {
 		case group == "Prns":
-			dic = Prns
+			set = Prns
 		case group == "Opys":
-			dic = Opys
+			set = Opys
 		case group == "Apys":
-			dic = Apys
+			set = Apys
 		}
 		for _, urikey := range urikeys {
-			bits, ok := dic[urikey] // []string{nsk, uid}
+			bits, ok := set[urikey] // []string{nsk, uid}
 			if !ok {
 				msg := fmt.Sprintf("NoEntryFor: %s", urikey)
 				panic(errors.New(msg))
@@ -193,7 +232,6 @@ func FmtURIs(rdfmap util.SliceSet) map[string]string {
 				panic(errors.New(msg))
 			}
 			myU := CompU(ns, uid)
-			util.CheckStrings(myU)
 			fmtURIs[urikey] = myU
 		}
 	}
@@ -212,26 +250,26 @@ func FmtURIs(rdfmap util.SliceSet) map[string]string {
 // return1: a string of RDF triples in the 'nt' format`
 // return2: the number of lines in return1
 func Capita(rdfmap util.SliceSet) (string, int) {
-	dic := make(util.SliceSet)
+	set := make(util.SliceSet)
 	var pdc []string
 	var top string
 	var plU string
 	var sb strings.Builder
 	nln := 0
-	groups := rdfmap.Keys() // sorted
+	groups := rdfmap.Keys() // sorted, non-empty
 	for _, group := range groups {
 		urikeys := rdfmap[group]
 		switch {
 		case group == "Prns":
-			dic = Prns
+			set = Prns
 			pdc = Opys["ins2cls"]
 			top = "Class"
 		case group == "Opys":
-			dic = Opys
+			set = Opys
 			pdc = Opys["ins2cls"]
 			top = "ObjectProperty"
 		case group == "Apys":
-			dic = Apys
+			set = Apys
 			pdc = Opys["ins2cls"]
 			top = "AnnotationProperty"
 		}
@@ -239,8 +277,7 @@ func Capita(rdfmap util.SliceSet) (string, int) {
 		lbits := Apys["sth2lbl"]
 		plU = CompU(Nss[lbits[0]], lbits[1])
 		for _, urikey := range urikeys {
-			util.CheckStrings(urikey)
-			bits, ok := dic[urikey] // []string
+			bits, ok := set[urikey] // []string
 			if !ok {
 				msg := fmt.Sprintf("NoEntryFor: %s", urikey)
 				panic(errors.New(msg))
@@ -253,6 +290,5 @@ func Capita(rdfmap util.SliceSet) (string, int) {
 			nln++
 		}
 	}
-	util.CheckStrings(sb.String())
 	return sb.String(), nln
 }
