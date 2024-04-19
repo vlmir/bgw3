@@ -250,7 +250,7 @@ func FmtURIs(rdfmap util.SliceSet) map[string]string {
 // return1: a string of RDF triples in the 'nt' format`
 // return2: the number of lines in return1
 func Capita(rdfmap util.SliceSet) (string, int) {
-	set := make(util.SliceSet)
+	ss := make(util.SliceSet)
 	var pdc []string
 	var top string
 	var plU string
@@ -261,15 +261,15 @@ func Capita(rdfmap util.SliceSet) (string, int) {
 		urikeys := rdfmap[group]
 		switch {
 		case group == "Prns":
-			set = Prns
+			ss = Prns
 			pdc = Opys["ins2cls"]
 			top = "Class"
 		case group == "Opys":
-			set = Opys
+			ss = Opys
 			pdc = Opys["ins2cls"]
 			top = "ObjectProperty"
 		case group == "Apys":
-			set = Apys
+			ss = Apys
 			pdc = Opys["ins2cls"]
 			top = "AnnotationProperty"
 		}
@@ -277,7 +277,7 @@ func Capita(rdfmap util.SliceSet) (string, int) {
 		lbits := Apys["sth2lbl"]
 		plU = CompU(Nss[lbits[0]], lbits[1])
 		for _, urikey := range urikeys {
-			bits, ok := set[urikey] // []string
+			bits, ok := ss[urikey] // []string
 			if !ok {
 				msg := fmt.Sprintf("NoEntryFor: %s", urikey)
 				panic(errors.New(msg))

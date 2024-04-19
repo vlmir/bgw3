@@ -14,6 +14,15 @@ import (
 	"strings"
 )
 
+func newFH(wpth string) *os.File {
+	fh, err := os.Create(wpth)
+	if err != nil {
+		msg := fmt.Sprintf("export: os.Create(%s): %s", wpth, err)
+		panic(errors.New(msg))
+	}
+	return fh
+}
+
 func counter(s []string, c util.Set2D, a, d, v string) (l int) {
 	// used only in Gene2phen and Prot2go
 	l = len(s)
@@ -90,8 +99,7 @@ func Prot2prot(d *bgw.Dat4bridge, x *bgw.Xmap, wdir string) error {
 	txid := d4b.Taxid
 	sdir := "prot2prot"
 	wpth := fmt.Sprintf("%s%s/%s-%s.nt", wdir, sdir, srck, txid)
-	wfh, err := os.Create(wpth)
-	util.CheckE(err)
+	wfh := newFH(wpth)
 	defer wfh.Close()
 	var sb strings.Builder
 	ourUs := rdf.FmtURIs(keys4b)
@@ -215,19 +223,13 @@ func Reg2targ(d *bgw.Dat4bridge, x *bgw.Xmap, wdir string) error {
 	modes.Add("signor", "up-regulates", p2t)
 	modes.Add("signor", "down-regulates", n2t)
 
-	fh4p, err := os.Create(wpths[p2t])
-	util.CheckE(err)
-	defer fh4p.Close()
-	fh4n, err := os.Create(wpths[n2t])
-	util.CheckE(err)
-	defer fh4n.Close()
-	fh4u, err := os.Create(wpths[u2t])
-	util.CheckE(err)
-	defer fh4u.Close()
 	fhs := make(map[string]*os.File)
-	fhs[p2t] = fh4p
-	fhs[n2t] = fh4n
-	fhs[u2t] = fh4u
+	fhs[n2t] = newFH(wpths[n2t])
+	fhs[p2t] = newFH(wpths[p2t])
+	fhs[u2t] = newFH(wpths[u2t])
+	for _, wfh := range fhs {
+	defer wfh.Close()
+	}
 	keys4b := make(util.SliceSet)
 	keys4b["Opys"] = []string{
 		"sub2cls",
@@ -446,19 +448,13 @@ func Tfac2gene(d *bgw.Dat4bridge, x *bgw.Xmap, wdir string) error {
 	modes.Add("tflink", "repressor", n2t)
 	modes.Add("coltri", "pos", p2t)
 	modes.Add("coltri", "neg", n2t)
-	fh4p, err := os.Create(wpths[p2t])
-	util.CheckE(err)
-	defer fh4p.Close()
-	fh4n, err := os.Create(wpths[n2t])
-	util.CheckE(err)
-	defer fh4n.Close()
-	fh4u, err := os.Create(wpths[u2t])
-	util.CheckE(err)
-	defer fh4u.Close()
 	fhs := make(map[string]*os.File)
-	fhs[p2t] = fh4p
-	fhs[n2t] = fh4n
-	fhs[u2t] = fh4u
+	fhs[n2t] = newFH(wpths[n2t])
+	fhs[p2t] = newFH(wpths[p2t])
+	fhs[u2t] = newFH(wpths[u2t])
+	for _, wfh := range fhs {
+	defer wfh.Close()
+	}
 	keys4b := make(util.SliceSet)
 	keys4b["Opys"] = []string{
 		"sub2cls",
@@ -633,19 +629,13 @@ func SigPways(d *bgw.Dat4bridge, x *bgw.Xmap, wdir string) error {
 	modes.Add("signor", "up-regulates", p2t)
 	modes.Add("signor", "down-regulates", n2t)
 
-	fh4p, err := os.Create(wpths[p2t])
-	util.CheckE(err)
-	defer fh4p.Close()
-	fh4n, err := os.Create(wpths[n2t])
-	util.CheckE(err)
-	defer fh4n.Close()
-	fh4u, err := os.Create(wpths[u2t])
-	util.CheckE(err)
-	defer fh4u.Close()
 	fhs := make(map[string]*os.File)
-	fhs[p2t] = fh4p
-	fhs[n2t] = fh4n
-	fhs[u2t] = fh4u
+	fhs[n2t] = newFH(wpths[n2t])
+	fhs[p2t] = newFH(wpths[p2t])
+	fhs[u2t] = newFH(wpths[u2t])
+	for _, wfh := range fhs {
+	defer wfh.Close()
+	}
 	keys4b := make(util.SliceSet)
 	keys4b["Opys"] = []string{
 		"sub2cls",
@@ -826,11 +816,20 @@ func SigPways(d *bgw.Dat4bridge, x *bgw.Xmap, wdir string) error {
 	return nil
 } // SigPways
 
-func Gene(rpthUP, rpthI, wpthG string, p *bgw.Xmap) error {
+func Gene(rpthUP, rpthI, wpth string, p *bgw.Xmap) error {
 	xmap := *p
 	// Reference proteome IDs:
-	xrf2upac, _ := parse.Idmap(rpthI, bgw.Upkeys, 1, 2, 0)
-	upac2xrf, _ := parse.Idmap(rpthI, bgw.Upkeys, 0, 1, 2)
+	// Idmap returns errors if fails to open the file OR the output map is empty
+	xrf2upac, err := parse.Idmap(rpthI, bgw.Upkeys, 1, 2, 0)
+	if err != nil {
+		msg := fmt.Sprintf("export.Gene():  xrf2upac: %s", err)
+		return errors.New(msg)
+	}
+	upac2xrf, err := parse.Idmap(rpthI, bgw.Upkeys, 0, 1, 2)
+	if err != nil {
+		msg := fmt.Sprintf("export.Gene(): upac2xrf: %s", err)
+		return errors.New(msg)
+	}
 	upca2upac := make(util.Set2D) // TODO double-check the use of
 	for _, upac := range upac2xrf.Keys() {
 		bits := strings.Split(upac, "-")
@@ -843,7 +842,10 @@ func Gene(rpthUP, rpthI, wpthG string, p *bgw.Xmap) error {
 	}
 	keys, vals := bgw.UpdatParseConf()
 	allUPs, err := parse.Tab2set3D(rpthUP, keys, vals) // keys UP canonical accessions, not all RefProt
-	allUPs.Check()                                     // 8 linker keys:
+	if err != nil {
+		msg := fmt.Sprintf("export.Gene(): parse.Tab2set3D(%s, _, _): allUPs: EmptySet", rpthUP)
+		return errors.New(msg)
+	}
 	gnm2upca := make(util.Set2D)                       // TODO take gene names and synonyms from upac2xrf !!
 	for _, upca := range allUPs.Keys() {
 		for _, gnm := range allUPs[upca]["gnms"].Keys() {
@@ -882,9 +884,8 @@ func Gene(rpthUP, rpthI, wpthG string, p *bgw.Xmap) error {
 	}
 	clsU := rdf.CompU(nss["owl"], "Class")
 	/////////////////////////////////////////////////////////////////////////////
-	wfhG, err := os.Create(wpthG)
-	util.CheckE(err)
-	defer wfhG.Close()
+	wfh := newFH(wpth)
+	defer wfh.Close()
 	// 'gene' graph ini
 	var sbG strings.Builder
 	gnUs := rdf.FmtURIs(keys4g) // URIs for 'gene' graph
@@ -1013,16 +1014,25 @@ func Gene(rpthUP, rpthI, wpthG string, p *bgw.Xmap) error {
 			}
 		}
 	} // lblG
-	wfhG.Write([]byte(sbG.String()))
+	wfh.Write([]byte(sbG.String()))
 	sbG.Reset()
 	return nil
 } // Gene()
 
-func Prot(rpthUP, rpthI, wpthP string, p *bgw.Xmap) error {
+func Prot(rpthUP, rpthI, wpth string, p *bgw.Xmap) error {
 	xmap := *p
 	// Reference proteome IDs:
-	xrf2upac, _ := parse.Idmap(rpthI, bgw.Upkeys, 1, 2, 0)
-	upac2xrf, _ := parse.Idmap(rpthI, bgw.Upkeys, 0, 1, 2)
+	// Idmap returns errors if fails to open the file OR the output map is empty
+	xrf2upac, err := parse.Idmap(rpthI, bgw.Upkeys, 1, 2, 0)
+	if err != nil {
+		msg := fmt.Sprintf("export.Prot():  xrf2upac: %s", err)
+		return errors.New(msg)
+	}
+	upac2xrf, err := parse.Idmap(rpthI, bgw.Upkeys, 0, 1, 2)
+	if err != nil {
+		msg := fmt.Sprintf("export.Prot():  upac2xrf: %s", err)
+		return errors.New(msg)
+	}
 	upca2upac := make(util.Set2D) // TODO double-check the use of
 	for _, upac := range upac2xrf.Keys() {
 		bits := strings.Split(upac, "-")
@@ -1060,9 +1070,8 @@ func Prot(rpthUP, rpthI, wpthP string, p *bgw.Xmap) error {
 	}
 	clsU := rdf.CompU(nss["owl"], "Class")
 	/////////////////////////////////////////////////////////////////////////////
-	wfhP, err := os.Create(wpthP)
-	util.CheckE(err)
-	defer wfhP.Close()
+	wfh := newFH(wpth)
+	defer wfh.Close()
 	// prot graph ini
 	var sbP strings.Builder
 	gpUs := rdf.FmtURIs(keys4p) // URIs for 'prot' graph
@@ -1077,7 +1086,10 @@ func Prot(rpthUP, rpthI, wpthP string, p *bgw.Xmap) error {
 
 	keys, vals := bgw.UpdatParseConf()
 	allUPs, err := parse.Tab2set3D(rpthUP, keys, vals)
-	allUPs.Check()                         // 8 linker keys:
+	if err != nil {
+		msg := fmt.Sprintf("export.Prot(): parse.Tab2set3D(%s, _, _): allUPs: EmptySet", rpthUP)
+		return errors.New(msg)
+	}
 	txnU := rdf.CompU(nss["ncbitx"], txid) // taxon URI
 	xkeys := []string{
 		"Ensembl_PRO",
@@ -1198,7 +1210,7 @@ func Prot(rpthUP, rpthI, wpthP string, p *bgw.Xmap) error {
 		}
 	} // upca
 	/////////////////////////////////////////////////////////////////////////////
-	wfhP.Write([]byte(sbP.String()))
+	wfh.Write([]byte(sbP.String()))
 	sbP.Reset()
 	return nil
 } // Prot()
@@ -1230,16 +1242,13 @@ func Gene2phen(duos, gsym2bgw util.Set3D, wpth string) (int, error) {
 	srcU := rdf.FormU(srcs[srck])
 	clsU := rdf.CompU(nss["owl"], "Class")
 	// gene2phen graph ini
-	wfh, err := os.Create(wpth)
-	if err != nil {
-		return 0, err
-	}
+	wfh := newFH(wpth)
 	defer wfh.Close()
 	var sb strings.Builder
 	ourUs := rdf.FmtURIs(keys4b)
 	header, nln := rdf.Capita(keys4b)
 	if nln < 20 {
-		msg := fmt.Sprintf("MalformedHeader")
+		msg := fmt.Sprintf("export.Gene2phen(_, _, %s): MalformedHeader", wpth)
 		return 0, errors.New(msg)
 	}
 	sb.WriteString(header)
@@ -1361,8 +1370,7 @@ func Prot2go(duos, upac2bgw util.Set3D, wpth string) (int, error) {
 	}
 	clsU := rdf.CompU(nss["owl"], "Class")
 	// prot2bp prot2cc prot2mf graph ini
-	wfh, err := os.Create(wpth)
-	util.CheckE(err)
+	wfh := newFH(wpth)
 	defer wfh.Close()
 	var sb strings.Builder
 	ourUs := rdf.FmtURIs(keys4b)
@@ -1502,8 +1510,7 @@ func Ortho(duos util.Set3D, wpth string) (int, error) {
 	}
 	clsU := rdf.CompU(nss["owl"], "Class")
 	// ortho graph ini
-	wfh, err := os.Create(wpth)
-	util.CheckE(err)
+	wfh := newFH(wpth)
 	defer wfh.Close()
 	var sb strings.Builder
 	ourUs := rdf.FmtURIs(keys4b)

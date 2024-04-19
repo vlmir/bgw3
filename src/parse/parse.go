@@ -84,12 +84,12 @@ func addSubFields(pval, pk string, v bgw.Column, subfields util.Set3D) {
 func Sig2up(sigmap util.Set3D, pths []string) error {
 	// not used anymore, kept just as an example of using encoding/csv
 	for _, pth := range pths {
-
 		// open the file
 		csvfile, err := os.Open(pth)
-		if err != nil {
-			log.Fatalln("Couldn't open the csv file", err)
-		}
+	if err != nil {
+		msg := fmt.Sprintf("parse.Sig2up(): os.Open(%s): %s", pth, err)
+		return errors.New(msg)
+	}
 
 		// Parse the file
 		r := csv.NewReader(csvfile)
@@ -153,11 +153,9 @@ func Sigmap(datdir string) (util.Set3D, error) {
 func Idmap(rpth string, idmkeys map[string]string, i1, i2, i3 int) (util.Set3D, error) {
 	out := make(util.Set3D)
 	fh, err := os.Open(rpth)
-	//util.CheckE(err)
 	if err != nil {
-		msg := fmt.Sprintf("parse.Idmap(%s, %v, %d, %d, %d):", rpth, idmkeys, i1, i2, i3)
-		log.Println(msg)
-		return out, err
+		msg := fmt.Sprintf("parse.Idmap(%s, %v, %d, %d, %d): os.Open(%s): %s", rpth, idmkeys, i1, i2, i3, rpth, err)
+		return out, errors.New(msg)
 	}
 	defer fh.Close()
 	scanner := bufio.NewScanner(fh)
@@ -176,6 +174,11 @@ func Idmap(rpth string, idmkeys map[string]string, i1, i2, i3 int) (util.Set3D, 
 		key3 := strings.Replace(cells[i3], "\"", "`", -1) // was present in 44689
 		out.Add(key1, key2, key3)
 	}
+	if len(out) == 0 {
+		msg := fmt.Sprintf("parse.Idmap(%s, %v, %d, %d, %d): %s", rpth, idmkeys, i1, i2, i3, err)
+		return out, errors.New(msg)
+	}
+
 	return out, nil
 }
 
@@ -219,7 +222,6 @@ func Tab2struct(rpth string, keys, vals []bgw.Column, p *bgw.Dat4bridge, dlm str
 
 	duos := d4b.Duos // to be filled with data
 	fh, err := os.Open(rpth)
-	// util.CheckE(err)
 	if err != nil {
 		return err
 	}
@@ -269,7 +271,7 @@ func Tab2struct(rpth string, keys, vals []bgw.Column, p *bgw.Dat4bridge, dlm str
 	d4b.Duos = duos
 	*p = d4b
 	return nil
-} // Tab2struct()
+} // Tab2struct
 
 // Tab2set3D is a generic parser for tab-delimeted files with sub-fields (up to 2 levels)
 // Tab2set3D converts tabular data into a map keyed on an arbitrary combination of fields
@@ -281,6 +283,7 @@ func Tab2struct(rpth string, keys, vals []bgw.Column, p *bgw.Dat4bridge, dlm str
 // 1. map primary key -> secondary key -< values -> counts
 // 2. error
 func Tab2set3D(rpth string, keys, vals []bgw.Column) (out util.Set3D, err error) {
+	// TODO generalize for accepting any primary delimiter as in Tab2struct()
 	// used by export.Gene(), export.Prot()
 	// NO empty values added to Set3D
 	maxind := 0
@@ -307,7 +310,6 @@ func Tab2set3D(rpth string, keys, vals []bgw.Column) (out util.Set3D, err error)
 
 	out = make(util.Set3D)
 	fh, err := os.Open(rpth)
-	// util.CheckE(err)
 	if err != nil {
 		return out, err
 	}
@@ -371,13 +373,15 @@ func UpVar(rpth string) (duos util.Set3D, err error) {
 	 62 => 57 '-' possible
 	 77 => 72 description '-' possible
 	*/
-	nsL := "hgncsymb"
-	nsR := "omim"
+	duos = make(util.Set3D)
 	fhR, err := os.Open(rpth)
-	util.CheckE(err)
+	if err != nil {
+		return duos, err
+	}
 	defer fhR.Close()
 	scanner := bufio.NewScanner(fhR)
-	duos = make(util.Set3D)
+	nsL := "hgncsymb"
+	nsR := "omim"
 	for scanner.Scan() { // by default scans for '\n'
 		line := scanner.Text()
 		if len(line) < 74 {
@@ -447,7 +451,10 @@ func Gaf(rpth string) (bp, cc, mf util.Set3D, err error) {
 	cc = make(util.Set3D)
 	mf = make(util.Set3D)
 	fhR, err := os.Open(rpth)
-	util.CheckE(err)
+	if err != nil {
+		msg := fmt.Sprintf("parse.Gaf(): os.Open(%s): %s", rpth, err)
+		return bp, cc, mf, errors.New(msg)
+	}
 	defer fhR.Close()
 	scanner := bufio.NewScanner(fhR)
 	for scanner.Scan() { // by default scans for '\n'
@@ -560,7 +567,10 @@ func Gpa(rpth string) (duos util.Set3D) {
 	srckR := "obo"
 	duos = make(util.Set3D)
 	fhR, err := os.Open(rpth)
-	util.CheckE(err)
+	if err != nil {
+		msg := fmt.Sprintf("parse.Gpa(): os.Open(%s): %s", rpth, err)
+		panic(errors.New(msg))
+	}
 	defer fhR.Close()
 	scanner := bufio.NewScanner(fhR)
 	for scanner.Scan() { // by default scans for '\n'
@@ -619,7 +629,10 @@ func orthosolo(datdir, txid string, txn2prm util.Set2D) (util.Set3D, error) {
 		prmid := fmt.Sprintf("%s%s%s", prmid, "_", txid)
 		pth := fmt.Sprintf("%s%s%s%s", datdir, subdir, prmid, ext) // read
 		dat, err := Idmap(pth, idmkeys, 1, 2, 0)
-		util.CheckE(err)
+	if err != nil {
+		msg := fmt.Sprintf("parse.orthosolo: parse.Idmap: %s", err)
+		return solos, errors.New(msg)
+	}
 		for idmk, all := range dat {
 			for xid, one := range all {
 				for upac, _ := range one {
