@@ -86,10 +86,10 @@ func Sig2up(sigmap util.Set3D, pths []string) error {
 	for _, pth := range pths {
 		// open the file
 		csvfile, err := os.Open(pth)
-	if err != nil {
-		msg := fmt.Sprintf("parse.Sig2up(): os.Open(%s): %s", pth, err)
-		return errors.New(msg)
-	}
+		if err != nil {
+			msg := fmt.Sprintf("parse.Sig2up(): os.Open(%s): %s", pth, err)
+			return errors.New(msg)
+		}
 
 		// Parse the file
 		r := csv.NewReader(csvfile)
@@ -629,10 +629,10 @@ func orthosolo(datdir, txid string, txn2prm util.Set2D) (util.Set3D, error) {
 		prmid := fmt.Sprintf("%s%s%s", prmid, "_", txid)
 		pth := fmt.Sprintf("%s%s%s%s", datdir, subdir, prmid, ext) // read
 		dat, err := Idmap(pth, idmkeys, 1, 2, 0)
-	if err != nil {
-		msg := fmt.Sprintf("parse.orthosolo: parse.Idmap: %s", err)
-		return solos, errors.New(msg)
-	}
+		if err != nil {
+			msg := fmt.Sprintf("parse.orthosolo: parse.Idmap: %s", err)
+			return solos, errors.New(msg)
+		}
 		for idmk, all := range dat {
 			for xid, one := range all {
 				for upac, _ := range one {

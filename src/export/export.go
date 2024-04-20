@@ -89,6 +89,12 @@ func Prot2prot(d *bgw.Dat4bridge, x *bgw.Xmap, wdir string) error {
 	keys4b["Prns"] = []string{
 		"stm",
 	}
+	header, nln := rdf.Capita(keys4b)
+	if nln < 28 { // 23? // special case
+		msg := fmt.Sprintf("export.Prot2prot(): rdf.Capita(%v): MalformedHeader", keys4b)
+		panic(errors.New(msg))
+	}
+	flags := make(util.Set1D) // for printing the header only once per file
 	var srcs = map[string]string{
 		"uniprot": "http://uniprot.org/uniprot",
 		"intact":  "http://identifiers.org/intact",
@@ -109,12 +115,6 @@ func Prot2prot(d *bgw.Dat4bridge, x *bgw.Xmap, wdir string) error {
 	pdck := "tlp2tlp"
 	xmap := *x
 	cnts := d4b.Cnts // Set2D
-	header, nln := rdf.Capita(keys4b)
-	if nln < 28 { // 23? // special case
-		msg := fmt.Sprintf("MalformedHeader")
-		panic(errors.New(msg))
-	}
-	flags := make(util.Set1D) // for printing the header only once per file
 
 	duos := d4b.Duos
 	for _, duoid := range duos.Keys() {
@@ -209,27 +209,6 @@ func Prot2prot(d *bgw.Dat4bridge, x *bgw.Xmap, wdir string) error {
 
 // TODO re-implement for a single property (pdck)
 func Reg2targ(d *bgw.Dat4bridge, x *bgw.Xmap, wdir string) error {
-	d4b := *d
-	xmap := *x
-	srck := d4b.Src
-	txid := d4b.Taxid
-	wpths := d4b.Out
-	cnts := d4b.Cnts // Set2D
-	// just sortcuts
-	p2t := "reg2ptrg"
-	n2t := "reg2ntrg"
-	u2t := "reg2utrg"
-	modes := make(util.Set3D)
-	modes.Add("signor", "up-regulates", p2t)
-	modes.Add("signor", "down-regulates", n2t)
-
-	fhs := make(map[string]*os.File)
-	fhs[n2t] = newFH(wpths[n2t])
-	fhs[p2t] = newFH(wpths[p2t])
-	fhs[u2t] = newFH(wpths[u2t])
-	for _, wfh := range fhs {
-	defer wfh.Close()
-	}
 	keys4b := make(util.SliceSet)
 	keys4b["Opys"] = []string{
 		"sub2cls",
@@ -254,17 +233,38 @@ func Reg2targ(d *bgw.Dat4bridge, x *bgw.Xmap, wdir string) error {
 	keys4b["Prns"] = []string{
 		"stm",
 	}
+	header, nln := rdf.Capita(keys4b)
+	if nln < 34 {
+		msg := fmt.Sprintf("export.Reg2targ(): rdf.Capita(%v): MalformedHeader", keys4b)
+		panic(errors.New(msg))
+	}
+	d4b := *d
+	xmap := *x
+	srck := d4b.Src
+	txid := d4b.Taxid
+	wpths := d4b.Out
+	cnts := d4b.Cnts // Set2D
+	// just sortcuts
+	p2t := "reg2ptrg"
+	n2t := "reg2ntrg"
+	u2t := "reg2utrg"
+	modes := make(util.Set3D)
+	modes.Add("signor", "up-regulates", p2t)
+	modes.Add("signor", "down-regulates", n2t)
+
+	fhs := make(map[string]*os.File)
+	fhs[n2t] = newFH(wpths[n2t])
+	fhs[p2t] = newFH(wpths[p2t])
+	fhs[u2t] = newFH(wpths[u2t])
+	for _, wfh := range fhs {
+		defer wfh.Close()
+	}
 	ourUs := rdf.FmtURIs(keys4b)
 	nss := rdf.Nss // BGW URI name spaces
 	//srcns := nss[srck] // fully qualified namespace
 	srcU := rdf.FormU("http://signor.uniroma2.it")
 	rdfns := nss["rdf"]
 	// graphns := fmt.Sprintf("%s%s", nss["bgw"], "graph/")
-	header, nln := rdf.Capita(keys4b)
-	if nln < 34 {
-		msg := fmt.Sprintf("MalformedHeader")
-		panic(errors.New(msg))
-	}
 
 	duos := d4b.Duos
 	// future extensions:
@@ -433,28 +433,6 @@ func Reg2targ(d *bgw.Dat4bridge, x *bgw.Xmap, wdir string) error {
 
 // TODO re-implement for a single property (pdck)
 func Tfac2gene(d *bgw.Dat4bridge, x *bgw.Xmap, wdir string) error {
-	d4b := *d
-	xmap := *x
-	srck := d4b.Src
-	txid := d4b.Taxid
-	wpths := d4b.Out
-	cnts := d4b.Cnts // Set2D
-	// just sortcuts
-	p2t := "reg2ptrg"
-	n2t := "reg2ntrg"
-	u2t := "reg2utrg"
-	modes := make(util.Set3D)
-	modes.Add("tflink", "activator", p2t)
-	modes.Add("tflink", "repressor", n2t)
-	modes.Add("coltri", "pos", p2t)
-	modes.Add("coltri", "neg", n2t)
-	fhs := make(map[string]*os.File)
-	fhs[n2t] = newFH(wpths[n2t])
-	fhs[p2t] = newFH(wpths[p2t])
-	fhs[u2t] = newFH(wpths[u2t])
-	for _, wfh := range fhs {
-	defer wfh.Close()
-	}
 	keys4b := make(util.SliceSet)
 	keys4b["Opys"] = []string{
 		"sub2cls",
@@ -478,15 +456,37 @@ func Tfac2gene(d *bgw.Dat4bridge, x *bgw.Xmap, wdir string) error {
 	keys4b["Prns"] = []string{
 		"stm",
 	}
+	header, nln := rdf.Capita(keys4b)
+	if nln < 32 {
+		msg := fmt.Sprintf("export.Tfac2gene(): rdf.Capita(%v): MalformedHeader", keys4b)
+		panic(errors.New(msg))
+	}
+	d4b := *d
+	xmap := *x
+	srck := d4b.Src
+	txid := d4b.Taxid
+	wpths := d4b.Out
+	cnts := d4b.Cnts // Set2D
+	// just sortcuts
+	p2t := "reg2ptrg"
+	n2t := "reg2ntrg"
+	u2t := "reg2utrg"
+	modes := make(util.Set3D)
+	modes.Add("tflink", "activator", p2t)
+	modes.Add("tflink", "repressor", n2t)
+	modes.Add("coltri", "pos", p2t)
+	modes.Add("coltri", "neg", n2t)
+	fhs := make(map[string]*os.File)
+	fhs[n2t] = newFH(wpths[n2t])
+	fhs[p2t] = newFH(wpths[p2t])
+	fhs[u2t] = newFH(wpths[u2t])
+	for _, wfh := range fhs {
+		defer wfh.Close()
+	}
 	ourUs := rdf.FmtURIs(keys4b)
 	nss := rdf.Nss // BGW URI name spaces
 	srcU := rdf.FormU(rdf.Uris4tftg[srck])
 	rdfns := nss["rdf"]
-	header, nln := rdf.Capita(keys4b)
-	if nln < 32 {
-		msg := fmt.Sprintf("MalformedHeader")
-		panic(errors.New(msg))
-	}
 
 	duos := d4b.Duos
 	entAns := nss["uniprot"] // sic, never changes
@@ -616,26 +616,6 @@ func Tfac2gene(d *bgw.Dat4bridge, x *bgw.Xmap, wdir string) error {
 
 // TODO re-implement for a single property (pdck)
 func SigPways(d *bgw.Dat4bridge, x *bgw.Xmap, wdir string) error {
-	d4b := *d
-	xmap := *x
-	srck := d4b.Src
-	txid := d4b.Taxid
-	wpths := d4b.Out
-	cnts := d4b.Cnts // Set2D
-	p2t := "reg2ptrg"
-	n2t := "reg2ntrg"
-	u2t := "reg2utrg"
-	modes := make(util.Set3D)
-	modes.Add("signor", "up-regulates", p2t)
-	modes.Add("signor", "down-regulates", n2t)
-
-	fhs := make(map[string]*os.File)
-	fhs[n2t] = newFH(wpths[n2t])
-	fhs[p2t] = newFH(wpths[p2t])
-	fhs[u2t] = newFH(wpths[u2t])
-	for _, wfh := range fhs {
-	defer wfh.Close()
-	}
 	keys4b := make(util.SliceSet)
 	keys4b["Opys"] = []string{
 		"sub2cls",
@@ -661,16 +641,36 @@ func SigPways(d *bgw.Dat4bridge, x *bgw.Xmap, wdir string) error {
 	keys4b["Prns"] = []string{
 		"stm",
 	}
+	header, nln := rdf.Capita(keys4b)
+	if nln < 36 {
+		msg := fmt.Sprintf("export.SigPways(): rdf.Capita(%v): MalformedHeader", keys4b)
+		panic(errors.New(msg))
+	}
+	d4b := *d
+	xmap := *x
+	srck := d4b.Src
+	txid := d4b.Taxid
+	wpths := d4b.Out
+	cnts := d4b.Cnts // Set2D
+	p2t := "reg2ptrg"
+	n2t := "reg2ntrg"
+	u2t := "reg2utrg"
+	modes := make(util.Set3D)
+	modes.Add("signor", "up-regulates", p2t)
+	modes.Add("signor", "down-regulates", n2t)
+
+	fhs := make(map[string]*os.File)
+	fhs[n2t] = newFH(wpths[n2t])
+	fhs[p2t] = newFH(wpths[p2t])
+	fhs[u2t] = newFH(wpths[u2t])
+	for _, wfh := range fhs {
+		defer wfh.Close()
+	}
 	ourUs := rdf.FmtURIs(keys4b)
 	nss := rdf.Nss // BGW URI name spaces
 	srcU := rdf.FormU("http://signor.uniroma2.it")
 	rdfns := nss["rdf"]
 	// graphns := fmt.Sprintf("%s%s", nss["bgw"], "graph/")
-	header, nln := rdf.Capita(keys4b)
-	if nln < 36 {
-		msg := fmt.Sprintf("MalformedHeader")
-		panic(errors.New(msg))
-	}
 
 	duos := d4b.Duos
 	mytypes := []string{"complex", "protein", "proteinfamily"} // for filetering
@@ -816,6 +816,375 @@ func SigPways(d *bgw.Dat4bridge, x *bgw.Xmap, wdir string) error {
 	return nil
 } // SigPways
 
+// Note: no isoforms in this graph
+func Gene2phen(duos, gsym2bgw util.Set3D, wpth string) (int, error) {
+	keys4b := make(util.SliceSet)
+	keys4b["Opys"] = []string{
+		"sub2cls",
+		"stm2sbj",
+		"stm2obj",
+		"stm2pdc",
+		"gn2phn",
+		"ins2cls",
+		"sth2src",
+	}
+	keys4b["Apys"] = []string{
+		"sth2dfn",
+		"sth2lbl",
+	}
+	keys4b["Prns"] = []string{
+		"stm",
+	}
+	header, nln := rdf.Capita(keys4b)
+	if nln < 20 {
+		msg := fmt.Sprintf("export.Gene2phen(): rdf.Capita(%v): MalformedHeader", keys4b)
+		panic(errors.New(msg))
+	}
+	nss := rdf.Nss // BGW URI name spaces
+	srck := "uniprot"
+	var srcs = map[string]string{
+		"uniprot": "http://uniprot.org/uniprot",
+	}
+	srcU := rdf.FormU(srcs[srck])
+	clsU := rdf.CompU(nss["owl"], "Class")
+	// gene2phen graph ini
+	wfh := newFH(wpth)
+	defer wfh.Close()
+	var sb strings.Builder
+	ourUs := rdf.FmtURIs(keys4b)
+	sb.WriteString(header)
+	nln = 0
+	stmNS := "http://rdf.biogateway.eu/gene-phen/"
+	rdfNS := nss["rdf"]
+	cnt := make(util.Set2D) // genes absent in BGW
+	cntD := 0               // accepted duos
+	for _, duoid := range duos.Keys() {
+		duo := duos[duoid]
+		bits := strings.Split(duoid, "--")
+		idL := bits[0]
+		idR := bits[1]
+		oriL := strings.Split(idL, "!")[1] // Gene Name
+		bgwLs := gsym2bgw[oriL]["bgwg"].Keys()
+		cntLs := len(bgwLs)
+		if cntLs != 1 {
+			msg := fmt.Sprintf("export.Gene2phen():%s: bgwLs: %v", oriL, bgwLs)
+			fmt.Printf("%s\n", msg)
+		} // 2303: 1 missing BGW gene, likely due to RefProt filtering
+		// filtering, superfluous, done anyway by looping over bgwLs
+		l := 0
+		if l = counter(bgwLs, cnt, "addG", "dropG", oriL); l == 0 {
+			continue
+		}
+		oriR := strings.Split(idR, "!")[1] // OMIM ID
+		duoU := rdf.CompU(stmNS, duoid)
+		sb.WriteString(rdf.FormT(duoU, ourUs["ins2cls"], clsU))
+		sb.WriteString(rdf.FormT(duoU, ourUs["sub2cls"], ourUs["stm"]))
+		clslbl := fmt.Sprintf("%s--%s", oriL, oriR)
+		sb.WriteString(rdf.FormT(duoU, ourUs["sth2lbl"], rdf.FormL(clslbl)))
+		upcas := duo["upca"].Keys()
+		if len(upcas) > 1 {
+			// msg := fmt.Sprintf("export.Gene2phen():%s: upcas: %v", duoid, upcas)
+			// fmt.Printf("%s\n", msg)
+		} // 20200531: 2 using symG in the key, all the 4 accs with a single dfn
+		// 20200531: 69 with > 1 dfns using symG in the key; the same MIM ID indeed
+		dfns := duo["dfn"].Keys()
+		if len(dfns) != 1 {
+			msg := fmt.Sprintf("export.Gene2phen():%s:%v: %v dfns: %v", duoid, upcas, len(dfns), dfns)
+			fmt.Printf("%s\n", msg)
+		} // 230303: 74
+		dfn := strings.Join(dfns, "; ")
+		clsdfn := fmt.Sprintf("Association between gene %s and disease %v", oriL, dfn)
+		sb.WriteString(rdf.FormT(duoU, ourUs["sth2dfn"], rdf.FormL(clsdfn)))
+
+		// an attempt to get desease names in the App, to no avail
+		uriR := rdf.CompU(nss["omim"], oriR)
+		sb.WriteString(rdf.FormT(uriR, ourUs["sth2lbl"], rdf.FormL(dfn)))
+
+		pdc := "gn2phn"
+		sb.WriteString(rdf.FormT(duoU, rdf.CompU(rdfNS, "predicate"), ourUs[pdc]))
+		// multiple subjects (never happens)
+		for _, bgwL := range bgwLs { // sorted above
+			uriL := rdf.CompU(nss["gene"], bgwL)
+			sb.WriteString(rdf.FormT(duoU, rdf.CompU(rdfNS, "subject"), uriL))
+			sb.WriteString(rdf.FormT(uriL, ourUs[pdc], uriR))
+		}
+		sb.WriteString(rdf.FormT(duoU, rdf.CompU(rdfNS, "object"), uriR))
+
+		/// INSTANCES
+		insid := fmt.Sprintf("%s%s%s", duoid, "#", srck)
+		insU := rdf.CompU(stmNS, insid)
+		sb.WriteString(rdf.FormT(insU, ourUs["ins2cls"], duoU))
+		sb.WriteString(rdf.FormT(insU, ourUs["sth2src"], srcU))
+		bytes := []byte(sb.String())
+		if len(bytes) != 0 {
+			wfh.Write(bytes)
+			sb.Reset()
+			cntD++
+		}
+	} // duoid
+	msg := ""
+	if cntD == 0 {
+		msg = fmt.Sprintf("export.Prot2phen(): NoDuos") // sic!
+		panic(errors.New(msg))
+	}
+	msg = fmt.Sprintf("export.Gene2phen(): Pairs: added: %d dropped: %d", cntD, len(duos)-cntD)
+	log.Println(msg)
+	msg = fmt.Sprintf("export.Gene2phen(): Genes: added: %d dropped: %d", len(cnt["addG"]), len(cnt["dropG"]))
+	log.Println(msg)
+	return cntD, nil
+} // Gene2phen
+
+// arg1: output of parse.Gaf or parse.Gpa
+// arg2: mapping fromn UniProt accession to BGW IDs generated by GeneProt()
+// arg3: path for exporting the RDF file
+func Prot2go(duos, upac2bgw util.Set3D, wpth string) (int, error) {
+	keys4b := make(util.SliceSet)
+	keys4b["Opys"] = []string{
+		"sub2cls",
+		"stm2sbj",
+		"stm2obj",
+		"stm2pdc",
+		"gp2bp",
+		"gp2cc",
+		"gp2mf",
+		"ins2cls",
+		"sth2src",
+		"sth2evd",
+		"sth2mtd",
+	}
+	keys4b["Apys"] = []string{
+		"sth2dfn",
+		"sth2lbl",
+	}
+	keys4b["Prns"] = []string{
+		"stm",
+	}
+	header, nln := rdf.Capita(keys4b)
+	if nln < 28 {
+		msg := fmt.Sprintf("export.Prot2go(): rdf.Capita(%v): MalformedHeader", keys4b)
+		panic(errors.New(msg))
+	}
+	nss := rdf.Nss // BGW URI name spaces
+	/*
+		Attn: no isoforms in GAF files 1
+	*/
+	gosubs := map[string]string{
+		"gp2cc": "cellular component",
+		"gp2mf": "molecular function",
+		"gp2bp": "biological process",
+	}
+	srcU := rdf.FormU(nss["goa"])
+	clsU := rdf.CompU(nss["owl"], "Class")
+	// prot2bp prot2cc prot2mf graph ini
+	wfh := newFH(wpth)
+	defer wfh.Close()
+	var sb strings.Builder
+	ourUs := rdf.FmtURIs(keys4b)
+	sb.WriteString(header)
+	nln = 0
+
+	stmNS := "http://rdf.biogateway.eu/prot-onto/"
+	rdfNS := nss["rdf"]
+	count := make(util.Set3D)
+
+	cnt := make(util.Set2D) // count proteins absent in BGW
+	cntD := 0
+	for _, duoid := range duos.Keys() {
+		duo := duos[duoid]
+		//for duoid, duo := range duos {
+		ppys := duo["ppy"].Keys()
+		if l := len(ppys); l != 1 { // unnecessary, may help debugging
+			msg := fmt.Sprintf("export.Prot2go():%s: Want 1 property have: %d: %v", duoid, l, ppys)
+			panic(errors.New(msg))
+		}
+		refs := duo["ref"].Keys()
+		/// Class level
+		duoU := rdf.CompU(stmNS, duoid)
+
+		bits := strings.Split(duoid, "--")
+		idL := bits[0]
+		idR := bits[1]
+		oriL := strings.Split(idL, "!")[1] // UP AC
+		oriR := strings.Split(idR, "!")[1] // GO ID
+		bgwLs := upac2bgw[oriL]["bgwp"].Keys()
+		if l := counter(bgwLs, cnt, "addP", "dropP", oriL); l == 0 {
+			continue
+		}
+
+		sb.WriteString(rdf.FormT(duoU, ourUs["ins2cls"], clsU))
+		nln++
+		sb.WriteString(rdf.FormT(duoU, ourUs["sub2cls"], ourUs["stm"]))
+		nln++
+		oboid := strings.Replace(oriR, "_", ":", 1)
+		clslbl := fmt.Sprintf("%s--%s", oriL, oboid)
+		sb.WriteString(rdf.FormT(duoU, ourUs["sth2lbl"], rdf.FormL(clslbl)))
+		nln++
+		pdc := ppys[0]
+		clsdfn := fmt.Sprintf("Association between protein %s and %s %s", oriL, gosubs[pdc], oboid)
+		sb.WriteString(rdf.FormT(duoU, ourUs["sth2dfn"], rdf.FormL(clsdfn)))
+		nln++
+		sb.WriteString(rdf.FormT(duoU, rdf.CompU(rdfNS, "predicate"), ourUs[pdc]))
+		nln++
+
+		uriR := rdf.CompU(nss["obo"], oriR)
+		// multiple subjects
+		for _, bgwL := range bgwLs { // sorted above
+			if len(bgwLs) > 1 {
+				count.Add("oriL", oriL, bgwL)
+			}
+			uriL := rdf.CompU(nss["uniprot"], bgwL)
+			sb.WriteString(rdf.FormT(duoU, rdf.CompU(rdfNS, "subject"), uriL))
+			nln++
+			sb.WriteString(rdf.FormT(uriL, ourUs[pdc], uriR))
+			nln++
+		}
+		sb.WriteString(rdf.FormT(duoU, rdf.CompU(rdfNS, "object"), uriR))
+		nln++
+
+		/// INSTANCES
+		insid := fmt.Sprintf("%s%s%s", duoid, "#", "goa")
+		insU := rdf.CompU(stmNS, insid)
+		sb.WriteString(rdf.FormT(insU, ourUs["ins2cls"], duoU))
+		nln++
+		sb.WriteString(rdf.FormT(insU, ourUs["sth2src"], srcU))
+		nln++
+		for _, ref := range util.X1type(refs, "pubmed", "!") {
+			myU := rdf.CompU(nss["pubmed"], ref)
+			sb.WriteString(rdf.FormT(insU, ourUs["sth2evd"], myU))
+			nln++
+		}
+		for _, eco := range duo["eco"].Keys() { // for GPA files
+			myU := rdf.CompU(nss["obo"], eco)
+			sb.WriteString(rdf.FormT(insU, ourUs["sth2mtd"], myU))
+			nln++
+		}
+		for _, goc := range duo["goc"].Keys() { // for GAF files
+			sb.WriteString(rdf.FormT(insU, ourUs["sth2mtd"], rdf.FormL(goc)))
+			nln++
+		}
+		cntD++
+		wfh.Write([]byte(sb.String()))
+		sb.Reset()
+	} // duoid
+	msg := ""
+	if cntD == 0 {
+		msg = fmt.Sprintf("export.Prot2go(): NoDuos")
+		panic(errors.New(msg))
+	}
+	msg = fmt.Sprintf("export.Prot2go(): Pairs: added: %d dropped: %d", cntD, len(duos)-cntD)
+	log.Println(msg)
+	msg = fmt.Sprintf("export.Prot2go(): Prots: added: %d dropped: %d", len(cnt["addP"]), len(cnt["dropP"]))
+	log.Println(msg)
+	return nln, nil
+} // Prot2go
+
+// Arg1: orthology data for one pair of taxa, output of parse.OrthoDuo(), non empty
+// Arg2: path for writing RDF file
+func Ortho(duos util.Set3D, wpth string) (int, error) {
+	// TODO defer writing the header until the end of the main loop (duoid)
+	// duos: output of parse.OrthoDuos()
+	// Note: no UP isoforms in this graph; only RefProt canonical accessions
+	keys4b := make(util.SliceSet)
+	keys4b["Opys"] = []string{
+		"sub2cls",
+		"stm2sbj",
+		"stm2obj",
+		"stm2pdc",
+		"orl2orl",
+		"ins2cls",
+		"sth2src",
+		"sub2set",
+		"mbr2lst",
+	}
+	keys4b["Apys"] = []string{
+		"sth2dfn",
+		"sth2lbl",
+	}
+	keys4b["Prns"] = []string{
+		"stm",
+	}
+	header, nln := rdf.Capita(keys4b)
+	if nln < 24 {
+		msg := fmt.Sprintf("export.Ortho(): rdf.Capita(%v): MalformedHeader", keys4b)
+		panic(errors.New(msg))
+	}
+	nss := rdf.Nss // BGW URI name spaces
+	var srcs = map[string]string{
+		"uniprot":   "http://uniprot.org/uniprot",
+		"keggortho": "http://identifiers.org/kegg.orthology",
+		"orthodb":   "https://www.orthodb.org",
+	}
+	clsU := rdf.CompU(nss["owl"], "Class")
+	// ortho graph ini
+	wfh := newFH(wpth)
+	defer wfh.Close()
+	var sb strings.Builder
+	ourUs := rdf.FmtURIs(keys4b)
+	sb.WriteString(header)
+	///////////////////////////////////////////////////////////////////////////////
+	stmNS := "http://rdf.biogateway.eu/ortho/"
+	rdfNS := nss["rdf"]
+	idmkeys := bgw.Orthokeys // currently only "OrthoDB": "orthodb", TODO move here?
+	cntD := 0                // number of orthology relations for a pair of taxa
+	nln = 0                  // number of lines written for a pair of taxa
+	for _, duoid := range duos.Keys() {
+		duo := duos[duoid]
+		duoU := rdf.CompU(stmNS, duoid)
+		bits := strings.Split(duoid, "--")
+		oriL := strings.Split(bits[0], "!")[1] // UniProt Canonical Accession
+		oriR := strings.Split(bits[1], "!")[1] // UniProt Canonical Accession
+		sb.WriteString(rdf.FormT(duoU, ourUs["ins2cls"], clsU))
+		sb.WriteString(rdf.FormT(duoU, ourUs["sub2cls"], ourUs["stm"]))
+		clslbl := fmt.Sprintf("%s--%s", oriL, oriR)
+		sb.WriteString(rdf.FormT(duoU, ourUs["sth2lbl"], rdf.FormL(clslbl)))
+		clsdfn := fmt.Sprintf("Pair of orthologous proteins %s and %s", oriL, oriR)
+		sb.WriteString(rdf.FormT(duoU, ourUs["sth2dfn"], rdf.FormL(clsdfn)))
+		pdc := "orl2orl"
+		sb.WriteString(rdf.FormT(duoU, rdf.CompU(rdfNS, "predicate"), ourUs[pdc]))
+		uriL := rdf.CompU(nss["uniprot"], oriL)
+		sb.WriteString(rdf.FormT(duoU, rdf.CompU(rdfNS, "subject"), uriL))
+		uriR := rdf.CompU(nss["uniprot"], oriR)
+		sb.WriteString(rdf.FormT(duoU, rdf.CompU(rdfNS, "object"), uriR))
+		sb.WriteString(rdf.FormT(uriL, ourUs[pdc], uriR))
+		sb.WriteString(rdf.FormT(uriR, ourUs[pdc], uriL))
+
+		/// INSTANCES
+		for _, idmk := range duo.Keys() {
+			srck, ok := idmkeys[idmk]
+			if !ok {
+				continue
+			} // needed! ?
+			insid := fmt.Sprintf("%s%s%s", duoid, "#", srck)
+			insU := rdf.CompU(stmNS, insid)
+			sb.WriteString(rdf.FormT(insU, ourUs["ins2cls"], duoU))
+			sb.WriteString(rdf.FormT(insU, ourUs["sth2lbl"], rdf.FormL(clslbl)))
+			srcU := rdf.FormU(srcs[srck])
+			sb.WriteString(rdf.FormT(insU, ourUs["sth2src"], srcU))
+			// looping over orthology clusters:
+			for _, setid := range duo[idmk].Keys() {
+				setU := rdf.FormU(fmt.Sprintf("%s%s", nss[srck], setid))
+				sb.WriteString(rdf.FormT(insU, ourUs["sub2set"], setU)) // part_of
+				sb.WriteString(rdf.FormT(uriL, ourUs["mbr2lst"], setU))
+				sb.WriteString(rdf.FormT(uriR, ourUs["mbr2lst"], setU))
+			}
+		}
+		bytes := []byte(sb.String())
+		if len(bytes) != 0 {
+			wfh.Write(bytes)
+			sb.Reset()
+			cntD++
+		}
+	} // duoid
+	// 	msg := ""
+	// 	msg = fmt.Sprintf("export.Ortho(): Pairs: added: %d dropped: %d", cntD, len(duos)-cntD)
+	// 	log.Println(msg)
+	//	if nln == 0 { // happens for some pairs of taxa !
+	//	msg := fmt.Sprintf("export.Ortho(): NoContent")
+	//	return nln, errors.New(msg)
+	//	}
+	return cntD, nil
+} // Ortho
+
 func Gene(rpthUP, rpthI, wpth string, p *bgw.Xmap) error {
 	xmap := *p
 	// Reference proteome IDs:
@@ -846,7 +1215,7 @@ func Gene(rpthUP, rpthI, wpth string, p *bgw.Xmap) error {
 		msg := fmt.Sprintf("export.Gene(): parse.Tab2set3D(%s, _, _): allUPs: EmptySet", rpthUP)
 		return errors.New(msg)
 	}
-	gnm2upca := make(util.Set2D)                       // TODO take gene names and synonyms from upac2xrf !!
+	gnm2upca := make(util.Set2D) // TODO take gene names and synonyms from upac2xrf !!
 	for _, upca := range allUPs.Keys() {
 		for _, gnm := range allUPs[upca]["gnms"].Keys() {
 			gnm2upca.Add(gnm, upca) // gene names from the UP download (*.upt files)
@@ -1215,371 +1584,3 @@ func Prot(rpthUP, rpthI, wpth string, p *bgw.Xmap) error {
 	return nil
 } // Prot()
 
-// Note: no isoforms in this graph
-func Gene2phen(duos, gsym2bgw util.Set3D, wpth string) (int, error) {
-	nss := rdf.Nss // BGW URI name spaces
-	srck := "uniprot"
-	keys4b := make(util.SliceSet)
-	keys4b["Opys"] = []string{
-		"sub2cls",
-		"stm2sbj",
-		"stm2obj",
-		"stm2pdc",
-		"gn2phn",
-		"ins2cls",
-		"sth2src",
-	}
-	keys4b["Apys"] = []string{
-		"sth2dfn",
-		"sth2lbl",
-	}
-	keys4b["Prns"] = []string{
-		"stm",
-	}
-	var srcs = map[string]string{
-		"uniprot": "http://uniprot.org/uniprot",
-	}
-	srcU := rdf.FormU(srcs[srck])
-	clsU := rdf.CompU(nss["owl"], "Class")
-	// gene2phen graph ini
-	wfh := newFH(wpth)
-	defer wfh.Close()
-	var sb strings.Builder
-	ourUs := rdf.FmtURIs(keys4b)
-	header, nln := rdf.Capita(keys4b)
-	if nln < 20 {
-		msg := fmt.Sprintf("export.Gene2phen(_, _, %s): MalformedHeader", wpth)
-		return 0, errors.New(msg)
-	}
-	sb.WriteString(header)
-	nln = 0
-	stmNS := "http://rdf.biogateway.eu/gene-phen/"
-	rdfNS := nss["rdf"]
-	cnt := make(util.Set2D) // genes absent in BGW
-	cntD := 0               // accepted duos
-	for _, duoid := range duos.Keys() {
-		duo := duos[duoid]
-		bits := strings.Split(duoid, "--")
-		idL := bits[0]
-		idR := bits[1]
-		oriL := strings.Split(idL, "!")[1] // Gene Name
-		bgwLs := gsym2bgw[oriL]["bgwg"].Keys()
-		cntLs := len(bgwLs)
-		if cntLs != 1 {
-			msg := fmt.Sprintf("export.Gene2phen():%s: bgwLs: %v", oriL, bgwLs)
-			fmt.Printf("%s\n", msg)
-		} // 2303: 1 missing BGW gene, likely due to RefProt filtering
-		// filtering, superfluous, done anyway by looping over bgwLs
-		l := 0
-		if l = counter(bgwLs, cnt, "addG", "dropG", oriL); l == 0 {
-			continue
-		}
-		oriR := strings.Split(idR, "!")[1] // OMIM ID
-		duoU := rdf.CompU(stmNS, duoid)
-		sb.WriteString(rdf.FormT(duoU, ourUs["ins2cls"], clsU))
-		sb.WriteString(rdf.FormT(duoU, ourUs["sub2cls"], ourUs["stm"]))
-		clslbl := fmt.Sprintf("%s--%s", oriL, oriR)
-		sb.WriteString(rdf.FormT(duoU, ourUs["sth2lbl"], rdf.FormL(clslbl)))
-		upcas := duo["upca"].Keys()
-		if len(upcas) > 1 {
-			// msg := fmt.Sprintf("export.Gene2phen():%s: upcas: %v", duoid, upcas)
-			// fmt.Printf("%s\n", msg)
-		} // 20200531: 2 using symG in the key, all the 4 accs with a single dfn
-		// 20200531: 69 with > 1 dfns using symG in the key; the same MIM ID indeed
-		dfns := duo["dfn"].Keys()
-		if len(dfns) != 1 {
-			msg := fmt.Sprintf("export.Gene2phen():%s:%v: %v dfns: %v", duoid, upcas, len(dfns), dfns)
-			fmt.Printf("%s\n", msg)
-		} // 230303: 74
-		dfn := strings.Join(dfns, "; ")
-		clsdfn := fmt.Sprintf("Association between gene %s and disease %v", oriL, dfn)
-		sb.WriteString(rdf.FormT(duoU, ourUs["sth2dfn"], rdf.FormL(clsdfn)))
-
-		// an attempt to get desease names in the App, to no avail
-		uriR := rdf.CompU(nss["omim"], oriR)
-		sb.WriteString(rdf.FormT(uriR, ourUs["sth2lbl"], rdf.FormL(dfn)))
-
-		pdc := "gn2phn"
-		sb.WriteString(rdf.FormT(duoU, rdf.CompU(rdfNS, "predicate"), ourUs[pdc]))
-		// multiple subjects (never happens)
-		for _, bgwL := range bgwLs { // sorted above
-			uriL := rdf.CompU(nss["gene"], bgwL)
-			sb.WriteString(rdf.FormT(duoU, rdf.CompU(rdfNS, "subject"), uriL))
-			sb.WriteString(rdf.FormT(uriL, ourUs[pdc], uriR))
-		}
-		sb.WriteString(rdf.FormT(duoU, rdf.CompU(rdfNS, "object"), uriR))
-
-		/// INSTANCES
-		insid := fmt.Sprintf("%s%s%s", duoid, "#", srck)
-		insU := rdf.CompU(stmNS, insid)
-		sb.WriteString(rdf.FormT(insU, ourUs["ins2cls"], duoU))
-		sb.WriteString(rdf.FormT(insU, ourUs["sth2src"], srcU))
-		bytes := []byte(sb.String())
-		if len(bytes) != 0 {
-			wfh.Write(bytes)
-			sb.Reset()
-			cntD++
-		}
-	} // duoid
-	msg := ""
-	if cntD == 0 {
-		msg = fmt.Sprintf("export.Prot2phen(): NoDuos") // sic!
-		panic(errors.New(msg))
-	}
-	msg = fmt.Sprintf("export.Gene2phen(): Pairs: added: %d dropped: %d", cntD, len(duos)-cntD)
-	log.Println(msg)
-	msg = fmt.Sprintf("export.Gene2phen(): Genes: added: %d dropped: %d", len(cnt["addG"]), len(cnt["dropG"]))
-	log.Println(msg)
-	return cntD, nil
-} // Gene2phen
-
-// arg1: output of parse.Gaf or parse.Gpa
-// arg2: mapping fromn UniProt accession to BGW IDs generated by GeneProt()
-// arg3: path for exporting the RDF file
-func Prot2go(duos, upac2bgw util.Set3D, wpth string) (int, error) {
-	nss := rdf.Nss // BGW URI name spaces
-	/*
-		Attn: no isoforms in GAF files 1
-	*/
-	gosubs := map[string]string{
-		"gp2cc": "cellular component",
-		"gp2mf": "molecular function",
-		"gp2bp": "biological process",
-	}
-	srcU := rdf.FormU(nss["goa"])
-	keys4b := make(util.SliceSet)
-	keys4b["Opys"] = []string{
-		"sub2cls",
-		"stm2sbj",
-		"stm2obj",
-		"stm2pdc",
-		"gp2bp",
-		"gp2cc",
-		"gp2mf",
-		"ins2cls",
-		"sth2src",
-		"sth2evd",
-		"sth2mtd",
-	}
-	keys4b["Apys"] = []string{
-		"sth2dfn",
-		"sth2lbl",
-	}
-	keys4b["Prns"] = []string{
-		"stm",
-	}
-	clsU := rdf.CompU(nss["owl"], "Class")
-	// prot2bp prot2cc prot2mf graph ini
-	wfh := newFH(wpth)
-	defer wfh.Close()
-	var sb strings.Builder
-	ourUs := rdf.FmtURIs(keys4b)
-	header, nln := rdf.Capita(keys4b)
-	if nln < 28 {
-		msg := fmt.Sprintf("MalformedHeader")
-		panic(errors.New(msg))
-	}
-	sb.WriteString(header)
-	nln = 0
-
-	stmNS := "http://rdf.biogateway.eu/prot-onto/"
-	rdfNS := nss["rdf"]
-	count := make(util.Set3D)
-
-	cnt := make(util.Set2D) // count proteins absent in BGW
-	cntD := 0
-	for _, duoid := range duos.Keys() {
-		duo := duos[duoid]
-		//for duoid, duo := range duos {
-		ppys := duo["ppy"].Keys()
-		if l := len(ppys); l != 1 { // unnecessary, may help debugging
-			msg := fmt.Sprintf("export.Prot2go():%s: Want 1 property have: %d: %v", duoid, l, ppys)
-			panic(errors.New(msg))
-		}
-		refs := duo["ref"].Keys()
-		/// Class level
-		duoU := rdf.CompU(stmNS, duoid)
-
-		bits := strings.Split(duoid, "--")
-		idL := bits[0]
-		idR := bits[1]
-		oriL := strings.Split(idL, "!")[1] // UP AC
-		oriR := strings.Split(idR, "!")[1] // GO ID
-		bgwLs := upac2bgw[oriL]["bgwp"].Keys()
-		if l := counter(bgwLs, cnt, "addP", "dropP", oriL); l == 0 {
-			continue
-		}
-
-		sb.WriteString(rdf.FormT(duoU, ourUs["ins2cls"], clsU))
-		nln++
-		sb.WriteString(rdf.FormT(duoU, ourUs["sub2cls"], ourUs["stm"]))
-		nln++
-		oboid := strings.Replace(oriR, "_", ":", 1)
-		clslbl := fmt.Sprintf("%s--%s", oriL, oboid)
-		sb.WriteString(rdf.FormT(duoU, ourUs["sth2lbl"], rdf.FormL(clslbl)))
-		nln++
-		pdc := ppys[0]
-		clsdfn := fmt.Sprintf("Association between protein %s and %s %s", oriL, gosubs[pdc], oboid)
-		sb.WriteString(rdf.FormT(duoU, ourUs["sth2dfn"], rdf.FormL(clsdfn)))
-		nln++
-		sb.WriteString(rdf.FormT(duoU, rdf.CompU(rdfNS, "predicate"), ourUs[pdc]))
-		nln++
-
-		uriR := rdf.CompU(nss["obo"], oriR)
-		// multiple subjects
-		for _, bgwL := range bgwLs { // sorted above
-			if len(bgwLs) > 1 {
-				count.Add("oriL", oriL, bgwL)
-			}
-			uriL := rdf.CompU(nss["uniprot"], bgwL)
-			sb.WriteString(rdf.FormT(duoU, rdf.CompU(rdfNS, "subject"), uriL))
-			nln++
-			sb.WriteString(rdf.FormT(uriL, ourUs[pdc], uriR))
-			nln++
-		}
-		sb.WriteString(rdf.FormT(duoU, rdf.CompU(rdfNS, "object"), uriR))
-		nln++
-
-		/// INSTANCES
-		insid := fmt.Sprintf("%s%s%s", duoid, "#", "goa")
-		insU := rdf.CompU(stmNS, insid)
-		sb.WriteString(rdf.FormT(insU, ourUs["ins2cls"], duoU))
-		nln++
-		sb.WriteString(rdf.FormT(insU, ourUs["sth2src"], srcU))
-		nln++
-		for _, ref := range util.X1type(refs, "pubmed", "!") {
-			myU := rdf.CompU(nss["pubmed"], ref)
-			sb.WriteString(rdf.FormT(insU, ourUs["sth2evd"], myU))
-			nln++
-		}
-		for _, eco := range duo["eco"].Keys() { // for GPA files
-			myU := rdf.CompU(nss["obo"], eco)
-			sb.WriteString(rdf.FormT(insU, ourUs["sth2mtd"], myU))
-			nln++
-		}
-		for _, goc := range duo["goc"].Keys() { // for GAF files
-			sb.WriteString(rdf.FormT(insU, ourUs["sth2mtd"], rdf.FormL(goc)))
-			nln++
-		}
-		cntD++
-		wfh.Write([]byte(sb.String()))
-		sb.Reset()
-	} // duoid
-	msg := ""
-	if cntD == 0 {
-		msg = fmt.Sprintf("export.Prot2go(): NoDuos")
-		panic(errors.New(msg))
-	}
-	msg = fmt.Sprintf("export.Prot2go(): Pairs: added: %d dropped: %d", cntD, len(duos)-cntD)
-	log.Println(msg)
-	msg = fmt.Sprintf("export.Prot2go(): Prots: added: %d dropped: %d", len(cnt["addP"]), len(cnt["dropP"]))
-	log.Println(msg)
-	return nln, nil
-} // Prot2go
-
-// Arg1: orthology data for one pair of taxa, output of parse.OrthoDuo(), non empty
-// Arg2: path for writing RDF file
-func Ortho(duos util.Set3D, wpth string) (int, error) {
-	// TODO defer writing the header until the end of the main loop (duoid)
-	// duos: output of parse.OrthoDuos()
-	// Note: no UP isoforms in this graph; only RefProt canonical accessions
-	nss := rdf.Nss // BGW URI name spaces
-	keys4b := make(util.SliceSet)
-	keys4b["Opys"] = []string{
-		"sub2cls",
-		"stm2sbj",
-		"stm2obj",
-		"stm2pdc",
-		"orl2orl",
-		"ins2cls",
-		"sth2src",
-		"sub2set",
-		"mbr2lst",
-	}
-	keys4b["Apys"] = []string{
-		"sth2dfn",
-		"sth2lbl",
-	}
-	keys4b["Prns"] = []string{
-		"stm",
-	}
-	var srcs = map[string]string{
-		"uniprot":   "http://uniprot.org/uniprot",
-		"keggortho": "http://identifiers.org/kegg.orthology",
-		"orthodb":   "https://www.orthodb.org",
-	}
-	clsU := rdf.CompU(nss["owl"], "Class")
-	// ortho graph ini
-	wfh := newFH(wpth)
-	defer wfh.Close()
-	var sb strings.Builder
-	ourUs := rdf.FmtURIs(keys4b)
-	header, nln := rdf.Capita(keys4b)
-	if nln < 24 {
-		msg := fmt.Sprintf("MalformedHeader")
-		panic(errors.New(msg))
-	}
-	sb.WriteString(header)
-	///////////////////////////////////////////////////////////////////////////////
-	stmNS := "http://rdf.biogateway.eu/ortho/"
-	rdfNS := nss["rdf"]
-	idmkeys := bgw.Orthokeys // currently only "OrthoDB": "orthodb", TODO move here?
-	cntD := 0                // number of orthology relations for a pair of taxa
-	nln = 0                  // number of lines written for a pair of taxa
-	for _, duoid := range duos.Keys() {
-		duo := duos[duoid]
-		duoU := rdf.CompU(stmNS, duoid)
-		bits := strings.Split(duoid, "--")
-		oriL := strings.Split(bits[0], "!")[1] // UniProt Canonical Accession
-		oriR := strings.Split(bits[1], "!")[1] // UniProt Canonical Accession
-		sb.WriteString(rdf.FormT(duoU, ourUs["ins2cls"], clsU))
-		sb.WriteString(rdf.FormT(duoU, ourUs["sub2cls"], ourUs["stm"]))
-		clslbl := fmt.Sprintf("%s--%s", oriL, oriR)
-		sb.WriteString(rdf.FormT(duoU, ourUs["sth2lbl"], rdf.FormL(clslbl)))
-		clsdfn := fmt.Sprintf("Pair of orthologous proteins %s and %s", oriL, oriR)
-		sb.WriteString(rdf.FormT(duoU, ourUs["sth2dfn"], rdf.FormL(clsdfn)))
-		pdc := "orl2orl"
-		sb.WriteString(rdf.FormT(duoU, rdf.CompU(rdfNS, "predicate"), ourUs[pdc]))
-		uriL := rdf.CompU(nss["uniprot"], oriL)
-		sb.WriteString(rdf.FormT(duoU, rdf.CompU(rdfNS, "subject"), uriL))
-		uriR := rdf.CompU(nss["uniprot"], oriR)
-		sb.WriteString(rdf.FormT(duoU, rdf.CompU(rdfNS, "object"), uriR))
-		sb.WriteString(rdf.FormT(uriL, ourUs[pdc], uriR))
-		sb.WriteString(rdf.FormT(uriR, ourUs[pdc], uriL))
-
-		/// INSTANCES
-		for _, idmk := range duo.Keys() {
-			srck, ok := idmkeys[idmk]
-			if !ok {
-				continue
-			} // needed! ?
-			insid := fmt.Sprintf("%s%s%s", duoid, "#", srck)
-			insU := rdf.CompU(stmNS, insid)
-			sb.WriteString(rdf.FormT(insU, ourUs["ins2cls"], duoU))
-			sb.WriteString(rdf.FormT(insU, ourUs["sth2lbl"], rdf.FormL(clslbl)))
-			srcU := rdf.FormU(srcs[srck])
-			sb.WriteString(rdf.FormT(insU, ourUs["sth2src"], srcU))
-			// looping over orthology clusters:
-			for _, setid := range duo[idmk].Keys() {
-				setU := rdf.FormU(fmt.Sprintf("%s%s", nss[srck], setid))
-				sb.WriteString(rdf.FormT(insU, ourUs["sub2set"], setU)) // part_of
-				sb.WriteString(rdf.FormT(uriL, ourUs["mbr2lst"], setU))
-				sb.WriteString(rdf.FormT(uriR, ourUs["mbr2lst"], setU))
-			}
-		}
-		bytes := []byte(sb.String())
-		if len(bytes) != 0 {
-			wfh.Write(bytes)
-			sb.Reset()
-			cntD++
-		}
-	} // duoid
-	// 	msg := ""
-	// 	msg = fmt.Sprintf("export.Ortho(): Pairs: added: %d dropped: %d", cntD, len(duos)-cntD)
-	// 	log.Println(msg)
-	//	if nln == 0 { // happens for some pairs of taxa !
-	//	msg := fmt.Sprintf("export.Ortho(): NoContent")
-	//	return nln, errors.New(msg)
-	//	}
-	return cntD, nil
-} // Ortho
