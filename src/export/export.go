@@ -1587,4 +1587,3 @@ func Prot(rpthUP, rpthI, wpth string, p *bgw.Xmap) error {
 	sbP.Reset()
 	return nil
 } // Prot()
-

@@ -139,7 +139,7 @@ var Uris4tftg = map[string]string{
 
 /// Functions
 
-// he 6 functions below panic if util.TrimString() returns an error 
+// he 6 functions below panic if util.TrimString() returns an error
 func FormL(s0 string) string {
 	// used only in FormT() background
 	p0 := &s0

@@ -139,7 +139,7 @@ func Reg2pway(datdir, bgwdir string, txn2prm util.Set2D) (util.Set2D, error) {
 			err := parse.Tab2struct(rpth, keys, vals, &d4b, "\t")
 			if err != nil {
 				msg := fmt.Sprintf("%s%s", "rdf4bgw.Reg2pway:parse.Tab2struct: ", err)
-			fmt.Printf("%s\n", msg)
+				fmt.Printf("%s\n", msg)
 				continue // sic! TODO double check
 			}
 			// d4b is now loaded with data
@@ -220,7 +220,7 @@ func Reg2targ(datdir, bgwdir string, txn2prm util.Set2D) (util.Set2D, error) {
 			err := parse.Tab2struct(rpth, keys, vals, &d4b, "\t")
 			if err != nil {
 				msg := fmt.Sprintf("%s%s", "rdf4bgw.Reg2targ:parse.Tab2struct: ", err)
-			fmt.Printf("%s\n", msg)
+				fmt.Printf("%s\n", msg)
 				return cnts, err
 			}
 			// d4b is now loaded with data
@@ -294,7 +294,7 @@ func Tfac2gene(datdir, bgwdir string, txn2prm util.Set2D) (util.Set2D, error) {
 			err := parse.Tab2struct(rpth, keys, vals, &d4b, dlm)
 			if err != nil { // normal
 				msg := fmt.Sprintf("%s%s", "Tfac2gene:parse.Tab2struct: ", err)
-			fmt.Printf("%s\n", msg)
+				fmt.Printf("%s\n", msg)
 				// return cnts, err // tests fail !!
 				continue // next taxon
 			}

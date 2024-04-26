@@ -46,7 +46,7 @@ func primaryKey(cells []string, keys []bgw.Column) string {
 	} // the order of componenets in the key is deterministic, no variation from call to call
 	if keys[0].Ind3 == -1 {
 		// the clause is needed for Tab2set3D()
-		// len(keys) == 1 for SigMaps  
+		// len(keys) == 1 for SigMaps
 		if len(pkbits) == 1 {
 			pkbits = append(pkbits, pkbits[0])
 		}
