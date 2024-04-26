@@ -10,49 +10,50 @@ import (
 	"io"
 	"log"
 	"os"
-	"sort"
 	"strings"
 )
 
 func primaryKey(cells []string, keys []bgw.Column) string {
+	// TODO tests
 	// cells: values after splitting on the primary delimiter
 	pkbits := make([]string, 0) // sic, for appending values
 	//var pkbits = []string{} // equvalent
 	dlm := keys[0].Dlm2
 	var pk string
-	for _, k := range keys {
-		// k: bgw.Column, k.Key (the last field) may contain empty strings
-		// func TrimSpace(s string) string (no error returned)
-		kcell := strings.TrimSpace(cells[k.Ind1]) // any value possible
+	for _, bc := range keys {
+		// bc: bgw.Column, bc.Key (the last field) may contain empty strings
+		kcell := strings.TrimSpace(cells[bc.Ind1]) // any value may occur in the datb
 		if kcell == "" {
 			return ""
 		}
 		// special case, does occur
 		if kcell == "-" {
-			continue // skipping a component of the primary key
+			// skipping a component of the primary key, occurs in some IntAct files
+			continue // otherwise tests fail for some sources other than  IntAct- why?? TODO
 		}
-		kbits := strings.Split(kcell, k.Dlm1) // sub-fields
-		if len(kbits) < k.Ind2+1 {
+		kbits := strings.Split(kcell, bc.Dlm1) // sub-fields
+		if len(kbits) < bc.Ind2+1 {
 			return ""
 		}
-		if k.Key != "" && kbits[0] != k.Key {
-			return "" // filtering by the type of data specified by k.Key
+		if bc.Key != "" && kbits[0] != bc.Key {
+			return "" // filtering by the type of data specified by bc.Key
 		}
-		kval := strings.TrimSpace(kbits[k.Ind2])
+		kval := strings.TrimSpace(kbits[bc.Ind2])
 		if kval == "" {
 			return ""
 		}
 		pkbits = append(pkbits, kval)
 	} // the order of componenets in the key is deterministic, no variation from call to call
 	if keys[0].Ind3 == -1 {
-		sort.Strings(pkbits)
+		// the clause is needed for Tab2set3D()
+		// len(keys) == 1 for SigMaps  
 		if len(pkbits) == 1 {
 			pkbits = append(pkbits, pkbits[0])
 		}
 	}
 	pk = strings.Join(pkbits, dlm)
 	return pk // OK to return string
-}
+} // primaryKey
 
 // addSubFields() splits a string (pval) on the delimiter
 // specified in a bgw.Column (v) and adds the values to util.Set3D (subfields)
@@ -129,6 +130,7 @@ func Sig2up(sigmap util.Set3D, pths []string) error {
 // TODO generalize, improve error handling
 func Sigmap(datdir string) (util.Set3D, error) {
 	// replacement for Sig2up accomodating tab-delimited files
+	// used only in rdf4bgw
 	sigmap := make(util.Set3D)
 	rdir := fmt.Sprintf("%s%s%s", datdir, "signor", "/")
 	smpths := []string{
@@ -136,11 +138,10 @@ func Sigmap(datdir string) (util.Set3D, error) {
 		rdir + "families.tsv",
 	}
 	keys, vals := bgw.SigMapParseConf()
+	// len(keys) == 1 len(vals) == 1
 	for _, rpth := range smpths {
 		out, err := Tab2set3D(rpth, keys, vals)
 		if err != nil {
-			log.Printf("%s%s", "parse.Sigmap():parse.Tab2set3D(): ", err)
-			// continue // sic!
 			return out, err
 		}
 		for k, v := range out {
@@ -175,7 +176,7 @@ func Idmap(rpth string, idmkeys map[string]string, i1, i2, i3 int) (util.Set3D, 
 		out.Add(key1, key2, key3)
 	}
 	if len(out) == 0 {
-		msg := fmt.Sprintf("parse.Idmap(%s, %v, %d, %d, %d): %s", rpth, idmkeys, i1, i2, i3, err)
+		msg := fmt.Sprintf("parse.Idmap(%s, %v, %d, %d, %d): EmptyMap", rpth, idmkeys, i1, i2, i3)
 		return out, errors.New(msg)
 	}
 
@@ -284,7 +285,7 @@ func Tab2struct(rpth string, keys, vals []bgw.Column, p *bgw.Dat4bridge, dlm str
 // 2. error
 func Tab2set3D(rpth string, keys, vals []bgw.Column) (out util.Set3D, err error) {
 	// TODO generalize for accepting any primary delimiter as in Tab2struct()
-	// used by export.Gene(), export.Prot()
+	// used by export.Gene(), export.Prot(), parse.Sigmap()
 	// NO empty values added to Set3D
 	maxind := 0
 	for _, one := range keys {
@@ -331,8 +332,8 @@ func Tab2set3D(rpth string, keys, vals []bgw.Column) (out util.Set3D, err error)
 			continue
 		}
 		if len(cells) < maxind+1 {
-			msg := fmt.Sprintf("%s:%d: TooFewFields", rpth, ln)
-			log.Printf("%s%s", "parse.Tab2set3D():", msg)
+			msg := fmt.Sprintf("parse.Tab2set3D(%s, _, _): line: %d TooFewFields", rpth, ln)
+			fmt.Printf("%s\n", msg)
 			continue
 		}
 		/// primary key
@@ -622,15 +623,15 @@ func orthosolo(datdir, txid string, txn2prm util.Set2D) (util.Set3D, error) {
 	ext := ".idmapping"
 	prmids := txn2prm[txid].Keys() // normally 1, yet multiple may occur
 	if len(prmids) > 1 {
-		msg := fmt.Sprintf("parse.orthosolo():%s: MultipleProteomes:", txid)
-		log.Println(msg, prmids)
+		msg := fmt.Sprintf("parse.orthosolo(_, %s, _): MultipleProteomes: %s", txid, prmids)
+		fmt.Printf("%s\n", msg)
 	} // never occors
 	for _, prmid := range prmids {
 		prmid := fmt.Sprintf("%s%s%s", prmid, "_", txid)
 		pth := fmt.Sprintf("%s%s%s%s", datdir, subdir, prmid, ext) // read
 		dat, err := Idmap(pth, idmkeys, 1, 2, 0)
 		if err != nil {
-			msg := fmt.Sprintf("parse.orthosolo: parse.Idmap: %s", err)
+			msg := fmt.Sprintf("parse.orthosolo(_, %s, _):  %s", txid, err)
 			return solos, errors.New(msg)
 		}
 		for idmk, all := range dat {

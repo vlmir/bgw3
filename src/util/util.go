@@ -39,16 +39,6 @@ func (m Set1D) Add(key0 string) {
 		m[*p0]++
 	}
 }
-
-func (m Set1D) Keys() []string {
-	var keys []string
-	for k := range m {
-		keys = append(keys, k)
-	}
-	sort.Strings(keys)
-	return keys
-}
-
 func (m Set2D) Add(key0, key1 string) {
 	p0 := &key0
 	err := TrimString(p0)
@@ -69,25 +59,6 @@ func (m Set2D) Add(key0, key1 string) {
 	}
 	mm[*p1]++
 }
-
-func (m SliceSet) Keys() []string {
-	var keys []string
-	for k := range m {
-		keys = append(keys, k)
-	}
-	sort.Strings(keys)
-	return keys
-}
-
-func (m Set2D) Keys() []string {
-	var keys []string
-	for k := range m {
-		keys = append(keys, k)
-	}
-	sort.Strings(keys)
-	return keys
-}
-
 func (m Set3D) Add(key0, key1, key2 string) {
 	p0 := &key0
 	err := TrimString(p0)
@@ -119,7 +90,6 @@ func (m Set3D) Add(key0, key1, key2 string) {
 	}
 	mmm[*p2]++
 }
-
 func (m Set4D) Add(key0, key1, key2, key3 string) {
 	p0 := &key0
 	err := TrimString(p0)
@@ -162,8 +132,15 @@ func (m Set4D) Add(key0, key1, key2, key3 string) {
 	}
 	mmmm[*p3]++
 }
+func (s SliceSet) Add(key, value string) {
+	_, ok := s[key]
+	if !ok {
+		s[key] = make([]string, 0, 20)
+	}
+	s[key] = append(s[key], value)
+}
 
-func (m Set4D) Keys() []string {
+func (m Set1D) Keys() []string {
 	var keys []string
 	for k := range m {
 		keys = append(keys, k)
@@ -171,7 +148,14 @@ func (m Set4D) Keys() []string {
 	sort.Strings(keys)
 	return keys
 }
-
+func (m Set2D) Keys() []string {
+	var keys []string
+	for k := range m {
+		keys = append(keys, k)
+	}
+	sort.Strings(keys)
+	return keys
+}
 func (m Set3D) Keys() []string {
 	var keys []string
 	for k := range m {
@@ -180,13 +164,21 @@ func (m Set3D) Keys() []string {
 	sort.Strings(keys)
 	return keys
 }
-
-func (s SliceSet) Add(key, value string) {
-	_, ok := s[key]
-	if !ok {
-		s[key] = make([]string, 0, 20)
+func (m Set4D) Keys() []string {
+	var keys []string
+	for k := range m {
+		keys = append(keys, k)
 	}
-	s[key] = append(s[key], value)
+	sort.Strings(keys)
+	return keys
+}
+func (m SliceSet) Keys() []string {
+	var keys []string
+	for k := range m {
+		keys = append(keys, k)
+	}
+	sort.Strings(keys)
+	return keys
 }
 
 // not used

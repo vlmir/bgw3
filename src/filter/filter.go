@@ -1,4 +1,4 @@
-package main
+package filter
 
 import (
 	"bufio"
@@ -34,8 +34,8 @@ func subset(pthR, pthW string, inds [5]int) error {
 		n := len(cells)
 		m := 37
 		if n < m {
-			msg := "Want at least: %d cells, have: %d for: %s in %s"
-			fmt.Printf(msg, m, n, cells[0], pthR)
+			msg := fmt.Sprintf("filter.subset(%s, _, _): TooFewFields: %d vs %d for %s", pthR, n, m, cells[0])
+			fmt.Printf("%s\n", msg)
 			continue
 		}
 		subline := cells[0] // pair ID, e.g. MYC:TERT

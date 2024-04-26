@@ -139,7 +139,9 @@ var Uris4tftg = map[string]string{
 
 /// Functions
 
+// he 6 functions below panic if util.TrimString() returns an error 
 func FormL(s0 string) string {
+	// used only in FormT() background
 	p0 := &s0
 	err := util.TrimString(p0)
 	if err != nil {
@@ -244,7 +246,7 @@ func FmtURIs(rdfmap util.SliceSet) map[string]string {
 		panic(errors.New(fmt.Sprintf("Want: %d have: %d", n, m)))
 	}
 	return fmtURIs
-}
+} // FmtURIs
 
 // arg1: a map for filtering
 // return1: a string of RDF triples in the 'nt' format`
@@ -291,4 +293,4 @@ func Capita(rdfmap util.SliceSet) (string, int) {
 		}
 	}
 	return sb.String(), nln
-}
+} // Capita

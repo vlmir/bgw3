@@ -245,7 +245,7 @@ func Test_Prot2prot(t *testing.T) {
 	taxa := []string{"9606", "367110"}
 	tts := []tt{
 		{&d4b0, &xmap, pth + "OUT/export/", 1},
-		{&d4b1, &xmap, pth + "OUT/export/", 2},
+		{&d4b1, &xmap, pth + "OUT/export/", 3}, // 2 -> 3: one Class def was previously missing
 	}
 	pdck := "tlp2tlp"
 	for i, tt := range tts {

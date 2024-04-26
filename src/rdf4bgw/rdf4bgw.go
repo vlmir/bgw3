@@ -138,8 +138,9 @@ func Reg2pway(datdir, bgwdir string, txn2prm util.Set2D) (util.Set2D, error) {
 			log.Println("rdf4bgw.Reg2pway(): processing", rpth)
 			err := parse.Tab2struct(rpth, keys, vals, &d4b, "\t")
 			if err != nil {
-				log.Printf("%s%s", "rdf4bgw.Reg2pway:parse.Tab2struct: ", err)
-				continue // sic!
+				msg := fmt.Sprintf("%s%s", "rdf4bgw.Reg2pway:parse.Tab2struct: ", err)
+			fmt.Printf("%s\n", msg)
+				continue // sic! TODO double check
 			}
 			// d4b is now loaded with data
 			wpths := map[string]string{
@@ -218,7 +219,8 @@ func Reg2targ(datdir, bgwdir string, txn2prm util.Set2D) (util.Set2D, error) {
 			log.Println("rdf4bgw.Reg2targ(): processing", rpth)
 			err := parse.Tab2struct(rpth, keys, vals, &d4b, "\t")
 			if err != nil {
-				log.Printf("%s%s", "rdf4bgw.Reg2targ:parse.Tab2struct: ", err)
+				msg := fmt.Sprintf("%s%s", "rdf4bgw.Reg2targ:parse.Tab2struct: ", err)
+			fmt.Printf("%s\n", msg)
 				return cnts, err
 			}
 			// d4b is now loaded with data
@@ -291,7 +293,8 @@ func Tfac2gene(datdir, bgwdir string, txn2prm util.Set2D) (util.Set2D, error) {
 			// log.Println("rdf4bgw.Tfac2gene(): processing", rpth)
 			err := parse.Tab2struct(rpth, keys, vals, &d4b, dlm)
 			if err != nil { // normal
-				log.Printf("%s%s", "Tfac2gene:parse.Tab2struct: ", err)
+				msg := fmt.Sprintf("%s%s", "Tfac2gene:parse.Tab2struct: ", err)
+			fmt.Printf("%s\n", msg)
 				// return cnts, err // tests fail !!
 				continue // next taxon
 			}
@@ -543,7 +546,7 @@ func Ortho(datdir, bgwdir string, txn2prm util.Set2D) (int, error) {
 				// OrthoDuo returns error if no orthology data for one of the taxa (occurs)
 				// OR no orthologues found for a pair of taxa (never occured so far)
 				msg := fmt.Sprintf("rdf4bgw.Ortho(): parse.OrthoDuo(_, %s, %s, _): %s: ", txidL, txidR, err)
-				log.Println(msg)
+				fmt.Printf("%s\n", msg)
 				continue // works as intended
 			} // NoData
 			/////////////////////////////////////////////////////////////////////////////

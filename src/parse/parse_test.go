@@ -13,7 +13,7 @@ func Test_Tab2struct(t *testing.T) {
 		arg3 []bgw.Column
 		arg4 *bgw.Dat4bridge
 		arg5 string
-		val  int
+		val  int // the number of fields associated with a key
 	}
 	d4bs := make([]bgw.Dat4bridge, 0, 5)
 	keys0, vals0 := bgw.IntactParseConf()
@@ -57,7 +57,7 @@ func Test_Tab2struct(t *testing.T) {
 			)
 		}
 	}
-}
+} // Tab2struct
 
 func Test_Tab2set3D(t *testing.T) {
 	type tt struct {
@@ -66,20 +66,13 @@ func Test_Tab2set3D(t *testing.T) {
 		arg3 []bgw.Column
 		val  int
 	}
-	arg2_1 := []bgw.Column{
-		{0, ":", 1, "--", 0, ""},
-		{1, ":", 1, "--", 0, ""},
-	}
-	arg3_1 := []bgw.Column{
-		{6, "|", 1, "\"", 1, "mtd"},
-		{8, "|", 1, ":", -1, "pubmed"},
-	}
+	arg2_1, arg3_1 := bgw.IntactParseConf()
 	arg2_2, arg3_2 := bgw.TftgParseConf()
 	arg2_3, arg3_3 := bgw.SigMapParseConf()
 	arg2_4, arg3_4 := bgw.SigMapParseConf()
 	pth := "../../tdata/"
 	tts := []tt{
-		{pth + "intact/9606.mi25", arg2_1, arg3_1, 2},
+		{pth + "intact/9606.mi25", arg2_1, arg3_1, 7},
 		{pth + "static/tfacts/9606.f2g", arg2_2, arg3_2, 5},
 		{pth + "signor/complexes.tsv", arg2_3, arg3_3, 1},
 		{pth + "signor/families.tsv", arg2_4, arg3_4, 1},
@@ -100,7 +93,7 @@ func Test_Tab2set3D(t *testing.T) {
 			)
 		}
 	}
-}
+} // Tab2set3D
 
 func Test_UpVar(t *testing.T) {
 	type tt struct {

@@ -248,6 +248,7 @@ func IntactParseConf() ([]Column, []Column) {
 
 func SignorParseConf() ([]Column, []Column) {
 	keys := []Column{
+		// must be this way for complexes and families
 		{0, "|", 0, "--", 0, ""},
 		{1, "|", 0, "--", 0, ""},
 	}

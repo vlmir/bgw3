@@ -315,14 +315,16 @@ func Reg2targ(d *bgw.Dat4bridge, x *bgw.Xmap, wdir string) error {
 		if len(util.Shared(mytypes, typeBs)) == 0 {
 			continue
 		}
-		// skipping pairs with ambiguous entyty types - never happens
+		// skipping pairs with ambiguous entyty types
 		if len(typeAs) > 1 {
-			fmt.Printf("%s%s %s %s", "export.Reg2targ(): multiple entity A types, skipping: ", srck, duokey, typeAs)
-			continue
+			msg := fmt.Sprintf("export.Reg2targ(): multiple entity A types: %s:%s, skipping: ", duokey, typeAs)
+			fmt.Printf("%s\n", msg)
+			continue // 2024-04: 87
 		}
 		if len(typeBs) > 1 {
-			fmt.Printf("%s%s %s %s", "export.Reg2targ(): multiple entity B types, skipping: ", srck, duokey, typeBs)
-			continue
+			msg := fmt.Sprintf("export.Reg2targ(): multiple entity B types: %s:%s, skipping: ", duokey, typeBs)
+			fmt.Printf("%s\n", msg)
+			continue // 2024-04: 0
 		}
 		typeA := typeAs[0] // assuming a single vwlue
 		typeB := typeBs[0] // assuming a single value
@@ -698,12 +700,14 @@ func SigPways(d *bgw.Dat4bridge, x *bgw.Xmap, wdir string) error {
 		}
 		// skipping pairs with ambiguous entyty types - never happens
 		if len(typeAs) > 1 {
-			fmt.Printf("%s%s %s %s", "export.SigPways(): multiple entity A types, skipping: ", srck, duokey, typeAs)
-			continue
+			msg := fmt.Sprintf("export.SigPways(): multiple entity A types: %s:%s, skipping: ", duokey, typeAs)
+			fmt.Printf("%s\n", msg)
+			continue // should never happen TODO return error
 		}
 		if len(typeBs) > 1 {
-			fmt.Printf("%s%s %s %s", "export.SigPways(): multiple entity B types, skipping: ", srck, duokey, typeBs)
-			continue
+			msg := fmt.Sprintf("export.SigPways(): multiple entity B types: %s:%s, skipping: ", duokey, typeBs)
+			fmt.Printf("%s\n", msg)
+			continue // should never happen TODO return error
 		}
 		typeA := typeAs[0]
 		typeB := typeBs[0]
