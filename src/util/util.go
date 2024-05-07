@@ -33,6 +33,7 @@ func FN(skip int) string {
 }
 
 func TrimString(p *string) error {
+	// unused
 	*p = strings.TrimSpace(*p)
 	if *p == "" {
 		msg := fmt.Sprintf("util.TrimString(): EmptyString")
@@ -42,116 +43,116 @@ func TrimString(p *string) error {
 }
 
 func (m Set1D) Add(key0 string) {
-	p0 := &key0
-	err := TrimString(p0)
-	if err != nil {
-		msg := fmt.Sprintf("util.(Set1D)Add(%s): %s", "key0", err)
+	key0 = strings.TrimSpace(key0)
+	if len(key0) == 0 {
+		msg := fmt.Sprintf("%s(%s): CalledBy: %s: EmptyString", FN(0), key0, FN(1))
 		panic(errors.New(msg))
 	}
-	_, ok := m[*p0]
+	_, ok := m[key0]
 	if !ok {
-		m[*p0]++
+		m[key0]++
 	}
 }
 func (m Set2D) Add(key0, key1 string) {
-	p0 := &key0
-	err := TrimString(p0)
-	if err != nil {
-		msg := fmt.Sprintf("util.(Set2D)Add(%s, _): %s", "key0", err)
+	key0 = strings.TrimSpace(key0)
+	if len(key0) == 0 {
+		msg := fmt.Sprintf("%s(%s): CalledBy: %s: EmptyString", FN(0), key0, FN(1))
 		panic(errors.New(msg))
 	}
-	p1 := &key1
-	err = TrimString(p1)
-	if err != nil {
-		msg := fmt.Sprintf("util.(Set2D)Add(_, %s): %s", "key1", err)
+	key1 = strings.TrimSpace(key1)
+	if len(key1) == 0 {
+		msg := fmt.Sprintf("%s(%s): CalledBy: %s: EmptyString", FN(0), key1, FN(1))
 		panic(errors.New(msg))
 	}
-	mm, ok := m[*p0]
+	mm, ok := m[key0]
 	if !ok {
 		mm = make(map[string]int)
-		m[*p0] = mm
+		m[key0] = mm
 	}
-	mm[*p1]++
+	mm[key1]++
 }
 func (m Set3D) Add(key0, key1, key2 string) {
-	p0 := &key0
-	err := TrimString(p0)
-	if err != nil {
-		msg := fmt.Sprintf("util.(Set3D)Add(%s, _, _): %s", "key0", err)
+	key0 = strings.TrimSpace(key0)
+	if len(key0) == 0 {
+		msg := fmt.Sprintf("%s(%s): CalledBy: %s: EmptyString", FN(0), key0, FN(1))
 		panic(errors.New(msg))
 	}
-	p1 := &key1
-	err = TrimString(p1)
-	if err != nil {
-		msg := fmt.Sprintf("util.(Set3D)Add(_, %s, _): %s", "key1", err)
+	key1 = strings.TrimSpace(key1)
+	if len(key1) == 0 {
+		msg := fmt.Sprintf("%s(%s): CalledBy: %s: EmptyString", FN(0), key1, FN(1))
 		panic(errors.New(msg))
 	}
-	p2 := &key2
-	err = TrimString(p2)
-	if err != nil {
-		msg := fmt.Sprintf("util.(Set3D)Add(_, _, %s): %s", "key2", err)
+	key2 = strings.TrimSpace(key2)
+	if len(key2) == 0 {
+		msg := fmt.Sprintf("%s(%s): CalledBy: %s: EmptyString", FN(0), key2, FN(1))
 		panic(errors.New(msg))
 	}
-	mm, ok := m[*p0]
+	mm, ok := m[key0]
 	if !ok {
 		mm = make(Set2D)
-		m[*p0] = mm
+		m[key0] = mm
 	}
-	mmm, ok := mm[*p1]
+	mmm, ok := mm[key1]
 	if !ok {
 		mmm = make(Set1D)
-		mm[*p1] = mmm
+		mm[key1] = mmm
 	}
-	mmm[*p2]++
+	mmm[key2]++
 }
 func (m Set4D) Add(key0, key1, key2, key3 string) {
-	p0 := &key0
-	err := TrimString(p0)
-	if err != nil {
-		msg := fmt.Sprintf("util.(Set4D)Add(%s, _, _, _): %s", "key0", err)
+	key0 = strings.TrimSpace(key0)
+	if len(key0) == 0 {
+		msg := fmt.Sprintf("%s(%s): CalledBy: %s: EmptyString", FN(0), key0, FN(1))
 		panic(errors.New(msg))
 	}
-	p1 := &key1
-	err = TrimString(p1)
-	if err != nil {
-		msg := fmt.Sprintf("util.(Set4D)Add(_, %s, _, _): %s", "key1", err)
+	key1 = strings.TrimSpace(key1)
+	if len(key1) == 0 {
+		msg := fmt.Sprintf("%s(%s): CalledBy: %s: EmptyString", FN(0), key1, FN(1))
 		panic(errors.New(msg))
 	}
-	p2 := &key2
-	err = TrimString(p2)
-	if err != nil {
-		msg := fmt.Sprintf("util.(Set4D)Add(_, _, %s, _): %s", "key2", err)
+	key2 = strings.TrimSpace(key2)
+	if len(key2) == 0 {
+		msg := fmt.Sprintf("%s(%s): CalledBy: %s: EmptyString", FN(0), key2, FN(1))
 		panic(errors.New(msg))
 	}
-	p3 := &key3
-	err = TrimString(p3)
-	if err != nil {
-		msg := fmt.Sprintf("util.(Set4D)Add(_, _, _, %s): %s", "key3", err)
+	key3 = strings.TrimSpace(key3)
+	if len(key3) == 0 {
+		msg := fmt.Sprintf("%s(%s): CalledBy: %s: EmptyString", FN(0), key3, FN(1))
 		panic(errors.New(msg))
 	}
-	mm, ok := m[*p0]
+	mm, ok := m[key0]
 	if !ok {
 		mm = make(Set3D)
-		m[*p0] = mm
+		m[key0] = mm
 	}
-	mmm, ok := mm[*p1]
+	mmm, ok := mm[key1]
 	if !ok {
 		mmm = make(Set2D)
-		mm[*p1] = mmm
+		mm[key1] = mmm
 	}
-	mmmm, ok := mmm[*p2]
+	mmmm, ok := mmm[key2]
 	if !ok {
 		mmmm = make(Set1D)
-		mmm[*p2] = mmmm
+		mmm[key2] = mmmm
 	}
-	mmmm[*p3]++
+	mmmm[key3]++
 }
-func (s SliceSet) Add(key, value string) {
+func (s SliceSet) Add(key, val string) {
+	key = strings.TrimSpace(key)
+	if len(key) == 0 {
+		msg := fmt.Sprintf("%s(%s): CalledBy: %s: EmptyString", FN(0), key, FN(1))
+		panic(errors.New(msg))
+	}
+	val = strings.TrimSpace(val)
+	if len(val) == 0 {
+		msg := fmt.Sprintf("%s(%s): CalledBy: %s: EmptyString", FN(0), val, FN(1))
+		panic(errors.New(msg))
+	}
 	_, ok := s[key]
 	if !ok {
 		s[key] = make([]string, 0, 20)
 	}
-	s[key] = append(s[key], value)
+	s[key] = append(s[key], val)
 }
 
 func (m Set1D) Keys() []string {
