@@ -34,7 +34,7 @@ func Test_FmtURIs(t *testing.T) {
 			)
 		}
 	}
-}
+} // FmtURIs
 
 func Test_Capita(t *testing.T) {
 	type tt struct {
@@ -65,4 +65,4 @@ func Test_Capita(t *testing.T) {
 			)
 		}
 	}
-}
+} // Capita

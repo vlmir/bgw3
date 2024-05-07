@@ -117,10 +117,10 @@ func TestSigPways(t *testing.T) {
 	}
 	pth := "../../tdata/"
 	// parsing
-	keys, vals := bgw.SigPwaysParseConf()
+	// keys, vals := bgw.SigPwaysParseConf()
 	var d4b0 bgw.Dat4bridge
 	d4b0.New()
-	_ = parse.Tab2struct(pth+"signor/pathways.tsv", keys, vals, &d4b0, "\t")
+	_ = parse.Tab2struct(pth+"signor/pathways.tsv", bgw.SigPwaysConf.Keys, bgw.SigPwaysConf.Vals, &d4b0, "\t")
 	var xmap bgw.Xmap
 	xmap.New()
 	xmap.Upac.Add("P04637", "bgwp", "P04637") // for p53-bcl2
@@ -170,10 +170,9 @@ func TestReg2targ(t *testing.T) {
 	}
 	pth := "../../tdata/"
 	// parsing
-	keys, vals := bgw.SignorParseConf()
 	var d4b0 bgw.Dat4bridge
 	d4b0.New()
-	_ = parse.Tab2struct(pth+"signor/9606.mi28", keys, vals, &d4b0, "\t")
+	_ = parse.Tab2struct(pth+"signor/9606.mi28", bgw.SignorConf.Keys, bgw.SignorConf.Vals, &d4b0, "\t")
 	var xmap bgw.Xmap
 	xmap.New()
 	// sorted
@@ -226,13 +225,12 @@ func Test_Prot2prot(t *testing.T) {
 	}
 	pth := "../../tdata/"
 	// parsing
-	keys, vals := bgw.IntactParseConf()
 	var d4b0 bgw.Dat4bridge
 	d4b0.New()
-	_ = parse.Tab2struct(pth+"intact/9606.mi25", keys, vals, &d4b0, "\t")
+	_ = parse.Tab2struct(pth+"intact/9606.mi25", bgw.IntactConf.Keys, bgw.IntactConf.Vals, &d4b0, "\t")
 	var d4b1 bgw.Dat4bridge
 	d4b1.New()
-	_ = parse.Tab2struct(pth+"intact/367110.mi25", keys, vals, &d4b1, "\t")
+	_ = parse.Tab2struct(pth+"intact/367110.mi25", bgw.IntactConf.Keys, bgw.IntactConf.Vals, &d4b1, "\t")
 
 	var xmap bgw.Xmap
 	xmap.New()
@@ -275,22 +273,12 @@ func Test_Tfac2gene(t *testing.T) {
 	}
 	pth := "../../tdata/"
 	// parsing
-	var d4b0 bgw.Dat4bridge
-	d4b0.New()
-	keys, vals := bgw.TftgParseConf()
-	_ = parse.Tab2struct(pth+"static/tfacts/9606.f2g", keys, vals, &d4b0, "\t")
-	var d4b1 bgw.Dat4bridge
-	d4b1.New()
-	keys, vals = bgw.TftgParseConf()
-	_ = parse.Tab2struct(pth+"static/ntnu/9606.f2g", keys, vals, &d4b1, "\t")
 	var d4b2 bgw.Dat4bridge
 	d4b2.New()
-	keys, vals = bgw.TflinkParseConf()
-	_ = parse.Tab2struct(pth+"tflink/9606.tsv", keys, vals, &d4b2, "\t")
+	_ = parse.Tab2struct(pth+"tflink/9606.tsv", bgw.TflinkConf.Keys, bgw.TflinkConf.Vals, &d4b2, "\t")
 	var d4b3 bgw.Dat4bridge
 	d4b3.New()
-	keys, vals = bgw.ColtriParseConf()
-	_ = parse.Tab2struct(pth+"coltri/9606.csv", keys, vals, &d4b3, ",")
+	_ = parse.Tab2struct(pth+"coltri/9606.csv", bgw.ColtriConf.Keys, bgw.ColtriConf.Vals, &d4b3, ",")
 	var xmap bgw.Xmap
 	xmap.New()
 	// xmap.Upac.Add("P01100", "bgwp", "P01100")

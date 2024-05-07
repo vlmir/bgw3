@@ -67,6 +67,11 @@ type Column struct {
 	Key  string
 }
 
+type SrcConf struct {
+	Keys []Column
+	Vals []Column
+}
+
 type Dat4bridge struct {
 	Out   map[string]string
 	Src   string
@@ -149,11 +154,11 @@ func (xmap Xmap) Unmarshal(pthj string) error {
 	return nil
 }
 
-func UpdatParseConf() ([]Column, []Column) {
-	keys := []Column{
+var UpdatConf = SrcConf{
+	Keys: []Column{
 		{0, "; ", 0, "", 0, ""}, // UniProt canonical accessionbs from multiple proteomes
-	}
-	vals := []Column{
+	},
+	Vals: []Column{
 		// {0, "; ", 0, "|", 0, "upca"}, // single value
 		{1, "; ", 0, "|", 0, "upid"}, // single value
 		// gnms: '|' separated for CHLRE else '; ' with no '|';
@@ -167,31 +172,31 @@ func UpdatParseConf() ([]Column, []Column) {
 		// {7, "; ", -1, ": ", 0, "poms"}, // '; ' separated, 'pomeid: chrid'
 		{8, "; ", -1, "; ", 0, "pubmed"}, // '; ' separated
 		{9, "; ", 0, " ", 0, "score"},    // single value
-	}
-	return keys, vals
-} // UpdatParseConf
+	},
+}
 
-func TftgParseConf() ([]Column, []Column) {
-	keys := []Column{
-		{0, ":", 0, "--", 0, ""},
-		{0, ":", 1, "--", 0, ""},
-	}
-	vals := []Column{
-		{1, "|", 0, "|", 0, "uniprot"},
-		{2, "|", 0, "|", 0, "ncbig"},
-		{3, "|", -1, ";", 0, "pubmed"},
-		{4, "|", 0, ";", 0, "score"},
-		{5, "|", 0, ";", 0, "mode"},
-	}
-	return keys, vals
-} // TftgParseConf
+//func TftgParseConf() ([]Column, []Column) {
+//	// not used anymore
+//	keys := []Column{
+//		{0, ":", 0, "--", 0, ""},
+//		{0, ":", 1, "--", 0, ""},
+//	}
+//	vals := []Column{
+//		{1, "|", 0, "|", 0, "uniprot"},
+//		{2, "|", 0, "|", 0, "ncbig"},
+//		{3, "|", -1, ";", 0, "pubmed"},
+//		{4, "|", 0, ";", 0, "score"},
+//		{5, "|", 0, ";", 0, "mode"},
+//	}
+//	return keys, vals
+//} // TftgParseConf
 
-func ColtriParseConf() ([]Column, []Column) {
-	keys := []Column{
+var ColtriConf = SrcConf{
+	Keys: []Column{
 		{0, ";", 0, "--", 0, ""},
 		{1, ";", 0, "--", 0, ""},
-	}
-	vals := []Column{
+	},
+	Vals: []Column{
 		{0, ";", 0, ":", 0, "Aupca"},       // no iso-form present 23-11-17
 		{1, ";", 0, ":", 0, "Bupca"},       // no iso-form present 23-11-17
 		{2, ";", 0, ":", 0, "Aglbl"},       // single values
@@ -201,16 +206,15 @@ func ColtriParseConf() ([]Column, []Column) {
 		{11, ";", 1, ":", -1, "CollecTRI"}, // all filtered
 		{15, ";", 0, ";", 0, "score"},      // number of refs
 		{16, ";", 0, ":", 0, "pubmed"},     // all refs
-	}
-	return keys, vals
-} // ColtriParseConf
+	},
+}
 
-func TflinkParseConf() ([]Column, []Column) {
-	keys := []Column{
+var TflinkConf = SrcConf{
+	Keys: []Column{
 		{4, "\"", 1, "--", 0, ""},
 		{5, "\"", 1, "--", 0, ""},
-	}
-	vals := []Column{
+	},
+	Vals: []Column{
 		{0, "|", 1, ":", 0, "uniprot"}, // prot id; single value
 		{3, "|", 1, ":", 0, "ncbig"},   // gene id; single value
 		{6, "|", 1, "\"", 1, "mtdid"},  // multiple values
@@ -224,16 +228,15 @@ func TflinkParseConf() ([]Column, []Column) {
 		// {21, "|", 3, "\"", 0, "typeBlbl"},
 		{25, "|", 1, "\"", 1, "mode"},  // multiple values
 		{27, "|", 1, "\"", 1, "score"}, // single values, TODO adjust ??
-	}
-	return keys, vals
-} // TflinkParseConf
+	},
+}
 
-func IntactParseConf() ([]Column, []Column) {
-	keys := []Column{
+var IntactConf = SrcConf{
+	Keys: []Column{
 		{0, ":", 1, "--", -1, "uniprotkb"}, // sorting and filtering by "uniprotkb"
 		{1, ":", 1, "--", -1, "uniprotkb"}, // the last join string is defining
-	}
-	vals := []Column{
+	},
+	Vals: []Column{
 		{0, "|", 1, ":", 0, "uniprotkb"}, // filtering by "uniprotkb"
 		{1, "|", 1, ":", 0, "uniprotkb"}, // filtering by "uniprotkb"
 		{6, "|", 1, "\"", 1, "mtd"},      // psi-mi ids
@@ -242,17 +245,16 @@ func IntactParseConf() ([]Column, []Column) {
 		{11, "|", 2, "\"", 0, "typeABlbl"},      // not used
 		{13, "|", 1, ":", -1, "intact"},         // intact:EBI-20559053|imex:IM-26397-1
 		{14, "|", 1, ":", -1, "intact-miscore"}, // author score:D|intact-miscore:0.37
-	}
-	return keys, vals
-} // IntactParseConf
+	},
+}
 
-func SignorParseConf() ([]Column, []Column) {
-	keys := []Column{
+var SignorConf = SrcConf{
+	Keys: []Column{
 		// must be this way for complexes and families
 		{0, "|", 0, "--", 0, ""},
 		{1, "|", 0, "--", 0, ""},
-	}
-	vals := []Column{
+	},
+	Vals: []Column{
 		{0, "|", 0, "|", 0, "Aid"},     // single value; Attn: diverse formats !!
 		{1, "|", 0, "|", 0, "Bid"},     // single value; Attn: diverse formats !!
 		{6, "|", 1, "\"", 1, "mtd"},    // psi-mi ids
@@ -269,17 +271,16 @@ func SignorParseConf() ([]Column, []Column) {
 		{44, "|", 2, "\"", 0, "reglevellbl"},
 		{45, "|", 1, "\"", 0, "modeid"},
 		{45, "|", 2, "\"", 0, "modelbl"},
-	}
-	return keys, vals
-} // SignorParseConf
+	},
+}
 
-func SigPwaysParseConf() ([]Column, []Column) {
+var SigPwaysConf = SrcConf{
 	// "|" is not used at all
-	keys := []Column{
+	Keys: []Column{
 		{5, "|", 0, "--", 0, ""},  // Aid
 		{10, "|", 0, "--", 0, ""}, // Bid
-	}
-	vals := []Column{
+	},
+	Vals: []Column{
 		{0, ";", 0, "|", 0, "pwayid"},
 		{1, ";", 0, "|", 0, "pwaylbl"},
 		{2, ";", 0, "|", 0, "Albl"},
@@ -296,16 +297,14 @@ func SigPwaysParseConf() ([]Column, []Column) {
 		{26, ";", 0, "|", 0, "isdirect"}, // "t" or "f"
 		{30, ";", 0, "|", 0, "sigid"},    // interaction id, not accepted by API
 		{31, ";", 0, "|", 0, "score"},
-	}
-	return keys, vals
-} // SigPwaysParseConf
+	},
+}
 
-func SigMapParseConf() ([]Column, []Column) {
-	keys := []Column{
+var SigMapConf = SrcConf{
+	Keys:  []Column{
 		{0, ";", 0, "", 0, ""},
-	}
-	vals := []Column{
+	},
+	Vals: []Column{
 		{2, ";", -1, ";", 0, "ids"}, // no iso-form present 23-12-04
-	}
-	return keys, vals
-} // SigMapParseConf
+	},
+}

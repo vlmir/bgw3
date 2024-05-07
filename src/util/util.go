@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"os"
 	"os/exec"
+	"runtime"
 	"sort"
 	"strings"
 )
@@ -17,6 +18,19 @@ type Set2D map[string]Set1D
 type Set3D map[string]Set2D
 type Set4D map[string]Set3D
 type SliceSet map[string][]string
+
+// FN retrieves the names of the running||calling functions
+func FN(skip int) string {
+	pc, _, _, ok := runtime.Caller(skip + 1)
+	if !ok {
+		return ""
+	}
+	f := runtime.FuncForPC(pc)
+	if f == nil {
+		return ""
+	}
+	return f.Name()
+}
 
 func TrimString(p *string) error {
 	*p = strings.TrimSpace(*p)

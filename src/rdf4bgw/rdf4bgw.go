@@ -122,7 +122,9 @@ func Reg2pway(datdir, bgwdir string, txn2prm util.Set2D) (util.Set2D, error) {
 		ext := ""
 		rpth := ""
 		if srck == "signor" {
-			keys, vals = bgw.SigPwaysParseConf()
+			// keys, vals = bgw.SigPwaysParseConf()
+			keys = bgw.SigPwaysConf.Keys
+			vals = bgw.SigPwaysConf.Vals
 			ext = ".tsv"
 		}
 
@@ -192,12 +194,9 @@ func Reg2targ(datdir, bgwdir string, txn2prm util.Set2D) (util.Set2D, error) {
 	cnts := make(util.Set2D)
 	for srck, _ := range rdf.Uris4rgrtrg {
 		// define keys and vals for parsing
-		var vals []bgw.Column
-		var keys []bgw.Column
 		ext := ""
 		rpth := ""
 		if srck == "signor" {
-			keys, vals = bgw.SignorParseConf()
 			ext = ".mi28"
 		}
 
@@ -217,7 +216,7 @@ func Reg2targ(datdir, bgwdir string, txn2prm util.Set2D) (util.Set2D, error) {
 				rpth = fmt.Sprintf("%s%s%s%s%s", datdir, srck, "/", txid, ext)
 			}
 			log.Println("rdf4bgw.Reg2targ(): processing", rpth)
-			err := parse.Tab2struct(rpth, keys, vals, &d4b, "\t")
+			err := parse.Tab2struct(rpth, bgw.SignorConf.Keys, bgw.SignorConf.Vals, &d4b, "\t")
 			if err != nil {
 				msg := fmt.Sprintf("%s%s", "rdf4bgw.Reg2targ:parse.Tab2struct: ", err)
 				fmt.Printf("%s\n", msg)
@@ -279,11 +278,13 @@ func Tfac2gene(datdir, bgwdir string, txn2prm util.Set2D) (util.Set2D, error) {
 			var d4b bgw.Dat4bridge // one source, one taxon
 			d4b.New()
 			if srck == "tflink" {
-				keys, vals = bgw.TflinkParseConf()
+				keys = bgw.TflinkConf.Keys
+				vals = bgw.TflinkConf.Vals
 				rpth = fmt.Sprintf("%s%s%s%s%s", datdir, srck, "/", txid, ".tsv")
 			}
 			if srck == "coltri" {
-				keys, vals = bgw.ColtriParseConf()
+				keys = bgw.ColtriConf.Keys
+				vals = bgw.ColtriConf.Vals
 				dlm = "," // re-defining
 				if txid != "9606" {
 					continue
@@ -368,8 +369,7 @@ func Prot2prot(datdir, bgwdir string, txn2prm util.Set2D) (util.Set2D, error) {
 		//duos, err := parse.MiTab(rpth, upac2bgw)
 		var d4b bgw.Dat4bridge
 		d4b.New()
-		keys, vals := bgw.IntactParseConf()
-		err = parse.Tab2struct(rpth, keys, vals, &d4b, "\t")
+		err = parse.Tab2struct(rpth, bgw.IntactConf.Keys, bgw.IntactConf.Vals, &d4b, "\t")
 		if err != nil {
 			msg := fmt.Sprintf("rdf4bgw.go:main.Prot2prot():%s: %s", err, txid)
 			log.Println(msg)

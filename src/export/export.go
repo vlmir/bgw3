@@ -1213,8 +1213,7 @@ func Gene(rpthUP, rpthI, wpth string, p *bgw.Xmap) error {
 			upca2upac.Add(upac, upac)
 		}
 	}
-	keys, vals := bgw.UpdatParseConf()
-	allUPs, err := parse.Tab2set3D(rpthUP, keys, vals) // keys UP canonical accessions, not all RefProt
+	allUPs, err := parse.Tab2set3D(rpthUP, bgw.UpdatConf.Keys, bgw.UpdatConf.Vals) // keys UP canonical accessions, not all RefProt
 	if err != nil {
 		msg := fmt.Sprintf("export.Gene(): parse.Tab2set3D(%s, _, _): allUPs: EmptySet", rpthUP)
 		return errors.New(msg)
@@ -1457,8 +1456,7 @@ func Prot(rpthUP, rpthI, wpth string, p *bgw.Xmap) error {
 	//srcUa = "<https://www.uniprot.org/uniprot/?query=organism:" + txid + "&columns=id,entry%20name,organism,organism-id,protein%20names,proteome,citation,annotation%20score&format=tab>"
 	/////////////////////////////////////////////////////////////////////////////
 
-	keys, vals := bgw.UpdatParseConf()
-	allUPs, err := parse.Tab2set3D(rpthUP, keys, vals)
+	allUPs, err := parse.Tab2set3D(rpthUP, bgw.UpdatConf.Keys, bgw.UpdatConf.Vals)
 	if err != nil {
 		msg := fmt.Sprintf("export.Prot(): parse.Tab2set3D(%s, _, _): allUPs: EmptySet", rpthUP)
 		return errors.New(msg)

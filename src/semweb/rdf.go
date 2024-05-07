@@ -139,128 +139,134 @@ var Uris4tftg = map[string]string{
 
 /// Functions
 
-// he 6 functions below panic if util.TrimString() returns an error
 func FormL(s0 string) string {
 	// used only in FormT() background
-	p0 := &s0
-	err := util.TrimString(p0)
-	if err != nil {
-		msg := fmt.Sprintf("rdf.FormL(%s): %s", "s0", err)
+	s0 = strings.TrimSpace(s0)
+	if len(s0) == 0 {
+		msg := fmt.Sprintf("%s(%s): CalledBy: %s: EmptyString", util.FN(0), s0, util.FN(1))
 		panic(errors.New(msg))
 	}
-	return strings.Join([]string{`"`, *p0, `"`}, "")
+	return strings.Join([]string{`"`, s0, `"`}, "")
 }
 
 func FormU(s0 string) string {
-	p0 := &s0
-	err := util.TrimString(p0)
-	if err != nil {
-		msg := fmt.Sprintf("rdf.FormU(%s): %s", "s0", err)
+	s0 = strings.TrimSpace(s0)
+	if len(s0) == 0 {
+		msg := fmt.Sprintf("%s(%s): CalledBy: %s: EmptyString", util.FN(0), s0, util.FN(1))
 		panic(errors.New(msg))
 	}
-	return strings.Join([]string{"<", *p0, ">"}, "")
+	return strings.Join([]string{"<", s0, ">"}, "")
 }
 
 func CompU(s0, s1 string) string {
-	p0 := &s0
-	err := util.TrimString(p0)
-	if err != nil {
-		msg := fmt.Sprintf("rdf.CompU(%s, _): %s", "s0", err)
+	s0 = strings.TrimSpace(s0)
+	if len(s0) == 0 {
+		msg := fmt.Sprintf("%s(%s): CalledBy: %s: EmptyString", util.FN(0), s0, util.FN(1))
 		panic(errors.New(msg))
 	}
-	p1 := &s1
-	err = util.TrimString(p1)
-	if err != nil {
-		msg := fmt.Sprintf("rdf.CompU(_, %s): %s", "s1", err)
+	s1 = strings.TrimSpace(s1)
+	if len(s1) == 0 {
+		msg := fmt.Sprintf("%s(%s): CalledBy: %s: EmptyString", util.FN(0), s1, util.FN(1))
 		panic(errors.New(msg))
 	}
-	return strings.Join([]string{"<", *p0, *p1, ">"}, "")
+	return strings.Join([]string{"<", s0, s1, ">"}, "")
 }
 
 func FormT(s0, s1, s2 string) string {
-	p0 := &s0
-	err := util.TrimString(p0)
-	if err != nil {
-		msg := fmt.Sprintf("rdf.FormT(%s, _, _): %s", "s0", err)
+	s0 = strings.TrimSpace(s0)
+	if len(s0) == 0 {
+		msg := fmt.Sprintf("%s(%s): CalledBy: %s: EmptyString", util.FN(0), s0, util.FN(1))
 		panic(errors.New(msg))
 	}
-	p1 := &s1
-	err = util.TrimString(p1)
-	if err != nil {
-		msg := fmt.Sprintf("rdf.FormT(_, %s, _): %s", "s1", err)
+	s1 = strings.TrimSpace(s1)
+	if len(s1) == 0 {
+		msg := fmt.Sprintf("%s(%s): CalledBy: %s: EmptyString", util.FN(0), s1, util.FN(1))
 		panic(errors.New(msg))
 	}
-	p2 := &s2
-	err = util.TrimString(p2)
-	if err != nil {
-		msg := fmt.Sprintf("rdf.FormT(_, _, %s): %s", "s2", err)
+	s2 = strings.TrimSpace(s2)
+	if len(s2) == 0 {
+		msg := fmt.Sprintf("%s(%s): CalledBy: %s: EmptyString", util.FN(0), s2, util.FN(1))
 		panic(errors.New(msg))
 	}
-	return strings.Join([]string{*p0, *p1, *p2, ".\n"}, " ")
-}
+	return strings.Join([]string{s0, s1, s2, ".\n"}, " ")
+} // FormT
 
 // arg1: a map for filtering
-func FmtURIs(rdfmap util.SliceSet) map[string]string {
-	set := make(util.SliceSet)
-	fmtURIs := make(map[string]string)
-	for group, urikeys := range rdfmap { // urikeys - slice of tokens
-		if len(urikeys) == 0 {
-			msg := fmt.Sprintf("rdf.FmtURIs(): NoKeys")
+func FmtURIs(fm util.SliceSet) map[string]string {
+	ss := make(util.SliceSet)
+	uris := make(map[string]string)
+	groups := fm.Keys() // sorted, non-empty
+	if len(groups) != 3 {
+		msg := fmt.Sprintf("%s(%v): CalledBy: %s: MalFormed: %v", util.FN(0), fm, util.FN(1), fm)
+		panic(errors.New(msg))
+	}
+	for _, group := range groups {
+		keys := fm[group]
+		if len(keys) == 0 {
+			msg := fmt.Sprintf("%s(%v): CalledBy: %s: NoKeysFor: %s", util.FN(0), fm, util.FN(1), group)
 			panic(errors.New(msg))
 		}
 		switch {
 		case group == "Prns":
-			set = Prns
+			ss = Prns
 		case group == "Opys":
-			set = Opys
+			ss = Opys
 		case group == "Apys":
-			set = Apys
-		}
-		for _, urikey := range urikeys {
-			bits, ok := set[urikey] // []string{nsk, uid}
+			ss = Apys
+		} // now ss is not empty
+		for _, key := range keys {
+			bits, ok := ss[key] // []string{nsk, uid}
 			if !ok {
-				msg := fmt.Sprintf("NoEntryFor: %s", urikey)
+				msg := fmt.Sprintf("%s(%v): CalledBy: %s: NoEntryFor: %s", util.FN(0), fm, util.FN(1), key)
 				panic(errors.New(msg))
 			}
 			if len(bits) < 2 {
-				msg := fmt.Sprintf("Want at least 2 elements in: %v", bits)
+				msg := fmt.Sprintf("%s(%v): CalledBy: %s: %v TooShort", util.FN(0), fm, util.FN(1), bits)
 				panic(errors.New(msg))
 			}
 			nsk := bits[0]
 			uid := bits[1]
 			ns, ok := Nss[nsk]
 			if !ok {
-				msg := fmt.Sprintf("NoEntryFor: %s", nsk)
+				msg := fmt.Sprintf("%s(%v): CalledBy: %s: NoEntryFor: %s", util.FN(0), fm, util.FN(1), nsk)
 				panic(errors.New(msg))
 			}
 			myU := CompU(ns, uid)
-			fmtURIs[urikey] = myU
+			uris[key] = myU
 		}
 	}
 	n := 0
-	for _, v := range rdfmap {
+	for _, v := range fm {
 		n += len(v)
 	}
-	m := len(fmtURIs)
+	m := len(uris)
 	if m != n {
 		panic(errors.New(fmt.Sprintf("Want: %d have: %d", n, m)))
 	}
-	return fmtURIs
+	return uris
 } // FmtURIs
 
 // arg1: a map for filtering
 // return1: a string of RDF triples in the 'nt' format`
 // return2: the number of lines in return1
-func Capita(rdfmap util.SliceSet) (string, int) {
+func Capita(fm util.SliceSet) (string, int) {
 	ss := make(util.SliceSet)
 	var pdc []string
 	var top string
 	var plU string
 	var sb strings.Builder
 	nln := 0
-	groups := rdfmap.Keys() // sorted, non-empty
+	groups := fm.Keys() // sorted, non-empty
+	if len(groups) != 3 {
+		msg := fmt.Sprintf("%s(%v): CalledBy: %s: MalFormed: %v", util.FN(0), fm, util.FN(1), fm)
+		panic(errors.New(msg))
+	}
 	for _, group := range groups {
-		urikeys := rdfmap[group]
+		keys := fm[group]
+		if len(keys) == 0 {
+			msg := fmt.Sprintf("%s(%v): CalledBy: %s: NoKeysFor: %s", util.FN(0), fm, util.FN(1), group)
+			panic(errors.New(msg))
+		}
 		switch {
 		case group == "Prns":
 			ss = Prns
@@ -274,14 +280,14 @@ func Capita(rdfmap util.SliceSet) (string, int) {
 			ss = Apys
 			pdc = Opys["ins2cls"]
 			top = "AnnotationProperty"
-		}
+		} // now ss is not empty
 		pU := CompU(Nss[pdc[0]], pdc[1])
 		lbits := Apys["sth2lbl"]
 		plU = CompU(Nss[lbits[0]], lbits[1])
-		for _, urikey := range urikeys {
-			bits, ok := ss[urikey] // []string
+		for _, key := range keys {
+			bits, ok := ss[key] // []string
 			if !ok {
-				msg := fmt.Sprintf("NoEntryFor: %s", urikey)
+				msg := fmt.Sprintf("%s(%v): CalledBy: %s: NoEntryFor: %s", util.FN(0), fm, util.FN(1), key)
 				panic(errors.New(msg))
 			}
 			sU := CompU(Nss[bits[0]], bits[1])

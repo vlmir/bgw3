@@ -137,10 +137,10 @@ func Sigmap(datdir string) (util.Set3D, error) {
 		rdir + "complexes.tsv",
 		rdir + "families.tsv",
 	}
-	keys, vals := bgw.SigMapParseConf()
+	// keys, vals := bgw.SigMapParseConf()
 	// len(keys) == 1 len(vals) == 1
 	for _, rpth := range smpths {
-		out, err := Tab2set3D(rpth, keys, vals)
+		out, err := Tab2set3D(rpth, bgw.SigMapConf.Keys, bgw.SigMapConf.Vals)
 		if err != nil {
 			return out, err
 		}

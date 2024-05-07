@@ -16,11 +16,6 @@ func Test_Tab2struct(t *testing.T) {
 		val  int // the number of fields associated with a key
 	}
 	d4bs := make([]bgw.Dat4bridge, 0, 5)
-	keys0, vals0 := bgw.IntactParseConf()
-	keys1, vals1 := bgw.TftgParseConf()
-	keys2, vals2 := bgw.SignorParseConf()
-	keys3, vals3 := bgw.TflinkParseConf()
-	keys4, vals4 := bgw.ColtriParseConf()
 	var d4b0 bgw.Dat4bridge
 	var d4b1 bgw.Dat4bridge
 	var d4b2 bgw.Dat4bridge
@@ -34,15 +29,13 @@ func Test_Tab2struct(t *testing.T) {
 	d4bs = append(d4bs, d4b0, d4b1, d4b2, d4b3, d4b4)
 	pth := "../../tdata/"
 	tts := []tt{
-		{pth + "intact/9606.mi25", keys0, vals0, &d4bs[0], "\t", 7}, // 8? TODO
-		{pth + "static/tfacts/9606.f2g", keys1, vals1, &d4bs[1], "\t", 5},
-		{pth + "signor/9606.mi28", keys2, vals2, &d4bs[2], "\t", 16}, // 15->16 - added mtd field
-		{pth + "tflink/9606.tsv", keys3, vals3, &d4bs[3], "\t", 6},
-		{pth + "coltri/9606.csv", keys4, vals4, &d4bs[4], ",", 9},
+		{pth + "intact/9606.mi25", bgw.IntactConf.Keys, bgw.IntactConf.Vals, &d4bs[0], "\t", 7}, // 8? TODO
+		{pth + "signor/9606.mi28", bgw.SignorConf.Keys, bgw.SignorConf.Vals, &d4bs[1], "\t", 16}, // 15->16 - added mtd field
+		{pth + "tflink/9606.tsv", bgw.TflinkConf.Keys, bgw.TflinkConf.Vals, &d4bs[2], "\t", 6},
+		{pth + "coltri/9606.csv", bgw.ColtriConf.Keys, bgw.ColtriConf.Vals, &d4bs[3], ",", 9},
 	}
 	keys := []string{
 		"P04637--P04637",
-		"AP1--SPP1",
 		"uniprotkb:Q9BTC0--uniprotkb:P08648",
 		"NANOG--DKK1",
 		"Q16254--Q01094",
@@ -66,20 +59,14 @@ func Test_Tab2set3D(t *testing.T) {
 		arg3 []bgw.Column
 		val  int
 	}
-	arg2_1, arg3_1 := bgw.IntactParseConf()
-	arg2_2, arg3_2 := bgw.TftgParseConf()
-	arg2_3, arg3_3 := bgw.SigMapParseConf()
-	arg2_4, arg3_4 := bgw.SigMapParseConf()
 	pth := "../../tdata/"
 	tts := []tt{
-		{pth + "intact/9606.mi25", arg2_1, arg3_1, 7},
-		{pth + "static/tfacts/9606.f2g", arg2_2, arg3_2, 5},
-		{pth + "signor/complexes.tsv", arg2_3, arg3_3, 1},
-		{pth + "signor/families.tsv", arg2_4, arg3_4, 1},
+		{pth + "intact/9606.mi25", bgw.IntactConf.Keys, bgw.IntactConf.Vals, 7},
+		{pth + "signor/complexes.tsv", bgw.SigMapConf.Keys, bgw.SigMapConf.Vals, 1},
+		{pth + "signor/families.tsv", bgw.SigMapConf.Keys, bgw.SigMapConf.Vals, 1},
 	}
 	keys := []string{
 		"P04637--P04637",
-		"AP1--SPP1",
 		"SIGNOR-C1",
 		"SIGNOR-PF1",
 	}
