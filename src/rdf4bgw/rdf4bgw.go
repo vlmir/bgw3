@@ -571,16 +571,16 @@ func Ortho(datdir, bgwdir string, txn2prm util.Set2D) (int, error) {
 
 func Onto(datdir, bgwdir string) error {
 	var ontos = map[string]string{
-		"omim": ".ttl",
 		/*
-			"biolink-model": ".ttl",
+			"biolink-model": ".ttl", // not available anymore
+		*/
+		"omim": ".ttl",
 			"bfo":           ".owl",
 			"go-basic":      ".owl",
 			"mi":            ".owl",
 			"ncbitaxon":     ".owl",
 			"ro":            ".owl",
 			"sio":           ".owl",
-		*/
 	}
 	subdir := "onto/"
 	if err := os.MkdirAll(filepath.Join(bgwdir, subdir), 0755); err != nil {
