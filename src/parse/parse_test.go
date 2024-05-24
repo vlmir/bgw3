@@ -29,7 +29,7 @@ func Test_Tab2struct(t *testing.T) {
 	d4bs = append(d4bs, d4b0, d4b1, d4b2, d4b3, d4b4)
 	pth := "../../tdata/"
 	tts := []tt{
-		{pth + "intact/9606.mi25", bgw.IntactConf.Keys, bgw.IntactConf.Vals, &d4bs[0], "\t", 7}, // 8? TODO
+		{pth + "intact/9606.mi25", bgw.IntactConf.Keys, bgw.IntactConf.Vals, &d4bs[0], "\t", 7},  // 8? TODO
 		{pth + "signor/9606.mi28", bgw.SignorConf.Keys, bgw.SignorConf.Vals, &d4bs[1], "\t", 16}, // 15->16 - added mtd field
 		{pth + "tflink/9606.tsv", bgw.TflinkConf.Keys, bgw.TflinkConf.Vals, &d4bs[2], "\t", 6},
 		{pth + "coltri/9606.csv", bgw.ColtriConf.Keys, bgw.ColtriConf.Vals, &d4bs[3], ",", 9},

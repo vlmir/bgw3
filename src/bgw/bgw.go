@@ -162,12 +162,12 @@ var UpdatConf = SrcConf{
 		// {0, "; ", 0, "|", 0, "upca"}, // single value
 		{1, "; ", 0, "|", 0, "upid"}, // single value
 		// gnms: '|' separated for CHLRE else '; ' with no '|';
-		{2, "; ", -1, "|", 0, "gnms"}, // '; ' separated but some vals contain ';'!
+		// {2, "; ", -1, "|", 0, "gnms"}, // '; ' separated but some vals contain ';'!
 		// gsnms: '|' separated for CHLRE; ' ' separated for DROME, '|' do occrur;
-		{2, "; ", -1, "|", 0, "gsnms"}, // '; ' separated but some vals contain ';'!
-		{4, "; ", 0, "|", 0, "taxnm"},  // single value but 59 unique names !
-		{5, "; ", 0, "|", 0, "txid"},   // single value but 59 unique names !
-		{6, "!", 0, "; ", 0, "pdfns"},  // may contain '|', ';' etc, no '!'
+		// {2, "; ", -1, "|", 0, "gsnms"}, // '; ' separated but some vals contain ';'!
+		{4, "; ", 0, "|", 0, "taxnm"}, // single value but 59 unique names !
+		{5, "; ", 0, "|", 0, "txid"},  // single value but 59 unique names !
+		{6, "!", 0, "; ", 0, "pdfns"}, // may contain '|', ';' etc, no '!'
 		// the next field may contain multiple proteomes per taxon!
 		// {7, "; ", -1, ": ", 0, "poms"}, // '; ' separated, 'pomeid: chrid'
 		{8, "; ", -1, "; ", 0, "pubmed"}, // '; ' separated
@@ -301,7 +301,7 @@ var SigPwaysConf = SrcConf{
 }
 
 var SigMapConf = SrcConf{
-	Keys:  []Column{
+	Keys: []Column{
 		{0, ";", 0, "", 0, ""},
 	},
 	Vals: []Column{

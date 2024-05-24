@@ -33,15 +33,13 @@ func Test_Gene(t *testing.T) {
 	arg12 := wpth + "gene/7227.nt"
 	arg13 := &xmap
 	tts := []tt{
-		// {arg00, arg01, arg02, arg03, 2, 1},
-		// {arg00, arg01, arg02, arg03, 4, 1},
-		{arg00, arg01, arg02, arg03, 4, 3},
-		// {arg00, arg11, arg12, arg13, 3, 2},
-		// {arg10, arg11, arg12, arg13, 6, 2},
-		{arg10, arg11, arg12, arg13, 6, 5}, // cumulative
+		// {arg00, arg01, arg02, arg03, 4, 3},
+		{arg00, arg01, arg02, arg03, 3, 1}, // gene names & synonyms from idmapping
+		// {arg10, arg11, arg12, arg13, 6, 5}, // cumulative
+		{arg10, arg11, arg12, arg13, 4, 2}, // gene names & synonyms from idmappin, cumulative
 	}
 	for i, tt := range tts {
-		_ = Gene(tt.arg0, tt.arg1, tt.arg2, tt.arg3)
+		_ = Gene(tt.arg1, tt.arg2, tt.arg3)
 		n := len(xmap.Lblg.Keys())
 		if n != tt.val1 {
 			t.Error(
@@ -300,7 +298,7 @@ func Test_Tfac2gene(t *testing.T) {
 		{&d4b3, &xmap, pth + "OUT/export/", 2}, // sic!
 	}
 
-	pdck := "reg2utrg"
+	pdck := "reg2ptrg"
 	for i, tt := range tts {
 		srck := srcs[i]
 		(*tt.arg1).Src = srck

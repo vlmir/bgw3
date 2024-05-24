@@ -79,7 +79,7 @@ func Geneprot(datdir, bgwdir string, txn2prm util.Set2D) (err error) {
 		/////////////////////////////////////////////////////////////////////////////
 		var xmap bgw.Xmap
 		xmap.New()
-		err := export.Gene(rpthu, rpthi, wpthg, &xmap)
+		err := export.Gene(rpthi, wpthg, &xmap)
 		if err != nil {
 			return err
 		}
@@ -574,13 +574,13 @@ func Onto(datdir, bgwdir string) error {
 		/*
 			"biolink-model": ".ttl", // not available anymore
 		*/
-		"omim": ".ttl",
-			"bfo":           ".owl",
-			"go-basic":      ".owl",
-			"mi":            ".owl",
-			"ncbitaxon":     ".owl",
-			"ro":            ".owl",
-			"sio":           ".owl",
+		"omim":      ".ttl",
+		"bfo":       ".owl",
+		"go-basic":  ".owl",
+		"mi":        ".owl",
+		"ncbitaxon": ".owl",
+		"ro":        ".owl",
+		"sio":       ".owl",
 	}
 	subdir := "onto/"
 	if err := os.MkdirAll(filepath.Join(bgwdir, subdir), 0755); err != nil {

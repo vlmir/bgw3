@@ -18,32 +18,16 @@
 <http://www.w3.org/2000/01/rdf-schema#subClassOf> <http://www.w3.org/2004/02/skos/core#prefLabel> "is subclass of" .
 <http://semanticscience.org/resource/SIO_010035> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#Class> .
 <http://semanticscience.org/resource/SIO_010035> <http://www.w3.org/2004/02/skos/core#prefLabel> "Gene" .
-<http://rdf.biogateway.eu/gene/> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#Class> .
-<http://rdf.biogateway.eu/gene/> <http://www.w3.org/2004/02/skos/core#definition> "Set of genes in Biogateway" .
-<http://rdf.biogateway.eu/gene/> <http://www.w3.org/2004/02/skos/core#prefLabel> "gene" .
 <http://rdf.biogateway.eu/gene/7227/Src64B> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#Class> .
 <http://rdf.biogateway.eu/gene/7227/Src64B> <http://www.w3.org/2000/01/rdf-schema#subClassOf> <http://semanticscience.org/resource/SIO_010035> .
 <http://rdf.biogateway.eu/gene/7227/Src64B> <http://purl.obolibrary.org/obo/RO_0002162> <http://purl.obolibrary.org/obo/NCBITaxon_7227> .
 <http://rdf.biogateway.eu/gene/7227/Src64B> <http://semanticscience.org/resource/SIO_010078> <http://uniprot.org/uniprot/P00528> .
 <http://rdf.biogateway.eu/gene/7227/Src64B> <http://www.w3.org/2004/02/skos/core#definition> "gene 7227/Src64B encoding [SRC64_DROME]" .
 <http://rdf.biogateway.eu/gene/7227/Src64B> <http://www.w3.org/2004/02/skos/core#prefLabel> "Src64B" .
-<http://rdf.biogateway.eu/gene/7227/Src64B> <http://www.w3.org/2004/02/skos/core#altLabel> "Test 1" .
+<http://rdf.biogateway.eu/gene/7227/Src64B> <http://www.w3.org/2004/02/skos/core#altLabel> "Src1" .
 <http://rdf.biogateway.eu/gene/7227/Src64B> <http://www.w3.org/2004/02/skos/core#closeMatch> <https://metazoa.ensembl.org/id/FBgn0262733> .
 <http://rdf.biogateway.eu/gene/7227/Src64B#FBgn0262733> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://rdf.biogateway.eu/gene/7227/Src64B> .
 <http://rdf.biogateway.eu/gene/7227/Src64B#FBgn0262733> <http://www.w3.org/2004/02/skos/core#prefLabel> "EnsemblGenome#FBgn0262733" .
 <http://rdf.biogateway.eu/gene/7227/Src64B> <http://www.w3.org/2004/02/skos/core#closeMatch> <http://identifiers.org/ncbigene/48973> .
 <http://rdf.biogateway.eu/gene/7227/Src64B#48973> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://rdf.biogateway.eu/gene/7227/Src64B> .
 <http://rdf.biogateway.eu/gene/7227/Src64B#48973> <http://www.w3.org/2004/02/skos/core#prefLabel> "GeneID#48973" .
-<http://rdf.biogateway.eu/gene/7227/Test_1> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#Class> .
-<http://rdf.biogateway.eu/gene/7227/Test_1> <http://www.w3.org/2000/01/rdf-schema#subClassOf> <http://semanticscience.org/resource/SIO_010035> .
-<http://rdf.biogateway.eu/gene/7227/Test_1> <http://purl.obolibrary.org/obo/RO_0002162> <http://purl.obolibrary.org/obo/NCBITaxon_7227> .
-<http://rdf.biogateway.eu/gene/7227/Test_1> <http://semanticscience.org/resource/SIO_010078> <http://uniprot.org/uniprot/P00528> .
-<http://rdf.biogateway.eu/gene/7227/Test_1> <http://www.w3.org/2004/02/skos/core#definition> "gene 7227/Test_1 encoding [SRC64_DROME]" .
-<http://rdf.biogateway.eu/gene/7227/Test_1> <http://www.w3.org/2004/02/skos/core#prefLabel> "Test 1" .
-<http://rdf.biogateway.eu/gene/7227/Test_1> <http://www.w3.org/2004/02/skos/core#altLabel> "Src64B" .
-<http://rdf.biogateway.eu/gene/7227/Test_1> <http://www.w3.org/2004/02/skos/core#closeMatch> <https://metazoa.ensembl.org/id/FBgn0262733> .
-<http://rdf.biogateway.eu/gene/7227/Test_1#FBgn0262733> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://rdf.biogateway.eu/gene/7227/Test_1> .
-<http://rdf.biogateway.eu/gene/7227/Test_1#FBgn0262733> <http://www.w3.org/2004/02/skos/core#prefLabel> "EnsemblGenome#FBgn0262733" .
-<http://rdf.biogateway.eu/gene/7227/Test_1> <http://www.w3.org/2004/02/skos/core#closeMatch> <http://identifiers.org/ncbigene/48973> .
-<http://rdf.biogateway.eu/gene/7227/Test_1#48973> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://rdf.biogateway.eu/gene/7227/Test_1> .
-<http://rdf.biogateway.eu/gene/7227/Test_1#48973> <http://www.w3.org/2004/02/skos/core#prefLabel> "GeneID#48973" .

@@ -18,23 +18,6 @@
 <http://www.w3.org/2000/01/rdf-schema#subClassOf> <http://www.w3.org/2004/02/skos/core#prefLabel> "is subclass of" .
 <http://semanticscience.org/resource/SIO_010035> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#Class> .
 <http://semanticscience.org/resource/SIO_010035> <http://www.w3.org/2004/02/skos/core#prefLabel> "Gene" .
-<http://rdf.biogateway.eu/gene/> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#Class> .
-<http://rdf.biogateway.eu/gene/> <http://www.w3.org/2004/02/skos/core#definition> "Set of genes in Biogateway" .
-<http://rdf.biogateway.eu/gene/> <http://www.w3.org/2004/02/skos/core#prefLabel> "gene" .
-<http://rdf.biogateway.eu/gene/9606/BAR> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#Class> .
-<http://rdf.biogateway.eu/gene/9606/BAR> <http://www.w3.org/2000/01/rdf-schema#subClassOf> <http://semanticscience.org/resource/SIO_010035> .
-<http://rdf.biogateway.eu/gene/9606/BAR> <http://purl.obolibrary.org/obo/RO_0002162> <http://purl.obolibrary.org/obo/NCBITaxon_9606> .
-<http://rdf.biogateway.eu/gene/9606/BAR> <http://semanticscience.org/resource/SIO_010078> <http://uniprot.org/uniprot/FOOBAR> .
-<http://rdf.biogateway.eu/gene/9606/BAR> <http://www.w3.org/2004/02/skos/core#definition> "gene 9606/BAR encoding [P53_GHOST]" .
-<http://rdf.biogateway.eu/gene/9606/BAR> <http://www.w3.org/2004/02/skos/core#prefLabel> "BAR" .
-<http://rdf.biogateway.eu/gene/9606/BAR> <http://www.w3.org/2004/02/skos/core#altLabel> "FOO" .
-<http://rdf.biogateway.eu/gene/9606/BAR> <http://www.w3.org/2004/02/skos/core#altLabel> "TP53" .
-<http://rdf.biogateway.eu/gene/9606/BAR> <http://www.w3.org/2004/02/skos/core#closeMatch> <http://identifiers.org/ensembl/ENSG00000141510> .
-<http://rdf.biogateway.eu/gene/9606/BAR#ENSG00000141510> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://rdf.biogateway.eu/gene/9606/BAR> .
-<http://rdf.biogateway.eu/gene/9606/BAR#ENSG00000141510> <http://www.w3.org/2004/02/skos/core#prefLabel> "Ensembl#ENSG00000141510" .
-<http://rdf.biogateway.eu/gene/9606/BAR> <http://www.w3.org/2004/02/skos/core#closeMatch> <http://identifiers.org/ncbigene/7157> .
-<http://rdf.biogateway.eu/gene/9606/BAR#7157> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://rdf.biogateway.eu/gene/9606/BAR> .
-<http://rdf.biogateway.eu/gene/9606/BAR#7157> <http://www.w3.org/2004/02/skos/core#prefLabel> "GeneID#7157" .
 <http://rdf.biogateway.eu/gene/9606/BCL2> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#Class> .
 <http://rdf.biogateway.eu/gene/9606/BCL2> <http://www.w3.org/2000/01/rdf-schema#subClassOf> <http://semanticscience.org/resource/SIO_010035> .
 <http://rdf.biogateway.eu/gene/9606/BCL2> <http://purl.obolibrary.org/obo/RO_0002162> <http://purl.obolibrary.org/obo/NCBITaxon_9606> .
@@ -50,11 +33,10 @@
 <http://rdf.biogateway.eu/gene/9606/FOO> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#Class> .
 <http://rdf.biogateway.eu/gene/9606/FOO> <http://www.w3.org/2000/01/rdf-schema#subClassOf> <http://semanticscience.org/resource/SIO_010035> .
 <http://rdf.biogateway.eu/gene/9606/FOO> <http://purl.obolibrary.org/obo/RO_0002162> <http://purl.obolibrary.org/obo/NCBITaxon_9606> .
-<http://rdf.biogateway.eu/gene/9606/FOO> <http://semanticscience.org/resource/SIO_010078> <http://uniprot.org/uniprot/FOOBAR> .
-<http://rdf.biogateway.eu/gene/9606/FOO> <http://www.w3.org/2004/02/skos/core#definition> "gene 9606/FOO encoding [P53_GHOST]" .
+<http://rdf.biogateway.eu/gene/9606/FOO> <http://semanticscience.org/resource/SIO_010078> <http://uniprot.org/uniprot/P04637> .
+<http://rdf.biogateway.eu/gene/9606/FOO> <http://www.w3.org/2004/02/skos/core#definition> "gene 9606/FOO encoding [P53_HUMAN]" .
 <http://rdf.biogateway.eu/gene/9606/FOO> <http://www.w3.org/2004/02/skos/core#prefLabel> "FOO" .
-<http://rdf.biogateway.eu/gene/9606/FOO> <http://www.w3.org/2004/02/skos/core#altLabel> "BAR" .
-<http://rdf.biogateway.eu/gene/9606/FOO> <http://www.w3.org/2004/02/skos/core#altLabel> "TP53" .
+<http://rdf.biogateway.eu/gene/9606/FOO> <http://www.w3.org/2004/02/skos/core#altLabel> "P53" .
 <http://rdf.biogateway.eu/gene/9606/FOO> <http://www.w3.org/2004/02/skos/core#closeMatch> <http://identifiers.org/ensembl/ENSG00000141510> .
 <http://rdf.biogateway.eu/gene/9606/FOO#ENSG00000141510> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://rdf.biogateway.eu/gene/9606/FOO> .
 <http://rdf.biogateway.eu/gene/9606/FOO#ENSG00000141510> <http://www.w3.org/2004/02/skos/core#prefLabel> "Ensembl#ENSG00000141510" .
@@ -64,12 +46,10 @@
 <http://rdf.biogateway.eu/gene/9606/TP53> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#Class> .
 <http://rdf.biogateway.eu/gene/9606/TP53> <http://www.w3.org/2000/01/rdf-schema#subClassOf> <http://semanticscience.org/resource/SIO_010035> .
 <http://rdf.biogateway.eu/gene/9606/TP53> <http://purl.obolibrary.org/obo/RO_0002162> <http://purl.obolibrary.org/obo/NCBITaxon_9606> .
-<http://rdf.biogateway.eu/gene/9606/TP53> <http://semanticscience.org/resource/SIO_010078> <http://uniprot.org/uniprot/FOOBAR> .
 <http://rdf.biogateway.eu/gene/9606/TP53> <http://semanticscience.org/resource/SIO_010078> <http://uniprot.org/uniprot/P04637> .
-<http://rdf.biogateway.eu/gene/9606/TP53> <http://www.w3.org/2004/02/skos/core#definition> "gene 9606/TP53 encoding [P53_GHOST P53_HUMAN]" .
+<http://rdf.biogateway.eu/gene/9606/TP53> <http://www.w3.org/2004/02/skos/core#definition> "gene 9606/TP53 encoding [P53_HUMAN]" .
 <http://rdf.biogateway.eu/gene/9606/TP53> <http://www.w3.org/2004/02/skos/core#prefLabel> "TP53" .
-<http://rdf.biogateway.eu/gene/9606/TP53> <http://www.w3.org/2004/02/skos/core#altLabel> "BAR" .
-<http://rdf.biogateway.eu/gene/9606/TP53> <http://www.w3.org/2004/02/skos/core#altLabel> "FOO" .
+<http://rdf.biogateway.eu/gene/9606/TP53> <http://www.w3.org/2004/02/skos/core#altLabel> "P53" .
 <http://rdf.biogateway.eu/gene/9606/TP53> <http://www.w3.org/2004/02/skos/core#closeMatch> <http://identifiers.org/ensembl/ENSG00000141510> .
 <http://rdf.biogateway.eu/gene/9606/TP53#ENSG00000141510> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://rdf.biogateway.eu/gene/9606/TP53> .
 <http://rdf.biogateway.eu/gene/9606/TP53#ENSG00000141510> <http://www.w3.org/2004/02/skos/core#prefLabel> "Ensembl#ENSG00000141510" .
