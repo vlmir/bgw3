@@ -33,12 +33,14 @@ func Test_Tab2struct(t *testing.T) {
 		{pth + "signor/9606.mi28", bgw.SignorConf.Keys, bgw.SignorConf.Vals, &d4bs[1], "\t", 16}, // 15->16 - added mtd field
 		{pth + "tflink/9606.tsv", bgw.TflinkConf.Keys, bgw.TflinkConf.Vals, &d4bs[2], "\t", 6},
 		{pth + "coltri/9606.csv", bgw.ColtriConf.Keys, bgw.ColtriConf.Vals, &d4bs[3], ",", 9},
+		{pth + "atregnet/3702.tsv", bgw.AtregnetConf.Keys, bgw.AtregnetConf.Vals, &d4bs[4], "\t", 5},
 	}
 	keys := []string{
 		"P04637--P04637",
 		"uniprotkb:Q9BTC0--uniprotkb:P08648",
 		"NANOG--DKK1",
 		"Q16254--Q01094",
+		"AT3G22170--AT1G02400", // Q9LIE5 - 3702/GA2OX6
 	}
 	for i, tt := range tts {
 		_ = Tab2struct(tt.arg1, tt.arg2, tt.arg3, tt.arg4, tt.arg5)

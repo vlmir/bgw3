@@ -271,42 +271,46 @@ func Test_Tfac2gene(t *testing.T) {
 	}
 	pth := "../../tdata/"
 	// parsing
+	var d4b0 bgw.Dat4bridge
+	d4b0.New()
+	_ = parse.Tab2struct(pth+"tflink/9606.tsv", bgw.TflinkConf.Keys, bgw.TflinkConf.Vals, &d4b0, "\t")
+	var d4b1 bgw.Dat4bridge
+	d4b1.New()
+	_ = parse.Tab2struct(pth+"coltri/9606.csv", bgw.ColtriConf.Keys, bgw.ColtriConf.Vals, &d4b1, ",")
 	var d4b2 bgw.Dat4bridge
 	d4b2.New()
-	_ = parse.Tab2struct(pth+"tflink/9606.tsv", bgw.TflinkConf.Keys, bgw.TflinkConf.Vals, &d4b2, "\t")
-	var d4b3 bgw.Dat4bridge
-	d4b3.New()
-	_ = parse.Tab2struct(pth+"coltri/9606.csv", bgw.ColtriConf.Keys, bgw.ColtriConf.Vals, &d4b3, ",")
+	_ = parse.Tab2struct(pth+"atregnet/3702.tsv", bgw.AtregnetConf.Keys, bgw.AtregnetConf.Vals, &d4b2, "\t")
 	var xmap bgw.Xmap
 	xmap.New()
-	// xmap.Upac.Add("P01100", "bgwp", "P01100")
 	xmap.Upac.Add("P04637", "bgwp", "P04637")
-	xmap.Upac.Add("P37231", "bgwp", "P37231") // for tflink
-	// xmap.Upac.Add("Q16254", "bgwp", "Q16254") // for coltri
-	// xmap.Ncbig.Add("4322", "bgwg", "9606/MMP13")
-	// xmap.Ncbig.Add("7157", "bgwg", "9606/TP53")
-	xmap.Ncbig.Add("5915", "bgwg", "9606/RARB") // for tflink
-	// xmap.Bgwg.Add("9606/MMP13", "bgwp", "P01100")
-	// xmap.Bgwg.Add("9606/TP53", "bgwp", "P04637")
-	xmap.Lblg.Add("E2F4", "bgwg", "9606/E2F4") // for coltri
-	xmap.Lblg.Add("TP53", "bgwg", "9606/TP53") // for coltri
+	xmap.Upac.Add("P37231", "bgwp", "P37231")         // for tflink
+	xmap.Ncbig.Add("5915", "bgwg", "9606/RARB")       // for tflink
+	xmap.Ensg.Add("AT3G22170", "bgwp", "Q9LIE5")      // for atregnet
+	xmap.Ensg.Add("AT1G02400", "bgwg", "3702/GA2OX6") // for atregnet upac: Q9FZ21
+	xmap.Ensg.Add("AT1G09530", "bgwp", "FOO")         // for atregnet
+	xmap.Ensg.Add("AT1G02340", "bgwg", "3702/BAR")    // for atregnet
+	xmap.Lblg.Add("E2F4", "bgwg", "9606/E2F4")        // for coltri
+	xmap.Lblg.Add("TP53", "bgwg", "9606/TP53")        // for coltri
 	/// exporting
-	srcs := []string{"tflink", "coltri"}
+	srcs := []string{"tflink", "coltri", "atregnet"}
+	txids := []string{"9606", "9606", "3702"}
 
 	tts := []tt{
-		{&d4b2, &xmap, pth + "OUT/export/", 1}, // sic!
-		{&d4b3, &xmap, pth + "OUT/export/", 2}, // sic!
+		{&d4b0, &xmap, pth + "OUT/export/", 1}, // sic!
+		{&d4b1, &xmap, pth + "OUT/export/", 2}, // sic!
+		{&d4b2, &xmap, pth + "OUT/export/", 2}, // sic!
 	}
 
-	pdck := "reg2ptrg"
+	pdck := "reg2utrg"
 	for i, tt := range tts {
 		srck := srcs[i]
 		(*tt.arg1).Src = srck
-		(*tt.arg1).Taxid = "9606"
+		txid := txids[i]
+		(*tt.arg1).Taxid = txid
 		wpths := map[string]string{
-			"reg2ntrg": "../../tdata/OUT/export/tfac2gene/n-" + srck + "-9606.nt",
-			"reg2ptrg": "../../tdata/OUT/export/tfac2gene/p-" + srck + "-9606.nt",
-			"reg2utrg": "../../tdata/OUT/export/tfac2gene/u-" + srck + "-9606.nt",
+			"reg2ntrg": "../../tdata/OUT/export/tfac2gene/n-" + srck + "-" + txid + ".nt",
+			"reg2ptrg": "../../tdata/OUT/export/tfac2gene/p-" + srck + "-" + txid + ".nt",
+			"reg2utrg": "../../tdata/OUT/export/tfac2gene/u-" + srck + "-" + txid + ".nt",
 		}
 		(*tt.arg1).Out = wpths
 		Tfac2gene(tt.arg1, tt.arg2, tt.arg3)

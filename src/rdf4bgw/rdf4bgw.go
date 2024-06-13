@@ -259,39 +259,53 @@ func Reg2targ(datdir, bgwdir string, txn2prm util.Set2D) (util.Set2D, error) {
 	return cnts, nil
 } // Reg2targ
 
-func Tfac2gene(datdir, bgwdir string, txn2prm util.Set2D) (util.Set2D, error) {
+// func Tfac2gene(datdir, bgwdir string, txn2prm util.Set2D) (util.Set2D, error) {
+func Tfac2gene(datdir, bgwdir string) (util.Set2D, error) {
 	subdir := "tfac2gene/"
 	if err := os.MkdirAll(filepath.Join(bgwdir, subdir), 0755); err != nil {
-		log.Println(err)
+		log.Println(err) // return error!
 	}
 	log.Println("\n\trdf4bgw.Tfac2gene for:", "all")
 	cnts := make(util.Set2D)
 	for srck, _ := range rdf.Uris4tftg {
-		// define keys and vals for parsing
+		// keys and vals for parsing
 		var vals []bgw.Column
 		var keys []bgw.Column
 		rpth := ""
-		dlm := "\t"
+		dlm := ""
+		var txids []string
+		if srck == "tflink" {
+			keys = bgw.TflinkConf.Keys
+			vals = bgw.TflinkConf.Vals
+			dlm = "\t"
+			for txid := range bgw.Tflink {
+				txids = append(txids, txid)
+			}
+		} else if srck == "atregnet" {
+			keys = bgw.AtregnetConf.Keys
+			vals = bgw.AtregnetConf.Vals
+			dlm = "\t"
+			txids = []string{"3702"}
+		} else if srck == "coltri" {
+			keys = bgw.ColtriConf.Keys
+			vals = bgw.ColtriConf.Vals
+			dlm = "," // re-defining
+			txids = []string{"9606"}
+		}
 
-		// looping over all taxa present in Tflink
-		for txid := range bgw.Tflink {
+		for _, txid := range txids {
 			var d4b bgw.Dat4bridge // one source, one taxon
 			d4b.New()
+			/// parsing
 			if srck == "tflink" {
-				keys = bgw.TflinkConf.Keys
-				vals = bgw.TflinkConf.Vals
+				rpth = fmt.Sprintf("%s%s%s%s%s", datdir, srck, "/", txid, ".tsv")
+			}
+			if srck == "atregnet" {
 				rpth = fmt.Sprintf("%s%s%s%s%s", datdir, srck, "/", txid, ".tsv")
 			}
 			if srck == "coltri" {
-				keys = bgw.ColtriConf.Keys
-				vals = bgw.ColtriConf.Vals
-				dlm = "," // re-defining
-				if txid != "9606" {
-					continue
-				}
 				rpth = fmt.Sprintf("%s%s%s%s%s", datdir, srck, "/", txid, ".csv")
 			}
-			// log.Println("rdf4bgw.Tfac2gene(): processing", rpth)
 			err := parse.Tab2struct(rpth, keys, vals, &d4b, dlm)
 			if err != nil { // normal
 				msg := fmt.Sprintf("%s%s", "Tfac2gene:parse.Tab2struct: ", err)
@@ -301,6 +315,7 @@ func Tfac2gene(datdir, bgwdir string, txn2prm util.Set2D) (util.Set2D, error) {
 			}
 			/// d4b is now loaded with data
 
+			/// exporting
 			wpths := map[string]string{
 				"reg2ptrg": fmt.Sprintf("%s%s%s-%s-%s.nt", bgwdir, subdir, "p", srck, txid),
 				"reg2ntrg": fmt.Sprintf("%s%s%s-%s-%s.nt", bgwdir, subdir, "n", srck, txid),
@@ -673,7 +688,7 @@ func main() {
 	}
 	if *aP || *rP {
 		start := time.Now()
-		Tfac2gene(datdir, bgwdir, txn2prm)
+		Tfac2gene(datdir, bgwdir)
 		log.Println("Done with rdf4bgw.Tfac2gene in", time.Since(start))
 		start = time.Now()
 		Reg2targ(datdir, bgwdir, txn2prm)

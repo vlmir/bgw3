@@ -226,8 +226,26 @@ var TflinkConf = SrcConf{
 		// {20, "|", 3, "\"", 0, "typeAlbl"},
 		// {21, "|", 1, "\"", 0, "typeBid"}, // single value, all MI:0250 (gene)
 		// {21, "|", 3, "\"", 0, "typeBlbl"},
-		{25, "|", 1, "\"", 1, "mode"},  // multiple values
-		{27, "|", 1, "\"", 1, "score"}, // single values, TODO adjust ??
+		{25, "|", 1, "\"", 1, "mode"},  // multiple values; activator||repressor||unknown
+		{27, "|", 1, "\"", 1, "score"}, // single values, e,g, comment:"Small-scale.evidence:Yes"
+	},
+}
+
+var AtregnetConf = SrcConf{
+	// "|" is not used at all
+	// apparently no empty values
+	Keys: []Column{
+		{1, "|", 0, "--", 0, ""}, // Agloc
+		{4, "|", 0, "--", 0, ""}, // Bgloc
+	},
+	Vals: []Column{
+		// {0, "|", 0, "|", 0, "Aglbl"},
+		{1, "/", -1, "|", 0, "Agloc"}, // multiple values '/' separated 4 unique 183 total
+		// {3, "|", 0, "|", 0, "Bglbl"},
+		{4, "/", 0, "|", 0, "Bgloc"}, // missing values: 'N/A' (4) 'N' (4)
+		{7, "|", 0, "|", 0, "score"}, // [C|c]onfirmed [U|u]nconfirmed At (only 3)
+		{9, "|", 0, "|", 0, "mode"},  // Activation Repression Represson (1) Unknown
+		{12, "|", 0, "|", 0, "pubmed"},
 	},
 }
 

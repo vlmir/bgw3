@@ -75,7 +75,7 @@ var Opys = util.SliceSet{
 	"reg2ntrg":  {"obo", "RO_0002430", "involved in negative regulation of"},
 	"sth2mtd":   {"rdfs", "isDefinedBy", "is defined by"},
 	"orl2orl":   {"sio", "SIO_000558", "is orthologous to"},
-	"mi2bp":     {"obo", "RO_0002331", "involved in"},
+	"mi2bp":     {"obo", "RO_0002331", "involved in"}, // TODO change to part_of?
 	"mi2loc":    {"obo", "BFO_0000066", "occurs in"}, // sigpways only
 	"step2pway": {"obo", "BFO_0000050", "is part of"},
 	"reg2dtrg":  {"obo", "RO_0002578", "directly regulates"},
@@ -133,8 +133,9 @@ var Uris4tftg = map[string]string{
 	//	"cytreg": "https://www.fuxmanlab.com",
 	//	"geredb": "http://www.thua45.cn/geredb",
 	//	"signor": "http://signor.uniroma2.it",
-	"tflink": "https://tflink.net",
-	"coltri": "https://github.com/saezlab/CollecTRI",
+	"tflink":   "https://tflink.net",
+	"coltri":   "https://github.com/saezlab/CollecTRI",
+	"atregnet": "https://agris-knowledgebase.org",
 }
 
 /// Functions

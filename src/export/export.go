@@ -51,6 +51,27 @@ func gene2bgwg(genes []string, xmap bgw.Xmap) []string {
 				set.Add(bgwg, gene)
 			} // by gene synonym
 		}
+		if len(set) == 0 {
+			for _, bgwg := range xmap.Ensg[gene]["bgwg"].Keys() {
+				set.Add(bgwg, gene)
+			} // by Ensembl gene ID
+		}
+	}
+	return set.Keys()
+}
+
+func gene2bgwp(genes []string, xmap bgw.Xmap) []string {
+	// used only in Tfac2gene
+	set := make(util.Set2D)
+	for _, gene := range genes {
+		for _, bgwp := range xmap.Ncbig[gene]["bgwp"].Keys() {
+			set.Add(bgwp, gene)
+		} // by NCBI gene id
+		if len(set) == 0 {
+			for _, bgwp := range xmap.Ensg[gene]["bgwp"].Keys() {
+				set.Add(bgwp, gene)
+			} // by Ensembl gene ID
+		}
 	}
 	return set.Keys()
 }
@@ -298,8 +319,8 @@ func Reg2targ(d *bgw.Dat4bridge, x *bgw.Xmap, wdir string) error {
 		} else {
 			oriBid = strings.Replace(Bbits[1], ":", "_", 1)
 		}
-		var allAids []string // UP ACs for one duokey
-		var allBids []string // UP ACs for one duokey
+		var oriAids []string // UP ACs for one duokey
+		var oriBids []string // UP ACs for one duokey
 		// filtering by the level of regulation
 		if len(myRegTypes) != 0 {
 			if len(util.Shared(myRegTypes, duo["reglevelid"].Keys())) == 0 {
@@ -330,29 +351,29 @@ func Reg2targ(d *bgw.Dat4bridge, x *bgw.Xmap, wdir string) error {
 		typeB := typeBs[0] // assuming a single value
 		/// expanding families and complexes
 		if typeA == "MI:0314" || typeA == "MI:1304" {
-			allAids = xmap.Signor[oriAid]["ids"].Keys() // all UP accessions
-			if len(allAids) == 0 {
+			oriAids = xmap.Signor[oriAid]["ids"].Keys() // all UP accessions
+			if len(oriAids) == 0 {
 				continue
 			}
 		}
 		if typeB == "MI:0314" || typeB == "MI:1304" {
-			allBids = xmap.Signor[oriBid]["ids"].Keys()
-			if len(allBids) == 0 {
+			oriBids = xmap.Signor[oriBid]["ids"].Keys()
+			if len(oriBids) == 0 {
 				continue
 			}
 		}
 		// for chemicals? TODO confirm
-		if len(allAids) == 0 {
-			allAids = append(allAids, oriAid)
+		if len(oriAids) == 0 {
+			oriAids = append(oriAids, oriAid)
 		}
-		if len(allBids) == 0 {
-			allBids = append(allBids, oriBid)
+		if len(oriBids) == 0 {
+			oriBids = append(oriBids, oriBid)
 		}
 
-		// converting allAids to Bgwids
-		bgwAids := upac2bgwp(allAids, xmap)
-		// converting allBids to Bgwids
-		bgwBids := upac2bgwp(allBids, xmap)
+		// converting oriAids to Bgwids
+		bgwAids := upac2bgwp(oriAids, xmap)
+		// converting oriBids to Bgwids
+		bgwBids := upac2bgwp(oriBids, xmap)
 		if len(bgwAids) == 0 || len(bgwBids) == 0 {
 			continue
 		}
@@ -473,9 +494,12 @@ func Tfac2gene(d *bgw.Dat4bridge, x *bgw.Xmap, wdir string) error {
 	p2t := "reg2ptrg"
 	n2t := "reg2ntrg"
 	u2t := "reg2utrg"
-	modes := make(util.Set3D)
+	modes := make(util.Set3D) // used only for compiling sets of predicates for each duo
 	modes.Add("tflink", "activator", p2t)
 	modes.Add("tflink", "repressor", n2t)
+	modes.Add("atregnet", "Activation", p2t)
+	modes.Add("atregnet", "Repression", n2t)
+	modes.Add("atregnet", "Represson", n2t)
 	modes.Add("coltri", "pos", p2t)
 	modes.Add("coltri", "neg", n2t)
 	fhs := make(map[string]*os.File)
@@ -489,51 +513,48 @@ func Tfac2gene(d *bgw.Dat4bridge, x *bgw.Xmap, wdir string) error {
 	nss := rdf.Nss // BGW URI name spaces
 	srcU := rdf.FormU(rdf.Uris4tftg[srck])
 	rdfns := nss["rdf"]
-
-	duos := d4b.Duos
 	entAns := nss["uniprot"] // sic, never changes
 	entBns := nss["gene"]    // sic, never changes
 	bgwNS := "http://rdf.biogateway.eu/"
 	flags := make(util.Set1D) // for printing the header only once per file
+
+	duos := d4b.Duos
 	for _, duokey := range duos.Keys() {
 		duo := duos[duokey]
-		// oriAB := strings.Split(duokey, "--") // TODO see if needed
-		// oriBid := oriAB[1] // gene symbol // TODO see if needed
+		var oriAids []string
+		var oriBids []string
+		if srck == "coltri" {
+			oriAids = duo["Aupca"].Keys()
+			oriBids = duo["Bglbl"].Keys()
+		} else if srck == "atregnet" {
+			oriAids = duo["Agloc"].Keys()
+			oriBids = duo["Bgloc"].Keys()
+		} else {
+			oriAids = duo["uniprot"].Keys() // UP canonical ACs for one duokey
+			oriBids = duo["ncbig"].Keys()   // NCBI GeneID, single
+		}
 
-		var allAids []string // UP canonical ACs for one duokey
-		var allBids []string // gene symbols for one duokey
-		allAids = duo["uniprot"].Keys()
-		allBids = duo["ncbig"].Keys() // NCBI GeneID, single
-		// for coltri
-		if len(allAids) == 0 {
-			allAids = duo["Aupca"].Keys()
-		}
-		if len(allBids) == 0 {
-			allBids = duo["Bglbl"].Keys()
-		}
-		if len(allAids) == 0 || len(allBids) == 0 {
+		if len(oriAids) == 0 || len(oriBids) == 0 {
 			continue
 		}
-		// allBids = append(allBids, oriBid) // TODO see if this makes a difference
 
-		// converting allAids to Bgwids
-		bgwAids := upac2bgwp(allAids, xmap)
-		// converting allBids to Bgwids; BGW genes
-		// TODO implement upac2bgwg()
-		bgwBids := gene2bgwg(allBids, xmap)
+		// converting oriAids to Bgwids
+		bgwAids := upac2bgwp(oriAids, xmap)
+		if srck == "atregnet" {
+			bgwAids = gene2bgwp(oriAids, xmap)
+		}
+		// converting oriBids to Bgwids; BGW genes
+		bgwBids := gene2bgwg(oriBids, xmap)
 		if len(bgwAids) == 0 || len(bgwBids) == 0 {
 			continue
 		}
 
-		coltrimodes := []string{
-			"pos",
-			"neg",
-		}
-		for _, mode := range coltrimodes {
+		// special treatment for Collectri data:
+		for _, mode := range modes["coltri"].Keys() {
 			if len(duo[mode].Keys()) != 0 {
 				val := duo[mode].Keys()[0]
 				if val == "True" {
-					duo.Add("mode", mode)
+					duo.Add("mode", mode) // pos||neg
 				}
 			}
 		}
@@ -589,16 +610,21 @@ func Tfac2gene(d *bgw.Dat4bridge, x *bgw.Xmap, wdir string) error {
 						sb.WriteString(rdf.FormT(insU, ourUs["sth2evd"], pubmedU))
 					}
 					for _, key := range duo["score"].Keys() {
-						bits := strings.Split(key, ":")
-						if len(bits) == 2 {
-							if bits[1] == "Yes" {
+						if srck == "tflink" {
+							if key == "Small-scale.evidence:Yes" {
+								key = "High"
+							} else {
+								key = "Low"
+							}
+						} else if srck == "atregnet" {
+							if key == "Confirmed" || key == "confirmed" {
 								key = "High"
 							} else {
 								key = "Low"
 							}
 						}
 						sb.WriteString(rdf.FormT(insU, ourUs["evd2lvl"], rdf.FormL(key)))
-					}
+					} // scores
 				} // entBid
 			} // entAid
 			if cnts[pdck][srck] > 0 {
@@ -686,8 +712,8 @@ func SigPways(d *bgw.Dat4bridge, x *bgw.Xmap, wdir string) error {
 		oriAid := duo["Aid"].Keys()[0] // assuming a single value
 		oriBid := duo["Bid"].Keys()[0] // assuming a single value
 
-		var allAids []string // UP ACs for one duokey
-		var allBids []string // UP ACs for one duokey
+		var oriAids []string // UP ACs for one duokey
+		var oriBids []string // UP ACs for one duokey
 		typeAs := duo["typeAlbl"].Keys()
 		typeBs := duo["typeBlbl"].Keys()
 		// currently 3 types for both A and B entities
@@ -713,29 +739,29 @@ func SigPways(d *bgw.Dat4bridge, x *bgw.Xmap, wdir string) error {
 		typeB := typeBs[0]
 		/// expanding families and complexes
 		if typeA == "complex" || typeA == "proteinfamily" {
-			allAids = xmap.Signor[oriAid]["ids"].Keys() // all UP accessions
-			if len(allAids) == 0 {
+			oriAids = xmap.Signor[oriAid]["ids"].Keys() // all UP accessions
+			if len(oriAids) == 0 {
 				continue
 			}
 		}
 		if typeB == "complex" || typeB == "proteinfamily" {
-			allBids = xmap.Signor[oriBid]["ids"].Keys() // all UP accessions
-			if len(allBids) == 0 {
+			oriBids = xmap.Signor[oriBid]["ids"].Keys() // all UP accessions
+			if len(oriBids) == 0 {
 				continue
 			}
 		}
 		if typeA == "protein" {
-			allAids = append(allAids, oriAid)
+			oriAids = append(oriAids, oriAid)
 		}
 		if typeB == "protein" {
-			allBids = append(allBids, oriBid)
+			oriBids = append(oriBids, oriBid)
 		}
-		// now allAids allBids are all UP AC
+		// now oriAids oriBids are all UP AC
 
-		// converting allAids to Bgwids
-		bgwAids := upac2bgwp(allAids, xmap)
-		// converting allBids to Bgwids
-		bgwBids := upac2bgwp(allBids, xmap)
+		// converting oriAids to Bgwids
+		bgwAids := upac2bgwp(oriAids, xmap)
+		// converting oriBids to Bgwids
+		bgwBids := upac2bgwp(oriBids, xmap)
 		if len(bgwAids) == 0 || len(bgwBids) == 0 {
 			continue
 		}
@@ -1205,7 +1231,7 @@ func Gene(rpthI, wpth string, p *bgw.Xmap) error {
 	}
 	// the 4 maps below are RefProt limited
 	// building the maps:
-	upca2upac := make(util.Set2D) // all accessions including iso-forms 
+	upca2upac := make(util.Set2D) // all accessions including iso-forms
 	gnm2upca := make(util.Set2D)  // gene names from UP idmapping
 	gnm2upid := make(util.Set2D)  // gene names from UP idmapping
 	gnm2gsnm := make(util.Set2D)  // gene synonyms from UP idmapping
@@ -1215,9 +1241,9 @@ func Gene(rpthI, wpth string, p *bgw.Xmap) error {
 		upca2upac.Add(upca, upac)
 		upid := ""
 		// upids are NOT attached to usoforms
-			if len(xrfs["UniProtKB-ID"]) == 1 {
-				upid = xrfs["UniProtKB-ID"].Keys()[0]
-			}
+		if len(xrfs["UniProtKB-ID"]) == 1 {
+			upid = xrfs["UniProtKB-ID"].Keys()[0]
+		}
 		// gene names & synonyms are NOT attached to usoforms
 		for _, nmG := range xrfs["Gene_Name"].Keys() {
 			gnm2upca.Add(nmG, upca)
@@ -1228,7 +1254,7 @@ func Gene(rpthI, wpth string, p *bgw.Xmap) error {
 		}
 	}
 
-		// txids are NOT attached to usoforms
+	// txids are NOT attached to usoforms
 	txid := xrf2upac["NCBI_TaxID"].Keys()[0]
 	nss := rdf.Nss                         // BGW URI name spaces
 	txnU := rdf.CompU(nss["ncbitx"], txid) // taxon URI
@@ -1272,27 +1298,37 @@ func Gene(rpthI, wpth string, p *bgw.Xmap) error {
 	}
 	// main loop
 	for _, nmG := range gnm2upca.Keys() {
+		// Note: gene names and synonyms are associated only with canonical accessions
 		upcas := gnm2upca[nmG].Keys() // for one gene, Refprot only, multiple possible
-		if len(upcas) == 0{
+		if len(upcas) == 0 {
 			continue // there must be at least one upca for each gene name
 		}
-		upacs1g := make(util.Set1D) // all types of accessions, UNIQUE
+		upacSet := make(util.Set1D) // all types of accessions, UNIQUE
 		for _, upca := range upcas {
-			for _, upac := range upca2upac[upca].Keys(){
-				upacs1g.Add(upac)
+			for _, upac := range upca2upac[upca].Keys() {
+				upacSet.Add(upac)
 			}
 		} // all accessions from RefProt
-		upacs := upacs1g.Keys()
+		upacs := upacSet.Keys()
 		if len(upacs) == 0 {
 			continue // nust contain at least one upca
 		}
-		// Note: gene names and synonyms are associated only with canonical accessions
-		xrfs1g := make(util.Set2D) // needed, used for synonyms & instances
+		// collecting selected xrefs for one gene:
+		xrfs4oneg := make(util.Set2D) // needed, used for synonyms & instances
+		for _, upac := range upacs {
+			xrfs := upac2xrf[upac]
+			// xkey as used in UniProt idmapping files
+			for _, xkey := range xkeys { // slice of strings, local
+				for _, xrf := range xrfs[xkey].Keys() {
+					xrfs4oneg.Add(xkey, xrf)
+				}
+			}
+		}
 		upids := gnm2upid[nmG].Keys() // used only in gene defs
 		if len(upids) == 0 {
 			continue
 		}
-		lblG := strings.Replace(nmG, " ", "_", -1) // why? TODO
+		lblG := strings.Replace(nmG, " ", "_", -1)
 		clsG := strings.Join([]string{txid, lblG}, "/")
 		clsGU := rdf.CompU(nss["gene"], clsG)
 		sbG.WriteString(rdf.FormT(clsGU, gnUs["ins2cls"], clsU))
@@ -1311,25 +1347,15 @@ func Gene(rpthI, wpth string, p *bgw.Xmap) error {
 		dfnG := fmt.Sprintf("gene %s/%s encoding %s", txid, lblG, upids)
 		sbG.WriteString(rdf.FormT(clsGU, gnUs["sth2dfn"], rdf.FormL(dfnG)))
 		sbG.WriteString(rdf.FormT(clsGU, gnUs["sth2lbl"], rdf.FormL(nmG)))
-		for _, synG := range gnm2gsnm[nmG].Keys(){
+		for _, synG := range gnm2gsnm[nmG].Keys() {
 			sbG.WriteString(rdf.FormT(clsGU, gnUs["sth2syn"], rdf.FormL(synG)))
 			xmap.Syng.Add(synG, "bgwg", clsG)
 			xmap.Bgwg.Add(clsG, "syng", synG)
 		}
-		// collecting selected xrefs for one gene:
-		for _, upac := range upacs {
-			xrfs := upac2xrf[upac]
-		// xkey as used in UniProt idmapping files
-			for _, xkey := range xkeys { // slice of strings, local
-				for _, xrf := range xrfs[xkey].Keys() {
-					xrfs1g.Add(xkey, xrf)
-				}
-			}
-		}
 		// synonyms & instances
-		for _, xkey := range xrfs1g.Keys() {
+		for _, xkey := range xrfs4oneg.Keys() {
 			var xrfU string
-			for _, xrf := range xrfs1g[xkey].Keys() {
+			for _, xrf := range xrfs4oneg[xkey].Keys() {
 				if xkey == "EnsemblGenome" {
 					xrfU = rdf.CompU(nss[bgw.Ensomes[txid]], xrf)
 				} else {
@@ -1342,23 +1368,30 @@ func Gene(rpthI, wpth string, p *bgw.Xmap) error {
 				lbl := fmt.Sprintf("%s#%s", xkey, xrf)
 				sbG.WriteString(rdf.FormT(insGU, gnUs["sth2lbl"], rdf.FormL(lbl)))
 				// TODO generalise
-				if xkey == "GeneID" {
-					xmap.Ncbig.Add(xrf, "bgwg", clsG)
-					xmap.Bgwg.Add(clsG, "ncbig", xrf)
-				}
-				if xkey == "Ensembl" {
-					xmap.Ensg.Add(xrf, "bgwg", clsG)
-					xmap.Bgwg.Add(clsG, "ensg", xrf)
-				}
-				if xkey == "EnsemblGenome" {
-					xmap.Ensg.Add(xrf, "bgwg", clsG)
-					xmap.Bgwg.Add(clsG, "ensg", xrf)
+				for _, upac := range upacs {
+					// including iso-forms
+					upca := strings.Split(upac, "-")[0]
+					if xkey == "GeneID" {
+						xmap.Ncbig.Add(xrf, "bgwp", upca)
+						xmap.Ncbig.Add(xrf, "bgwg", clsG)
+						xmap.Bgwg.Add(clsG, "ncbig", xrf)
+					}
+					if xkey == "Ensembl" {
+						xmap.Ensg.Add(xrf, "bgwp", upca)
+						xmap.Ensg.Add(xrf, "bgwg", clsG)
+						xmap.Bgwg.Add(clsG, "ensg", xrf)
+					}
+					if xkey == "EnsemblGenome" {
+						xmap.Ensg.Add(xrf, "bgwp", upca)
+						xmap.Ensg.Add(xrf, "bgwg", clsG)
+						xmap.Bgwg.Add(clsG, "ensg", xrf)
+					}
 				}
 			}
 		}
 	} // lblG
 	outG := sbG.String()
-	if len(outG) == 0{
+	if len(outG) == 0 {
 		msg := fmt.Sprintf("%s: CalledBy: %s: NoDataForTaxon: %s", util.FN(0), util.FN(1), txid)
 		return errors.New(msg)
 	}
@@ -1372,21 +1405,23 @@ func Prot(rpthUP, rpthI, wpth string, p *bgw.Xmap) error {
 	xmap := *p
 	// Reference proteome IDs:
 	// Idmap returns errors if fails to open the file OR the output map is empty
-	xrf2upac, err := parse.Idmap(rpthI, bgw.Upkeys, 1, 2, 0)
+	xrf2upac, err := parse.Idmap(rpthI, bgw.Upkeys, 1, 2, 0) // Set3D
 	if err != nil {
 		msg := fmt.Sprintf("export.Prot():  xrf2upac: %s", err)
 		return errors.New(msg)
 	}
-	upac2xrf, err := parse.Idmap(rpthI, bgw.Upkeys, 0, 1, 2)
+	upac2xrf, err := parse.Idmap(rpthI, bgw.Upkeys, 0, 1, 2) // Set3D
 	if err != nil {
 		msg := fmt.Sprintf("export.Prot():  upac2xrf: %s", err)
 		return errors.New(msg)
 	}
-	upca2upac := make(util.Set2D) // TODO double-check the use of
+	upca2upac := make(util.Set2D)
+	// keys: canonical accessions
+	// vals: all accessions including canonical and iso-forms
 	for _, upac := range upac2xrf.Keys() {
 		bits := strings.Split(upac, "-")
-			upca := bits[0]
-			upca2upac.Add(upca, upac)
+		upca := bits[0]
+		upca2upac.Add(upca, upac)
 	}
 
 	nss := rdf.Nss // BGW URI name spaces
@@ -1425,8 +1460,6 @@ func Prot(rpthUP, rpthI, wpth string, p *bgw.Xmap) error {
 		msg := fmt.Sprintf("MalformedHeader")
 		panic(errors.New(msg))
 	}
-	sbP.WriteString(header)
-	//srcUa = "<https://www.uniprot.org/uniprot/?query=organism:" + txid + "&columns=id,entry%20name,organism,organism-id,protein%20names,proteome,citation,annotation%20score&format=tab>"
 	/////////////////////////////////////////////////////////////////////////////
 
 	allUPs, err := parse.Tab2set3D(rpthUP, bgw.UpdatConf.Keys, bgw.UpdatConf.Vals)
@@ -1443,26 +1476,32 @@ func Prot(rpthUP, rpthI, wpth string, p *bgw.Xmap) error {
 	for _, upca := range upca2upac.Keys() {
 		dfnP := ""                      // descriptor
 		upacs := upca2upac[upca].Keys() // including upcas
+		// filtering xrefs by xkeys:
 		xrfs4onep := make(util.Set2D)
 		for _, upac := range upacs {
-			xrfs := upac2xrf[upac]
+			xrfs := upac2xrf[upac] // Set2D
 			for _, xkey := range xkeys {
 				for _, xrf := range xrfs[xkey].Keys() {
 					xrfs4onep.Add(xkey, xrf)
 				}
 			}
 		}
-		upi2upac := make(util.Set2D) // used for instances
+		uparc2upac := make(util.Set2D) // used for instances
 		for _, upac := range upacs {
-			upi2upac.Add(upac2xrf[upac]["UniParc"].Keys()[0], upac)
+			uparc2upac.Add(upac2xrf[upac]["UniParc"].Keys()[0], upac)
 		}
 
 		clsP := upca
 		/// Some sanity checks
-		oneP, ok := allUPs[upca]
+		oneP, ok := allUPs[upca] // UniProt entry
 		if !ok {
 			continue
 		}
+		if len(oneP) < 5 {
+			msg := fmt.Sprintf("export.Prot():%s:%s: TooFewDataFields: %d", txid, upca, len(oneP))
+			fmt.Printf("%s\n", msg)
+			continue
+		} // all filds present and have at least one entry
 		oneXs, ok := upac2xrf[upca] // xrefs for the canonical accession only
 		if !ok {
 			// never happens
@@ -1474,11 +1513,6 @@ func Prot(rpthUP, rpthI, wpth string, p *bgw.Xmap) error {
 			continue
 		} // all filds present and have at least one entry
 		// not all have pubmed refs, thus 5 iso 6
-		if len(oneP) < 5 {
-			msg := fmt.Sprintf("export.Prot():%s:%s: TooFewDataFields: %d", txid, upca, len(oneP))
-			fmt.Printf("%s\n", msg)
-			continue
-		} // all filds present and have at least one entry
 		upids := oneP["upid"].Keys()
 		if len(upids) != 1 {
 			continue
@@ -1526,16 +1560,16 @@ func Prot(rpthUP, rpthI, wpth string, p *bgw.Xmap) error {
 		xmap.Upac.Add(upca, "bgwp", clsP) // for backward compatibility
 
 		// Instances
-		for _, upi := range upi2upac.Keys() {
-			insU := rdf.CompU(nss["uniparc"], upi)
+		for _, uparc := range uparc2upac.Keys() {
+			insU := rdf.CompU(nss["uniparc"], uparc)
 			sbP.WriteString(rdf.FormT(insU, gpUs["ins2cls"], oriU))
 			lbl := fmt.Sprintf("instance of %s", lblP)
 			sbP.WriteString(rdf.FormT(insU, gpUs["sth2lbl"], rdf.FormL(lbl)))
-			xmap.Bgwp.Add(clsP, "upi", upi) // full set
-			for _, upac := range upi2upac[upi].Keys() {
+			xmap.Bgwp.Add(clsP, "uparc", uparc) // full set
+			for _, upac := range uparc2upac[uparc].Keys() {
 				sbP.WriteString(rdf.FormT(insU, gpUs["sth2syn"], rdf.FormL(upac)))
 				xmap.Upac.Add(upca, "upac", upac) // full set
-				xmap.Upac.Add(upac, "upi", upi)
+				xmap.Upac.Add(upac, "uparc", uparc)
 			}
 		}
 		for _, xkey := range xrfs4onep.Keys() {
@@ -1555,7 +1589,13 @@ func Prot(rpthUP, rpthI, wpth string, p *bgw.Xmap) error {
 		}
 	} // upca
 	/////////////////////////////////////////////////////////////////////////////
-	wfh.Write([]byte(sbP.String()))
+	outP := sbP.String()
+	if len(outP) == 0 {
+		msg := fmt.Sprintf("%s: CalledBy: %s: NoDataForTaxon: %s", util.FN(0), util.FN(1), txid)
+		return errors.New(msg)
+	}
+	wfh.Write([]byte(header))
+	wfh.Write([]byte(outP))
 	sbP.Reset()
 	return nil
 } // Prot()

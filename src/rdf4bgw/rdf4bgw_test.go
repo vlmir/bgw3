@@ -20,11 +20,12 @@ func Test_Geneprot(t *testing.T) {
 	var arg3 [5]util.Set2D // txmap
 	arg3[0] = make(util.Set2D)
 	arg3[0].Add("9606", "UP000005640")
+	arg3[1] = make(util.Set2D)
+	arg3[1].Add("3702", "UP000006548")
 	//arg3[0].Add("7227", "UP000000803")
 	tts := []tt{
-		// {pth, wpth, arg3[0], 35, 76},
-		// {pth, wpth, arg3[0], 50, 68},
 		{pth, wpth, arg3[0], nil},
+		{pth, wpth, arg3[1], nil},
 	}
 
 	for i, tt := range tts {
@@ -36,13 +37,6 @@ func Test_Geneprot(t *testing.T) {
 				"\n\thave", err,
 			)
 		}
-		//		if np != tt.val2 {
-		//			t.Error(
-		//				"For test", i+1, ": ", tt.arg1, tt.arg2, tt.arg3,
-		//				"\n\twant", tt.val2,
-		//				"\n\thave", np,
-		//			)
-		//		}
 	}
 }
 
@@ -119,28 +113,23 @@ func Test_Tfac2gene(t *testing.T) {
 	type tt struct {
 		arg1 string
 		arg2 string
-		arg3 util.Set2D
 		val  int
 	}
 	pth := "../../tdata/"
 	wpth := pth + "OUT/rdf4bgw/"
-	var arg3 [5]util.Set2D // txmap
-	arg3[0] = make(util.Set2D)
-	arg3[0].Add("9606", "testprome")
+	srcks := []string{"tflink", "coltri", "atregnet"}
 	tts := []tt{
-		// {pth, wpth, arg3[0], 2},
-		// {pth, wpth, arg3[0], 4}, // new tests
-		{pth, wpth, arg3[0], 1}, // new tests
+		{pth, wpth, 0}, // sic, no pairs in xmap
+		{pth, wpth, 1},
+		{pth, wpth, 1}, // only one pair present in xmap
 	}
-	pdck := "reg2ptrg"
-	// srck := "tfacts"
-	srck := "coltri"
-	// srck := "tflink" // no interactions after filtering by xmap
+	pdck := "reg2utrg"
 	for i, tt := range tts {
-		cnts, _ := Tfac2gene(tt.arg1, tt.arg2, tt.arg3) // process ALL files in srck dir
+		cnts, _ := Tfac2gene(tt.arg1, tt.arg2) // process ALL files in srck dir
+		srck := srcks[i]
 		if cnts[pdck][srck] != tt.val {
 			t.Error(
-				"For test", i+1, ": ", tt.arg1, tt.arg2, tt.arg3,
+				"For test", i+1, ": ", tt.arg1, tt.arg2,
 				"\n\twant", tt.val,
 				"\n\thave", cnts[pdck][srck],
 			)
