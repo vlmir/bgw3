@@ -15,10 +15,10 @@ year=$6 # only for downloadin omim
 #wait
 #
 $1uniprot -e $datdir $bgwdir $prmtxn $scrdir > up.xout 2> up.xerr &
-#wait
+wait
 #$1goa -e $datdir $bgwdir $prmtxn > goa.xout 2> goa.xerr &
 #$1intact -e $datdir $bgwdir $prmtxn > ia.xout 2> ia.xerr &
 #$1onto -e $datdir $bgwdir $year > onto.xout 2> onto.xerr &
 #$1signor -e $datdir $bgwdir $prmtxn > sig.xout 2> sig.xerr &
-#$1tfac2gene -e $datdir $bgwdir $prmtxn $scrdir > tf.xout 2> tf.xerr &
+#$1tfac2gene -e $datdir $bgwdir $scrdir > tf.xout 2> tf.xerr &
 wait

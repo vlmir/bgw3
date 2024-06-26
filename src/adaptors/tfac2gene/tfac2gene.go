@@ -4,7 +4,6 @@ import (
 	"flag"
 	"github.com/vlmir/bgw3/src/dat4bgw"
 	"github.com/vlmir/bgw3/src/rdf4bgw"
-	"github.com/vlmir/bgw3/src/util"
 	"log"
 	"time"
 )
@@ -19,22 +18,13 @@ func main() {
 	}
 	args := flag.Args()
 	cnt := len(args)
-	if cnt < 4 {
-		log.Fatalln("tfac2gene: Expecting more arguments than:", cnt)
+	if cnt < 3 {
+		log.Fatalln("tfac2gene adaptor: Expecting more arguments than:", cnt)
 	}
 	log.Println("tfac2gene: Started with args:", args)
-	datdir := args[0]                              // path to data directory (with a trailing '/')
-	bgwdir := args[1]                              // path to rdf directory (with a trailing '/')
-	rpthT := args[2]                               // path to a list of selected taxa and proteomes
-	scrdir := args[3]                              // path to scripts directory
-	txn2prm, err := util.MakeMap(rpthT, 1, 0, "_") // txnID -> proteomeID
-	if err != nil {
-		log.Fatalln("tfac2gene: Failed to make map:", rpthT, err)
-	}
-	n := len(txn2prm)
-	if n == 0 {
-		log.Fatalln("tfac2gene: Empty map:", rpthT)
-	}
+	datdir := args[0] // path to data directory (with a trailing '/')
+	bgwdir := args[1] // path to rdf directory (with a trailing '/')
+	scrdir := args[2] // path to scripts directory
 
 	if *aP || *dP {
 		start := time.Now()
@@ -51,7 +41,7 @@ func main() {
 
 	if *aP || *eP {
 		start := time.Now()
-		if _, err := rdf4bgw.Tfac2gene(datdir, bgwdir, txn2prm); err != nil {
+		if _, err := rdf4bgw.Tfac2gene(datdir, bgwdir); err != nil {
 			panic(err)
 		}
 		log.Println("tfac2gene: Exported in", time.Since(start))

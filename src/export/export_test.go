@@ -283,8 +283,8 @@ func Test_Tfac2gene(t *testing.T) {
 	var xmap bgw.Xmap
 	xmap.New()
 	xmap.Upac.Add("P04637", "bgwp", "P04637")
-	xmap.Upac.Add("P37231", "bgwp", "P37231")         // for tflink
-	xmap.Ncbig.Add("5915", "bgwg", "9606/RARB")       // for tflink
+	xmap.Upac.Add("P37231", "bgwp", "P37231")         // for tflink, TF
+	xmap.Ncbig.Add("5915", "bgwg", "9606/RARB")       // for tflink, TG
 	xmap.Ensg.Add("AT3G22170", "bgwp", "Q9LIE5")      // for atregnet
 	xmap.Ensg.Add("AT1G02400", "bgwg", "3702/GA2OX6") // for atregnet upac: Q9FZ21
 	xmap.Ensg.Add("AT1G09530", "bgwp", "FOO")         // for atregnet

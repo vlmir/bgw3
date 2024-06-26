@@ -176,7 +176,8 @@ func Idmap(rpth string, idmkeys map[string]string, i1, i2, i3 int) (util.Set3D, 
 		out.Add(key1, key2, key3)
 	}
 	if len(out) == 0 {
-		msg := fmt.Sprintf("parse.Idmap(%s, %v, %d, %d, %d): EmptyMap", rpth, idmkeys, i1, i2, i3)
+		//msg := fmt.Sprintf("parse.Idmap(%s, %v, %d, %d, %d): EmptyMap", rpth, idmkeys, i1, i2, i3)
+		msg := fmt.Sprintf("%s: %s: EmptyMap: %s", util.FN(1), util.FN(0), rpth)
 		return out, errors.New(msg)
 	}
 
@@ -617,7 +618,7 @@ func Gpa(rpth string) (duos util.Set3D) {
 // orthosolo() is used by OrthoDuo()
 // retrns a map for 1 taxon, primary key sourse dabase label
 func orthosolo(datdir, txid string, txn2prm util.Set2D) (util.Set3D, error) {
-	idmkeys := bgw.Orthokeys
+	idmkeys := bgw.Orthokeys // currently only OrthoDB
 	solos := make(util.Set3D)
 	subdir := "idmapping/"
 	ext := ".idmapping"
@@ -631,7 +632,9 @@ func orthosolo(datdir, txid string, txn2prm util.Set2D) (util.Set3D, error) {
 		pth := fmt.Sprintf("%s%s%s%s", datdir, subdir, prmid, ext) // read
 		dat, err := Idmap(pth, idmkeys, 1, 2, 0)
 		if err != nil {
-			msg := fmt.Sprintf("parse.orthosolo(_, %s, _):  %s", txid, err)
+			// dat is empty
+			//msg := fmt.Sprintf("parse.orthosolo(_, %s, _):  %s", txid, err)
+			msg := fmt.Sprintf("%s: %s", util.FN(1), err) // err includes orthosolo
 			return solos, errors.New(msg)
 		}
 		for idmk, all := range dat {
@@ -647,11 +650,12 @@ func orthosolo(datdir, txid string, txn2prm util.Set2D) (util.Set3D, error) {
 		count += len(solos[idmk])
 	}
 	if count == 0 {
-		msg := fmt.Sprintf("parse.orthosolo(): NoDataForTaxon: %s", txid)
+		//msg := fmt.Sprintf("parse.orthosolo(): NoDataForTaxon: %s", txid)
+		msg := fmt.Sprintf("%s: %s: NoDataForTaxon: %s", util.FN(1), util.FN(0), txid)
 		return solos, errors.New(msg)
-	} // no orthology in any of the sources
+	} // no orthology data in any of the sources, does occur
 	return solos, nil
-} // orthosolo()
+} // orthosolo
 
 // OrthoDuo() extracts orthology relations from UniProt idmappings for a pair of taxa
 // returns a map, keys:
@@ -696,7 +700,8 @@ func OrthoDuo(datdir, txidL, txidR string, txn2prm util.Set2D) (util.Set3D, erro
 		} // id: external cluster ID
 	}
 	if len(duos) == 0 {
-		msg := fmt.Sprintf("parse.OrthoDuo(): NoDataForTaxa: %s--%s", txidL, txidR)
+		//msg := fmt.Sprintf("parse.OrthoDuo(): NoDataForTaxa: %s--%s", txidL, txidR)
+		msg := fmt.Sprintf("%s: %s: NoDataForTaxa: %s--%s", util.FN(1), util.FN(0), txidL, txidR)
 		return duos, errors.New(msg)
 	} // 20200531: none Note: no filtering by BGW
 	return duos, nil

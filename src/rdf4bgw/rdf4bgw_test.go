@@ -119,7 +119,7 @@ func Test_Tfac2gene(t *testing.T) {
 	wpth := pth + "OUT/rdf4bgw/"
 	srcks := []string{"tflink", "coltri", "atregnet"}
 	tts := []tt{
-		{pth, wpth, 0}, // sic, no pairs in xmap
+		{pth, wpth, 1}, // only one pair present in xmap
 		{pth, wpth, 1},
 		{pth, wpth, 1}, // only one pair present in xmap
 	}

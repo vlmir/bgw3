@@ -17,7 +17,7 @@ import (
 func newFH(wpth string) *os.File {
 	fh, err := os.Create(wpth)
 	if err != nil {
-		msg := fmt.Sprintf("export: os.Create(%s): %s", wpth, err)
+		msg := fmt.Sprintf("%s: %s: os.Create(): %s", util.FN(1), util.FN(0), err)
 		panic(errors.New(msg))
 	}
 	return fh
@@ -503,6 +503,7 @@ func Tfac2gene(d *bgw.Dat4bridge, x *bgw.Xmap, wdir string) error {
 	modes.Add("coltri", "pos", p2t)
 	modes.Add("coltri", "neg", n2t)
 	fhs := make(map[string]*os.File)
+	// newFH(wpth) panics if fails to open wpth
 	fhs[n2t] = newFH(wpths[n2t])
 	fhs[p2t] = newFH(wpths[p2t])
 	fhs[u2t] = newFH(wpths[u2t])
@@ -550,6 +551,7 @@ func Tfac2gene(d *bgw.Dat4bridge, x *bgw.Xmap, wdir string) error {
 		}
 
 		// special treatment for Collectri data:
+		// 2 columns:is_stimulation & is_inhibition, True||Fals, single values
 		for _, mode := range modes["coltri"].Keys() {
 			if len(duo[mode].Keys()) != 0 {
 				val := duo[mode].Keys()[0]
@@ -632,8 +634,8 @@ func Tfac2gene(d *bgw.Dat4bridge, x *bgw.Xmap, wdir string) error {
 				fh := fhs[pdck]
 				if flags[pdck] == 1 {
 					fh.Write([]byte(header))
-				}
-				fh.Write([]byte(sb.String()))
+				} // header is written once per file and only if there are duos
+				fh.Write([]byte(sb.String())) // some files are empty
 				flags[pdck]++
 			}
 		} // pdck
@@ -1205,13 +1207,6 @@ func Ortho(duos util.Set3D, wpth string) (int, error) {
 			cntD++
 		}
 	} // duoid
-	// 	msg := ""
-	// 	msg = fmt.Sprintf("export.Ortho(): Pairs: added: %d dropped: %d", cntD, len(duos)-cntD)
-	// 	log.Println(msg)
-	//	if nln == 0 { // happens for some pairs of taxa !
-	//	msg := fmt.Sprintf("export.Ortho(): NoContent")
-	//	return nln, errors.New(msg)
-	//	}
 	return cntD, nil
 } // Ortho
 

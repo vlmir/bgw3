@@ -76,7 +76,7 @@ var Opys = util.SliceSet{
 	"sth2mtd":   {"rdfs", "isDefinedBy", "is defined by"},
 	"orl2orl":   {"sio", "SIO_000558", "is orthologous to"},
 	"mi2bp":     {"obo", "RO_0002331", "involved in"}, // TODO change to part_of?
-	"mi2loc":    {"obo", "BFO_0000066", "occurs in"}, // sigpways only
+	"mi2loc":    {"obo", "BFO_0000066", "occurs in"},  // sigpways only
 	"step2pway": {"obo", "BFO_0000050", "is part of"},
 	"reg2dtrg":  {"obo", "RO_0002578", "directly regulates"},
 	"reg2itrg":  {"obo", "RO_0012012", "indirectly regulates"},
@@ -124,15 +124,6 @@ var Uris4rgrtrg = map[string]string{
 }
 
 var Uris4tftg = map[string]string{
-	//	"extri":  "http://www.extri.org",
-	//	"htri":   "http://www.lbbc.ibb.unesp.br/htri",
-	//	"intact": "https://www.ebi.ac.uk/intact/interactomes",
-	//	"ntnu":   "NTNU",
-	//	"tfacts": "http://www.tfacts.org",
-	//	"trrust": "http://www.grnpedia.org/trrust",
-	//	"cytreg": "https://www.fuxmanlab.com",
-	//	"geredb": "http://www.thua45.cn/geredb",
-	//	"signor": "http://signor.uniroma2.it",
 	"tflink":   "https://tflink.net",
 	"coltri":   "https://github.com/saezlab/CollecTRI",
 	"atregnet": "https://agris-knowledgebase.org",
