@@ -113,19 +113,32 @@ func Test_Tfac2gene(t *testing.T) {
 	type tt struct {
 		arg1 string
 		arg2 string
+		arg3 map[string][]string
 		val  int
 	}
 	pth := "../../tdata/"
 	wpth := pth + "OUT/rdf4bgw/"
 	srcks := []string{"tflink", "coltri", "atregnet"}
+var taxa= map[string][]string{
+	"atregnet": []string{
+		"3702",
+	},
+	"coltri": []string{
+		"9606",
+	},
+	"tflink": []string{
+	"9606",
+	},
+}
+
 	tts := []tt{
-		{pth, wpth, 1}, // only one pair present in xmap
-		{pth, wpth, 1},
-		{pth, wpth, 1}, // only one pair present in xmap
+		{pth, wpth, taxa, 1}, // only one pair present in xmap
+		{pth, wpth, taxa, 1}, // only one pair present in xmap
+		{pth, wpth, taxa, 1}, // only one pair present in xmap
 	}
 	pdck := "reg2utrg"
 	for i, tt := range tts {
-		cnts, _ := Tfac2gene(tt.arg1, tt.arg2) // process ALL files in srck dir
+		cnts, _ := Tfac2gene(tt.arg1, tt.arg2, tt.arg3) // process ALL files in srck dir
 		srck := srcks[i]
 		if cnts[pdck][srck] != tt.val {
 			t.Error(

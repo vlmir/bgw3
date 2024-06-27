@@ -263,7 +263,7 @@ func Reg2targ(datdir, bgwdir string, txn2prm util.Set2D) (util.Set2D, error) {
 	return cnts, nil
 } // Reg2targ
 
-func Tfac2gene(datdir, bgwdir string) (util.Set2D, error) {
+func Tfac2gene(datdir, bgwdir string, taxa map[string][]string) (util.Set2D, error) {
 	subdir := "tfac2gene/"
 	cnts := make(util.Set2D)
 	if err := os.MkdirAll(filepath.Join(bgwdir, subdir), 0755); err != nil {
@@ -271,30 +271,26 @@ func Tfac2gene(datdir, bgwdir string) (util.Set2D, error) {
 		return cnts, errors.New(msg)
 	}
 	log.Println("\n\trdf4bgw.Tfac2gene for:", "all")
-	for srck, _ := range rdf.Uris4tftg {
+	for srck, txids := range taxa {
+	//for srck, _ := range rdf.Uris4tftg {
 		// keys and vals for parsing
 		var vals []bgw.Column
 		var keys []bgw.Column
 		rpth := ""
 		dlm := ""
-		var txids []string
+
 		if srck == "tflink" {
 			keys = bgw.TflinkConf.Keys
 			vals = bgw.TflinkConf.Vals
 			dlm = "\t"
-			for txid := range bgw.Tflink {
-				txids = append(txids, txid)
-			}
 		} else if srck == "atregnet" {
 			keys = bgw.AtregnetConf.Keys
 			vals = bgw.AtregnetConf.Vals
 			dlm = "\t"
-			txids = []string{"3702"}
 		} else if srck == "coltri" {
 			keys = bgw.ColtriConf.Keys
 			vals = bgw.ColtriConf.Vals
 			dlm = "," // re-defining
-			txids = []string{"9606"}
 		}
 
 		for _, txid := range txids {
@@ -313,13 +309,8 @@ func Tfac2gene(datdir, bgwdir string) (util.Set2D, error) {
 			err := parse.Tab2struct(rpth, keys, vals, &d4b, dlm)
 			if err != nil {
 				// either failed to open rpth or no interactions extracted
-				msg := fmt.Sprintf("%s: %s: ParsingError: %s", util.FN(1), util.FN(0), err)
-				if srck == "tflink" {
-					fmt.Printf("%s\n", msg)
-					continue // next taxon, otherwise problems with testing
-				} else {
+				msg := fmt.Sprintf("%s: parse.Tab2struct: %s", util.FN(0), err)
 					return cnts, errors.New(msg)
-				}
 			}
 			/// d4b is now loaded with data
 

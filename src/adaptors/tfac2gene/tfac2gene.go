@@ -2,6 +2,7 @@ package main
 
 import (
 	"flag"
+	"github.com/vlmir/bgw3/src/bgw"
 	"github.com/vlmir/bgw3/src/dat4bgw"
 	"github.com/vlmir/bgw3/src/rdf4bgw"
 	"log"
@@ -41,7 +42,7 @@ func main() {
 
 	if *aP || *eP {
 		start := time.Now()
-		if _, err := rdf4bgw.Tfac2gene(datdir, bgwdir); err != nil {
+		if _, err := rdf4bgw.Tfac2gene(datdir, bgwdir, bgw.Taxa4tftg); err != nil {
 			panic(err)
 		}
 		log.Println("tfac2gene: Exported in", time.Since(start))

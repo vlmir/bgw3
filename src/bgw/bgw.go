@@ -8,12 +8,12 @@ import (
 
 var CV = "3.3.0"
 
+// the 2 vars below are used for downloading
 var Coltri = map[string]string{
 	"9606":  "human",
 	"10090": "mouse",
 	"10116": "rat",
 }
-
 var Tflink = map[string]string{
 	"6239":   "Caenorhabditis_elegans_interactions_All_mitab_v1.0.tsv.gz",
 	"7955":   "Danio_rerio_interactions_All_mitab_v1.0.tsv.gz",
@@ -22,6 +22,24 @@ var Tflink = map[string]string{
 	"10090":  "Mus_musculus_interactions_All_mitab_v1.0.tsv.gz",
 	"10116":  "Rattus_norvegicus_interactions_All_mitab_v1.0.tsv.gz",
 	"559292": "Saccharomyces_cerevisiae_interactions_All_mitab_v1.0.tsv.gz",
+}
+
+var Taxa4tftg = map[string][]string{
+	"atregnet": []string{
+		"3702",
+	},
+	"coltri": []string{
+		"9606",
+	},
+	"tflink": []string{
+	"6239",
+	"7955",
+	"7227",
+	"9606",
+	"10090",
+	"10116",
+	"559292",
+	},
 }
 
 var Ensomes = map[string]string{
