@@ -36,7 +36,7 @@ func TrimString(p *string) error {
 	// unused
 	*p = strings.TrimSpace(*p)
 	if *p == "" {
-		msg := fmt.Sprintf("util.TrimString(): EmptyString")
+		msg := fmt.Sprintf("%s: %s: EmptyString", FN(1), FN(0))
 		return errors.New(msg)
 	}
 	return nil
@@ -45,7 +45,7 @@ func TrimString(p *string) error {
 func (m Set1D) Add(key0 string) {
 	key0 = strings.TrimSpace(key0)
 	if len(key0) == 0 {
-		msg := fmt.Sprintf("%s(%s): CalledBy: %s: EmptyString", FN(0), key0, FN(1))
+		msg := fmt.Sprintf("%s: %s: EmptyString", FN(1), FN(0))
 		panic(errors.New(msg))
 	}
 	_, ok := m[key0]
@@ -56,12 +56,12 @@ func (m Set1D) Add(key0 string) {
 func (m Set2D) Add(key0, key1 string) {
 	key0 = strings.TrimSpace(key0)
 	if len(key0) == 0 {
-		msg := fmt.Sprintf("%s(%s): CalledBy: %s: EmptyString", FN(0), key0, FN(1))
+		msg := fmt.Sprintf("%s: %s: EmptyString", FN(1), FN(0))
 		panic(errors.New(msg))
 	}
 	key1 = strings.TrimSpace(key1)
 	if len(key1) == 0 {
-		msg := fmt.Sprintf("%s(%s): CalledBy: %s: EmptyString", FN(0), key1, FN(1))
+		msg := fmt.Sprintf("%s: %s: EmptyString", FN(1), FN(0))
 		panic(errors.New(msg))
 	}
 	mm, ok := m[key0]
@@ -74,17 +74,17 @@ func (m Set2D) Add(key0, key1 string) {
 func (m Set3D) Add(key0, key1, key2 string) {
 	key0 = strings.TrimSpace(key0)
 	if len(key0) == 0 {
-		msg := fmt.Sprintf("%s(%s): CalledBy: %s: EmptyString", FN(0), key0, FN(1))
+		msg := fmt.Sprintf("%s: %s: EmptyString", FN(1), FN(0))
 		panic(errors.New(msg))
 	}
 	key1 = strings.TrimSpace(key1)
 	if len(key1) == 0 {
-		msg := fmt.Sprintf("%s(%s): CalledBy: %s: EmptyString", FN(0), key1, FN(1))
+		msg := fmt.Sprintf("%s: %s: EmptyString", FN(1), FN(0))
 		panic(errors.New(msg))
 	}
 	key2 = strings.TrimSpace(key2)
 	if len(key2) == 0 {
-		msg := fmt.Sprintf("%s(%s): CalledBy: %s: EmptyString", FN(0), key2, FN(1))
+		msg := fmt.Sprintf("%s: %s: EmptyString", FN(1), FN(0))
 		panic(errors.New(msg))
 	}
 	mm, ok := m[key0]
@@ -102,22 +102,22 @@ func (m Set3D) Add(key0, key1, key2 string) {
 func (m Set4D) Add(key0, key1, key2, key3 string) {
 	key0 = strings.TrimSpace(key0)
 	if len(key0) == 0 {
-		msg := fmt.Sprintf("%s(%s): CalledBy: %s: EmptyString", FN(0), key0, FN(1))
+		msg := fmt.Sprintf("%s: %s: EmptyString", FN(1), FN(0))
 		panic(errors.New(msg))
 	}
 	key1 = strings.TrimSpace(key1)
 	if len(key1) == 0 {
-		msg := fmt.Sprintf("%s(%s): CalledBy: %s: EmptyString", FN(0), key1, FN(1))
+		msg := fmt.Sprintf("%s: %s: EmptyString", FN(1), FN(0))
 		panic(errors.New(msg))
 	}
 	key2 = strings.TrimSpace(key2)
 	if len(key2) == 0 {
-		msg := fmt.Sprintf("%s(%s): CalledBy: %s: EmptyString", FN(0), key2, FN(1))
+		msg := fmt.Sprintf("%s: %s: EmptyString", FN(1), FN(0))
 		panic(errors.New(msg))
 	}
 	key3 = strings.TrimSpace(key3)
 	if len(key3) == 0 {
-		msg := fmt.Sprintf("%s(%s): CalledBy: %s: EmptyString", FN(0), key3, FN(1))
+		msg := fmt.Sprintf("%s: %s: EmptyString", FN(1), FN(0))
 		panic(errors.New(msg))
 	}
 	mm, ok := m[key0]
@@ -140,12 +140,12 @@ func (m Set4D) Add(key0, key1, key2, key3 string) {
 func (s SliceSet) Add(key, val string) {
 	key = strings.TrimSpace(key)
 	if len(key) == 0 {
-		msg := fmt.Sprintf("%s(%s): CalledBy: %s: EmptyString", FN(0), key, FN(1))
+		msg := fmt.Sprintf("%s: %s: EmptyString", FN(1), FN(0))
 		panic(errors.New(msg))
 	}
 	val = strings.TrimSpace(val)
 	if len(val) == 0 {
-		msg := fmt.Sprintf("%s(%s): CalledBy: %s: EmptyString", FN(0), val, FN(1))
+		msg := fmt.Sprintf("%s: %s: EmptyString", FN(1), FN(0))
 		panic(errors.New(msg))
 	}
 	_, ok := s[key]
@@ -155,6 +155,7 @@ func (s SliceSet) Add(key, val string) {
 	s[key] = append(s[key], val)
 }
 
+/// NB: keys may often be empty slices!!
 func (m Set1D) Keys() []string {
 	var keys []string
 	for k := range m {
@@ -196,7 +197,7 @@ func (m SliceSet) Keys() []string {
 	return keys
 }
 
-// not used
+// noed  used
 func (s SliceSet) Peek(key string) (string, bool) {
 	slice, ok := s[key]
 	if !ok || len(slice) == 0 {
@@ -205,10 +206,11 @@ func (s SliceSet) Peek(key string) (string, bool) {
 	return s[key][0], true
 }
 
-/*
-input: slice of srings containig pairs of values, all delimited by the same char
-*/
 func X1type(s []string, key string, dlm string) []string {
+	/*
+	   used only once in in export.Prot2go
+	   input: slice of srings containig pairs of values, all delimited by the same char
+	*/
 	var out []string
 	for _, cell := range s {
 		bits := strings.Split(cell, dlm)
@@ -222,11 +224,11 @@ func X1type(s []string, key string, dlm string) []string {
 	return out
 }
 
-/*
-Input: slice of strings containing double quoted OBO IDs
-not used
-*/
 func X1quoted(s []string, key string, dlm string) []string {
+	/*
+	   Input: slice of strings containing double quoted OBO IDs
+	   not used
+	*/
 	var out []string
 	for _, cell := range s {
 		bits := strings.Split(cell, "\"")
@@ -243,11 +245,14 @@ func X1quoted(s []string, key string, dlm string) []string {
 }
 
 // MakeMap generates a map from a file delimited by an arbitrary string
-func MakeMap(pth string, keyind int, valind int, dlm string) (Set2D, error) {
+func MakeMap(rpth string, keyind int, valind int, dlm string) (Set2D, error) {
+	// used only once in dat4bgw
 	set := make(Set2D)
-	fh, err := os.Open(pth)
+	fh, err := os.Open(rpth)
 	if err != nil {
-		return set, err
+		msg := fmt.Sprintf("%s: os,Open: %s", FN(0), err) // sic!
+		// eg github.com/vlmir/bgw3/src/util.MakeMap: open ../../tdata/idmapping/UP000005640_960.idmapping: no such file or directory
+		return set, errors.New(msg)
 	}
 	defer fh.Close()
 	scanner := bufio.NewScanner(fh)
@@ -303,9 +308,9 @@ func Shared(slA, slB []string) []string {
 	return s
 }
 
-// write a test
 func IsDigital(s string) bool {
 	// https://programming-idioms.org/idiom/137/check-if-string-contains-only-digits/1739/go
+	// TODO tests
 	b := true
 	for _, c := range s {
 		if c < '0' || c > '9' {

@@ -79,7 +79,7 @@ func addSubFields(pval, pk string, v bgw.Column, subfields util.Set3D) {
 		subfields.Add(pk, v.Key, sval) // the args are non-empty strings
 	} // sval
 	// no need to return any values
-}
+} // addSubFields
 
 // Sig2up() parses mapping files provided by Signor and returns a map structure
 func Sig2up(sigmap util.Set3D, pths []string) error {
@@ -88,7 +88,7 @@ func Sig2up(sigmap util.Set3D, pths []string) error {
 		// open the file
 		csvfile, err := os.Open(pth)
 		if err != nil {
-			msg := fmt.Sprintf("parse.Sig2up(): os.Open(%s): %s", pth, err)
+			msg := fmt.Sprintf("%s: os.Open: %s", util.FN(0), err)
 			return errors.New(msg)
 		}
 
@@ -125,7 +125,7 @@ func Sig2up(sigmap util.Set3D, pths []string) error {
 		}
 	}
 	return nil
-}
+} // Sig2up
 
 // TODO generalize, improve error handling
 func Sigmap(datdir string) (util.Set3D, error) {
@@ -142,7 +142,8 @@ func Sigmap(datdir string) (util.Set3D, error) {
 	for _, rpth := range smpths {
 		out, err := Tab2set3D(rpth, bgw.SigMapConf.Keys, bgw.SigMapConf.Vals)
 		if err != nil {
-			return out, err
+			msg := fmt.Sprintf("%s: %s: util.Tab2set3D %s", util.FN(1), util.FN(0), err)
+			return out, errors.New(msg)
 		}
 		for k, v := range out {
 			sigmap[k] = v
@@ -155,7 +156,7 @@ func Idmap(rpth string, idmkeys map[string]string, i1, i2, i3 int) (util.Set3D, 
 	out := make(util.Set3D)
 	fh, err := os.Open(rpth)
 	if err != nil {
-		msg := fmt.Sprintf("parse.Idmap(%s, %v, %d, %d, %d): os.Open(%s): %s", rpth, idmkeys, i1, i2, i3, rpth, err)
+		msg := fmt.Sprintf("%s: os.Open: %s", util.FN(0), err)
 		return out, errors.New(msg)
 	}
 	defer fh.Close()
@@ -176,13 +177,12 @@ func Idmap(rpth string, idmkeys map[string]string, i1, i2, i3 int) (util.Set3D, 
 		out.Add(key1, key2, key3)
 	}
 	if len(out) == 0 {
-		//msg := fmt.Sprintf("parse.Idmap(%s, %v, %d, %d, %d): EmptyMap", rpth, idmkeys, i1, i2, i3)
-		msg := fmt.Sprintf("%s: %s: EmptyMap: %s", util.FN(1), util.FN(0), rpth)
+		msg := fmt.Sprintf("%s: %s: NoDataIn: %s", util.FN(1), util.FN(0), rpth)
 		return out, errors.New(msg)
 	}
 
 	return out, nil
-}
+} // Idmap
 
 // vals.Ind1 - column index (split on an arbitrary string)
 // vals.Dlm1 - primary separator for multiple values, all values used
@@ -225,7 +225,8 @@ func Tab2struct(rpth string, keys, vals []bgw.Column, p *bgw.Dat4bridge, dlm str
 	duos := d4b.Duos // to be filled with data
 	fh, err := os.Open(rpth)
 	if err != nil {
-		return err
+		msg := fmt.Sprintf("%s: os.Open: %s", util.FN(0), err)
+		return errors.New(msg)
 	}
 	defer fh.Close()
 	scanner := bufio.NewScanner(fh)
@@ -242,8 +243,8 @@ func Tab2struct(rpth string, keys, vals []bgw.Column, p *bgw.Dat4bridge, dlm str
 		}
 		cells := strings.Split(line, dlm) // fields
 		if len(cells) < maxind+1 {
-			msg := fmt.Sprintf("%s:%d: TooFetFields: want %d have %d", rpth, ln, maxind+1, len(cells))
-			log.Println(msg)
+			msg := fmt.Sprintf("%s: %s: %s: %d: TooFewFields: want %d have %d", util.FN(1), util.FN(0), rpth, ln, maxind+1, len(cells))
+			fmt.Printf("%s, skipping\t", msg)
 			continue
 		}
 		/// primary key
@@ -267,7 +268,7 @@ func Tab2struct(rpth string, keys, vals []bgw.Column, p *bgw.Dat4bridge, dlm str
 		} // one field
 	} // one line
 	if len(duos) == 0 {
-		msg := fmt.Sprintf("parse.Tab2struct():%s: NoData", rpth)
+		msg := fmt.Sprintf("%s: %s: NoDataIn: %s", util.FN(1), util.FN(0), rpth)
 		return errors.New(msg)
 	}
 	d4b.Duos = duos
@@ -313,7 +314,8 @@ func Tab2set3D(rpth string, keys, vals []bgw.Column) (out util.Set3D, err error)
 	out = make(util.Set3D)
 	fh, err := os.Open(rpth)
 	if err != nil {
-		return out, err
+		msg := fmt.Sprintf("%s: os.Open: %s", util.FN(0), err)
+		return out, errors.New(msg)
 	}
 	defer fh.Close()
 	scanner := bufio.NewScanner(fh)
@@ -333,8 +335,8 @@ func Tab2set3D(rpth string, keys, vals []bgw.Column) (out util.Set3D, err error)
 			continue
 		}
 		if len(cells) < maxind+1 {
-			msg := fmt.Sprintf("parse.Tab2set3D(%s, _, _): line: %d TooFewFields", rpth, ln)
-			fmt.Printf("%s\n", msg)
+			msg := fmt.Sprintf("%s: %s: %s: %d: TooFetFields: want %d have %d", util.FN(1), util.FN(0), rpth, ln, maxind+1, len(cells))
+			fmt.Printf("%s, skipping\n", msg)
 			continue
 		}
 		/// primary key
@@ -357,7 +359,7 @@ func Tab2set3D(rpth string, keys, vals []bgw.Column) (out util.Set3D, err error)
 		} // one field
 	} // one line
 	if len(out) == 0 {
-		msg := fmt.Sprintf("parse.Tab2set3D():%s: NoData", rpth)
+		msg := fmt.Sprintf("%s: %s: NoDataIn: %s", util.FN(1), util.FN(0), rpth)
 		return out, errors.New(msg)
 	}
 	return out, nil
@@ -378,7 +380,8 @@ func UpVar(rpth string) (duos util.Set3D, err error) {
 	duos = make(util.Set3D)
 	fhR, err := os.Open(rpth)
 	if err != nil {
-		return duos, err
+		msg := fmt.Sprintf("%s: os.Open: %s", util.FN(0), err)
+		return duos, errors.New(msg)
 	}
 	defer fhR.Close()
 	scanner := bufio.NewScanner(fhR)
@@ -392,10 +395,16 @@ func UpVar(rpth string) (duos util.Set3D, err error) {
 		if strings.TrimSpace(line[48:56]) != "Disease" {
 			//	continue // Disease => LP/P; seems superfluous anyway
 		}
+
+		/// idL
 		upca := strings.TrimSpace(line[10:20])
 		symG := strings.TrimSpace(line[0:9])
-		oriL := symG
-		idL := fmt.Sprintf("%s%s%s", nsL, "!", oriL)
+		if upca == "" || symG == "" {
+			continue
+		}
+		idL := fmt.Sprintf("%s%s%s", nsL, "!", symG)
+
+		/// dfn
 		dfn := strings.TrimSpace(line[72:])
 		// only one definition per line
 		if dfn == "" {
@@ -407,24 +416,27 @@ func UpVar(rpth string) (duos util.Set3D, err error) {
 		// Succinyl-CoA:3-oxoacid CoA transferase deficiency (SCOTD) [MIM:245050]
 		if len(bits) < 2 {
 			continue
-		} // no MIM ID
+		} // no MIM ID, very many lines
 		if len(bits) > 2 {
-			msg := fmt.Sprintf("parse.UpVar():%s:%s: MultiMIMs, skipped", upca, symG)
-			fmt.Printf("%s\n", msg)
+			msg := fmt.Sprintf("%s: %s: MultiIdsFor %s: %v", util.FN(1), util.FN(0), symG, bits)
+			fmt.Printf("%s, skipping\n", msg)
 			continue
 		} // normally should never happen
-		// removing the trailing ']':
-		oriR := strings.TrimSuffix(bits[1], "]")
-		idR := fmt.Sprintf("%s%s%s", nsR, "!", oriR)
-		if idR == "" {
+		dfn = strings.TrimSpace(bits[0])
+
+		/// idR
+		oriR := strings.TrimSuffix(bits[1], "]") // removing the trailing ']':
+		if oriR == "" {
 			continue
 		}
-		pairid := fmt.Sprintf("%s%s%s", idL, "--", idR) // idL and idR trimmed
-		duos.Add(pairid, "dfn", strings.TrimSpace(bits[0]))
-		duos.Add(pairid, "upca", upca) // upca trimmed
+		idR := fmt.Sprintf("%s%s%s", nsR, "!", oriR)
+
+		duoid := fmt.Sprintf("%s%s%s", idL, "--", idR) // idL and idR trimmed
+		duos.Add(duoid, "dfn", dfn)
+		duos.Add(duoid, "upca", upca) // upca trimmed
 	}
 	if len(duos) == 0 {
-		msg := fmt.Sprintf("parse.UpVar(%s): NoData", rpth)
+		msg := fmt.Sprintf("%s: %s: NoDataIn: %s", util.FN(1), util.FN(0), rpth)
 		return duos, errors.New(msg)
 	}
 	return duos, nil
@@ -454,7 +466,7 @@ func Gaf(rpth string) (bp, cc, mf util.Set3D, err error) {
 	mf = make(util.Set3D)
 	fhR, err := os.Open(rpth)
 	if err != nil {
-		msg := fmt.Sprintf("parse.Gaf(): os.Open(%s): %s", rpth, err)
+		msg := fmt.Sprintf("%s: os.Open: %s", util.FN(0), err)
 		return bp, cc, mf, errors.New(msg)
 	}
 	defer fhR.Close()
@@ -509,9 +521,8 @@ func Gaf(rpth string) (bp, cc, mf util.Set3D, err error) {
 		}
 	}
 	if len(bp)+len(cc)+len(mf) == 0 {
-		msg := fmt.Sprintf("parse.Gaf():%s: NoData", rpth)
-		err := errors.New(msg)
-		return bp, cc, mf, err
+		msg := fmt.Sprintf("%s: %s: NoDataIn: %s", util.FN(1), util.FN(0), rpth)
+		return bp, cc, mf, errors.New(msg)
 	}
 	return bp, cc, mf, nil
 } // Gaf()
@@ -570,8 +581,8 @@ func Gpa(rpth string) (duos util.Set3D) {
 	duos = make(util.Set3D)
 	fhR, err := os.Open(rpth)
 	if err != nil {
-		msg := fmt.Sprintf("parse.Gpa(): os.Open(%s): %s", rpth, err)
-		panic(errors.New(msg))
+		msg := fmt.Sprintf("%s: %s: os.Open: %s", util.FN(1), util.FN(0), err)
+		panic(errors.New(msg)) // pending re-implementation
 	}
 	defer fhR.Close()
 	scanner := bufio.NewScanner(fhR)
@@ -629,11 +640,10 @@ func orthosolo(datdir, txid string, txn2prm util.Set2D) (util.Set3D, error) {
 	} // never occors
 	for _, prmid := range prmids {
 		prmid := fmt.Sprintf("%s%s%s", prmid, "_", txid)
-		pth := fmt.Sprintf("%s%s%s%s", datdir, subdir, prmid, ext) // read
-		dat, err := Idmap(pth, idmkeys, 1, 2, 0)
+		rpth := fmt.Sprintf("%s%s%s%s", datdir, subdir, prmid, ext)
+		dat, err := Idmap(rpth, idmkeys, 1, 2, 0)
 		if err != nil {
 			// dat is empty
-			//msg := fmt.Sprintf("parse.orthosolo(_, %s, _):  %s", txid, err)
 			msg := fmt.Sprintf("%s: %s", util.FN(1), err) // err includes orthosolo
 			return solos, errors.New(msg)
 		}
@@ -650,7 +660,6 @@ func orthosolo(datdir, txid string, txn2prm util.Set2D) (util.Set3D, error) {
 		count += len(solos[idmk])
 	}
 	if count == 0 {
-		//msg := fmt.Sprintf("parse.orthosolo(): NoDataForTaxon: %s", txid)
 		msg := fmt.Sprintf("%s: %s: NoDataForTaxon: %s", util.FN(1), util.FN(0), txid)
 		return solos, errors.New(msg)
 	} // no orthology data in any of the sources, does occur
@@ -700,7 +709,6 @@ func OrthoDuo(datdir, txidL, txidR string, txn2prm util.Set2D) (util.Set3D, erro
 		} // id: external cluster ID
 	}
 	if len(duos) == 0 {
-		//msg := fmt.Sprintf("parse.OrthoDuo(): NoDataForTaxa: %s--%s", txidL, txidR)
 		msg := fmt.Sprintf("%s: %s: NoDataForTaxa: %s--%s", util.FN(1), util.FN(0), txidL, txidR)
 		return duos, errors.New(msg)
 	} // 20200531: none Note: no filtering by BGW

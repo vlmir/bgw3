@@ -2,26 +2,18 @@ package bgw
 
 import (
 	"encoding/json"
+	"errors"
+	"fmt"
 	"github.com/vlmir/bgw3/src/util"
 	"io/ioutil"
 )
 
 var CV = "3.3.0"
 
-// the 2 vars below are used for downloading
-var Coltri = map[string]string{
-	"9606":  "human",
-	"10090": "mouse",
-	"10116": "rat",
-}
-var Tflink = map[string]string{
-	"6239":   "Caenorhabditis_elegans_interactions_All_mitab_v1.0.tsv.gz",
-	"7955":   "Danio_rerio_interactions_All_mitab_v1.0.tsv.gz",
-	"7227":   "Drosophila_melanogaster_interactions_All_mitab_v1.0.tsv.gz",
-	"9606":   "Homo_sapiens_interactions_All_mitab_v1.0.tsv.gz",
-	"10090":  "Mus_musculus_interactions_All_mitab_v1.0.tsv.gz",
-	"10116":  "Rattus_norvegicus_interactions_All_mitab_v1.0.tsv.gz",
-	"559292": "Saccharomyces_cerevisiae_interactions_All_mitab_v1.0.tsv.gz",
+var Taxa4regs = map[string][]string{
+	"signor": []string{
+		"9606",
+	},
 }
 
 var Taxa4tftg = map[string][]string{
@@ -32,13 +24,13 @@ var Taxa4tftg = map[string][]string{
 		"9606",
 	},
 	"tflink": []string{
-	"6239",
-	"7955",
-	"7227",
-	"9606",
-	"10090",
-	"10116",
-	"559292",
+		"6239",
+		"7955",
+		"7227",
+		"9606",
+		"10090",
+		"10116",
+		"559292",
 	},
 }
 
@@ -161,13 +153,17 @@ func (p *Xmap) New() {
 }
 
 func (xmap Xmap) Unmarshal(pthj string) error {
+	// used only in rdf4bgw
+	// TODO consider moving to rdf4bgw
 	jdat, err := ioutil.ReadFile(pthj) // []bite
 	if err != nil {
 		// should be in main funcs instead
-		panic(err)
+		msg := fmt.Sprintf("%s: %s: ioutil.ReadFile: %s", util.FN(1), util.FN(0), err)
+		return errors.New(msg)
 	}
-	if err = json.Unmarshal(jdat, &xmap); err != nil {
-		panic(err)
+	if err := json.Unmarshal(jdat, &xmap); err != nil {
+		msg := fmt.Sprintf("%s: %s: json.Unmarshal: %s", util.FN(1), util.FN(0), err)
+		return errors.New(msg)
 	}
 	return nil
 }

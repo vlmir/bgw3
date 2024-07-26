@@ -135,7 +135,7 @@ func FormL(s0 string) string {
 	// used only in FormT() background
 	s0 = strings.TrimSpace(s0)
 	if len(s0) == 0 {
-		msg := fmt.Sprintf("%s(%s): CalledBy: %s: EmptyString", util.FN(0), s0, util.FN(1))
+		msg := fmt.Sprintf("%s: %s: EmptyString", util.FN(1), util.FN(0))
 		panic(errors.New(msg))
 	}
 	return strings.Join([]string{`"`, s0, `"`}, "")
@@ -144,7 +144,7 @@ func FormL(s0 string) string {
 func FormU(s0 string) string {
 	s0 = strings.TrimSpace(s0)
 	if len(s0) == 0 {
-		msg := fmt.Sprintf("%s(%s): CalledBy: %s: EmptyString", util.FN(0), s0, util.FN(1))
+		msg := fmt.Sprintf("%s: %s: EmptyString", util.FN(1), util.FN(0))
 		panic(errors.New(msg))
 	}
 	return strings.Join([]string{"<", s0, ">"}, "")
@@ -153,12 +153,12 @@ func FormU(s0 string) string {
 func CompU(s0, s1 string) string {
 	s0 = strings.TrimSpace(s0)
 	if len(s0) == 0 {
-		msg := fmt.Sprintf("%s(%s): CalledBy: %s: EmptyString", util.FN(0), s0, util.FN(1))
+		msg := fmt.Sprintf("%s: %s: EmptyString", util.FN(1), util.FN(0))
 		panic(errors.New(msg))
 	}
 	s1 = strings.TrimSpace(s1)
 	if len(s1) == 0 {
-		msg := fmt.Sprintf("%s(%s): CalledBy: %s: EmptyString", util.FN(0), s1, util.FN(1))
+		msg := fmt.Sprintf("%s: %s: EmptyString", util.FN(1), util.FN(0))
 		panic(errors.New(msg))
 	}
 	return strings.Join([]string{"<", s0, s1, ">"}, "")
@@ -167,17 +167,17 @@ func CompU(s0, s1 string) string {
 func FormT(s0, s1, s2 string) string {
 	s0 = strings.TrimSpace(s0)
 	if len(s0) == 0 {
-		msg := fmt.Sprintf("%s(%s): CalledBy: %s: EmptyString", util.FN(0), s0, util.FN(1))
+		msg := fmt.Sprintf("%s: %s: EmptyString", util.FN(1), util.FN(0))
 		panic(errors.New(msg))
 	}
 	s1 = strings.TrimSpace(s1)
 	if len(s1) == 0 {
-		msg := fmt.Sprintf("%s(%s): CalledBy: %s: EmptyString", util.FN(0), s1, util.FN(1))
+		msg := fmt.Sprintf("%s: %s: EmptyString", util.FN(1), util.FN(0))
 		panic(errors.New(msg))
 	}
 	s2 = strings.TrimSpace(s2)
 	if len(s2) == 0 {
-		msg := fmt.Sprintf("%s(%s): CalledBy: %s: EmptyString", util.FN(0), s2, util.FN(1))
+		msg := fmt.Sprintf("%s: %s: EmptyString", util.FN(1), util.FN(0))
 		panic(errors.New(msg))
 	}
 	return strings.Join([]string{s0, s1, s2, ".\n"}, " ")
@@ -189,13 +189,13 @@ func FmtURIs(fm util.SliceSet) map[string]string {
 	uris := make(map[string]string)
 	groups := fm.Keys() // sorted, non-empty
 	if len(groups) != 3 {
-		msg := fmt.Sprintf("%s(%v): CalledBy: %s: MalFormed: %v", util.FN(0), fm, util.FN(1), fm)
+		msg := fmt.Sprintf("%s: %s: %v: WrongLength", util.FN(1), util.FN(0), fm)
 		panic(errors.New(msg))
 	}
 	for _, group := range groups {
 		keys := fm[group]
 		if len(keys) == 0 {
-			msg := fmt.Sprintf("%s(%v): CalledBy: %s: NoKeysFor: %s", util.FN(0), fm, util.FN(1), group)
+			msg := fmt.Sprintf("%s: %s: %v: NoKeysFor: %s", util.FN(1), util.FN(0), fm, group)
 			panic(errors.New(msg))
 		}
 		switch {
@@ -209,18 +209,18 @@ func FmtURIs(fm util.SliceSet) map[string]string {
 		for _, key := range keys {
 			bits, ok := ss[key] // []string{nsk, uid}
 			if !ok {
-				msg := fmt.Sprintf("%s(%v): CalledBy: %s: NoEntryFor: %s", util.FN(0), fm, util.FN(1), key)
+				msg := fmt.Sprintf("%s: %s: %v: NoEntryFor: %s", util.FN(1), util.FN(0), fm, key)
 				panic(errors.New(msg))
 			}
 			if len(bits) < 2 {
-				msg := fmt.Sprintf("%s(%v): CalledBy: %s: %v TooShort", util.FN(0), fm, util.FN(1), bits)
+				msg := fmt.Sprintf("%s: %s: %v: TooShort", util.FN(1), util.FN(0), fm)
 				panic(errors.New(msg))
 			}
 			nsk := bits[0]
 			uid := bits[1]
 			ns, ok := Nss[nsk]
 			if !ok {
-				msg := fmt.Sprintf("%s(%v): CalledBy: %s: NoEntryFor: %s", util.FN(0), fm, util.FN(1), nsk)
+				msg := fmt.Sprintf("%s: %s: %v: NoEntryFor: %s", util.FN(1), util.FN(0), fm, nsk)
 				panic(errors.New(msg))
 			}
 			myU := CompU(ns, uid)
@@ -250,13 +250,13 @@ func Capita(fm util.SliceSet) (string, int) {
 	nln := 0
 	groups := fm.Keys() // sorted, non-empty
 	if len(groups) != 3 {
-		msg := fmt.Sprintf("%s(%v): CalledBy: %s: MalFormed: %v", util.FN(0), fm, util.FN(1), fm)
+		msg := fmt.Sprintf("%s: %s: %v: WrongLength", util.FN(1), util.FN(0), fm)
 		panic(errors.New(msg))
 	}
 	for _, group := range groups {
 		keys := fm[group]
 		if len(keys) == 0 {
-			msg := fmt.Sprintf("%s(%v): CalledBy: %s: NoKeysFor: %s", util.FN(0), fm, util.FN(1), group)
+			msg := fmt.Sprintf("%s: %s: %v: NoKeysFor: %s", util.FN(1), util.FN(0), fm, group)
 			panic(errors.New(msg))
 		}
 		switch {
@@ -279,7 +279,7 @@ func Capita(fm util.SliceSet) (string, int) {
 		for _, key := range keys {
 			bits, ok := ss[key] // []string
 			if !ok {
-				msg := fmt.Sprintf("%s(%v): CalledBy: %s: NoEntryFor: %s", util.FN(0), fm, util.FN(1), key)
+				msg := fmt.Sprintf("%s: %s: %v: NoEntryFor: %s", util.FN(1), util.FN(0), fm, key)
 				panic(errors.New(msg))
 			}
 			sU := CompU(Nss[bits[0]], bits[1])

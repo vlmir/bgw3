@@ -371,9 +371,9 @@ func Test_Prot2go(t *testing.T) {
 	bps, ccs, mfs, _ := parse.Gaf(pth + "goa/9606.gaf")
 	out := [3]string{"prot2bp/9606.nt", "prot2cc/9606.nt", "prot2mf/9606.nt"}
 	tts := []tt{
-		{bps, arg2, wpth + out[0], 13},
-		{ccs, arg2, wpth + out[1], 14},
-		{mfs, arg2, wpth + out[2], 13},
+		{bps, arg2, wpth + out[0], 1},
+		{ccs, arg2, wpth + out[1], 1},
+		{mfs, arg2, wpth + out[2], 1},
 	}
 	for i, tt := range tts {
 		n, err := Prot2go(tt.arg1, tt.arg2, tt.arg3)

@@ -9,7 +9,6 @@ import (
 	"github.com/vlmir/bgw3/src/parse"
 	"github.com/vlmir/bgw3/src/semweb"
 	"github.com/vlmir/bgw3/src/util"
-	"log"
 	"os"
 	"strings"
 )
@@ -23,9 +22,9 @@ func newFH(wpth string) *os.File {
 	return fh
 }
 
-func counter(s []string, c util.Set2D, a, d, v string) (l int) {
+func counter(ss []string, c util.Set2D, a, d, v string) (l int) {
 	// used only in Gene2phen and Prot2go
-	l = len(s)
+	l = len(ss)
 	if l == 0 {
 		c.Add(d, v)
 	} else {
@@ -111,9 +110,10 @@ func Prot2prot(d *bgw.Dat4bridge, x *bgw.Xmap, wdir string) error {
 		"stm",
 	}
 	header, nln := rdf.Capita(keys4b)
-	if nln < 28 { // 23? // special case
-		msg := fmt.Sprintf("export.Prot2prot(): rdf.Capita(%v): MalformedHeader", keys4b)
-		panic(errors.New(msg))
+	exp := 28
+	if nln < exp {
+		msg := fmt.Sprintf("%s: %s: rdf.Capita: TooFewLines: want %d have %d", util.FN(1), util.FN(0), exp, nln)
+		return errors.New(msg)
 	}
 	flags := make(util.Set1D) // for printing the header only once per file
 	var srcs = map[string]string{
@@ -159,12 +159,12 @@ func Prot2prot(d *bgw.Dat4bridge, x *bgw.Xmap, wdir string) error {
 			continue
 		} // filterong by Reference Proteome
 		if len(bgwAs) > 1 {
-			msg := fmt.Sprintf("export.prot2prot(): Multiple BGW ids: idA: %s bgwAs: %v", idA, bgwAs)
-			log.Println(msg)
+			msg := fmt.Sprintf("%s: %s: MultipleIdsA %s: %v", util.FN(1), util.FN(0), idA, bgwAs)
+			fmt.Printf("%s\n", msg)
 		} // normally should never happen
 		if len(bgwBs) > 1 {
-			msg := fmt.Sprintf("export.prot2prot(): Multiple BGW ids: idB: %s bgwBs: %v", idB, bgwBs)
-			log.Println(msg)
+			msg := fmt.Sprintf("%s: %s: MultipleIdsB %s: %v", util.FN(1), util.FN(0), idB, bgwBs)
+			fmt.Printf("%s\n", msg)
 		} // normally should never happen
 		cnts.Add(pdck, srck)
 		bgwA := bgwAs[0]
@@ -225,6 +225,13 @@ func Prot2prot(d *bgw.Dat4bridge, x *bgw.Xmap, wdir string) error {
 		}
 		sb.Reset()
 	} // duoid
+	if len(flags.Keys()) == 0 {
+		msg := fmt.Sprintf("%s: %s: NoPairsFor: %s %s", util.FN(1), util.FN(0), srck, txid)
+		return errors.New(msg)
+	} else {
+		msg := fmt.Sprintf("export.Prot2prot(): %s %s %v", srck, txid, flags)
+		fmt.Printf("%s\n", msg)
+	}
 	return nil
 } // Prot2prot
 
@@ -254,10 +261,11 @@ func Reg2targ(d *bgw.Dat4bridge, x *bgw.Xmap, wdir string) error {
 	keys4b["Prns"] = []string{
 		"stm",
 	}
+	exp := 34
 	header, nln := rdf.Capita(keys4b)
 	if nln < 34 {
-		msg := fmt.Sprintf("export.Reg2targ(): rdf.Capita(%v): MalformedHeader", keys4b)
-		panic(errors.New(msg))
+		msg := fmt.Sprintf("%s: %s: rdf.Capita: TooFewLines: want %d have %d", util.FN(1), util.FN(0), exp, nln)
+		return errors.New(msg)
 	}
 	d4b := *d
 	xmap := *x
@@ -338,13 +346,13 @@ func Reg2targ(d *bgw.Dat4bridge, x *bgw.Xmap, wdir string) error {
 		}
 		// skipping pairs with ambiguous entyty types
 		if len(typeAs) > 1 {
-			msg := fmt.Sprintf("export.Reg2targ(): multiple entity A types: %s:%s, skipping: ", duokey, typeAs)
-			fmt.Printf("%s\n", msg)
+			msg := fmt.Sprintf("%s: %s: MultiIdsA %s: %v", util.FN(1), util.FN(0), duokey, typeAs)
+			fmt.Printf("%s, skipping\n", msg)
 			continue // 2024-04: 87
 		}
 		if len(typeBs) > 1 {
-			msg := fmt.Sprintf("export.Reg2targ(): multiple entity B types: %s:%s, skipping: ", duokey, typeBs)
-			fmt.Printf("%s\n", msg)
+			msg := fmt.Sprintf("%s: %s: MultiIdsB %s: %v", util.FN(1), util.FN(0), duokey, typeBs)
+			fmt.Printf("%s, skipping\n", msg)
 			continue // 2024-04: 0
 		}
 		typeA := typeAs[0] // assuming a single vwlue
@@ -450,7 +458,13 @@ func Reg2targ(d *bgw.Dat4bridge, x *bgw.Xmap, wdir string) error {
 			}
 		} // pdck
 	} // duokey
-	log.Println("export.Reg2targ():", srck, txid, cnts)
+	if len(flags.Keys()) == 0 {
+		msg := fmt.Sprintf("%s: %s: NoPairsFor: %s %s", util.FN(1), util.FN(0), srck, txid)
+		return errors.New(msg)
+	} else {
+		msg := fmt.Sprintf("export.Reg2targ(): %s %s %v", srck, txid, flags)
+		fmt.Printf("%s\n", msg)
+	}
 	return nil
 } // Reg2targ
 
@@ -479,10 +493,11 @@ func Tfac2gene(d *bgw.Dat4bridge, x *bgw.Xmap, wdir string) error {
 	keys4b["Prns"] = []string{
 		"stm",
 	}
+	exp := 32
 	header, nln := rdf.Capita(keys4b)
 	if nln < 32 {
-		msg := fmt.Sprintf("export.Tfac2gene(): rdf.Capita(%v): MalformedHeader", keys4b)
-		panic(errors.New(msg))
+		msg := fmt.Sprintf("%s: %s: rdf.Capita: TooFewLines: want %d have %d", util.FN(1), util.FN(0), exp, nln)
+		return errors.New(msg)
 	}
 	d4b := *d
 	xmap := *x
@@ -640,7 +655,13 @@ func Tfac2gene(d *bgw.Dat4bridge, x *bgw.Xmap, wdir string) error {
 			}
 		} // pdck
 	} // duokey
-	log.Println("export.Tfac2gene():", srck, txid, cnts)
+	if len(flags.Keys()) == 0 {
+		msg := fmt.Sprintf("%s: %s: NoPairsFor: %s %s", util.FN(1), util.FN(0), srck, txid)
+		return errors.New(msg)
+	} else {
+		msg := fmt.Sprintf("export.Tfac2gene(): %s %s %v", srck, txid, flags)
+		fmt.Printf("%s\n", msg)
+	}
 	return nil
 } // Tfac2gene
 
@@ -671,10 +692,11 @@ func SigPways(d *bgw.Dat4bridge, x *bgw.Xmap, wdir string) error {
 	keys4b["Prns"] = []string{
 		"stm",
 	}
+	exp := 36
 	header, nln := rdf.Capita(keys4b)
 	if nln < 36 {
-		msg := fmt.Sprintf("export.SigPways(): rdf.Capita(%v): MalformedHeader", keys4b)
-		panic(errors.New(msg))
+		msg := fmt.Sprintf("%s: %s: rdf.Capita: TooFewLines: want %d have %d", util.FN(1), util.FN(0), exp, nln)
+		return errors.New(msg)
 	}
 	d4b := *d
 	xmap := *x
@@ -728,13 +750,13 @@ func SigPways(d *bgw.Dat4bridge, x *bgw.Xmap, wdir string) error {
 		}
 		// skipping pairs with ambiguous entyty types - never happens
 		if len(typeAs) > 1 {
-			msg := fmt.Sprintf("export.SigPways(): multiple entity A types: %s:%s, skipping: ", duokey, typeAs)
-			fmt.Printf("%s\n", msg)
+			msg := fmt.Sprintf("%s: %s: MultiIdsA %s: %v", util.FN(1), util.FN(0), duokey, typeAs)
+			fmt.Printf("%s, skipping\n", msg)
 			continue // should never happen TODO return error
 		}
 		if len(typeBs) > 1 {
-			msg := fmt.Sprintf("export.SigPways(): multiple entity B types: %s:%s, skipping: ", duokey, typeBs)
-			fmt.Printf("%s\n", msg)
+			msg := fmt.Sprintf("%s: %s: MultiIdsB %s: %v", util.FN(1), util.FN(0), duokey, typeBs)
+			fmt.Printf("%s, skipping\n", msg)
 			continue // should never happen TODO return error
 		}
 		typeA := typeAs[0]
@@ -844,7 +866,13 @@ func SigPways(d *bgw.Dat4bridge, x *bgw.Xmap, wdir string) error {
 			}
 		} // pdck
 	} // duokey
-	log.Println("export.SigPways():", srck, txid, cnts)
+	if len(flags.Keys()) == 0 {
+		msg := fmt.Sprintf("%s: %s: NoPairsFor: %s %s", util.FN(1), util.FN(0), srck, txid)
+		return errors.New(msg)
+	} else {
+		msg := fmt.Sprintf("export.SigPways(): %s %s %v", srck, txid, flags)
+		fmt.Printf("%s\n", msg)
+	}
 	return nil
 } // SigPways
 
@@ -867,10 +895,11 @@ func Gene2phen(duos, gsym2bgw util.Set3D, wpth string) (int, error) {
 	keys4b["Prns"] = []string{
 		"stm",
 	}
+	exp := 20
 	header, nln := rdf.Capita(keys4b)
 	if nln < 20 {
-		msg := fmt.Sprintf("export.Gene2phen(): rdf.Capita(%v): MalformedHeader", keys4b)
-		panic(errors.New(msg))
+		msg := fmt.Sprintf("%s: %s: rdf.Capita: TooFewLines: want %d have %d", util.FN(1), util.FN(0), exp, nln)
+		return 0, errors.New(msg)
 	}
 	nss := rdf.Nss // BGW URI name spaces
 	srck := "uniprot"
@@ -897,33 +926,19 @@ func Gene2phen(duos, gsym2bgw util.Set3D, wpth string) (int, error) {
 		idR := bits[1]
 		oriL := strings.Split(idL, "!")[1] // Gene Name
 		bgwLs := gsym2bgw[oriL]["bgwg"].Keys()
-		cntLs := len(bgwLs)
-		if cntLs != 1 {
-			msg := fmt.Sprintf("export.Gene2phen():%s: bgwLs: %v", oriL, bgwLs)
-			fmt.Printf("%s\n", msg)
-		} // 2303: 1 missing BGW gene, likely due to RefProt filtering
-		// filtering, superfluous, done anyway by looping over bgwLs
-		l := 0
+		l := 0 // number of items in the first arg
 		if l = counter(bgwLs, cnt, "addG", "dropG", oriL); l == 0 {
+			msg := fmt.Sprintf("%s: %s: NoBgwGeneFor %s", util.FN(1), util.FN(0), oriL)
+			fmt.Printf("%s, skipping\n", msg)
 			continue
-		}
+		} // 2304: 1 missing BGW gene, likely due to RefProt filtering
 		oriR := strings.Split(idR, "!")[1] // OMIM ID
 		duoU := rdf.CompU(stmNS, duoid)
 		sb.WriteString(rdf.FormT(duoU, ourUs["ins2cls"], clsU))
 		sb.WriteString(rdf.FormT(duoU, ourUs["sub2cls"], ourUs["stm"]))
 		clslbl := fmt.Sprintf("%s--%s", oriL, oriR)
 		sb.WriteString(rdf.FormT(duoU, ourUs["sth2lbl"], rdf.FormL(clslbl)))
-		upcas := duo["upca"].Keys()
-		if len(upcas) > 1 {
-			// msg := fmt.Sprintf("export.Gene2phen():%s: upcas: %v", duoid, upcas)
-			// fmt.Printf("%s\n", msg)
-		} // 20200531: 2 using symG in the key, all the 4 accs with a single dfn
-		// 20200531: 69 with > 1 dfns using symG in the key; the same MIM ID indeed
-		dfns := duo["dfn"].Keys()
-		if len(dfns) != 1 {
-			msg := fmt.Sprintf("export.Gene2phen():%s:%v: %v dfns: %v", duoid, upcas, len(dfns), dfns)
-			fmt.Printf("%s\n", msg)
-		} // 230303: 74
+		dfns := duo["dfn"].Keys() // 2o24: 71 duos with multiple OMIM definitions
 		dfn := strings.Join(dfns, "; ")
 		clsdfn := fmt.Sprintf("Association between gene %s and disease %v", oriL, dfn)
 		sb.WriteString(rdf.FormT(duoU, ourUs["sth2dfn"], rdf.FormL(clsdfn)))
@@ -956,13 +971,13 @@ func Gene2phen(duos, gsym2bgw util.Set3D, wpth string) (int, error) {
 	} // duoid
 	msg := ""
 	if cntD == 0 {
-		msg = fmt.Sprintf("export.Prot2phen(): NoDuos") // sic!
-		panic(errors.New(msg))
+		msg := fmt.Sprintf("%s: %s: NoDuos", util.FN(1), util.FN(0))
+		return cntD, errors.New(msg)
 	}
 	msg = fmt.Sprintf("export.Gene2phen(): Pairs: added: %d dropped: %d", cntD, len(duos)-cntD)
-	log.Println(msg)
+	fmt.Printf("%s\n", msg)
 	msg = fmt.Sprintf("export.Gene2phen(): Genes: added: %d dropped: %d", len(cnt["addG"]), len(cnt["dropG"]))
-	log.Println(msg)
+	fmt.Printf("%s\n", msg)
 	return cntD, nil
 } // Gene2phen
 
@@ -991,10 +1006,11 @@ func Prot2go(duos, upac2bgw util.Set3D, wpth string) (int, error) {
 	keys4b["Prns"] = []string{
 		"stm",
 	}
+	exp := 28
 	header, nln := rdf.Capita(keys4b)
 	if nln < 28 {
-		msg := fmt.Sprintf("export.Prot2go(): rdf.Capita(%v): MalformedHeader", keys4b)
-		panic(errors.New(msg))
+		msg := fmt.Sprintf("%s: %s: rdf.Capita: TooFewLines: want %d have %d", util.FN(1), util.FN(0), exp, nln)
+		return 0, errors.New(msg)
 	}
 	nss := rdf.Nss // BGW URI name spaces
 	/*
@@ -1013,7 +1029,6 @@ func Prot2go(duos, upac2bgw util.Set3D, wpth string) (int, error) {
 	var sb strings.Builder
 	ourUs := rdf.FmtURIs(keys4b)
 	sb.WriteString(header)
-	nln = 0
 
 	stmNS := "http://rdf.biogateway.eu/prot-onto/"
 	rdfNS := nss["rdf"]
@@ -1026,8 +1041,8 @@ func Prot2go(duos, upac2bgw util.Set3D, wpth string) (int, error) {
 		//for duoid, duo := range duos {
 		ppys := duo["ppy"].Keys()
 		if l := len(ppys); l != 1 { // unnecessary, may help debugging
-			msg := fmt.Sprintf("export.Prot2go():%s: Want 1 property have: %d: %v", duoid, l, ppys)
-			panic(errors.New(msg))
+			msg := fmt.Sprintf("%s: %s: %s: Want 1 property have: %d: %v", util.FN(1), util.FN(0), duoid, l, ppys)
+			return 0, errors.New(msg)
 		}
 		refs := duo["ref"].Keys()
 		/// Class level
@@ -1040,23 +1055,20 @@ func Prot2go(duos, upac2bgw util.Set3D, wpth string) (int, error) {
 		oriR := strings.Split(idR, "!")[1] // GO ID
 		bgwLs := upac2bgw[oriL]["bgwp"].Keys()
 		if l := counter(bgwLs, cnt, "addP", "dropP", oriL); l == 0 {
+			msg := fmt.Sprintf("%s: %s: NoBgwProtFor %s", util.FN(1), util.FN(0), oriL)
+			fmt.Printf("%s, skipping\n", msg)
 			continue
 		}
 
 		sb.WriteString(rdf.FormT(duoU, ourUs["ins2cls"], clsU))
-		nln++
 		sb.WriteString(rdf.FormT(duoU, ourUs["sub2cls"], ourUs["stm"]))
-		nln++
 		oboid := strings.Replace(oriR, "_", ":", 1)
 		clslbl := fmt.Sprintf("%s--%s", oriL, oboid)
 		sb.WriteString(rdf.FormT(duoU, ourUs["sth2lbl"], rdf.FormL(clslbl)))
-		nln++
 		pdc := ppys[0]
 		clsdfn := fmt.Sprintf("Association between protein %s and %s %s", oriL, gosubs[pdc], oboid)
 		sb.WriteString(rdf.FormT(duoU, ourUs["sth2dfn"], rdf.FormL(clsdfn)))
-		nln++
 		sb.WriteString(rdf.FormT(duoU, rdf.CompU(rdfNS, "predicate"), ourUs[pdc]))
-		nln++
 
 		uriR := rdf.CompU(nss["obo"], oriR)
 		// multiple subjects
@@ -1066,48 +1078,40 @@ func Prot2go(duos, upac2bgw util.Set3D, wpth string) (int, error) {
 			}
 			uriL := rdf.CompU(nss["uniprot"], bgwL)
 			sb.WriteString(rdf.FormT(duoU, rdf.CompU(rdfNS, "subject"), uriL))
-			nln++
 			sb.WriteString(rdf.FormT(uriL, ourUs[pdc], uriR))
-			nln++
 		}
 		sb.WriteString(rdf.FormT(duoU, rdf.CompU(rdfNS, "object"), uriR))
-		nln++
 
 		/// INSTANCES
 		insid := fmt.Sprintf("%s%s%s", duoid, "#", "goa")
 		insU := rdf.CompU(stmNS, insid)
 		sb.WriteString(rdf.FormT(insU, ourUs["ins2cls"], duoU))
-		nln++
 		sb.WriteString(rdf.FormT(insU, ourUs["sth2src"], srcU))
-		nln++
 		for _, ref := range util.X1type(refs, "pubmed", "!") {
 			myU := rdf.CompU(nss["pubmed"], ref)
 			sb.WriteString(rdf.FormT(insU, ourUs["sth2evd"], myU))
-			nln++
 		}
 		for _, eco := range duo["eco"].Keys() { // for GPA files
 			myU := rdf.CompU(nss["obo"], eco)
 			sb.WriteString(rdf.FormT(insU, ourUs["sth2mtd"], myU))
-			nln++
 		}
 		for _, goc := range duo["goc"].Keys() { // for GAF files
 			sb.WriteString(rdf.FormT(insU, ourUs["sth2mtd"], rdf.FormL(goc)))
-			nln++
 		}
 		cntD++
 		wfh.Write([]byte(sb.String()))
 		sb.Reset()
 	} // duoid
-	msg := ""
 	if cntD == 0 {
-		msg = fmt.Sprintf("export.Prot2go(): NoDuos")
-		panic(errors.New(msg))
+		msg := fmt.Sprintf("%s: %s: NoDuos", util.FN(1), util.FN(0))
+		return cntD, errors.New(msg)
 	}
+	msg := ""
 	msg = fmt.Sprintf("export.Prot2go(): Pairs: added: %d dropped: %d", cntD, len(duos)-cntD)
-	log.Println(msg)
+	fmt.Printf("%s\n", msg)
 	msg = fmt.Sprintf("export.Prot2go(): Prots: added: %d dropped: %d", len(cnt["addP"]), len(cnt["dropP"]))
-	log.Println(msg)
-	return nln, nil
+	fmt.Printf("%s\n", msg)
+	return cntD, nil
 } // Prot2go
 
 // Arg1: orthology data for one pair of taxa, output of parse.OrthoDuo(), non empty
@@ -1135,10 +1139,11 @@ func Ortho(duos util.Set3D, wpth string) (int, error) {
 	keys4b["Prns"] = []string{
 		"stm",
 	}
+	exp := 24
 	header, nln := rdf.Capita(keys4b)
 	if nln < 24 {
-		msg := fmt.Sprintf("export.Ortho(): rdf.Capita(%v): MalformedHeader", keys4b)
-		panic(errors.New(msg))
+		msg := fmt.Sprintf("%s: %s: rdf.Capita: TooFewLines: want %d have %d", util.FN(1), util.FN(0), exp, nln)
+		return 0, errors.New(msg)
 	}
 	nss := rdf.Nss // BGW URI name spaces
 	var srcs = map[string]string{
@@ -1216,12 +1221,12 @@ func Gene(rpthI, wpth string, p *bgw.Xmap) error {
 	// Idmap returns errors if fails to open the file OR the output map is empty
 	xrf2upac, err := parse.Idmap(rpthI, bgw.Upkeys, 1, 2, 0) // RefProts only
 	if err != nil {
-		msg := fmt.Sprintf("export.Gene():  xrf2upac: %s", err)
+		msg := fmt.Sprintf("%s: %s: parse.Idmap: xrf2upac: %s", util.FN(1), util.FN(0), err)
 		return errors.New(msg)
 	}
 	upac2xrf, err := parse.Idmap(rpthI, bgw.Upkeys, 0, 1, 2) // RefProt only
 	if err != nil {
-		msg := fmt.Sprintf("export.Gene(): upac2xrf: %s", err)
+		msg := fmt.Sprintf("%s: %s: parse.Idmap: upac2xrf: %s", util.FN(1), util.FN(0), err)
 		return errors.New(msg)
 	}
 	// the 4 maps below are RefProt limited
@@ -1286,10 +1291,11 @@ func Gene(rpthI, wpth string, p *bgw.Xmap) error {
 	// 'gene' graph ini
 	var sbG strings.Builder
 	gnUs := rdf.FmtURIs(keys4g) // URIs for 'gene' graph
+	exp := 20
 	header, nln := rdf.Capita(keys4g)
 	if nln < 20 {
-		msg := fmt.Sprintf("MalformedHeader")
-		panic(errors.New(msg))
+		msg := fmt.Sprintf("%s: %s: rdf.Capita: TooFewLines: want %d have %d", util.FN(1), util.FN(0), exp, nln)
+		return errors.New(msg)
 	}
 	// main loop
 	for _, nmG := range gnm2upca.Keys() {
@@ -1387,7 +1393,7 @@ func Gene(rpthI, wpth string, p *bgw.Xmap) error {
 	} // lblG
 	outG := sbG.String()
 	if len(outG) == 0 {
-		msg := fmt.Sprintf("%s: CalledBy: %s: NoDataForTaxon: %s", util.FN(0), util.FN(1), txid)
+		msg := fmt.Sprintf("%s: %s: NoGenesForTaxon: %s", util.FN(1), util.FN(0), txid)
 		return errors.New(msg)
 	}
 	wfh.Write([]byte(header))
@@ -1402,12 +1408,12 @@ func Prot(rpthUP, rpthI, wpth string, p *bgw.Xmap) error {
 	// Idmap returns errors if fails to open the file OR the output map is empty
 	xrf2upac, err := parse.Idmap(rpthI, bgw.Upkeys, 1, 2, 0) // Set3D
 	if err != nil {
-		msg := fmt.Sprintf("export.Prot():  xrf2upac: %s", err)
+		msg := fmt.Sprintf("%s: %s: parse.Idmap: xrf2upac: %s", util.FN(1), util.FN(0), err)
 		return errors.New(msg)
 	}
 	upac2xrf, err := parse.Idmap(rpthI, bgw.Upkeys, 0, 1, 2) // Set3D
 	if err != nil {
-		msg := fmt.Sprintf("export.Prot():  upac2xrf: %s", err)
+		msg := fmt.Sprintf("%s: %s: parse.Idmap: upac2xrf: %s", util.FN(1), util.FN(0), err)
 		return errors.New(msg)
 	}
 	upca2upac := make(util.Set2D)
@@ -1450,16 +1456,17 @@ func Prot(rpthUP, rpthI, wpth string, p *bgw.Xmap) error {
 	// prot graph ini
 	var sbP strings.Builder
 	gpUs := rdf.FmtURIs(keys4p) // URIs for 'prot' graph
+	exp := 20
 	header, nln := rdf.Capita(keys4p)
 	if nln < 20 {
-		msg := fmt.Sprintf("MalformedHeader")
-		panic(errors.New(msg))
+		msg := fmt.Sprintf("%s: %s: rdf.Capita: TooFewLines: want %d have %d", util.FN(1), util.FN(0), exp, nln)
+		return errors.New(msg)
 	}
 	/////////////////////////////////////////////////////////////////////////////
 
 	allUPs, err := parse.Tab2set3D(rpthUP, bgw.UpdatConf.Keys, bgw.UpdatConf.Vals)
 	if err != nil {
-		msg := fmt.Sprintf("export.Prot(): parse.Tab2set3D(%s, _, _): allUPs: EmptySet", rpthUP)
+		msg := fmt.Sprintf("%s: %s", util.FN(1), err) // err includes Prot and Tab2set3D
 		return errors.New(msg)
 	}
 	txnU := rdf.CompU(nss["ncbitx"], txid) // taxon URI
@@ -1493,8 +1500,8 @@ func Prot(rpthUP, rpthI, wpth string, p *bgw.Xmap) error {
 			continue
 		}
 		if len(oneP) < 5 {
-			msg := fmt.Sprintf("export.Prot():%s:%s: TooFewDataFields: %d", txid, upca, len(oneP))
-			fmt.Printf("%s\n", msg)
+			msg := fmt.Sprintf("%s: %s: %s: %s: TooFewDataFields: %d", util.FN(1), util.FN(0), txid, upca, len(oneP))
+			fmt.Printf("%s, skipping\n", msg)
 			continue
 		} // all filds present and have at least one entry
 		oneXs, ok := upac2xrf[upca] // xrefs for the canonical accession only
@@ -1503,8 +1510,8 @@ func Prot(rpthUP, rpthI, wpth string, p *bgw.Xmap) error {
 			continue
 		}
 		if len(oneXs) < 3 {
-			msg := fmt.Sprintf("export.Prot():%s:%s: TooFewDataFields: %d", txid, upca, len(oneXs))
-			fmt.Printf("%s\n", msg)
+			msg := fmt.Sprintf("%s: %s: %s: %s: TooFewDataFields: %d", util.FN(1), util.FN(0), txid, upca, len(oneP))
+			fmt.Printf("%s, skipping\n", msg)
 			continue
 		} // all filds present and have at least one entry
 		// not all have pubmed refs, thus 5 iso 6
@@ -1517,8 +1524,6 @@ func Prot(rpthUP, rpthI, wpth string, p *bgw.Xmap) error {
 		if len(pdfns) == 1 {
 			dfnP = strings.TrimSpace(pdfns[0])
 		} else {
-			//msg := fmt.Sprintf("export.Prot():%s:%s: NoDefinition", txid, upca)
-			//fmt.Printf("%s\n", msg)
 			dfnP = "Unspecified" // 90 in 25 species
 		} // 20200531: 124
 		oriU := rdf.CompU(nss["uniprot"], upca)
@@ -1586,7 +1591,7 @@ func Prot(rpthUP, rpthI, wpth string, p *bgw.Xmap) error {
 	/////////////////////////////////////////////////////////////////////////////
 	outP := sbP.String()
 	if len(outP) == 0 {
-		msg := fmt.Sprintf("%s: CalledBy: %s: NoDataForTaxon: %s", util.FN(0), util.FN(1), txid)
+		msg := fmt.Sprintf("%s: %s: ProteinsForTaxon: %s", util.FN(1), util.FN(0), txid)
 		return errors.New(msg)
 	}
 	wfh.Write([]byte(header))

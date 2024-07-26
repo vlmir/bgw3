@@ -2,6 +2,7 @@
 package rdf4bgw
 
 import (
+	"github.com/vlmir/bgw3/src/bgw"
 	"github.com/vlmir/bgw3/src/util" // pkg 'util'
 	"testing"
 )
@@ -55,16 +56,13 @@ func Test_Reg2pway(t *testing.T) {
 	type tt struct {
 		arg1 string
 		arg2 string
-		arg3 util.Set2D
+		arg3 map[string][]string
 		val  int
 	}
 	pth := "../../tdata/"
 	wpth := pth + "OUT/rdf4bgw/"
-	var arg3 [5]util.Set2D // txmap
-	arg3[0] = make(util.Set2D)
-	arg3[0].Add("9606", "testprome")
 	tts := []tt{
-		{pth, wpth, arg3[0], 1}, // p53-bcl2 interaction
+		{pth, wpth, bgw.Taxa4regs, 1}, // p53-bcl2 interaction
 	}
 	pdck := "reg2ntrg"
 	srck := "signor"
@@ -84,16 +82,13 @@ func Test_Reg2targ(t *testing.T) {
 	type tt struct {
 		arg1 string
 		arg2 string
-		arg3 util.Set2D
+		arg3 map[string][]string
 		val  int
 	}
 	pth := "../../tdata/"
 	wpth := pth + "OUT/rdf4bgw/"
-	var arg3 [5]util.Set2D // txmap
-	arg3[0] = make(util.Set2D)
-	arg3[0].Add("9606", "testprome")
 	tts := []tt{
-		{pth, wpth, arg3[0], 1}, // p53-bcl2
+		{pth, wpth, bgw.Taxa4regs, 1}, // p53-bcl2
 	}
 	pdck := "reg2ntrg"
 	srck := "signor"
@@ -119,17 +114,17 @@ func Test_Tfac2gene(t *testing.T) {
 	pth := "../../tdata/"
 	wpth := pth + "OUT/rdf4bgw/"
 	srcks := []string{"tflink", "coltri", "atregnet"}
-var taxa= map[string][]string{
-	"atregnet": []string{
-		"3702",
-	},
-	"coltri": []string{
-		"9606",
-	},
-	"tflink": []string{
-	"9606",
-	},
-}
+	var taxa = map[string][]string{
+		"atregnet": []string{
+			"3702",
+		},
+		"coltri": []string{
+			"9606",
+		},
+		"tflink": []string{
+			"9606",
+		},
+	}
 
 	tts := []tt{
 		{pth, wpth, taxa, 1}, // only one pair present in xmap

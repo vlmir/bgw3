@@ -56,6 +56,7 @@ func Test_HttpFile(t *testing.T) {
 	uri02 := ns02 + "1672772"
 	uris := [...]string{uri01, uri02}
 	//pths :=[...]string{dpth+"HttpFile.01", dpth+"HttpFile.02"}
+	//pths := [...]string{"../../tdata/test1", ""}
 	pths := [...]string{"", ""}
 
 	tts := []tt{
@@ -63,7 +64,7 @@ func Test_HttpFile(t *testing.T) {
 		{uris[1], pths[1], nil, 0},
 	}
 	for i, tt := range tts {
-		buf, err := HttpFile(tt.arg1, tt.arg2)
+		buf, err := HttpFile(tt.arg1, tt.arg2) // buf is empty if pth != ""
 		if err != tt.val1 {
 			t.Error(
 				"For test", i+1, ": ",
@@ -127,7 +128,7 @@ func Test_GetFile(t *testing.T) {
 			t.Error(
 				"For test", i+1, ": ",
 				"\n\twant", tt.val2,
-				"\n\thave", buf,
+				"\n\thave", len(buf.String()),
 			)
 		}
 	}
