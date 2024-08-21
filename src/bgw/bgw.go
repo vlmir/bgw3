@@ -158,11 +158,11 @@ func (xmap Xmap) Unmarshal(pthj string) error {
 	jdat, err := ioutil.ReadFile(pthj) // []bite
 	if err != nil {
 		// should be in main funcs instead
-		msg := fmt.Sprintf("%s: %s: ioutil.ReadFile: %s", util.FN(1), util.FN(0), err)
+		msg := fmt.Sprintf("%s: ioutil.ReadFile: %s", util.FN(0), err)
 		return errors.New(msg)
 	}
 	if err := json.Unmarshal(jdat, &xmap); err != nil {
-		msg := fmt.Sprintf("%s: %s: json.Unmarshal: %s", util.FN(1), util.FN(0), err)
+		msg := fmt.Sprintf("%s: json.Unmarshal: %s: %s", util.FN(0), pthj, err)
 		return errors.New(msg)
 	}
 	return nil

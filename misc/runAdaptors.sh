@@ -12,8 +12,8 @@ year=$6 # only for downloadin omim
 #$1signor -d $datdir $bgwdir > sig.dout 2> sig.derr &
 #$1tfac2gene -d $datdir $bgwdir $scrdir > tf.dout 2> tf.derr &
 #$1uniprot -d $datdir $bgwdir $prmtxn $scrdir > up.dout 2> up.derr &
-wait
-#
+#wait
+
 #$1uniprot -e $datdir $bgwdir $prmtxn $scrdir > up.xout 2> up.xerr &
 wait
 #$1goa -e $datdir $bgwdir $prmtxn > goa.xout 2> goa.xerr &

@@ -188,10 +188,14 @@ func Test_Ortho(t *testing.T) {
 	arg3[0].Add("9606", "ortho")
 	arg3[0].Add("10090", "ortho")
 	tts := []tt{
-		{pth, wpth, arg3[0], 2},
+		//{pth, wpth, arg3[0], 2},
+		{pth, wpth, arg3[0], 40},
 	}
 	for i, tt := range tts {
 		n, _ := Ortho(tt.arg1, tt.arg2, tt.arg3)
+		// parses: ortho_10090.idmapping ortho_9606.idmapping
+		// OrthoDB 257530at2759: 8 lines in 10090 5 lines in 9606
+		// thus, the number of unique protein pairs is 40
 		if n != tt.val1 {
 			t.Error(
 				"For test", i+1, ": ", tt.arg3,

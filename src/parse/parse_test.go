@@ -2,7 +2,6 @@ package parse
 
 import (
 	"github.com/vlmir/bgw3/src/bgw"
-	"github.com/vlmir/bgw3/src/util"
 	"testing"
 )
 
@@ -138,32 +137,6 @@ func Test_Gaf(t *testing.T) {
 				"For test", i+1, ": ", tt.arg1,
 				"\n\twant", tt.val3,
 				"\n\thave", len(set3),
-			)
-		}
-	}
-}
-
-func Test_OrthoDuo(t *testing.T) {
-	// TODO re-implement
-	arg1 := "../../tdata/"
-	arg3 := "9606"
-	arg2 := "10090"
-	var arg4 [5]util.Set2D // txn2prm
-	var val1 [5]int
-	n := 1 // number of tests
-	for i := 0; i < n; i++ {
-		arg4[i] = make(util.Set2D)
-	}
-	arg4[0].Add("9606", "ortho")
-	arg4[0].Add("10090", "ortho")
-	val1[0] = 2
-	for i := 0; i < n; i++ {
-		out, _ := OrthoDuo(arg1, arg2, arg3, arg4[i])
-		if len(out) != val1[i] {
-			t.Error(
-				"For test", i+1, ": ", arg1, arg2, arg3, arg4[i],
-				"\n\twant", val1[i],
-				"\n\thave", len(out),
 			)
 		}
 	}

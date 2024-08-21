@@ -36,14 +36,14 @@ func main() {
 
 	if *aP || *eP {
 		start := time.Now()
-		if _, err := rdf4bgw.Reg2targ(datdir, bgwdir, bgw.Taxa4regs); err != nil {
-			panic(err)
-		}
-		log.Println("signor: Exported reg2targ in", time.Since(start))
-		start = time.Now()
 		if _, err := rdf4bgw.Reg2pway(datdir, bgwdir, bgw.Taxa4regs); err != nil {
 			panic(err)
 		}
 		log.Println("signor: Exported reg2pway in", time.Since(start))
+		start = time.Now()
+		if _, err := rdf4bgw.Reg2targ(datdir, bgwdir, bgw.Taxa4regs); err != nil {
+			panic(err)
+		}
+		log.Println("signor: Exported reg2targ in", time.Since(start))
 	}
 }

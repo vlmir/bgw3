@@ -8,7 +8,6 @@ import (
 	"github.com/vlmir/bgw3/src/bgw"
 	"github.com/vlmir/bgw3/src/util"
 	"io"
-	"log"
 	"os"
 	"strings"
 )
@@ -63,17 +62,16 @@ func addSubFields(pval, pk string, v bgw.Column, subfields util.Set3D) {
 	for ind, sval := range svals {
 		sval = strings.TrimSpace(svals[ind])
 		if len(sval) == 0 {
-			continue
+			continue // skipping empty subfields OK
 		}
 		if v.Ind2 >= 0 && ind != v.Ind2 {
-			continue // only one subfield is used
+			continue // only one subfield is used OK
 		} // othgerwise all subfields are used
-		// special case db:id
-		// skipping dbs other than that specified in v.Key
 		if v.Ind3 == -1 {
+			// special case db:id
 			src := strings.TrimSpace(svals[0]) // Attn: src != sval !!
 			if src != v.Key {
-				continue
+				continue // skipping dbs other than that specified in v.Key OK
 			}
 		}
 		subfields.Add(pk, v.Key, sval) // the args are non-empty strings
@@ -88,7 +86,7 @@ func Sig2up(sigmap util.Set3D, pths []string) error {
 		// open the file
 		csvfile, err := os.Open(pth)
 		if err != nil {
-			msg := fmt.Sprintf("%s: os.Open: %s", util.FN(0), err)
+			msg := fmt.Sprintf("%s: %s", util.FN(0), err)
 			return errors.New(msg)
 		}
 
@@ -105,11 +103,11 @@ func Sig2up(sigmap util.Set3D, pths []string) error {
 				break
 			}
 			if err != nil {
-				log.Fatal(err)
+				msg := fmt.Sprintf("%s: %s", util.FN(0), err)
+				return errors.New(msg)
 			}
-			//rec[2] = strings.Replace(rec[2], ", ", "", -1) ??
 			if len(rec[2]) == 0 {
-				continue // no entities
+				continue // no entities OK
 			}
 			// list of individual protein entities
 			list := strings.Split(rec[2], ", ")
@@ -118,7 +116,7 @@ func Sig2up(sigmap util.Set3D, pths []string) error {
 			for _, item := range list {
 				id := strings.TrimSpace(item)
 				if len(id) == 0 {
-					continue
+					continue // skipping empty subfields OK
 				}
 				sigmap.Add(rec[0], "ids", id)
 			}
@@ -142,7 +140,7 @@ func Sigmap(datdir string) (util.Set3D, error) {
 	for _, rpth := range smpths {
 		out, err := Tab2set3D(rpth, bgw.SigMapConf.Keys, bgw.SigMapConf.Vals)
 		if err != nil {
-			msg := fmt.Sprintf("%s: %s: util.Tab2set3D %s", util.FN(1), util.FN(0), err)
+			msg := fmt.Sprintf("%s: %s", util.FN(0), err)
 			return out, errors.New(msg)
 		}
 		for k, v := range out {
@@ -152,24 +150,29 @@ func Sigmap(datdir string) (util.Set3D, error) {
 	return sigmap, nil
 }
 
+// Idmap filters rpth by the sources specified in idmkeys and outputs in the order of i1, i2, i3
+// rpth: path to the idmapping file (single taxon)
+// idmkeys: the map for filtering the sources
+// i1, i2, i3: the indexes of the fields to be used in the output file: e.g. 1 2 0
 func Idmap(rpth string, idmkeys map[string]string, i1, i2, i3 int) (util.Set3D, error) {
 	out := make(util.Set3D)
 	fh, err := os.Open(rpth)
 	if err != nil {
-		msg := fmt.Sprintf("%s: os.Open: %s", util.FN(0), err)
-		return out, errors.New(msg)
+		msg := fmt.Sprintf("%s: %s: os.Open: %s", util.FN(1), util.FN(0), err)
+		//return out, errors.New(msg)
+		panic(errors.New(msg)) // change globally
 	}
 	defer fh.Close()
 	scanner := bufio.NewScanner(fh)
 	for scanner.Scan() { // by default scans for '\n'
 		cells := strings.Split(scanner.Text(), "\t")
 		if len(cells) != 3 {
-			continue
+			continue // should never happen OK
 		}
-		_, ok := idmkeys[cells[1]] // filtering
+		_, ok := idmkeys[cells[1]]
 		if !ok {
-			continue
-		} // filtering by idmkeys
+			continue // filtering by the source OK
+		}
 		// ALL proteomes 2022-12-14: no '"' anymore, 28 occurences of "''"
 		key1 := strings.Replace(cells[i1], "\"", "`", -1) // was present in 44689
 		key2 := strings.Replace(cells[i2], "\"", "`", -1) // was present in 44689
@@ -177,10 +180,9 @@ func Idmap(rpth string, idmkeys map[string]string, i1, i2, i3 int) (util.Set3D, 
 		out.Add(key1, key2, key3)
 	}
 	if len(out) == 0 {
-		msg := fmt.Sprintf("%s: %s: NoDataIn: %s", util.FN(1), util.FN(0), rpth)
+		msg := fmt.Sprintf("%s: NoDataIn: %s", util.FN(0), rpth)
 		return out, errors.New(msg)
 	}
-
 	return out, nil
 } // Idmap
 
@@ -225,7 +227,7 @@ func Tab2struct(rpth string, keys, vals []bgw.Column, p *bgw.Dat4bridge, dlm str
 	duos := d4b.Duos // to be filled with data
 	fh, err := os.Open(rpth)
 	if err != nil {
-		msg := fmt.Sprintf("%s: os.Open: %s", util.FN(0), err)
+		msg := fmt.Sprintf("%s: %s", util.FN(0), err)
 		return errors.New(msg)
 	}
 	defer fh.Close()
@@ -236,28 +238,28 @@ func Tab2struct(rpth string, keys, vals []bgw.Column, p *bgw.Dat4bridge, dlm str
 		line := scanner.Text()
 		ln++
 		if len(line) == 0 {
-			continue
+			continue // skipping empty lines OK
 		}
 		if string(line[0]) == "#" {
-			continue
+			continue // skipping comments OK
 		}
 		cells := strings.Split(line, dlm) // fields
 		if len(cells) < maxind+1 {
-			msg := fmt.Sprintf("%s: %s: %s: %d: TooFewFields: want %d have %d", util.FN(1), util.FN(0), rpth, ln, maxind+1, len(cells))
+			msg := fmt.Sprintf("%s: %s: %d: TooFewFields: want %d have %d", util.FN(0), rpth, ln, maxind+1, len(cells))
 			fmt.Printf("%s, skipping\t", msg)
-			continue
+			continue // OK
 		}
 		/// primary key
 		pk := primaryKey(cells, keys)
 		if pk == "" {
-			continue
+			continue // skipping lines with no primary key OK
 		}
 		/// values
 		for _, v := range vals {
 			// v: bgw.Column; specifies fields to be extracted
 			cell := strings.TrimSpace(cells[v.Ind1])
 			if (cell == "") || (cell == "-") {
-				continue
+				continue // filtering subfields OK
 			}
 			// Dlm1: primary delimiter for multiple values
 			// there is at least one value, may contain secondary delimiters
@@ -268,7 +270,7 @@ func Tab2struct(rpth string, keys, vals []bgw.Column, p *bgw.Dat4bridge, dlm str
 		} // one field
 	} // one line
 	if len(duos) == 0 {
-		msg := fmt.Sprintf("%s: %s: NoDataIn: %s", util.FN(1), util.FN(0), rpth)
+		msg := fmt.Sprintf("%s: NoDataIn: %s", util.FN(0), rpth)
 		return errors.New(msg)
 	}
 	d4b.Duos = duos
@@ -314,7 +316,7 @@ func Tab2set3D(rpth string, keys, vals []bgw.Column) (out util.Set3D, err error)
 	out = make(util.Set3D)
 	fh, err := os.Open(rpth)
 	if err != nil {
-		msg := fmt.Sprintf("%s: os.Open: %s", util.FN(0), err)
+		msg := fmt.Sprintf("%s: %s", util.FN(0), err)
 		return out, errors.New(msg)
 	}
 	defer fh.Close()
@@ -325,31 +327,31 @@ func Tab2set3D(rpth string, keys, vals []bgw.Column) (out util.Set3D, err error)
 		line := scanner.Text()
 		ln++
 		if len(line) == 0 {
-			continue
+			continue // skipping empty lines OK
 		}
 		if string(line[0]) == "#" {
-			continue
+			continue // skipping comments OK
 		}
 		cells := strings.Split(line, "\t") // fields
 		if cells[0] == "Entry" {           // header line TODO generalize
-			continue
+			continue // skipping uncommented header OK
 		}
 		if len(cells) < maxind+1 {
-			msg := fmt.Sprintf("%s: %s: %s: %d: TooFetFields: want %d have %d", util.FN(1), util.FN(0), rpth, ln, maxind+1, len(cells))
+			msg := fmt.Sprintf("%s: %s: %d: TooFetFields: want %d have %d", util.FN(0), rpth, ln, maxind+1, len(cells))
 			fmt.Printf("%s, skipping\n", msg)
 			continue
 		}
 		/// primary key
 		pk := primaryKey(cells, keys)
 		if pk == "" {
-			continue
+			continue // skipping lines with no primary header OK
 		}
 		/// values
 		for _, v := range vals {
 			// v: bgw.Column; specify fields to be extracted
 			cell := strings.TrimSpace(cells[v.Ind1]) // value of the selected column
 			if (cell == "") || (cell == "-") {
-				continue
+				continue // filtering subfields OK
 			}
 			// Dlm1: primary delimiter for multiple values
 			// there is at least one value, may contain secondary delimiters
@@ -359,7 +361,7 @@ func Tab2set3D(rpth string, keys, vals []bgw.Column) (out util.Set3D, err error)
 		} // one field
 	} // one line
 	if len(out) == 0 {
-		msg := fmt.Sprintf("%s: %s: NoDataIn: %s", util.FN(1), util.FN(0), rpth)
+		msg := fmt.Sprintf("%s: NoDataIn: %s", util.FN(0), rpth)
 		return out, errors.New(msg)
 	}
 	return out, nil
@@ -380,7 +382,7 @@ func UpVar(rpth string) (duos util.Set3D, err error) {
 	duos = make(util.Set3D)
 	fhR, err := os.Open(rpth)
 	if err != nil {
-		msg := fmt.Sprintf("%s: os.Open: %s", util.FN(0), err)
+		msg := fmt.Sprintf("%s: %s", util.FN(0), err)
 		return duos, errors.New(msg)
 	}
 	defer fhR.Close()
@@ -390,7 +392,7 @@ func UpVar(rpth string) (duos util.Set3D, err error) {
 	for scanner.Scan() { // by default scans for '\n'
 		line := scanner.Text()
 		if len(line) < 74 {
-			continue
+			continue // skipping defective lines OK
 		} // skipping lines with '-' in the last field SIC!
 		if strings.TrimSpace(line[48:56]) != "Disease" {
 			//	continue // Disease => LP/P; seems superfluous anyway
@@ -400,7 +402,7 @@ func UpVar(rpth string) (duos util.Set3D, err error) {
 		upca := strings.TrimSpace(line[10:20])
 		symG := strings.TrimSpace(line[0:9])
 		if upca == "" || symG == "" {
-			continue
+			continue // skipping lines missing identifiers OK
 		}
 		idL := fmt.Sprintf("%s%s%s", nsL, "!", symG)
 
@@ -408,26 +410,26 @@ func UpVar(rpth string) (duos util.Set3D, err error) {
 		dfn := strings.TrimSpace(line[72:])
 		// only one definition per line
 		if dfn == "" {
-			continue
+			continue // skipping lines missing definitions OK
 		} // seems redundant
 		bits := strings.Split(dfn, "[MIM:") // sic, returns 1 value
 		// Attn: multiple ':' may occur !!!
 		// 20200531: only for "OXCT1     P55809":
 		// Succinyl-CoA:3-oxoacid CoA transferase deficiency (SCOTD) [MIM:245050]
 		if len(bits) < 2 {
-			continue
-		} // no MIM ID, very many lines
+			continue // no MIM ID, very many lines
+		}
 		if len(bits) > 2 {
-			msg := fmt.Sprintf("%s: %s: MultiIdsFor %s: %v", util.FN(1), util.FN(0), symG, bits)
+			msg := fmt.Sprintf("%s: MultiIdsFor %s: %v", util.FN(0), symG, bits)
 			fmt.Printf("%s, skipping\n", msg)
-			continue
-		} // normally should never happen
+			continue // normally should never happen OK
+		}
 		dfn = strings.TrimSpace(bits[0])
 
 		/// idR
 		oriR := strings.TrimSuffix(bits[1], "]") // removing the trailing ']':
 		if oriR == "" {
-			continue
+			continue // skipping lines missing MIM ID OK
 		}
 		idR := fmt.Sprintf("%s%s%s", nsR, "!", oriR)
 
@@ -436,7 +438,7 @@ func UpVar(rpth string) (duos util.Set3D, err error) {
 		duos.Add(duoid, "upca", upca) // upca trimmed
 	}
 	if len(duos) == 0 {
-		msg := fmt.Sprintf("%s: %s: NoDataIn: %s", util.FN(1), util.FN(0), rpth)
+		msg := fmt.Sprintf("%s: NoDataIn: %s", util.FN(0), rpth)
 		return duos, errors.New(msg)
 	}
 	return duos, nil
@@ -466,7 +468,7 @@ func Gaf(rpth string) (bp, cc, mf util.Set3D, err error) {
 	mf = make(util.Set3D)
 	fhR, err := os.Open(rpth)
 	if err != nil {
-		msg := fmt.Sprintf("%s: os.Open: %s", util.FN(0), err)
+		msg := fmt.Sprintf("%s: %s", util.FN(0), err)
 		return bp, cc, mf, errors.New(msg)
 	}
 	defer fhR.Close()
@@ -477,11 +479,11 @@ func Gaf(rpth string) (bp, cc, mf util.Set3D, err error) {
 		if cells[0] == "UniProtKB" {
 			upac = cells[1]
 		} else {
-			continue
+			continue // skipping sources other than UNiProt OK
 		}
 		goid := strings.Replace(cells[4], ":", "_", 1)
 		if cells[3] == "NOT" {
-			continue
+			continue // skipping negative associations OK
 		}
 		ppy, ok := ourppys[cells[8]] // aspect (C|F|P)
 		if !ok {
@@ -521,7 +523,7 @@ func Gaf(rpth string) (bp, cc, mf util.Set3D, err error) {
 		}
 	}
 	if len(bp)+len(cc)+len(mf) == 0 {
-		msg := fmt.Sprintf("%s: %s: NoDataIn: %s", util.FN(1), util.FN(0), rpth)
+		msg := fmt.Sprintf("%s: NoDataIn: %s", util.FN(0), rpth)
 		return bp, cc, mf, errors.New(msg)
 	}
 	return bp, cc, mf, nil
@@ -581,7 +583,7 @@ func Gpa(rpth string) (duos util.Set3D) {
 	duos = make(util.Set3D)
 	fhR, err := os.Open(rpth)
 	if err != nil {
-		msg := fmt.Sprintf("%s: %s: os.Open: %s", util.FN(1), util.FN(0), err)
+		msg := fmt.Sprintf("%s: os.Open: %s", util.FN(0), err)
 		panic(errors.New(msg)) // pending re-implementation
 	}
 	defer fhR.Close()
@@ -602,7 +604,7 @@ func Gpa(rpth string) (duos util.Set3D) {
 		}
 		ppy, ok := ourppys[qlrs[0]]
 		if !ok {
-			continue
+			continue // filtering by association type OK
 		} // filtering py rels
 		idL := fmt.Sprintf("%s%s%s", srckL, "!", upac)
 		idR := fmt.Sprintf("%s%s%s", srckR, "!", goid)
@@ -625,27 +627,29 @@ func Gpa(rpth string) (duos util.Set3D) {
 	return duos
 } // Gpa()
 
-// orthosolo() extracts orthology relations from UniProt idmappings for one taxon (sic!)
-// orthosolo() is used by OrthoDuo()
+// OrthoSolo extracts orthology relations from UniProt idmappings for one taxon (sic!)
+// OrthoSolo is used by OrthoDuo()
 // retrns a map for 1 taxon, primary key sourse dabase label
-func orthosolo(datdir, txid string, txn2prm util.Set2D) (util.Set3D, error) {
+func OrthoSolo(datdir, txid string, txn2prm util.Set2D) (util.Set3D, error) {
 	idmkeys := bgw.Orthokeys // currently only OrthoDB
 	solos := make(util.Set3D)
 	subdir := "idmapping/"
 	ext := ".idmapping"
-	prmids := txn2prm[txid].Keys() // normally 1, yet multiple may occur
+	prmids := txn2prm[txid].Keys() // normally 1, yet multiple may occur?
+	if len(prmids) == 0 {
+		msg := fmt.Sprintf("%s: %s: NoProtomesFor %s", util.FN(1), util.FN(0), txid)
+		panic(errors.New(msg))
+	}
 	if len(prmids) > 1 {
-		msg := fmt.Sprintf("parse.orthosolo(_, %s, _): MultipleProteomes: %s", txid, prmids)
-		fmt.Printf("%s\n", msg)
-	} // never occors
+		msg := fmt.Sprintf("%s: MultiProteomesForTaxon %s: %v", util.FN(0), txid, prmids)
+		fmt.Printf("%s\n", msg) // OK
+	} // never occurs
 	for _, prmid := range prmids {
 		prmid := fmt.Sprintf("%s%s%s", prmid, "_", txid)
 		rpth := fmt.Sprintf("%s%s%s%s", datdir, subdir, prmid, ext)
-		dat, err := Idmap(rpth, idmkeys, 1, 2, 0)
+		dat, err := Idmap(rpth, idmkeys, 1, 2, 0) // sic, dat should be defined here
 		if err != nil {
-			// dat is empty
-			msg := fmt.Sprintf("%s: %s", util.FN(1), err) // err includes orthosolo
-			return solos, errors.New(msg)
+			continue // next proteome
 		}
 		for idmk, all := range dat {
 			for xid, one := range all {
@@ -654,63 +658,10 @@ func orthosolo(datdir, txid string, txn2prm util.Set2D) (util.Set3D, error) {
 				}
 			} // xid: external cluster ID
 		} // idmk: e.g. KO, OrthoDB
-	}
-	count := 0
-	for idmk, _ := range solos {
-		count += len(solos[idmk])
-	}
-	if count == 0 {
-		msg := fmt.Sprintf("%s: %s: NoDataForTaxon: %s", util.FN(1), util.FN(0), txid)
+	} // prmid
+	if len(solos) == 0 {
+		msg := fmt.Sprintf("%s: NoDataForTaxon: %s", util.FN(0), txid)
 		return solos, errors.New(msg)
 	} // no orthology data in any of the sources, does occur
 	return solos, nil
-} // orthosolo
-
-// OrthoDuo() extracts orthology relations from UniProt idmappings for a pair of taxa
-// returns a map, keys:
-// primary: relation label
-// secondary: source database label
-// tertiary: relation identifier in the source database
-// func OrthoDuo(datdir, txidL, txidR string, txn2prm util.Set2D, idmkeys map[string]string) (util.Set3D, error) {
-func OrthoDuo(datdir, txidL, txidR string, txn2prm util.Set2D) (util.Set3D, error) {
-	idmkeys := bgw.Orthokeys
-	duos := make(util.Set3D)
-	outL, err := orthosolo(datdir, txidL, txn2prm)
-	if err != nil {
-		return duos, err
-	} // NoDate for one taxaon
-	outR, err := orthosolo(datdir, txidR, txn2prm)
-	if err != nil {
-		return duos, err
-	} // NoDate for one taxaon
-	for idmk, _ := range idmkeys {
-		allL, ok := outL[idmk]
-		if !ok {
-			continue
-		}
-		allR, ok := outR[idmk]
-		if !ok {
-			continue
-		} // now data from 'idmk' is present in both taxa
-		for id, oneL := range allL {
-			oneR, ok := allR[id]
-			if !ok {
-				continue
-			} // only shared clusters
-			for upLac, _ := range oneL {
-				for upRac, _ := range oneR {
-					if upLac >= upRac {
-						continue
-					} // skipping diagonal and symmetrical
-					duoid := fmt.Sprintf("uniprot!%s--uniprot!%s", upLac, upRac)
-					duos.Add(duoid, idmk, id)
-				}
-			}
-		} // id: external cluster ID
-	}
-	if len(duos) == 0 {
-		msg := fmt.Sprintf("%s: %s: NoDataForTaxa: %s--%s", util.FN(1), util.FN(0), txidL, txidR)
-		return duos, errors.New(msg)
-	} // 20200531: none Note: no filtering by BGW
-	return duos, nil
-} // OrthoDuo()
+} // OrthoSolo

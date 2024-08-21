@@ -32,7 +32,7 @@ func rdfpipe(strs ...string) error {
 	}
 	wfh, err := os.Create(wpth)
 	if err != nil {
-		msg := fmt.Sprintf("%s: os.Create: %s", util.FN(0), err)
+		msg := fmt.Sprintf("%s: %s", util.FN(0), err)
 		return errors.New(msg)
 	}
 	defer wfh.Close()
@@ -43,17 +43,17 @@ func rdfpipe(strs ...string) error {
 func Geneprot(datdir, bgwdir string, txn2prm util.Set2D) (err error) {
 	subdir := "gene/"
 	if err := os.MkdirAll(filepath.Join(bgwdir, subdir), 0755); err != nil {
-		msg := fmt.Sprintf("%s: os.Mkdir: %s", util.FN(0), err)
+		msg := fmt.Sprintf("%s: %s", util.FN(0), err)
 		return errors.New(msg)
 	}
 	subdir = "prot/"
 	if err := os.MkdirAll(filepath.Join(bgwdir, subdir), 0755); err != nil {
-		msg := fmt.Sprintf("%s: os.Mkdir: %s", util.FN(0), err)
+		msg := fmt.Sprintf("%s: %s", util.FN(0), err)
 		return errors.New(msg)
 	}
 	subdir = "xmap/"
 	if err := os.MkdirAll(filepath.Join(bgwdir, subdir), 0755); err != nil {
-		msg := fmt.Sprintf("%s: os.Mkdir: %s", util.FN(0), err)
+		msg := fmt.Sprintf("%s: %s", util.FN(0), err)
 		return errors.New(msg)
 	}
 	for _, txid := range txn2prm.Keys() {
@@ -80,29 +80,33 @@ func Geneprot(datdir, bgwdir string, txn2prm util.Set2D) (err error) {
 		/////////////////////////////////////////////////////////////////////////////
 		var xmap bgw.Xmap
 		xmap.New()
-		err := export.Gene(rpthi, wpthg, &xmap)
-		if err != nil {
-			return err
+		if err := export.Gene(rpthi, wpthg, &xmap); err != nil {
+			msg := fmt.Sprintf("%s: %s", util.FN(0), err)
+			return errors.New(msg)
 		}
 		if err := util.Gzip(wpthg); err != nil {
-			return err
+			msg := fmt.Sprintf("%s: %s", util.FN(0), err)
+			return errors.New(msg)
 		}
 
-		err = export.Prot(rpthu, rpthi, wpthp, &xmap)
-		if err != nil {
-			return err
+		if err := export.Prot(rpthu, rpthi, wpthp, &xmap); err != nil {
+			msg := fmt.Sprintf("%s: %s", util.FN(0), err)
+			return errors.New(msg)
 		}
 		if err := util.Gzip(wpthp); err != nil {
-			return err
+			msg := fmt.Sprintf("%s: %s", util.FN(0), err)
+			return errors.New(msg)
 		}
 
-		wfhX, err := os.Create(wpthx)
+		wfhX, err := os.Create(wpthx) // sic!
 		if err != nil {
-			return err
+			msg := fmt.Sprintf("%s: %s", util.FN(0), err)
+			return errors.New(msg)
 		}
-		j, err := json.MarshalIndent(&xmap, "", " ")
+		j, err := json.MarshalIndent(&xmap, "", " ") // sic!
 		if err != nil {
-			return err
+			msg := fmt.Sprintf("%s: %s", util.FN(0), err)
+			return errors.New(msg)
 		}
 		wfhX.Write(j)
 	} // txid
@@ -114,7 +118,7 @@ func Reg2pway(datdir, bgwdir string, taxa map[string][]string) (util.Set2D, erro
 	subdir := "reg2pway/"
 	cnts := make(util.Set2D)
 	if err := os.MkdirAll(filepath.Join(bgwdir, subdir), 0755); err != nil {
-		msg := fmt.Sprintf("%s: os.Mkdir: %s", util.FN(0), err) // no need for FN(1)
+		msg := fmt.Sprintf("%s: %s", util.FN(0), err)
 		return cnts, errors.New(msg)
 	}
 	for srck, txids := range taxa {
@@ -131,6 +135,12 @@ func Reg2pway(datdir, bgwdir string, taxa map[string][]string) (util.Set2D, erro
 			ext = ".tsv"
 			dlm = "\t"
 		}
+		// generating map signor-id -> entitity-ids
+		sigmap, err := parse.Sigmap(datdir)
+		if err != nil {
+			msg := fmt.Sprintf("%s: %s", util.FN(0), err)
+			return cnts, errors.New(msg)
+		}
 
 		for _, txid := range txids {
 			log.Println("\n\tReg2pway for:", txid)
@@ -146,10 +156,9 @@ func Reg2pway(datdir, bgwdir string, taxa map[string][]string) (util.Set2D, erro
 			if srck == "signor" {
 				rpth = fmt.Sprintf("%s%s%s%s%s", datdir, srck, "/", "pathways", ext)
 			}
-			err := parse.Tab2struct(rpth, keys, vals, &d4b, dlm)
-			if err != nil {
+			if err := parse.Tab2struct(rpth, keys, vals, &d4b, dlm); err != nil {
 				// either failed to open rpth or no interactions extracted
-				msg := fmt.Sprintf("%s: parse.Tab2struct: %s", util.FN(0), err)
+				msg := fmt.Sprintf("%s: %s", util.FN(0), err)
 				return cnts, errors.New(msg)
 			}
 			// d4b is now loaded with data
@@ -160,27 +169,26 @@ func Reg2pway(datdir, bgwdir string, taxa map[string][]string) (util.Set2D, erro
 			xmap.New()
 			subdir := "xmap/"
 			ext := ".json"
-			rpthx := fmt.Sprintf("%s%s%s%s", bgwdir, subdir, txid, ext) // read BGW map json
-			err = xmap.Unmarshal(rpthx)
-			if err != nil {
-				return cnts, err
+			rpthx := fmt.Sprintf("%s%s%s%s", bgwdir, subdir, txid, ext)
+			if err := xmap.Unmarshal(rpthx); err != nil {
+				msg := fmt.Sprintf("%s: %s", util.FN(0), err)
+				return cnts, errors.New(msg)
 			}
 
 			if srck == "signor" {
-				// generating map signor-id -> entitity-ids
-				sigmap, _ := parse.Sigmap(datdir)
 				xmap.Signor = sigmap
 			}
 
 			d4b.Src = srck
 			d4b.Taxid = txid
-			err = export.SigPways(&d4b, &xmap, bgwdir)
-			if err != nil {
-				return cnts, err
+			if err := export.SigPways(&d4b, &xmap, bgwdir); err != nil {
+				msg := fmt.Sprintf("%s: %s", util.FN(0), err)
+				return cnts, errors.New(msg)
 			}
 			for pdck, wpth := range wpths {
 				if err := util.Gzip(wpth); err != nil {
-					return cnts, err
+					msg := fmt.Sprintf("%s: %s", util.FN(0), err)
+					return cnts, errors.New(msg)
 				}
 				cnts.Add(pdck, srck)
 				cnts[pdck][srck] = d4b.Cnts[pdck][srck]
@@ -194,7 +202,7 @@ func Reg2targ(datdir, bgwdir string, taxa map[string][]string) (util.Set2D, erro
 	subdir := "reg2targ/"
 	cnts := make(util.Set2D)
 	if err := os.MkdirAll(filepath.Join(bgwdir, subdir), 0755); err != nil {
-		msg := fmt.Sprintf("%s: os.Mkdir: %s", util.FN(0), err)
+		msg := fmt.Sprintf("%s: %s", util.FN(0), err)
 		return cnts, errors.New(msg)
 	}
 	for srck, txids := range taxa {
@@ -211,6 +219,12 @@ func Reg2targ(datdir, bgwdir string, taxa map[string][]string) (util.Set2D, erro
 			dlm = "\t"
 			ext = ".mi28"
 		}
+		// generating map signor-id -> entitity-ids
+		sigmap, err := parse.Sigmap(datdir)
+		if err != nil {
+			msg := fmt.Sprintf("%s: %s", util.FN(0), err)
+			return cnts, errors.New(msg)
+		}
 
 		for _, txid := range txids {
 			log.Println("\n\tReg2targ for:", txid)
@@ -224,10 +238,9 @@ func Reg2targ(datdir, bgwdir string, taxa map[string][]string) (util.Set2D, erro
 
 			/// parsing
 			rpth = fmt.Sprintf("%s%s%s%s%s", datdir, srck, "/", txid, ext)
-			err := parse.Tab2struct(rpth, keys, vals, &d4b, dlm)
-			if err != nil {
+			if err := parse.Tab2struct(rpth, keys, vals, &d4b, dlm); err != nil {
 				// either failed to open rpth or no interactions extracted
-				msg := fmt.Sprintf("%s: parse.Tab2struct: %s", util.FN(0), err)
+				msg := fmt.Sprintf("%s: %s", util.FN(0), err)
 				return cnts, errors.New(msg)
 			}
 			// d4b is now loaded with data
@@ -237,29 +250,27 @@ func Reg2targ(datdir, bgwdir string, taxa map[string][]string) (util.Set2D, erro
 			xmap.New()
 			subdir := "xmap/"
 			ext := ".json"
-			rpthx := fmt.Sprintf("%s%s%s%s", bgwdir, subdir, txid, ext) // read BGW map json
-			err = xmap.Unmarshal(rpthx)
-			if err != nil {
-				return cnts, err
+			rpthx := fmt.Sprintf("%s%s%s%s", bgwdir, subdir, txid, ext)
+			if err := xmap.Unmarshal(rpthx); err != nil {
+				msg := fmt.Sprintf("%s: %s", util.FN(0), err)
+				return cnts, errors.New(msg)
 			}
 
 			if srck == "signor" {
-				// generating map signor-id -> entitity-ids
-				sigmap, _ := parse.Sigmap(datdir)
 				xmap.Signor = sigmap
 			}
 
 			d4b.Src = srck
 			d4b.Taxid = txid
 			d4b.Out = wpths
-			err = export.Reg2targ(&d4b, &xmap, bgwdir)
-			if err != nil {
-				return cnts, err
+			if err := export.Reg2targ(&d4b, &xmap, bgwdir); err != nil {
+				msg := fmt.Sprintf("%s: %s", util.FN(0), err)
+				return cnts, errors.New(msg)
 			}
 			for pdck, wpth := range wpths {
-				err := util.Gzip(wpth)
-				if err != nil {
-					return cnts, err
+				if err := util.Gzip(wpth); err != nil {
+					msg := fmt.Sprintf("%s: %s", util.FN(0), err)
+					return cnts, errors.New(msg)
 				}
 				cnts.Add(pdck, srck)
 				cnts[pdck][srck] = d4b.Cnts[pdck][srck]
@@ -270,10 +281,12 @@ func Reg2targ(datdir, bgwdir string, taxa map[string][]string) (util.Set2D, erro
 } // Reg2targ
 
 func Tfac2gene(datdir, bgwdir string, taxa map[string][]string) (util.Set2D, error) {
+	// Tflink contains only generic interactions (no +/-) for 10116 6239 7227 7955 ->
+	// 8 empty files saved
 	subdir := "tfac2gene/"
 	cnts := make(util.Set2D)
 	if err := os.MkdirAll(filepath.Join(bgwdir, subdir), 0755); err != nil {
-		msg := fmt.Sprintf("%s: os.Mkdir: %s", util.FN(0), err)
+		msg := fmt.Sprintf("%s: %s", util.FN(0), err)
 		return cnts, errors.New(msg)
 	}
 	for srck, txids := range taxa {
@@ -307,10 +320,9 @@ func Tfac2gene(datdir, bgwdir string, taxa map[string][]string) (util.Set2D, err
 			d4b.New()
 			/// parsing
 			rpth = fmt.Sprintf("%s%s%s%s%s", datdir, srck, "/", txid, ext)
-			err := parse.Tab2struct(rpth, keys, vals, &d4b, dlm)
-			if err != nil {
+			if err := parse.Tab2struct(rpth, keys, vals, &d4b, dlm); err != nil {
 				// either failed to open rpth or no interactions extracted
-				msg := fmt.Sprintf("%s: parse.Tab2struct: %s", util.FN(0), err)
+				msg := fmt.Sprintf("%s: %s", util.FN(0), err)
 				return cnts, errors.New(msg)
 			}
 			/// d4b is now loaded with data
@@ -325,23 +337,24 @@ func Tfac2gene(datdir, bgwdir string, taxa map[string][]string) (util.Set2D, err
 			var xmap bgw.Xmap
 			xmap.New()
 			subdir := "xmap/"
-			rpthx := fmt.Sprintf("%s%s%s%s", bgwdir, subdir, txid, ".json") // read BGW map json
-			err = xmap.Unmarshal(rpthx)
-			if err != nil {
-				return cnts, err
+			rpthx := fmt.Sprintf("%s%s%s%s", bgwdir, subdir, txid, ".json")
+			if err := xmap.Unmarshal(rpthx); err != nil {
+				msg := fmt.Sprintf("%s: %s", util.FN(0), err)
+				return cnts, errors.New(msg)
 			}
 
 			d4b.Src = srck
 			d4b.Taxid = txid
-			err = export.Tfac2gene(&d4b, &xmap, bgwdir)
-			if err != nil {
-				// currently if the header does not have requred number of triples
-				return cnts, err
+			if err := export.Tfac2gene(&d4b, &xmap, bgwdir); err != nil {
+				// if the header does not have requred number of triples
+				// OR no data triples
+				msg := fmt.Sprintf("%s: %s", util.FN(0), err)
+				return cnts, errors.New(msg)
 			}
 			for pdck, wpth := range wpths {
-				err := util.Gzip(wpth)
-				if err != nil {
-					return cnts, err
+				if err := util.Gzip(wpth); err != nil {
+					msg := fmt.Sprintf("%s: %s", util.FN(0), err)
+					return cnts, errors.New(msg)
 				}
 				cnts.Add(pdck, srck)
 				cnts[pdck][srck] = d4b.Cnts[pdck][srck]
@@ -355,7 +368,7 @@ func Prot2prot(datdir, bgwdir string, txn2prm util.Set2D) (util.Set2D, error) {
 	subdir := "prot2prot/"
 	cnts := make(util.Set2D)
 	if err := os.MkdirAll(filepath.Join(bgwdir, subdir), 0755); err != nil {
-		msg := fmt.Sprintf("%s: os.Mkdir: %s", util.FN(0), err)
+		msg := fmt.Sprintf("%s: %s", util.FN(0), err)
 		return cnts, errors.New(msg)
 	}
 	var pdcks = []string{
@@ -369,42 +382,35 @@ func Prot2prot(datdir, bgwdir string, txn2prm util.Set2D) (util.Set2D, error) {
 		rpth := fmt.Sprintf("%s%s%s%s", datdir, subdir, txid, ext) // read IntAct tsv
 		subdir = "prot2prot/"
 		ext = ".nt"
-		//		wpth := fmt.Sprintf("%s%sintact-%s%s", bgwdir, subdir, txid, ext) // path to ppi nt
 		wpth := fmt.Sprintf("%s%s/%s-%s.nt", bgwdir, subdir, srck, txid) // path to .nt file
 		subdir = "xmap/"
 		ext = ".json"
-		rpthx := fmt.Sprintf("%s%s%s%s", bgwdir, subdir, txid, ext) // read BGW map json
-		/////////////////////////////////////////////////////////////////////////////
 		var xmap bgw.Xmap
 		xmap.New()
-		err := xmap.Unmarshal(rpthx)
-		if err != nil {
-			return cnts, err
+		rpthx := fmt.Sprintf("%s%s%s%s", bgwdir, subdir, txid, ext)
+		if err := xmap.Unmarshal(rpthx); err != nil {
+			msg := fmt.Sprintf("%s: %s", util.FN(0), err)
+			return cnts, errors.New(msg)
 		}
-		/////////////////////////////////////////////////////////////////////////////
-		//duos, err := parse.MiTab(rpth, upac2bgw)
 		var d4b bgw.Dat4bridge
 		d4b.New()
-		err = parse.Tab2struct(rpth, bgw.IntactConf.Keys, bgw.IntactConf.Vals, &d4b, "\t")
-		if err != nil {
-			msg := fmt.Sprintf("%s", err) // err includes: Prot2prot Tab2struct rpth
-			return cnts, errors.New(msg)  // TODO check
+		if err := parse.Tab2struct(rpth, bgw.IntactConf.Keys, bgw.IntactConf.Vals, &d4b, "\t"); err != nil {
+			msg := fmt.Sprintf("%s: %s", util.FN(0), err)
+			return cnts, errors.New(msg) // TODO check
 		} // NoData
-		/////////////////////////////////////////////////////////////////////////////
 		d4b.Src = srck
 		d4b.Taxid = txid
-		err = export.Prot2prot(&d4b, &xmap, bgwdir)
-		if err != nil {
-			msg := fmt.Sprintf("rdf4bgw.go: Prot2prot():%s: %s", err, txid)
+		if err := export.Prot2prot(&d4b, &xmap, bgwdir); err != nil {
+			msg := fmt.Sprintf("%s: %s", util.FN(0), err)
 			return cnts, errors.New(msg) // TODO check
 		}
 		for _, pdck := range pdcks {
 			cnts.Add(pdck, srck)
 			cnts[pdck][srck] = d4b.Cnts[pdck][srck]
 		}
-		if err = util.Gzip(wpth); err != nil {
-			log.Println("util.Gzip(): Failed to gzip:", wpth)
-			return cnts, err
+		if err := util.Gzip(wpth); err != nil {
+			msg := fmt.Sprintf("%s: %s", util.FN(0), err)
+			return cnts, errors.New(msg) // TODO check
 		}
 	} // taxid
 	return cnts, nil
@@ -413,7 +419,7 @@ func Prot2prot(datdir, bgwdir string, txn2prm util.Set2D) (util.Set2D, error) {
 func Gene2phen(datdir, bgwdir string, txn2prm util.Set2D) (int, error) {
 	subdir := "gene2phen/"
 	if err := os.MkdirAll(filepath.Join(bgwdir, subdir), 0755); err != nil {
-		msg := fmt.Sprintf("%s: os.Mkdir: %s", util.FN(0), err)
+		msg := fmt.Sprintf("%s: %s", util.FN(0), err)
 		return 0, errors.New(msg)
 	}
 	// TODO interface similar to Tfac2gene etc.
@@ -431,50 +437,47 @@ func Gene2phen(datdir, bgwdir string, txn2prm util.Set2D) (int, error) {
 		wpth := fmt.Sprintf("%s%s%s%s", bgwdir, subdir, txid, ext)
 		subdir = "xmap/"
 		ext = ".json"
-		rpthx := fmt.Sprintf("%s%s%s%s", bgwdir, subdir, txid, ext) // read BGW map json
-		/////////////////////////////////////////////////////////////////////////////
 		var xmap bgw.Xmap
 		xmap.New()
-		err := xmap.Unmarshal(rpthx)
-		if err != nil {
-			return 0, err
-		}
-		gsym2bgw := xmap.Lblg
-		/////////////////////////////////////////////////////////////////////////////
-		duos, err := parse.UpVar(rpth) // returns error if len(duos) == 0
-		if err != nil {
-			msg := fmt.Sprintf("rdf4bgw.Gene2phen(): parse.UpVar(%s) %s: ", rpth, err)
+		rpthx := fmt.Sprintf("%s%s%s%s", bgwdir, subdir, txid, ext)
+		if err := xmap.Unmarshal(rpthx); err != nil {
+			msg := fmt.Sprintf("%s: %s", util.FN(0), err)
 			return 0, errors.New(msg)
 		}
-		/////////////////////////////////////////////////////////////////////////////
-		nrel, err := export.Gene2phen(duos, gsym2bgw, wpth)
+		duos, err := parse.UpVar(rpth) // sic!
 		if err != nil {
-			msg := fmt.Sprintf("rdf4bgw.Gene2phen(): export.Gene2phen(_, _, %s): %s ", wpth, err)
+			msg := fmt.Sprintf("%s: %s", util.FN(0), err)
+			return 0, errors.New(msg)
+		}
+		gsym2bgw := xmap.Lblg
+		nrel, err := export.Gene2phen(duos, gsym2bgw, wpth) // sic!
+		if err != nil {
+			msg := fmt.Sprintf("%s: %s", util.FN(0), err)
 			return 0, errors.New(msg)
 		}
 		cnt += nrel
 		if err = util.Gzip(wpth); err != nil {
-			msg := fmt.Sprintf("rdf4bgw.Gene2phen(): util.Gzip(%s): %s", wpth, err)
+			msg := fmt.Sprintf("%s: %s", util.FN(0), err)
 			return 0, errors.New(msg)
 		}
 	} // txid
-	return cnt, nil
+	return cnt, nil // TODO should be return nil
 } // Gene2phen
 
 func Prot2go(datdir, bgwdir string, txn2prm util.Set2D, fx string) (int, error) {
 	subdir := "prot2bp/"
 	if err := os.MkdirAll(filepath.Join(bgwdir, subdir), 0755); err != nil {
-		msg := fmt.Sprintf("%s: os.Mkdir: %s", util.FN(0), err)
+		msg := fmt.Sprintf("%s: %s", util.FN(0), err)
 		return 0, errors.New(msg)
 	}
 	subdir = "prot2cc/"
 	if err := os.MkdirAll(filepath.Join(bgwdir, subdir), 0755); err != nil {
-		msg := fmt.Sprintf("%s: os.Mkdir: %s", util.FN(0), err)
+		msg := fmt.Sprintf("%s: %s", util.FN(0), err)
 		return 0, errors.New(msg)
 	}
 	subdir = "prot2mf/"
 	if err := os.MkdirAll(filepath.Join(bgwdir, subdir), 0755); err != nil {
-		msg := fmt.Sprintf("%s: os.Mkdir: %s", util.FN(0), err)
+		msg := fmt.Sprintf("%s: %s", util.FN(0), err)
 		return 0, errors.New(msg)
 	}
 	// TODO interface similar to Tfac2gene etc.
@@ -485,28 +488,26 @@ func Prot2go(datdir, bgwdir string, txn2prm util.Set2D, fx string) (int, error) 
 		subdir := "goa/"
 		rpth := fmt.Sprintf("%s%s%s%s", datdir, subdir, txid, fx) // read Goa data
 		subdir = "xmap/"
-		rpthx := fmt.Sprintf("%s%s%s%s", bgwdir, subdir, txid, ".json") // read BGW map json
-		/////////////////////////////////////////////////////////////////////////////
 		var xmap bgw.Xmap
 		xmap.New()
-		err := xmap.Unmarshal(rpthx)
-		if err != nil {
-			return 0, err
+		rpthx := fmt.Sprintf("%s%s%s%s", bgwdir, subdir, txid, ".json")
+		if err := xmap.Unmarshal(rpthx); err != nil {
+			msg := fmt.Sprintf("%s: %s", util.FN(0), err)
+			return 0, errors.New(msg)
 		}
 		upac2bgw := xmap.Upac
 		/////////////////////////////////////////////////////////////////////////////
 		bps := make(util.Set3D)
 		ccs := make(util.Set3D)
 		mfs := make(util.Set3D)
+		var err error
 		if fx == ".gpa" {
 			//out := parse.Gpa(rpth) // TODO
 		}
 		if fx == ".gaf" {
-			bps, ccs, mfs, err = parse.Gaf(rpth)
-			if err != nil {
-				msg := fmt.Sprintf("rdf4bgw.go: Prot2go():%s: %s", err, txid)
-				log.Println(msg)
-				return 0, err
+			if bps, ccs, mfs, err = parse.Gaf(rpth); err != nil {
+				msg := fmt.Sprintf("%s: %s", util.FN(0), err)
+				return 0, errors.New(msg)
 			}
 		}
 		/////////////////////////////////////////////////////////////////////////////
@@ -516,59 +517,76 @@ func Prot2go(datdir, bgwdir string, txn2prm util.Set2D, fx string) (int, error) 
 		wpth = fmt.Sprintf("%s%s%s%s", bgwdir, subdir, txid, ext) // write goa nt
 		ntp, err := export.Prot2go(bps, upac2bgw, wpth)
 		if err = util.Gzip(wpth); err != nil {
-			log.Println("util.Gzip(): Failed to gzip:", wpth)
-			return 0, err
+			msg := fmt.Sprintf("%s: %s", util.FN(0), err)
+			return 0, errors.New(msg)
 		}
 		subdir = "prot2cc/"
 		wpth = fmt.Sprintf("%s%s%s%s", bgwdir, subdir, txid, ext) // write goa nt
 		ntc, err := export.Prot2go(ccs, upac2bgw, wpth)
 		if err = util.Gzip(wpth); err != nil {
-			log.Println("util.Gzip(): Failed to gzip:", wpth)
-			return 0, err
+			msg := fmt.Sprintf("%s: %s", util.FN(0), err)
+			return 0, errors.New(msg)
 		}
 		subdir = "prot2mf/"
 		wpth = fmt.Sprintf("%s%s%s%s", bgwdir, subdir, txid, ext) // write goa nt
 		ntf, err := export.Prot2go(mfs, upac2bgw, wpth)
 		if err = util.Gzip(wpth); err != nil {
-			log.Println("util.Gzip(): Failed to gzip:", wpth)
-			return 0, err
+			msg := fmt.Sprintf("%s: %s", util.FN(0), err)
+			return 0, errors.New(msg)
 		}
 
 		nts := ntp + ntc + ntf
 		if nts == 0 {
-			msg := fmt.Sprintf("%s: NoTriples", txid)
+			msg := fmt.Sprintf("%s: NoTriplesForTaxon: %s", util.FN(0), txid)
 			return 0, errors.New(msg)
 		}
 		nln += nts
 	} // txid
-	return nln, nil
+	return nln, nil // nln is used for tests
 } // Prot2go()
 
 // ///////////////////////////////////////////////////////////////////////////
 func Ortho(datdir, bgwdir string, txn2prm util.Set2D) (int, error) {
-	// Note: currently no mapping to OrthoDB for 284812, 44689
+	// currently OrthoDB is the only source
+	// no mapping to OrthoDB for 284812, 44689
+	// NO empty files saved anymore !!
 	subdir := "ortho/"
 	if err := os.MkdirAll(filepath.Join(bgwdir, subdir), 0755); err != nil {
-		msg := fmt.Sprintf("%s: os.Mkdir: %s", util.FN(0), err)
+		msg := fmt.Sprintf("%s: %s", util.FN(0), err)
 		return 0, errors.New(msg)
 	}
 	// TODO interface similar to Tfac2gene etc.
-	log.Println("\n\tOrtho")
+	log.Println("\n\tOrtho for ALL")
 	cnt := 0 // used in testing
 	for _, txidL := range txn2prm.Keys() {
+		outL, err := parse.OrthoSolo(datdir, txidL, txn2prm) // Set3D
+		if err != nil {
+			continue // skipping taxa with no orthology data
+		}
 		for _, txidR := range txn2prm.Keys() {
+			outR, err := parse.OrthoSolo(datdir, txidR, txn2prm) // Set3D
+			if err != nil {
+				continue // skipping taxa wothno orthology data
+			}
+			// now there is data for both taxa
 			if txidL >= txidR {
 				continue
 			} // skipping symmetrical and digonal
-			duos, err := parse.OrthoDuo(datdir, txidL, txidR, txn2prm)
-			if err != nil {
-				// OrthoDuo returns error if no orthology data for one of the taxa (occurs)
-				// err passed from parse.Idmap()
-				// OR no orthologues found for a pair of taxa (never occured so far)
-				msg := fmt.Sprintf("%s: %s", util.FN(0), err)
-				fmt.Printf("%s, skipping\n", msg)
-				continue // works as intended
-			} // NoData
+			duos := make(util.Set3D)
+			for srck, _ := range bgw.Orthokeys {
+				clusters := util.Shared(outL[srck].Keys(), outR[srck].Keys())
+				if len(clusters) == 0 {
+					continue // sic - some pairs of taxa may have no orthologues, sofar none
+				}
+				for _, xid := range clusters {
+					for _, upLac := range outL[srck][xid].Keys() {
+						for _, upRac := range outR[srck][xid].Keys() {
+							duoid := fmt.Sprintf("uniprot!%s--uniprot!%s", upLac, upRac)
+							duos.Add(duoid, srck, xid)
+						}
+					}
+				} // xid
+			} // srck
 			/////////////////////////////////////////////////////////////////////////////
 			subdir := "ortho/"
 			ext := ".nt"
@@ -578,7 +596,7 @@ func Ortho(datdir, bgwdir string, txn2prm util.Set2D) (int, error) {
 			// export.Ortho() retuns ALWAYS nil !! TODO
 			// NB: by this time ALL duos are non-empty
 			if err != nil {
-				msg := fmt.Sprintf("rdf4bgw.Ortho(): export.Ortho(_, %s): %s", wpth, err)
+				msg := fmt.Sprintf("%s: %s", util.FN(0), err)
 				return 0, errors.New(msg)
 			}
 			if err = util.Gzip(wpth); err != nil {
@@ -588,15 +606,19 @@ func Ortho(datdir, bgwdir string, txn2prm util.Set2D) (int, error) {
 			cnt += nrel
 		} // txidR
 	} // txidL
+	if cnt == 0 {
+		msg := fmt.Sprintf("%s: NoOrthogs", util.FN(0))
+		return cnt, errors.New(msg)
+	} else {
+	}
 	return cnt, nil
 } // Orhto
 
 func Onto(datdir, bgwdir string) error {
 	subdir := "onto/"
 	if err := os.MkdirAll(filepath.Join(bgwdir, subdir), 0755); err != nil {
-		msg := fmt.Sprintf("%s: os.Mkdir: %s", util.FN(0), err)
+		msg := fmt.Sprintf("%s: %s", util.FN(0), err)
 		return errors.New(msg)
-		//log.Fatal(err)
 	}
 	var ontos = map[string]string{
 		/*
@@ -620,11 +642,11 @@ func Onto(datdir, bgwdir string) error {
 			ifmt = "application/rdf+xml"
 		}
 		if err := rdfpipe(rpth, ifmt, "nt", wpth); err != nil {
-			msg := fmt.Sprintf("%s: rdf4bgw.rdfpipe(%s): %s: ", util.FN(0), rpth, err)
+			msg := fmt.Sprintf("%s: %s", util.FN(0), err)
 			return errors.New(msg)
 		}
 		if err := util.Gzip(wpth); err != nil {
-			msg := fmt.Sprintf("%s: util.Gzip(%s): %s: ", util.FN(0), wpth, err)
+			msg := fmt.Sprintf("%s: %s", util.FN(0), err)
 			return errors.New(msg)
 		}
 	}
