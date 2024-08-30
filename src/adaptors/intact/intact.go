@@ -23,16 +23,12 @@ func main() {
 		log.Fatalln("intact: Expecting more arguments than:", cnt)
 	}
 	log.Println("intact: Started with args:", args)
-	datdir := args[0]                              // path to data directory (with a trailing '/')
-	bgwdir := args[1]                              // path to rdf directory (with a trailing '/')
-	rpthT := args[2]                               // path to a list of selected taxa and proteomes
-	txn2prm, err := util.MakeMap(rpthT, 1, 0, "_") // txnID -> proteomeID
+	datdir := args[0]                               // path to data directory (with a trailing '/')
+	bgwdir := args[1]                               // path to rdf directory (with a trailing '/')
+	rpthT := args[2]                                // path to a list of selected taxa and proteomes
+	txn2prm, err := util.MakeMap(rpthT, 1, 0, "\t") // Set2D: map txnID -> proteomeID
 	if err != nil {
-		log.Fatalln("intact: Failed to make map:", rpthT, err)
-	}
-	n := len(txn2prm)
-	if n == 0 {
-		log.Fatalln("intact: Empty map:", rpthT)
+		panic(err) // sic
 	}
 
 	if *aP || *dP {

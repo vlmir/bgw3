@@ -1,7 +1,6 @@
 package dat4bgw
 
 import (
-	"bytes"
 	"errors"
 	"fmt"
 	"github.com/vlmir/bgw3/src/util"
@@ -49,8 +48,7 @@ func Rwget(ns, mask, ddir string) error {
 } // Rwget
 
 // the 3 functions below have comparable performance
-// HttpFile and GetFile save curtailed files in case wrong URIs iso of returning err TODO
-
+// Getfile is consistently fastest in the tests
 // from: https://siongui.github.io/2018/03/04/go-run-wget-via-shell-command/
 // NB: preserves the time stamp !!
 func WgetFile(uri, pth string) (err error) {
@@ -60,7 +58,7 @@ func WgetFile(uri, pth string) (err error) {
 	// set pth to "-" for sending the content to STDOUT
 	err = cmd.Run()
 	if err != nil {
-		msg := fmt.Sprintf("%s: %s: %s", util.FN(0), uri, err)
+		msg := fmt.Sprintf("%s: %s", util.FN(0), err)
 		return errors.New(msg)
 	}
 	cmd.Stdout = os.Stdout
@@ -68,7 +66,7 @@ func WgetFile(uri, pth string) (err error) {
 	return nil
 } // WgetFile
 
-func HttpFile(uri, pth string) (*bytes.Buffer, error) {
+func HttpFile(uri, pth string) error {
 	// NOT used
 	// from: https://golangcode.com/download-a-file-from-a-uri/
 	// HttpFile will download a uri to a local file. It's efficient because it will
@@ -76,45 +74,42 @@ func HttpFile(uri, pth string) (*bytes.Buffer, error) {
 	// HttpFile() seems prone to failures in case of very large files or poor connections
 
 	// Get the data; resp is a ponter to a struct; resp.Body: io.ReadCloser
-	buf := new(bytes.Buffer) // *bytes.Buffer; used only if no pth provided
+	//buf := new(bytes.Buffer) // *bytes.Buffer; used only if no pth provided
 	// get response
 	resp, err := http.Get(uri) // resp: *Reponse
 	if err != nil {
-		msg := fmt.Sprintf("%s: http.Get: %s: %s", util.FN(0), uri, err)
-		return buf, errors.New(msg)
+		msg := fmt.Sprintf("%s: %s", util.FN(0), err)
+		return errors.New(msg)
 	}
 	defer resp.Body.Close()
-	if pth == "" {
-		buf.ReadFrom(resp.Body)
-	} else {
-		// Create the file
-		wfh, err := os.Create(pth)
-		if err != nil {
-			msg := fmt.Sprintf("%s: os.Create: %s", util.FN(0), err) // err includes pth
-			return buf, errors.New(msg)
-		}
-		defer wfh.Close()
-		// Write the body to file
-		_, err = io.Copy(wfh, resp.Body)
+	//buf.ReadFrom(resp.Body)
+	// Create the file
+	wfh, err := os.Create(pth)
+	if err != nil {
+		msg := fmt.Sprintf("%s: %s: %s", util.FN(1), util.FN(0), err) // err includes pth
+		panic(errors.New(msg))
 	}
-	return buf, nil
+	defer wfh.Close()
+	// Write the body to file
+	_, err = io.Copy(wfh, resp.Body)
+
+	return nil
 } // HttpFile
 
-func GetFile(uri, key0, val0, pth string) (*bytes.Buffer, error) {
+//func GetFile(uri, key0, val0, pth string) (*bytes.Buffer, error) {
+func GetFile(uri, key0, val0, pth string) error {
 	// NOT used
-	// TODO see why why tests fail if pth != ""
 	// Get the data; resp is a ponter to a struct; resp.Body: io.ReadCloser
 	// the field 'Header' is needed only for gpa files
-	// with key0="Accept" and val0="text/gpad" works with saveOne*(), why ??
+	// with key0="Accept" and val0="text/gpad" works with saveOne*()
 
-	buf := new(bytes.Buffer) // *bytes.Buffer; used only if no pth provided
 	// func NewRequest(method, uri string, body io.Reader) (*Request, error)
 	// GET requests have no body
 	// http.MethodGet constant can be used iso "GET"
 	req, err := http.NewRequest("GET", uri, nil) // type Request struct
 	if err != nil {
-		msg := fmt.Sprintf("%s: %s: http.NewRequest %s", util.FN(0), uri, err)
-		return buf, errors.New(msg)
+		msg := fmt.Sprintf("%s: %s", util.FN(0), err)
+		return errors.New(msg)
 	}
 	req.Header.Set(key0, val0)
 
@@ -124,34 +119,41 @@ func GetFile(uri, key0, val0, pth string) (*bytes.Buffer, error) {
 	// Do sends an HTTP request and returns an HTTP response
 	resp, err := client.Do(req) // type Response struct
 	if err != nil {
-		msg := fmt.Sprintf("%s: %s: client.Do %s", util.FN(0), uri, err)
-		return buf, errors.New(msg)
+		msg := fmt.Sprintf("%s: %s", util.FN(0), err)
+		return errors.New(msg)
 	}
 	defer resp.Body.Close() // Body io.ReadCloser
-	if pth == "" {
-		buf.ReadFrom(resp.Body)
-	} else {
+	// StatusCode: https://stackoverflow.com/questions/55210301/error-handling-with-http-newrequest-in-go
+	if resp.StatusCode != http.StatusOK {
+		// aceptung success codes other than StausOK
+		statusOK := resp.StatusCode >= 200 && resp.StatusCode < 300
+		if !statusOK {
+			msg := fmt.Sprintf("%s: %d", util.FN(0), resp.StatusCode)
+			return errors.New(msg)
+		}
+	}
+	if pth != "" {
 		// Create the file
 		wfh, err := os.Create(pth)
 		if err != nil {
-			msg := fmt.Sprintf("%s: %s: os.Create: %s", util.FN(0), uri, err) // err includes pth
-			return buf, errors.New(msg)
+			msg := fmt.Sprintf("%s: %s: %s", util.FN(1), util.FN(0), err) // err includes pth
+			panic(errors.New(msg))
 		}
 		defer wfh.Close()
 		// Write the body to file
 		_, err = io.Copy(wfh, resp.Body)
 		if err != nil {
-			msg := fmt.Sprintf("%s: %s: io.Copy %s", util.FN(0), uri, err)
-			return buf, errors.New(msg)
+			msg := fmt.Sprintf("%s: %s", util.FN(0), err)
+			return errors.New(msg)
 		}
 	}
-	return buf, nil
+	return nil
 } // GetFile
 
 /// Single Taxon Download ///
 
 func saveOneIdmap(txid, pome, datdir string) error {
-	// Never use the 'ftp:' protocol hear !!!
+	// Never use the 'ftp:' protocol here !!!
 	ns := "https://ftp.uniprot.org/pub/databases/uniprot/current_release/knowledgebase/reference_proteomes/Eukaryota/"
 	subdir := "idmapping/"
 	ext := ".idmapping.gz"
@@ -159,11 +161,11 @@ func saveOneIdmap(txid, pome, datdir string) error {
 	pth := fmt.Sprintf("%s%s%s", datdir, subdir, file)
 	uri := fmt.Sprintf("%s%s/%s", ns, pome, file)
 	if err := WgetFile(uri, pth); err != nil {
-		msg := fmt.Sprintf("%s: %s: %s", util.FN(0), txid, err) // err includes: uri
+		msg := fmt.Sprintf("%s: %s", util.FN(0), err) // err includes: uri
 		return errors.New(msg)
 	}
 	if err := gunzip(pth); err != nil {
-		msg := fmt.Sprintf("%s: %s: %s", util.FN(0), txid, err) // err includes: pth
+		msg := fmt.Sprintf("%s: %s", util.FN(0), err) // err includes: pth
 		return errors.New(msg)
 	}
 	return nil
@@ -174,7 +176,7 @@ func saveOneUniprot(txid, datdir, script string) error {
 	cmd = exec.Command("/usr/bin/python3", script, txid, datdir, "&")
 	err := cmd.Run()
 	if err != nil {
-		msg := fmt.Sprintf("%s: %s: %s", util.FN(0), txid, err)
+		msg := fmt.Sprintf("%s: %s", util.FN(0), err)
 		return errors.New(msg)
 	}
 	cmd.Stdout = os.Stdout
@@ -187,7 +189,7 @@ func saveOneColtri(txid, datdir, script string) error {
 	cmd = exec.Command(script, txid, datdir, "&")
 	err := cmd.Run()
 	if err != nil {
-		msg := fmt.Sprintf("%s: %s: %s", util.FN(0), txid, err)
+		msg := fmt.Sprintf("%s: %s", util.FN(0), err)
 		return errors.New(msg)
 	}
 	cmd.Stdout = os.Stdout
@@ -196,13 +198,13 @@ func saveOneColtri(txid, datdir, script string) error {
 } // saveOneColtri
 
 func SaveOneSignor(txid string, datdir string) error {
-	// SPECIAL CASE: called in the adaptor
+	// SPECIAL CASE: called in the adaptor for 9606 only
 	// TODO see if all the files are limited to human data
 	// TODO adding mouse and rat data ??
 	subdir := "signor/"
 	if err := os.MkdirAll(filepath.Join(datdir, subdir), 0755); err != nil {
-		msg := fmt.Sprintf("%s: os.MkdirAll: %s", util.FN(0), err)
-		return errors.New(msg)
+		msg := fmt.Sprintf("%s: %s: %s", util.FN(1), util.FN(0), err)
+		panic(errors.New(msg))
 	}
 	ext := ".mi28"
 	uri := "https://signor.uniroma2.it/getData.php?type=causalTab"
@@ -239,7 +241,7 @@ func saveOneIntact(txid string, datdir string) error {
 	ext := ".mi25"
 	pth := fmt.Sprintf("%s%s%s%s", datdir, subdir, txid, ext)
 	if err := WgetFile(uri, pth); err != nil {
-		msg := fmt.Sprintf("%s: %s: %s", util.FN(0), txid, err) // err includes: uri
+		msg := fmt.Sprintf("%s: %s", util.FN(0), err) // err includes: uri
 		return errors.New(msg)
 	}
 	return nil
@@ -253,7 +255,7 @@ func saveOneGaf(txid string, datdir string, gafpome string) error {
 	ext := ".gaf"
 	pth := fmt.Sprintf("%s%s%s%s", datdir, subdir, txid, ext)
 	if err := WgetFile(uri, pth); err != nil {
-		msg := fmt.Sprintf("%s: %s: %s", util.FN(0), txid, err) // err includes: uri
+		msg := fmt.Sprintf("%s: %s", util.FN(0), err) // err includes: uri
 		return errors.New(msg)
 	}
 	return nil
@@ -270,8 +272,8 @@ func saveOneGpa(txid string, datdir string) error {
 	// NB: GetFile MUST be used here !!
 	// "text/gaf" for GAF files
 	// Header is mandatory
-	if _, err := GetFile(uri, "Accept", "text/gpad", pth); err != nil {
-		msg := fmt.Sprintf("%s: %s: %s", util.FN(0), txid, err) // err includes: uri||fpth
+	if err := GetFile(uri, "Accept", "text/gpad", pth); err != nil {
+		msg := fmt.Sprintf("%s: %s", util.FN(0), err) // err includes: uri
 		return errors.New(msg)
 	}
 	return nil
@@ -282,11 +284,11 @@ func saveOneTflink(uri, txid, datdir string) error {
 	ext := ".tsv.gz"
 	pth := fmt.Sprintf("%s%s%s%s", datdir, subdir, txid, ext)
 	if err := WgetFile(uri, pth); err != nil {
-		msg := fmt.Sprintf("%s: %s: %s", util.FN(0), txid, err) // err includes: uri
+		msg := fmt.Sprintf("%s: %s", util.FN(0), err) // err includes: uri
 		return errors.New(msg)
 	}
 	if err := gunzip(pth); err != nil {
-		msg := fmt.Sprintf("%s: %s: %s", util.FN(0), txid, err) // err includes: pth
+		msg := fmt.Sprintf("%s: %s", util.FN(0), err) // err includes: uri
 		return errors.New(msg)
 	}
 	return nil
@@ -297,8 +299,8 @@ func saveOneTflink(uri, txid, datdir string) error {
 func SaveAllCtdb(datdir string) error {
 	subdir := "ctdb/"
 	if err := os.MkdirAll(filepath.Join(datdir, subdir), 0755); err != nil {
-		msg := fmt.Sprintf("%s: os.MkdirAll: %s", util.FN(0), err)
-		return errors.New(msg)
+		msg := fmt.Sprintf("%s: %s: %s", util.FN(1), util.FN(0), err)
+		panic(errors.New(msg))
 	}
 	ext := ".tsv.gz"
 	// SPECIAL CASE: no filtering by taxon - data for all species in single files
@@ -318,19 +320,26 @@ func SaveAllCtdb(datdir string) error {
 			return errors.New(msg)
 		}
 		if err := gunzip(pth); err != nil {
-			msg := fmt.Sprintf("%s: %s", util.FN(0), err) // err includes: pth
-			return errors.New(msg)
+			msg := fmt.Sprintf("%s: %s: %s", util.FN(1), util.FN(0), err) // err includes: pth
+			panic(errors.New(msg))
 		}
 	} // for lbl
 	return nil
 } // SaveAllCtdb
 
 func SaveAllIdmap(datdir string, txn2prm util.Set2D) error {
-	subdir := "idmapping"
+	subdir := "idmapping/"
 	if err := os.MkdirAll(filepath.Join(datdir, subdir), 0755); err != nil {
-		msg := fmt.Sprintf("%s: os.MkdirAll: %s", util.FN(0), err)
-		return errors.New(msg)
+		msg := fmt.Sprintf("%s: %s: %s", util.FN(1), util.FN(0), err)
+		panic(errors.New(msg))
 	}
+	statsU := "https://ftp.uniprot.org/pub/databases/uniprot/current_release/knowledgebase/reference_proteomes/STATS"
+	wpth := fmt.Sprintf("%s%s%s", datdir, subdir, "stats.tsv")
+	if err := WgetFile(statsU, wpth); err != nil {
+		msg := fmt.Sprintf("%s: %s: %s", util.FN(1), util.FN(0), err)
+		panic(errors.New(msg))
+	}
+
 	for txid := range txn2prm {
 		pome := txn2prm[txid].Keys()[0]
 		if err := saveOneIdmap(txid, pome, datdir); err != nil {
@@ -344,8 +353,8 @@ func SaveAllIdmap(datdir string, txn2prm util.Set2D) error {
 func SaveAllColtri(datdir, scrdir string) error {
 	subdir := "coltri/"
 	if err := os.MkdirAll(filepath.Join(datdir, subdir), 0755); err != nil {
-		msg := fmt.Sprintf("%s: os.MkdirAll: %s", util.FN(0), err)
-		return errors.New(msg)
+		msg := fmt.Sprintf("%s: %s: %s", util.FN(1), util.FN(0), err)
+		panic(errors.New(msg))
 	}
 	taxa := map[string]string{
 		"9606":  "human",
@@ -366,8 +375,8 @@ func SaveAllColtri(datdir, scrdir string) error {
 func SaveAllUniprot(datdir string, txn2prm util.Set2D, scrdir string) error {
 	subdir := "uniprot/"
 	if err := os.MkdirAll(filepath.Join(datdir, subdir), 0755); err != nil {
-		msg := fmt.Sprintf("%s: os.MkdirAll: %s", util.FN(0), err)
-		return errors.New(msg)
+		msg := fmt.Sprintf("%s: %s: %s", util.FN(1), util.FN(0), err)
+		panic(errors.New(msg))
 	}
 
 	uri := "http://ftp.uniprot.org/pub/databases/uniprot/current_release/knowledgebase/variants/humsavar.txt"
@@ -391,8 +400,8 @@ func SaveAllUniprot(datdir string, txn2prm util.Set2D, scrdir string) error {
 func SaveAllIntact(datdir string, txn2prm util.Set2D) error {
 	subdir := "intact/"
 	if err := os.MkdirAll(filepath.Join(datdir, subdir), 0755); err != nil {
-		msg := fmt.Sprintf("%s: os.MkdirAll: %s", util.FN(0), err)
-		return errors.New(msg)
+		msg := fmt.Sprintf("%s: %s: %s", util.FN(1), util.FN(0), err)
+		panic(errors.New(msg))
 	}
 	for txid := range txn2prm {
 		if err := saveOneIntact(txid, datdir); err != nil {
@@ -406,21 +415,21 @@ func SaveAllIntact(datdir string, txn2prm util.Set2D) error {
 func SaveAllGaf(datdir string, txn2prm util.Set2D) error {
 	subdir := "goa/"
 	if err := os.MkdirAll(filepath.Join(datdir, subdir), 0755); err != nil {
-		msg := fmt.Sprintf("%s: os.MkdirAll: %s", util.FN(0), err)
-		return errors.New(msg)
+		msg := fmt.Sprintf("%s: %s: %s", util.FN(1), util.FN(0), err)
+		panic(errors.New(msg))
 	}
 	uri := "http://ftp.ebi.ac.uk/pub/databases/GO/goa/proteomes/proteome2taxid"
 	pth := datdir + "goa/gafpomes.tsv"
 	// writng to pth
 	if err := WgetFile(uri, pth); err != nil {
-		msg := fmt.Sprintf("%s: %s", util.FN(0), err) // err includes: uri
-		return errors.New(msg)
+		msg := fmt.Sprintf("%s: %s: %s", util.FN(1), util.FN(0), err) // err includes: uri
+		panic(errors.New(msg))
 	}
 	// reading from pth
 	gafmap, err := util.MakeMap(pth, 1, 2, "\t") // counting from 0
-	if err != nil || len(gafmap) == 0 {
-		msg := fmt.Sprintf("%s: %s", util.FN(0), err) // err uncludes: pth
-		return errors.New(msg)
+	if err != nil {
+		msg := fmt.Sprintf("%s: %s", util.FN(0), err) // err uncludes: MakeMap pth
+		panic(errors.New(msg))
 	}
 	for txid := range txn2prm {
 		gpomes := gafmap[txid].Keys()
@@ -440,8 +449,8 @@ func SaveAllGpa(datdir string, txn2prm util.Set2D) error {
 	// NOT used
 	subdir := "goa/"
 	if err := os.MkdirAll(filepath.Join(datdir, subdir), 0755); err != nil {
-		msg := fmt.Sprintf("%s: os.MkdirAll: %s", util.FN(0), err)
-		return errors.New(msg)
+		msg := fmt.Sprintf("%s: %s: %s", util.FN(1), util.FN(0), err)
+		panic(errors.New(msg))
 	}
 	for txid := range txn2prm {
 		if err := saveOneGpa(txid, datdir); err != nil {
@@ -455,8 +464,8 @@ func SaveAllGpa(datdir string, txn2prm util.Set2D) error {
 func SaveAllTflink(datdir string) error {
 	subdir := "tflink/"
 	if err := os.MkdirAll(filepath.Join(datdir, subdir), 0755); err != nil {
-		msg := fmt.Sprintf("%s: os.MkdirAll: %s", util.FN(0), err)
-		return errors.New(msg)
+		msg := fmt.Sprintf("%s: %s: %s", util.FN(1), util.FN(0), err)
+		panic(errors.New(msg))
 	}
 	ns := "https://cdn.netbiol.org/tflink/download_files/TFLink_"
 	taxa := map[string]string{
@@ -484,8 +493,8 @@ func SaveAllTflink(datdir string) error {
 func SaveAllOnto(datdir, year string) error {
 	subdir := "onto/"
 	if err := os.MkdirAll(filepath.Join(datdir, subdir), 0755); err != nil {
-		msg := fmt.Sprintf("%s: os.MkdirAll: %s", util.FN(0), err)
-		return errors.New(msg)
+		msg := fmt.Sprintf("%s: %s: %s", util.FN(1), util.FN(0), err)
+		panic(errors.New(msg))
 	}
 
 	// from BioPortal

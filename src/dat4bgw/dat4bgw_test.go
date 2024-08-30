@@ -37,103 +37,7 @@ func Test_Init(t *testing.T) {
 	if err := os.MkdirAll(filepath.Join(dpth, "coltri/"), 0755); err != nil {
 		panic(err)
 	}
-}
-
-func Test_HttpFile(t *testing.T) {
-	mystart := time.Now()
-	type tt struct {
-		arg1 string
-		arg2 string
-		val1 error
-		val2 int
-	}
-
-	//pth := "../../tdata/"
-	//dpth := pth + "dat4bgw/"
-	ns01 := "http://purl.obolibrary.org/obo/"
-	uri01 := ns01 + "bfo.owl"
-	ns02 := "https://www.ebi.ac.uk/Tools/webservices/psicquic/intact/webservices/current/search/query/species:"
-	uri02 := ns02 + "1672772"
-	uris := [...]string{uri01, uri02}
-	//pths :=[...]string{dpth+"HttpFile.01", dpth+"HttpFile.02"}
-	//pths := [...]string{"../../tdata/test1", ""}
-	pths := [...]string{"", ""}
-
-	tts := []tt{
-		{uris[0], pths[0], nil, 157931},
-		{uris[1], pths[1], nil, 0},
-	}
-	for i, tt := range tts {
-		buf, err := HttpFile(tt.arg1, tt.arg2) // buf is empty if pth != ""
-		if err != tt.val1 {
-			t.Error(
-				"For test", i+1, ": ",
-				"\n\twant", tt.val1,
-				"\n\thave", err,
-			)
-		}
-		if len(buf.String()) != tt.val2 {
-			t.Error(
-				"For test", i+1, ": ",
-				"\n\twant", tt.val2,
-				"\n\thave", len(buf.String()),
-			)
-		}
-	}
-	log.Println("Done with HttpFile in", time.Since(mystart))
-}
-
-func Test_GetFile(t *testing.T) {
-	mystart := time.Now()
-	type tt struct {
-		arg1 string
-		arg2 string
-		arg3 string
-		arg4 string
-		val1 error
-		val2 int
-	}
-
-	//pth := "../../tdata/"
-	//dpth := pth + "dat4bgw/"
-	//uri = "https://www.ebi.ac.uk/QuickGO/services/annotation/downloadSearch?proteome=gcrpCan%2CgcrpIso&geneProductId=P04637&geneProductType=protein&taxonId=9606"
-	ns01 := "http://purl.obolibrary.org/obo/"
-	uri01 := ns01 + "bfo.owl"
-	ns02 := "https://www.ebi.ac.uk/Tools/webservices/psicquic/intact/webservices/current/search/query/species:"
-	uri02 := ns02 + "1672772"
-	uris := [...]string{uri01, uri02}
-	hact01 := "Accept"
-	htype01 := "text"
-	hact02 := "Accept"
-	htype02 := "text"
-	hacts := [...]string{hact01, hact02}
-	htypes := [...]string{htype01, htype02}
-	pths := [...]string{"", ""}
-	//pths :=[...]string{dpth+"GetFile.01", dpth+"GetFile.02"}
-
-	tts := []tt{
-		{uris[0], hacts[0], htypes[0], pths[0], nil, 157931},
-		{uris[1], hacts[1], htypes[1], pths[1], nil, 0},
-	}
-	for i, tt := range tts {
-		buf, err := GetFile(tt.arg1, tt.arg2, tt.arg3, tt.arg4)
-		if err != tt.val1 {
-			t.Error(
-				"For test", i+1, ": ",
-				"\n\twant", tt.val1,
-				"\n\thave", err,
-			)
-		}
-		if len(buf.String()) != tt.val2 {
-			t.Error(
-				"For test", i+1, ": ",
-				"\n\twant", tt.val2,
-				"\n\thave", len(buf.String()),
-			)
-		}
-	}
-	log.Println("Done with GetFile in", time.Since(mystart))
-}
+} // Init
 
 func Test_WgetFile(t *testing.T) {
 	mystart := time.Now()
@@ -168,6 +72,81 @@ func Test_WgetFile(t *testing.T) {
 	}
 	log.Println("Done with WgetFile in", time.Since(mystart))
 } // WgetFile
+
+func Test_HttpFile(t *testing.T) {
+	mystart := time.Now()
+	type tt struct {
+		arg1 string
+		arg2 string
+		val1 error
+	}
+
+	ns01 := "http://purl.obolibrary.org/obo/"
+	uri01 := ns01 + "bfo.owl"
+	ns02 := "https://www.ebi.ac.uk/Tools/webservices/psicquic/intact/webservices/current/search/query/species:"
+	uri02 := ns02 + "1672772"
+	uris := [...]string{uri01, uri02}
+	dpth := "../../tdata/dat4bgw/"
+	pths := [...]string{dpth + "HttpFile.01", dpth + "HttpFile.02"}
+
+	tts := []tt{
+		{uris[0], pths[0], nil},
+		{uris[1], pths[1], nil},
+	}
+	for i, tt := range tts {
+		err := HttpFile(tt.arg1, tt.arg2)
+		if err != tt.val1 {
+			t.Error(
+				"For test", i+1, ": ",
+				"\n\twant", tt.val1,
+				"\n\thave", err,
+			)
+		}
+	}
+	log.Println("Done with HttpFile in", time.Since(mystart))
+} // HttpFile
+
+func Test_GetFile(t *testing.T) {
+	mystart := time.Now()
+	type tt struct {
+		arg1 string
+		arg2 string
+		arg3 string
+		arg4 string
+		val1 error
+	}
+
+	//uri = "https://www.ebi.ac.uk/QuickGO/services/annotation/downloadSearch?proteome=gcrpCan%2CgcrpIso&geneProductId=P04637&geneProductType=protein&taxonId=9606"
+	ns01 := "http://purl.obolibrary.org/obo/"
+	uri01 := ns01 + "bfo.owl"
+	ns02 := "https://www.ebi.ac.uk/Tools/webservices/psicquic/intact/webservices/current/search/query/species:"
+	uri02 := ns02 + "367110"
+	uris := [...]string{uri01, uri02}
+	hact01 := "Accept"
+	htype01 := "text"
+	hact02 := "Accept"
+	htype02 := "text"
+	hacts := [...]string{hact01, hact02}
+	htypes := [...]string{htype01, htype02}
+	dpth := "../../tdata/dat4bgw/"
+	pths := [...]string{dpth + "GetFile.01", dpth + "GetFile.02"}
+
+	tts := []tt{
+		{uris[0], hacts[0], htypes[0], pths[0], nil},
+		{uris[1], hacts[1], htypes[1], pths[1], nil},
+	}
+	for i, tt := range tts {
+		err := GetFile(tt.arg1, tt.arg2, tt.arg3, tt.arg4)
+		if err != tt.val1 {
+			t.Error(
+				"For test", i+1, ": ",
+				"\n\twant", tt.val1,
+				"\n\thave", err,
+			)
+		}
+	}
+	log.Println("Done with GetFile in", time.Since(mystart))
+} // GetFile
 
 // the tests below take too long, uncomment if needed
 //func Test_Rwget(t *testing.T) {

@@ -23,17 +23,13 @@ func main() {
 		log.Fatalln("uniprot: Expecting more arguments than:", cnt)
 	}
 	log.Println("uniprot: Started with args:", args)
-	datdir := args[0]                              // path to data directory (with a trailing '/')
-	bgwdir := args[1]                              // path to rdf directory (with a trailing '/')
-	rpthT := args[2]                               // path to a list of selected taxa and proteomes
-	scrdir := args[3]                              // path to scripts directory
-	txn2prm, err := util.MakeMap(rpthT, 1, 0, "_") // txnID -> proteomeID
+	datdir := args[0]                               // path to data directory (with a trailing '/')
+	bgwdir := args[1]                               // path to rdf directory (with a trailing '/')
+	rpthT := args[2]                                // path to a list of selected taxa and proteomes
+	scrdir := args[3]                               // path to scripts directory
+	txn2prm, err := util.MakeMap(rpthT, 1, 0, "\t") // Set2D: map txnID -> proteomeID
 	if err != nil {
-		log.Fatalln("uniprot: Failed to make map:", rpthT, err)
-	}
-	n := len(txn2prm)
-	if n == 0 {
-		log.Fatalln("uniprot: Empty map:", rpthT)
+		panic(err) // sic
 	}
 
 	if *aP || *dP {

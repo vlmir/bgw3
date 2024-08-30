@@ -246,11 +246,11 @@ func X1quoted(s []string, key string, dlm string) []string {
 
 // MakeMap generates a map from a file delimited by an arbitrary string
 func MakeMap(rpth string, keyind int, valind int, dlm string) (Set2D, error) {
-	// used only once in dat4bgw
+	// used in dat4bgw and adaptors
 	set := make(Set2D)
 	fh, err := os.Open(rpth)
 	if err != nil {
-		msg := fmt.Sprintf("%s: os,Open: %s", FN(0), err) // sic!
+		msg := fmt.Sprintf("%s: %s", FN(0), err) // sic!
 		// eg github.com/vlmir/bgw3/src/util.MakeMap: open ../../tdata/idmapping/UP000005640_960.idmapping: no such file or directory
 		return set, errors.New(msg)
 	}
@@ -274,6 +274,10 @@ func MakeMap(rpth string, keyind int, valind int, dlm string) (Set2D, error) {
 		key := cells[keyind]
 		val := cells[valind]
 		set.Add(key, val)
+	}
+	if len(set) == 0 {
+		msg := fmt.Sprintf("%s: EmptySet", FN(0))
+		return set, errors.New(msg)
 	}
 	return set, nil
 }
