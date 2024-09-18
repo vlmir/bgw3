@@ -113,9 +113,8 @@ func Geneprot(datdir, bgwdir string, txn2prm util.Set2D) (err error) {
 	return nil
 } // Geneprot()
 
-//func Reg2pway(datdir, bgwdir string, txn2prm util.Set2D) (util.Set2D, error) {
 func Reg2pway(datdir, bgwdir string, taxa map[string][]string) (util.Set2D, error) {
-	subdir := "reg2pway/"
+	subdir := "reg2targ/"
 	cnts := make(util.Set2D)
 	if err := os.MkdirAll(filepath.Join(bgwdir, subdir), 0755); err != nil {
 		msg := fmt.Sprintf("%s: %s", util.FN(0), err)
@@ -145,9 +144,9 @@ func Reg2pway(datdir, bgwdir string, taxa map[string][]string) (util.Set2D, erro
 		for _, txid := range txids {
 			log.Println("\n\tReg2pway for:", txid)
 			wpths := map[string]string{
-				"reg2ptrg": fmt.Sprintf("%s%s%s-%s-%s.nt", bgwdir, subdir, "p", srck, txid),
-				"reg2ntrg": fmt.Sprintf("%s%s%s-%s-%s.nt", bgwdir, subdir, "n", srck, txid),
-				"reg2utrg": fmt.Sprintf("%s%s%s-%s-%s.nt", bgwdir, subdir, "u", srck, txid),
+				"reg2ptrg": fmt.Sprintf("%s%s%s-%s-%s.nt", bgwdir, subdir, "ppw", srck, txid),
+				"reg2ntrg": fmt.Sprintf("%s%s%s-%s-%s.nt", bgwdir, subdir, "npw", srck, txid),
+				"reg2utrg": fmt.Sprintf("%s%s%s-%s-%s.nt", bgwdir, subdir, "upw", srck, txid),
 			}
 			var d4b bgw.Dat4bridge // one source, one taxon
 			d4b.New()
@@ -556,7 +555,6 @@ func Ortho(datdir, bgwdir string, txn2prm util.Set2D) (int, error) {
 		return 0, errors.New(msg)
 	}
 	// TODO interface similar to Tfac2gene etc.
-	log.Println("\n\tOrtho for ALL")
 	cnt := 0 // used in testing
 	for _, txidL := range txn2prm.Keys() {
 		outL, err := parse.OrthoSolo(datdir, txidL, txn2prm) // Set3D
@@ -590,8 +588,10 @@ func Ortho(datdir, bgwdir string, txn2prm util.Set2D) (int, error) {
 			/////////////////////////////////////////////////////////////////////////////
 			subdir := "ortho/"
 			ext := ".nt"
-			file := fmt.Sprintf("%s%s%s%s", txidL, "-", txidR, ext)
+			txpair := fmt.Sprintf("%s-%s", txidL, txidR)
+			file := fmt.Sprintf("%s%s", txpair, ext)
 			wpth := fmt.Sprintf("%s%s%s", bgwdir, subdir, file)
+			log.Println("\n\tOrtho for:", txpair)
 			nrel, err := export.Ortho(duos, wpth)
 			// export.Ortho() retuns ALWAYS nil !! TODO
 			// NB: by this time ALL duos are non-empty
@@ -609,7 +609,6 @@ func Ortho(datdir, bgwdir string, txn2prm util.Set2D) (int, error) {
 	if cnt == 0 {
 		msg := fmt.Sprintf("%s: NoOrthogs", util.FN(0))
 		return cnt, errors.New(msg)
-	} else {
 	}
 	return cnt, nil
 } // Orhto

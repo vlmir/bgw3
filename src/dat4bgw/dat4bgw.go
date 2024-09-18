@@ -71,7 +71,7 @@ func HttpFile(uri, pth string) error {
 	// from: https://golangcode.com/download-a-file-from-a-uri/
 	// HttpFile will download a uri to a local file. It's efficient because it will
 	// write as it downloads and not load the whole file into memory.
-	// HttpFile() seems prone to failures in case of very large files or poor connections
+	// HttpFile seems prone to failures in case of very large files or poor connections
 
 	// Get the data; resp is a ponter to a struct; resp.Body: io.ReadCloser
 	//buf := new(bytes.Buffer) // *bytes.Buffer; used only if no pth provided
@@ -428,7 +428,7 @@ func SaveAllGaf(datdir string, txn2prm util.Set2D) error {
 	// reading from pth
 	gafmap, err := util.MakeMap(pth, 1, 2, "\t") // counting from 0
 	if err != nil {
-		msg := fmt.Sprintf("%s: %s", util.FN(0), err) // err uncludes: MakeMap pth
+		msg := fmt.Sprintf("%s: %s: %s", util.FN(1), util.FN(0), err) // err uncludes: MakeMap pth
 		panic(errors.New(msg))
 	}
 	for txid := range txn2prm {

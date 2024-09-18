@@ -1,4 +1,3 @@
-// package main
 package dat4bgw
 
 import (
@@ -35,6 +34,9 @@ func Test_Init(t *testing.T) {
 		panic(err)
 	}
 	if err := os.MkdirAll(filepath.Join(dpth, "coltri/"), 0755); err != nil {
+		panic(err)
+	}
+	if err := os.MkdirAll(filepath.Join(dpth, "ctdb/"), 0755); err != nil {
 		panic(err)
 	}
 } // Init
@@ -179,7 +181,7 @@ func Test_GetFile(t *testing.T) {
 //			)
 //		}
 //	}
-//	panic("Done with Rwget in", time.Since(mystart))
+//	log.Println("Done with Rwget in", time.Since(mystart))
 //}
 //func Test_saveOneColtri(t *testing.T) {
 //	mystart := time.Now()

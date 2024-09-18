@@ -129,9 +129,9 @@ func TestSigPways(t *testing.T) {
 	/// exporting
 	srcs := []string{"signor"}
 	wpths := map[string]string{
-		"reg2ntrg": "../../tdata/OUT/export/reg2pway/n-signor-9606.nt",
-		"reg2ptrg": "../../tdata/OUT/export/reg2pway/p-signor-9606.nt",
-		"reg2utrg": "../../tdata/OUT/export/reg2pway/u-signor-9606.nt",
+		"reg2ntrg": "../../tdata/OUT/export/reg2targ/npw-signor-9606.nt",
+		"reg2ptrg": "../../tdata/OUT/export/reg2targ/ppw-signor-9606.nt",
+		"reg2utrg": "../../tdata/OUT/export/reg2targ/upw-signor-9606.nt",
 	}
 
 	// for Signor complexes and protein families

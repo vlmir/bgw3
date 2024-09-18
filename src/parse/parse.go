@@ -160,7 +160,7 @@ func Idmap(rpth string, idmkeys map[string]string, i1, i2, i3 int) (util.Set3D, 
 	if err != nil {
 		msg := fmt.Sprintf("%s: %s: os.Open: %s", util.FN(1), util.FN(0), err)
 		//return out, errors.New(msg)
-		panic(errors.New(msg)) // change globally
+		panic(errors.New(msg)) // change globally ??
 	}
 	defer fh.Close()
 	scanner := bufio.NewScanner(fh)
@@ -583,8 +583,8 @@ func Gpa(rpth string) (duos util.Set3D) {
 	duos = make(util.Set3D)
 	fhR, err := os.Open(rpth)
 	if err != nil {
-		msg := fmt.Sprintf("%s: os.Open: %s", util.FN(0), err)
-		panic(errors.New(msg)) // pending re-implementation
+		msg := fmt.Sprintf("%s: %s: %s", util.FN(1), util.FN(0), err)
+		panic(errors.New(msg)) // pending re-implementation ??
 	}
 	defer fhR.Close()
 	scanner := bufio.NewScanner(fhR)
@@ -637,8 +637,8 @@ func OrthoSolo(datdir, txid string, txn2prm util.Set2D) (util.Set3D, error) {
 	ext := ".idmapping"
 	prmids := txn2prm[txid].Keys() // normally 1, yet multiple may occur?
 	if len(prmids) == 0 {
-		msg := fmt.Sprintf("%s: %s: NoProtomesFor %s", util.FN(1), util.FN(0), txid)
-		panic(errors.New(msg))
+		msg := fmt.Sprintf("%s: %s: NoProtomesFor %s", util.FN(1), util.FN(0), txid) // OK
+		panic(errors.New(msg))                                                       // should never happen
 	}
 	if len(prmids) > 1 {
 		msg := fmt.Sprintf("%s: MultiProteomesForTaxon %s: %v", util.FN(0), txid, prmids)

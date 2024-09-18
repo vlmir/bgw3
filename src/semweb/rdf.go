@@ -233,7 +233,8 @@ func FmtURIs(fm util.SliceSet) map[string]string {
 	}
 	m := len(uris)
 	if m != n {
-		panic(errors.New(fmt.Sprintf("Want: %d have: %d", n, m)))
+		msg := fmt.Sprintf("%s: %s: Want: %d have: %d", util.FN(1), util.FN(0), n, m)
+		panic(errors.New(msg))
 	}
 	return uris
 } // FmtURIs
@@ -289,6 +290,10 @@ func Capita(fm util.SliceSet) (string, int) {
 			sb.WriteString(FormT(sU, plU, FormL(bits[2])))
 			nln++
 		}
+	}
+	if nln == 0 {
+		msg := fmt.Sprintf("%s: %s: EmptyHead", util.FN(1), util.FN(0))
+		panic(errors.New(msg))
 	}
 	return sb.String(), nln
 } // Capita

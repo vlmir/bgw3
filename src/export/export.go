@@ -702,7 +702,7 @@ func SigPways(d *bgw.Dat4bridge, x *bgw.Xmap, wdir string) error {
 	xmap := *x
 	srck := d4b.Src
 	txid := d4b.Taxid
-	wpths := d4b.Out
+	wpths := d4b.Out // defined in rdf4bgw.Reg2pway
 	cnts := d4b.Cnts // Set2D
 	p2t := "reg2ptrg"
 	n2t := "reg2ntrg"
@@ -1117,13 +1117,12 @@ func Prot2go(duos, upac2bgw util.Set3D, wpth string) (int, error) {
 // Arg1: orthology data for one pair of taxa if any, non empty
 // Arg2: path for writing RDF file
 func Ortho(duos util.Set3D, wpth string) (int, error) {
-	// TODO defer writing the header until the end of the main loop (duoid)
 	// duos: output of parse.OrthoDuos()
 	// Note: no UP isoforms in this graph; only RefProt canonical accessions
 	if len(duos) == 0 {
-		msg := fmt.Sprintf("%s: NoDuos", util.FN(0))
+		msg := fmt.Sprintf("%s: %s: NoDuos", util.FN(1), util.FN(0))
 		panic(errors.New(msg))
-	} // just double checking
+	} // just double checking, should never hgappen
 	keys4b := make(util.SliceSet)
 	keys4b["Opys"] = []string{
 		"sub2cls",
@@ -1167,8 +1166,7 @@ func Ortho(duos util.Set3D, wpth string) (int, error) {
 	rdfNS := nss["rdf"]
 	idmkeys := bgw.Orthokeys // currently only "OrthoDB": "orthodb", TODO move here?
 	cntD := 0                // number of orthology relations for a pair of taxa
-	nln = 0                  // number of lines written for a pair of taxa
-	cnts := make(util.Set3D) // srck->clslbl-pdck
+	cnts := make(util.Set3D) // srck->clslbl->pdck
 	for _, duoid := range duos.Keys() {
 		duo := duos[duoid]
 		duoU := rdf.CompU(stmNS, duoid)
@@ -1211,23 +1209,18 @@ func Ortho(duos util.Set3D, wpth string) (int, error) {
 				sb.WriteString(rdf.FormT(uriR, ourUs["mbr2lst"], setU))
 			}
 		} // idmk
-		bytes := []byte(sb.String())
-		if len(bytes) != 0 {
-			wfh.Write(bytes)
-			sb.Reset()
-			cntD++
-		}
+		cntD++
 	} // duoid
 	if cntD == 0 {
-		msg := fmt.Sprintf("%s: NoTriplesFor %s", util.FN(0), wpth)
+		msg := fmt.Sprintf("%s: NoDataFor: %s", util.FN(0), wpth)
 		return 0, errors.New(msg)
-	} else {
-		for srck, pairs := range cnts {
-			for clslbl, pdcks := range pairs {
-				msg := fmt.Sprintf("export.Ortho: %s %s %v", srck, clslbl, pdcks)
-				fmt.Printf("%s\n", msg)
-			}
-		}
+	}
+	bytes := []byte(sb.String())
+	wfh.Write(bytes)
+	sb.Reset()
+	for srck, _ := range cnts {
+		msg := fmt.Sprintf("export.Ortho: %s: NumberOfPairs %d", srck, cntD)
+		fmt.Printf("%s\n", msg)
 	}
 	return cntD, nil
 } // Ortho
