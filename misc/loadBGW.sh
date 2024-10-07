@@ -1,0 +1,23 @@
+#!/bin/bash
+isql-v exec="DELETE FROM DB.DBA.load_list;"
+
+isql-v exec="ld_dir('uploads/onto', 'biolink-model.nt.gz', 'http://rdf.biogateway.eu/graph/biolink');"
+isql-v exec="ld_dir('uploads/onto', 'go-basic.nt.gz', 'http://rdf.biogateway.eu/graph/go');"
+isql-v exec="ld_dir('uploads/onto', 'mi.nt.gz', 'http://rdf.biogateway.eu/graph/mi');"
+isql-v exec="ld_dir('uploads/onto', 'omim.nt.gz', 'http://rdf.biogateway.eu/graph/omim');"
+isql-v exec="ld_dir('uploads/onto', 'ncbitaxon.nt.gz', 'http://rdf.biogateway.eu/graph/taxon');"
+isql-v exec="ld_dir('uploads/gene', '*nt.gz', 'http://rdf.biogateway.eu/graph/gene');"
+isql-v exec="ld_dir('uploads/gene2phen', '*nt.gz', 'http://rdf.biogateway.eu/graph/gene2phen');"
+isql-v exec="ld_dir('uploads/ortho', '*nt.gz', 'http://rdf.biogateway.eu/graph/ortho');"
+isql-v exec="ld_dir('uploads/prot', '*nt.gz', 'http://rdf.biogateway.eu/graph/prot');"
+isql-v exec="ld_dir('uploads/prot2bp', '*nt.gz', 'http://rdf.biogateway.eu/graph/prot2bp');"
+isql-v exec="ld_dir('uploads/prot2cc', '*nt.gz', 'http://rdf.biogateway.eu/graph/prot2cc');"
+isql-v exec="ld_dir('uploads/prot2mf', '*nt.gz', 'http://rdf.biogateway.eu/graph/prot2mf');"
+isql-v exec="ld_dir('uploads/prot2prot', '*nt.gz', 'http://rdf.biogateway.eu/graph/prot2prot');"
+isql-v exec="ld_dir('uploads/reg2targ', '*nt.gz', 'http://rdf.biogateway.eu/graph/reg2targ');"
+
+isql-v exec="SELECT * FROM DB.DBA.load_list;"
+isql-v exec="checkpoint;"
+isql-v exec="rdf_loader_run();"
+isql-v exec="SELECT * FROM DB.DBA.load_list;"
+isql-v exec="checkpoint;"

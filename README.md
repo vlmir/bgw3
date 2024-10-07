@@ -12,7 +12,7 @@ cd bgw3/src/adapters
 From within each subdirectory run:
 go build
 
-Move all the generated binaries e.g. to ~/bin
+Move all the generated binaries to an external directory, e.g. ~/bin
 
 # Usage
 
@@ -21,9 +21,13 @@ cd myProject
 mkdir DAT OUT # for holding downloaded files and generated RDFs, any names will do
 cp bgw3/misc/runAdaptors.sh ./
 
-
-
 ./runAdaptors.sh <path to binaries> <path for downloading files> <path for RDFs> <path to a file mapping taxa and proteomes> <path to scripts> <OMIM version>
 
 _Example_
 ./runAdaptors.sh ~/bin/ DAT/ OUT/ ~/repos/bgw3/misc/prm_txn.txt ~/repos/bgw3/misc/ 25 &
+
+### Output
+DAT: a directory will be created for each data source containing the downloaded files
+OUT: a directory will be created for ewach RDF graph containing N-Triples files
+The files are ready to be loaded into any implementation of RDF/triple store
+The file bgw3/misc/loadBGW.sh can be used for uploading into a Virtuoso Open Source database
