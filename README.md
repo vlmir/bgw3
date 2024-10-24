@@ -31,13 +31,15 @@ mkdir myProject DAT OUT
 
 cd myProject
 
-cp bgw3/misc/runAdaptors.sh ./
-
 **Note: myProject will contain all STDOUTs and STDERRs
 
-**Note: you may need to make temporary changes to runAdaptors.sh
+cp bgw3/misc/runAdaptors.sh ./
 
-./runAdaptors.sh path_to_binaries path_for_downloading_files path_for_RDFs path_to_a_file_mapping_taxa_and_proteomes path_to_scripts_OMIM_version
+**Note: if you need to make changes to runAdaptors.sh it is more practical to do it here
+
+Run the following command in the current directory to build a new set of RDF files
+
+./runAdaptors.sh path_to_binaries path_for_downloading_files path_for_RDFs path_to_a_file_mapping_taxa_and_proteomes path_to_scripts OMIM_version
 
 _Example_
 
@@ -45,9 +47,9 @@ _Example_
 
 ### Output
 
-subdirectories will be created in DAT for each data source holding the downloaded files
+subdirectories will be created in DAT for each data source filled with downloaded files
 
-subdirectories will be created in OUT for each RDF graph holding N-Triples files
+subdirectories will be created in OUT for each RDF graph filled with N-Triples files
 
 The files are ready to be loaded into any implementation of RDF/triple store
 
