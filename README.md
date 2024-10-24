@@ -6,20 +6,20 @@ It will download data from a specified set of data sources and generate RDF N-Tr
 
 Clone the repository with:
 git clone git@github.com:vlmir/bgw3.git
-
 cd bgw3/src/adapters
-
 From within each subdirectory run:
 go build
-
 Move all the generated binaries to an external directory, e.g. ~/bin
 
 # Usage
 
-mkdir myProject # can be any directory outside bgw3
+mkdir myProject DAT OUT
+Note: myProject DAT OUT can be ANY directories outside bgw3
+Note: DAT & OUT will hold downloaded files & generated RDFs respectively
 cd myProject
-mkdir DAT OUT # for holding downloaded files and generated RDFs, any names will do
 cp bgw3/misc/runAdaptors.sh ./
+Note: myProject will contain all STDOUTs and STDERRs
+Note: you may need to make temporary changes to runAdaptors.sh
 
 ./runAdaptors.sh <path to binaries> <path for downloading files> <path for RDFs> <path to a file mapping taxa and proteomes> <path to scripts> <OMIM version>
 
