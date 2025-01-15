@@ -43,7 +43,7 @@ Run the following command in the current directory to build a new set of RDF fil
 
 _Example_
 
-./runAdaptors.sh ~/bin/ DAT/ OUT/ ~/repos/bgw3/misc/prm_txn.txt ~/repos/bgw3/misc/ 25 &
+./runAdaptors.sh ~/bin/ DAT/ OUT/ ~/repos/bgw3/misc/prm_txn.tsv ~/repos/bgw3/misc/ 25 &
 
 ### Output
 

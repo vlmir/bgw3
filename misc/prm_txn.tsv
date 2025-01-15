@@ -1,0 +1,26 @@
+# 'prm_txn.tsv' provides mappings between reference proteome IDs and taxon IDs, needed for downloading and processing data from some sources.
+# It was extracted from 'ftp.uniprot.org/pub/databases/uniprot/current_release/knowledgebase/reference_proteomes/README' (tab delimited) for the species currently used in BioGateway.
+# The file is parsed by util.MakeMap function. The function can use any character but '#' as a delimiter and arbitrary fields as keys and values.
+# NB: some mappings may eventually change, should be checked in case of problems downloading UniProt data !!
+
+# proteome_id	taxon_id
+UP000000589	10090
+UP000002494	10116
+UP000002485	284812
+UP000006906	3055
+UP000001450	36329
+UP000001805	367110
+UP000006548	3702
+UP000059680	39947
+UP000002195	44689
+UP000007305	4577
+UP000002311	559292
+UP000001940	6239
+UP000000803	7227
+UP000000437	7955
+UP000000539	9031
+UP000005640	9606
+UP000805418	9615
+UP000009136	9913
+UP000001811	9986
+UP000008227	9823
