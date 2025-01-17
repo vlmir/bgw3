@@ -4,19 +4,17 @@ It will download data from a specified set of data sources and generate RDF N-Tr
 
 # Installation
 
+
 Clone the repository with:
-
-
 git clone git@github.com:vlmir/bgw3.git
+
+cd bgw3/src
+go test ./... # testing all source files, MUST pass
 
 cd bgw3/src/adapters/
 
-
 From within each subdirectory run:
-
-
 go build
-
 
 Move all the generated binaries to an external directory, e.g. ~/bin
 
@@ -24,22 +22,17 @@ Move all the generated binaries to an external directory, e.g. ~/bin
 
 
 mkdir myProject DAT OUT
-
-**Note: myProject DAT OUT can be ANY directories outside bgw3
-
+**Note: myProject DAT OUT may be ANY directories OUTSIDE bgw3
 **Note: DAT & OUT will hold downloaded files & generated RDFs respectively
 
 cd myProject
-
 **Note: myProject will contain all STDOUTs and STDERRs
 
 cp bgw3/misc/runAdaptors.sh ./
-
 **Note: if you need to make changes to runAdaptors.sh it is more practical to do it here
 
-Run the following command in the current directory to build a new set of RDF files
-
-./runAdaptors.sh path_to_binaries path_for_downloading_files path_for_RDFs path_to_a_file_mapping_taxa_and_proteomes path_to_scripts OMIM_version
+Run the following command in the current directory to build a new set of RDF files:
+./runAdaptors.sh path_to_binaries path_for_downloaded_files path_for_RDFs path_to_a_file_mapping_taxa_and_proteomes path_to_scripts OMIM_version
 
 _Example_
 
@@ -53,4 +46,4 @@ subdirectories will be created in OUT for each RDF graph filled with N-Triples f
 
 The files are ready to be loaded into any implementation of RDF/triple store
 
-The file bgw3/misc/loadBGW.sh can be used for uploading into a Virtuoso Open Source database
+The file bgw3/misc/loadBGW.sh can be used for uploading RDFs into a Virtuoso Open Source database

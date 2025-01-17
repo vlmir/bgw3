@@ -15,6 +15,11 @@ $1onto -d $datdir $bgwdir $version > onto.outd 2> onto.errd &
 $1signor -d $datdir $bgwdir > sig.outd 2> sig.errd &
 $1tfac2gene -d $datdir $bgwdir $scrdir > tf.outd 2> tf.errd &
 
+## special case
+cp $5atregnet.tgz $2
+tar -xzf $2atregnet.tgz
+rm $2atregnet.tgz
+
 wait # essential
 
 ## Exporting
@@ -27,3 +32,6 @@ $1signor -e $datdir $bgwdir > sig.outx 2> sig.errx &
 $1tfac2gene -e $datdir $bgwdir $scrdir > tf.outx 2> tf.errx &
 
 wait # essential
+
+## special case
+cp $5biolink-model.nt.gz $3onto
