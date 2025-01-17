@@ -11,5 +11,5 @@ _*
 *.err
 *.out
 *.pyc
-*.gz
+#*.gz
 TODO
