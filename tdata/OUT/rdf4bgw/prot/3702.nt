@@ -1,0 +1,61 @@
+<http://schema.org/evidenceLevel> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#AnnotationProperty> .
+<http://schema.org/evidenceLevel> <http://www.w3.org/2004/02/skos/core#prefLabel> "has evidence level" .
+<http://www.w3.org/2004/02/skos/core#definition> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#AnnotationProperty> .
+<http://www.w3.org/2004/02/skos/core#definition> <http://www.w3.org/2004/02/skos/core#prefLabel> "has definition" .
+<http://www.w3.org/2004/02/skos/core#prefLabel> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#AnnotationProperty> .
+<http://www.w3.org/2004/02/skos/core#prefLabel> <http://www.w3.org/2004/02/skos/core#prefLabel> "has name" .
+<http://www.w3.org/2004/02/skos/core#altLabel> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#AnnotationProperty> .
+<http://www.w3.org/2004/02/skos/core#altLabel> <http://www.w3.org/2004/02/skos/core#prefLabel> "has synonym" .
+<http://purl.obolibrary.org/obo/RO_0002162> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#ObjectProperty> .
+<http://purl.obolibrary.org/obo/RO_0002162> <http://www.w3.org/2004/02/skos/core#prefLabel> "in taxon" .
+<http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#ObjectProperty> .
+<http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2004/02/skos/core#prefLabel> "is instance of" .
+<http://www.w3.org/2004/02/skos/core#closeMatch> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#ObjectProperty> .
+<http://www.w3.org/2004/02/skos/core#closeMatch> <http://www.w3.org/2004/02/skos/core#prefLabel> "has close match" .
+<http://semanticscience.org/resource/SIO_000772> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#ObjectProperty> .
+<http://semanticscience.org/resource/SIO_000772> <http://www.w3.org/2004/02/skos/core#prefLabel> "has evidence" .
+<http://www.w3.org/2000/01/rdf-schema#subClassOf> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#ObjectProperty> .
+<http://www.w3.org/2000/01/rdf-schema#subClassOf> <http://www.w3.org/2004/02/skos/core#prefLabel> "is subclass of" .
+<http://semanticscience.org/resource/SIO_010043> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#Class> .
+<http://semanticscience.org/resource/SIO_010043> <http://www.w3.org/2004/02/skos/core#prefLabel> "Protein" .
+<http://uniprot.org/uniprot/Q9FZ21> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#Class> .
+<http://uniprot.org/uniprot/Q9FZ21> <http://www.w3.org/2000/01/rdf-schema#subClassOf> <http://semanticscience.org/resource/SIO_010043> .
+<http://uniprot.org/uniprot/Q9FZ21> <http://purl.obolibrary.org/obo/RO_0002162> <http://purl.obolibrary.org/obo/NCBITaxon_3702> .
+<http://uniprot.org/uniprot/Q9FZ21> <http://www.w3.org/2004/02/skos/core#definition> "Gibberellin 2-beta-dioxygenase 6 (EC 1.14.11.13) (GA 2-oxidase 6) (Gibberellin 2-beta-hydroxylase 6) (Gibberellin 2-oxidase 6)" .
+<http://uniprot.org/uniprot/Q9FZ21> <http://www.w3.org/2004/02/skos/core#prefLabel> "G2OX6_ARATH" .
+<http://uniprot.org/uniprot/Q9FZ21> <http://www.w3.org/2004/02/skos/core#altLabel> "GA2OX6" .
+<http://uniprot.org/uniprot/Q9FZ21> <http://www.w3.org/2004/02/skos/core#altLabel> "Q9FZ21" .
+<http://uniprot.org/uniprot/Q9FZ21> <http://schema.org/evidenceLevel> "4.0" .
+<http://uniprot.org/uniprot/Q9FZ21> <http://semanticscience.org/resource/SIO_000772> <http://identifiers.org/pubmed/11130712> .
+<http://uniprot.org/uniprot/Q9FZ21> <http://semanticscience.org/resource/SIO_000772> <http://identifiers.org/pubmed/16905669> .
+<http://uniprot.org/uniprot/Q9FZ21> <http://semanticscience.org/resource/SIO_000772> <http://identifiers.org/pubmed/18805991> .
+<http://uniprot.org/uniprot/Q9FZ21> <http://semanticscience.org/resource/SIO_000772> <http://identifiers.org/pubmed/21056641> .
+<http://uniprot.org/uniprot/Q9FZ21> <http://semanticscience.org/resource/SIO_000772> <http://identifiers.org/pubmed/27862469> .
+<http://uniprot.org/uniparc/UPI00000481A7> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://uniprot.org/uniprot/Q9FZ21> .
+<http://uniprot.org/uniparc/UPI00000481A7> <http://www.w3.org/2004/02/skos/core#prefLabel> "instance of G2OX6_ARATH" .
+<http://uniprot.org/uniparc/UPI00000481A7> <http://www.w3.org/2004/02/skos/core#altLabel> "Q9FZ21" .
+<http://uniprot.org/uniprot/Q9FZ21> <http://www.w3.org/2004/02/skos/core#closeMatch> <http://identifiers.org/refseq/NP_171742.1> .
+<http://uniprot.org/uniprot/Q9LIE5> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#Class> .
+<http://uniprot.org/uniprot/Q9LIE5> <http://www.w3.org/2000/01/rdf-schema#subClassOf> <http://semanticscience.org/resource/SIO_010043> .
+<http://uniprot.org/uniprot/Q9LIE5> <http://purl.obolibrary.org/obo/RO_0002162> <http://purl.obolibrary.org/obo/NCBITaxon_3702> .
+<http://uniprot.org/uniprot/Q9LIE5> <http://www.w3.org/2004/02/skos/core#definition> "Protein FAR-RED ELONGATED HYPOCOTYL 3" .
+<http://uniprot.org/uniprot/Q9LIE5> <http://www.w3.org/2004/02/skos/core#prefLabel> "FHY3_ARATH" .
+<http://uniprot.org/uniprot/Q9LIE5> <http://www.w3.org/2004/02/skos/core#altLabel> "FHY3" .
+<http://uniprot.org/uniprot/Q9LIE5> <http://www.w3.org/2004/02/skos/core#altLabel> "Q9LIE5" .
+<http://uniprot.org/uniprot/Q9LIE5> <http://schema.org/evidenceLevel> "5.0" .
+<http://uniprot.org/uniprot/Q9LIE5> <http://semanticscience.org/resource/SIO_000772> <http://identifiers.org/pubmed/10907853> .
+<http://uniprot.org/uniprot/Q9LIE5> <http://semanticscience.org/resource/SIO_000772> <http://identifiers.org/pubmed/11889039> .
+<http://uniprot.org/uniprot/Q9LIE5> <http://semanticscience.org/resource/SIO_000772> <http://identifiers.org/pubmed/12753585> .
+<http://uniprot.org/uniprot/Q9LIE5> <http://semanticscience.org/resource/SIO_000772> <http://identifiers.org/pubmed/15591448> .
+<http://uniprot.org/uniprot/Q9LIE5> <http://semanticscience.org/resource/SIO_000772> <http://identifiers.org/pubmed/17012604> .
+<http://uniprot.org/uniprot/Q9LIE5> <http://semanticscience.org/resource/SIO_000772> <http://identifiers.org/pubmed/18033885> .
+<http://uniprot.org/uniprot/Q9LIE5> <http://semanticscience.org/resource/SIO_000772> <http://identifiers.org/pubmed/18715961> .
+<http://uniprot.org/uniprot/Q9LIE5> <http://semanticscience.org/resource/SIO_000772> <http://identifiers.org/pubmed/18722184> .
+<http://uniprot.org/uniprot/Q9LIE5> <http://semanticscience.org/resource/SIO_000772> <http://identifiers.org/pubmed/19376835> .
+<http://uniprot.org/uniprot/Q9LIE5> <http://semanticscience.org/resource/SIO_000772> <http://identifiers.org/pubmed/22634759> .
+<http://uniprot.org/uniprot/Q9LIE5> <http://semanticscience.org/resource/SIO_000772> <http://identifiers.org/pubmed/27862469> .
+<http://uniprot.org/uniparc/UPI000009E560> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://uniprot.org/uniprot/Q9LIE5> .
+<http://uniprot.org/uniparc/UPI000009E560> <http://www.w3.org/2004/02/skos/core#prefLabel> "instance of FHY3_ARATH" .
+<http://uniprot.org/uniparc/UPI000009E560> <http://www.w3.org/2004/02/skos/core#altLabel> "Q9LIE5" .
+<http://uniprot.org/uniprot/Q9LIE5> <http://www.w3.org/2004/02/skos/core#closeMatch> <http://identifiers.org/refseq/NP_001118673.1> .
+<http://uniprot.org/uniprot/Q9LIE5> <http://www.w3.org/2004/02/skos/core#closeMatch> <http://identifiers.org/refseq/NP_188856.2> .
